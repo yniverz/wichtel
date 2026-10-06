@@ -1,0 +1,40 @@
+# Example production setup: Wichtel + PostgreSQL.
+# Put a reverse proxy with TLS (Caddy, Traefik, nginx) in front of port 3000.
+services:
+  app:
+    image: ghcr.io/yniverz/wichtel:latest
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://wichtel:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/wichtel
+      # Behind a reverse proxy: trust its headers for protocol, host and client IP.
+      PROTOCOL_HEADER: x-forwarded-proto
+      HOST_HEADER: x-forwarded-host
+      ADDRESS_HEADER: x-forwarded-for
+    ports:
+      - '127.0.0.1:3000:3000'
+    volumes:
+      - uploads:/data
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: wichtel
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: wichtel
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U wichtel']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  uploads:
+  postgres:

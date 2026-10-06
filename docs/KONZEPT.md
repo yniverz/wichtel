@@ -4,7 +4,7 @@ Wichtel ist ein Helfer- und Schichtsystem für ehrenamtliche Festivals (Zielgrö
 mehrwöchige Aufbau-/Festival-/Abbauphase). Helfende melden sich an, buchen Schichten, sammeln Punkte und
 tauschen diese gegen Goodies.
 
-Stand: 2026-10-06 · Status: Entwurf
+Stand: 2026-10-07 · Status: Meilenstein 1 umgesetzt
 
 ---
 
@@ -15,14 +15,14 @@ Abgeleitet aus der Kritik am bisherigen System (Engelsystem):
 1. **Ohne Erklärung benutzbar.** Jede Seite hat genau eine Hauptaktion. Wer zum ersten Mal kommt, wird durch
    einen kurzen Einstieg geführt (Profil → Interessen → erste Schicht).
 2. **Mobile-First für Helfende**, Desktop-optimiert für Leitung/Admin (Tabellen, Planungsansichten).
-3. **Konsistente Bedienlogik.** Bestätigungsdialoge gibt es *nur* für unumkehrbare oder folgenreiche
+3. **Konsistente Bedienlogik.** Bestätigungsdialoge gibt es _nur_ für unumkehrbare oder folgenreiche
    Aktionen (z. B. Stornieren nach Frist, Goodie ausgeben) – immer nach demselben Muster. Buchen ist ein Tap,
    Rückgängig ist ein Tap (solange erlaubt).
-4. **Status ist immer sichtbar.** Jede Buchung/Anfrage zeigt klar: *gebucht · angefragt · Warteliste ·
-   abgelehnt · bestätigt (Punkte gutgeschrieben)*. Jede gesperrte Aktion sagt *warum* („Benötigt Qualifikation
+4. **Status ist immer sichtbar.** Jede Buchung/Anfrage zeigt klar: _gebucht · angefragt · Warteliste ·
+   abgelehnt · bestätigt (Punkte gutgeschrieben)_. Jede gesperrte Aktion sagt _warum_ („Benötigt Qualifikation
    Hygieneschulung – jetzt beantragen“).
 5. **Filter, die man versteht.** Wenige, sichtbare Filter (Tag, Bereich, „nur passende für mich“,
-   „nur freie Plätze“), als Chips; Ergebnis aktualisiert sofort. Standardansicht: *für mich buchbare Schichten*.
+   „nur freie Plätze“), als Chips; Ergebnis aktualisiert sofort. Standardansicht: _für mich buchbare Schichten_.
 6. **Alles festivalspezifische ist Konfiguration**, nichts ist hartkodiert (Namen, Bereiche, Rollen,
    Profilfelder, Punkte-Regeln, Goodies, Texte, Branding).
 7. **Admin-Oberfläche flach statt verschachtelt.** Wenige Hauptbereiche, globale Suche, jede Entität hat eine
@@ -32,25 +32,25 @@ Abgeleitet aus der Kritik am bisherigen System (Engelsystem):
 
 ## 2. Begriffe & Domänenmodell
 
-| Begriff | Bedeutung |
-|---|---|
-| **Instanz** | Eine Wichtel-Installation (z. B. `helfen.example.de`). Globale Einstellungen, Branding, Benutzerkonten. |
-| **Jahrgang** (Edition) | Ein Festivaljahr. Schichten, Buchungen, Punkte, Goodies, Wellen gehören immer zu genau einem Jahrgang. Kann aus dem Vorjahr kopiert werden (alle Zeiten um X Tage verschoben). |
-| **Konto** (User) | Bleibt über Jahrgänge bestehen. Teilnahme am Jahrgang wird pro Jahr bestätigt (`Teilnahme`). |
-| **Bereich** (Area) | Baumknoten beliebiger Tiefe, z. B. *Gesamt → AG Infrastruktur → Aufbau*. Pro Jahrgang. |
-| **Schicht** (Shift) | Zeitraum in einem Bereich, mit Ort, Treffpunkt, Beschreibung, Ansprechperson, Hinweisen. Kann aus einer **Schichtvorlage** in Serie erzeugt werden. |
-| **Position** (Slot type) | Innerhalb einer Schicht: z. B. „4× Helfer*in, 1× Schichtleitung“. Jede Position hat eigene Anzahl, Buchungsmodus, Anforderungen, Punkte-Regel, Sichtbarkeit. |
-| **Buchung** (Assignment) | Person ↔ Position. Status: `angefragt`, `gebucht`, `warteliste`, `abgelehnt`, `storniert`, `erschienen`, `nicht_erschienen`. |
-| **Qualifikation** | Konfigurierbar (z. B. Hygieneschulung, Führerschein). Antrag durch Helfende (Ankreuzen und/oder Upload), Bestätigung durch berechtigte Rolle. Optional mit Ablaufdatum. |
-| **Rolle** | Konfigurierbares Bündel von Berechtigungen (z. B. *Bereichsleitung*, *AG-Leitung*, *Gesamtleitung*, *Helferanmeldung*, *Goodie-Ausgabe*, *Admin*). |
-| **Rollenzuweisung** | Person + Rolle + **Geltungsbereich** (ein oder mehrere Bereichsknoten oder global) + Jahrgang. Rechte vererben sich auf Unterbereiche. |
-| **Gruppe** | (a) *Buddy-Gruppe*: von Helfenden selbst erstellt, per Einladungscode. (b) *Verwaltungsgruppe*: von Admins gepflegt (z. B. „Crew“, „Vorjahr dabei“) – nutzbar für Wellen, Sichtbarkeit, Rundmails. |
-| **Welle** (Booking wave) | Zeitgesteuerte Freigabe von Schichten/Positionen für eine Zielgruppe. |
-| **Bedingung** (Condition) | Wiederverwendbarer Regelbaustein (siehe §5). |
-| **Punktekonto** | Ledger aus Buchungssätzen pro Person und Jahrgang. Kontostand = Summe. |
-| **Goodie** | Belohnung mit Punktepreis (auch 0), Bedingungen, optionalen Profilfeldern, Kontingent, Varianten. |
-| **Goodie-Vorgang** (Claim) | Person ↔ Goodie. Status: `ausgewählt`, `ausgegeben`, `storniert`, `erstattet`. |
-| **Profilfeld** | Konfigurierbares Formularfeld (Typen: Text, Zahl, Datum, Auswahl, Mehrfachauswahl, Ja/Nein, Datei). Kontext: *Registrierung*, *Jahrgangsteilnahme*, *Goodie*, *Position*, *Qualifikation*. |
+| Begriff                    | Bedeutung                                                                                                                                                                                          |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Instanz**                | Eine Wichtel-Installation (z. B. `helfen.example.de`). Globale Einstellungen, Branding, Benutzerkonten.                                                                                            |
+| **Jahrgang** (Edition)     | Ein Festivaljahr. Schichten, Buchungen, Punkte, Goodies, Wellen gehören immer zu genau einem Jahrgang. Kann aus dem Vorjahr kopiert werden (alle Zeiten um X Tage verschoben).                     |
+| **Konto** (User)           | Bleibt über Jahrgänge bestehen. Teilnahme am Jahrgang wird pro Jahr bestätigt (`Teilnahme`).                                                                                                       |
+| **Bereich** (Area)         | Baumknoten beliebiger Tiefe, z. B. _Gesamt → AG Infrastruktur → Aufbau_. Pro Jahrgang.                                                                                                             |
+| **Schicht** (Shift)        | Zeitraum in einem Bereich, mit Ort, Treffpunkt, Beschreibung, Ansprechperson, Hinweisen. Kann aus einer **Schichtvorlage** in Serie erzeugt werden.                                                |
+| **Position** (Slot type)   | Innerhalb einer Schicht: z. B. „4× Helfer*in, 1× Schichtleitung“. Jede Position hat eigene Anzahl, Buchungsmodus, Anforderungen, Punkte-Regel, Sichtbarkeit.                                       |
+| **Buchung** (Assignment)   | Person ↔ Position. Status: `angefragt`, `gebucht`, `warteliste`, `abgelehnt`, `storniert`, `erschienen`, `nicht_erschienen`.                                                                       |
+| **Qualifikation**          | Konfigurierbar (z. B. Hygieneschulung, Führerschein). Antrag durch Helfende (Ankreuzen und/oder Upload), Bestätigung durch berechtigte Rolle. Optional mit Ablaufdatum.                            |
+| **Rolle**                  | Konfigurierbares Bündel von Berechtigungen (z. B. _Bereichsleitung_, _AG-Leitung_, _Gesamtleitung_, _Helferanmeldung_, _Goodie-Ausgabe_, _Admin_).                                                 |
+| **Rollenzuweisung**        | Person + Rolle + **Geltungsbereich** (ein oder mehrere Bereichsknoten oder global) + Jahrgang. Rechte vererben sich auf Unterbereiche.                                                             |
+| **Gruppe**                 | (a) _Buddy-Gruppe_: von Helfenden selbst erstellt, per Einladungscode. (b) _Verwaltungsgruppe_: von Admins gepflegt (z. B. „Crew“, „Vorjahr dabei“) – nutzbar für Wellen, Sichtbarkeit, Rundmails. |
+| **Welle** (Booking wave)   | Zeitgesteuerte Freigabe von Schichten/Positionen für eine Zielgruppe.                                                                                                                              |
+| **Bedingung** (Condition)  | Wiederverwendbarer Regelbaustein (siehe §5).                                                                                                                                                       |
+| **Punktekonto**            | Ledger aus Buchungssätzen pro Person und Jahrgang. Kontostand = Summe.                                                                                                                             |
+| **Goodie**                 | Belohnung mit Punktepreis (auch 0), Bedingungen, optionalen Profilfeldern, Kontingent, Varianten.                                                                                                  |
+| **Goodie-Vorgang** (Claim) | Person ↔ Goodie. Status: `ausgewählt`, `ausgegeben`, `storniert`, `erstattet`.                                                                                                                     |
+| **Profilfeld**             | Konfigurierbares Formularfeld (Typen: Text, Zahl, Datum, Auswahl, Mehrfachauswahl, Ja/Nein, Datei). Kontext: _Registrierung_, _Jahrgangsteilnahme_, _Goodie_, _Position_, _Qualifikation_.         |
 
 ---
 
@@ -62,7 +62,7 @@ Abgeleitet aus der Kritik am bisherigen System (Engelsystem):
   `mail.send`, `dashboard.view`, `edition.manage`, `settings.manage`, `audit.view`.
 - **Rollen** sind frei konfigurierbare Sets davon (mit sinnvollen Vorlagen bei Erstinstallation).
 - **Zuweisung mit Geltungsbereich:** Eine Rolle gilt global oder für einen/mehrere Bereichsknoten inkl.
-  aller Unterknoten. Damit sind auch Querschnittsrollen abbildbar (z. B. *Helferanmeldung* = Rolle mit
+  aller Unterknoten. Damit sind auch Querschnittsrollen abbildbar (z. B. _Helferanmeldung_ = Rolle mit
   `attendance.confirm`, `assignment.manage`, `qualification.review` auf dem Wurzelknoten; oder eine
   Bereichsleitung, die zusätzlich einen fremden Teilbaum betreut).
 - **Mehrfachrollen** pro Person möglich (Instanz-Einstellung kann z. B. „Helfer*in und Leitung im selben
@@ -78,7 +78,7 @@ Abgeleitet aus der Kritik am bisherigen System (Engelsystem):
 
 - Registrierung mit E-Mail + Passwort, E-Mail-Bestätigung, Passwort vergessen.
 - **Kurze Registrierung**: Name, E-Mail, Passwort, Telefon, Sprache + als Pflicht konfigurierte Felder.
-  Alles Weitere wird *erst dann* abgefragt, wenn es gebraucht wird (Goodie-Auswahl, Position, Qualifikation).
+  Alles Weitere wird _erst dann_ abgefragt, wenn es gebraucht wird (Goodie-Auswahl, Position, Qualifikation).
 - **Jahrgangsteilnahme**: Bei Login in einem neuen Jahrgang einmal „Ich bin dieses Jahr dabei“ + ggf.
   jahrgangsspezifische Felder (z. B. Verfügbarkeit, Interessen).
 - **Präferenzen**: Lieblingsbereiche und Verfügbarkeitszeiträume → Sortierung/Hervorhebung „passt zu dir“.
@@ -97,13 +97,13 @@ Positionsanforderungen, Sichtbarkeit, Wellen, Goodie-Berechtigung und Profilfeld
 
 Bausteine (erweiterbar):
 
-- hat Qualifikation *Q* (bestätigt, nicht abgelaufen)
-- Mitglied in Verwaltungsgruppe *G*
-- Alter ≥ *n* (am Schichttag)
-- Profilfeld *F* hat Wert *W*
-- hat ≥ *n* Schichten / ≥ *h* Stunden (erschienen) in Bereich *B* (inkl. Unterbereichen)
-- hat Goodie *X* erhalten / nicht erhalten
-- hat Rolle *R*
+- hat Qualifikation _Q_ (bestätigt, nicht abgelaufen)
+- Mitglied in Verwaltungsgruppe _G_
+- Alter ≥ _n_ (am Schichttag)
+- Profilfeld _F_ hat Wert _W_
+- hat ≥ _n_ Schichten / ≥ _h_ Stunden (erschienen) in Bereich _B_ (inkl. Unterbereichen)
+- hat Goodie _X_ erhalten / nicht erhalten
+- hat Rolle _R_
 
 Positionen unterscheiden **Pflicht-** und **Wunsch-Anforderungen** („gern gesehen“): Pflicht sperrt die
 Buchung, Wunsch wird nur angezeigt und für Leitungen sichtbar markiert.
@@ -113,6 +113,7 @@ Buchung, Wunsch wird nur angezeigt und für Leitungen sichtbar markiert.
 ## 6. Schichten & Buchung
 
 ### 6.1 Anlegen
+
 - Einzeln, per **Vorlage + Serie** (Tage × Zeitfenster, z. B. „Bar täglich 18–22 und 22–02“), oder per
   Duplizieren. Massenbearbeitung (verschieben, Plätze ändern) in einer Planungsansicht (Zeitachse je Bereich).
 - Felder: Titel, Bereich, Start/Ende, Ort, Treffpunkt, Beschreibung, Mitbringen/Kleiderordnung,
@@ -121,13 +122,15 @@ Buchung, Wunsch wird nur angezeigt und für Leitungen sichtbar markiert.
   Admin-UI markiert.
 
 ### 6.2 Buchungsmodi je Position
-| Modus | Verhalten |
-|---|---|
-| **Offen** | Tippen → sofort gebucht. |
+
+| Modus                 | Verhalten                                                                                |
+| --------------------- | ---------------------------------------------------------------------------------------- |
+| **Offen**             | Tippen → sofort gebucht.                                                                 |
 | **Mit Qualifikation** | Bei erfüllter Pflicht-Bedingung sofort gebucht, sonst Button „Freischaltung beantragen“. |
-| **Auf Anfrage** | Anfrage → Leitung bestätigt/lehnt ab (mit optionaler Nachricht). |
+| **Auf Anfrage**       | Anfrage → Leitung bestätigt/lehnt ab (mit optionaler Nachricht).                         |
 
 ### 6.3 Regeln
+
 - **Überschneidung** mit eigenen Buchungen wird immer blockiert (inkl. Anfragen & Warteliste-Plätzen nach
   Wahl der Instanz-Einstellung).
 - **Mindestpause** zwischen Schichten: konfigurierbar (Standard 0).
@@ -144,11 +147,14 @@ Buchung, Wunsch wird nur angezeigt und für Leitungen sichtbar markiert.
 - **Leitung trägt ein**: direkt, mit Override-Möglichkeit (§3).
 
 ### 6.4 Wellen
+
 Eine Welle = Zeitpunkt (Start, optional Ende) + Zielgruppe (Bedingung, z. B. Gruppe „Crew“, Einladungslink)
-+ Umfang (ganze Bereiche, einzelne Schichten oder einzelne Positionen) + optionales Limit (z. B. max. *n*
-Buchungen in dieser Welle). Ohne Welle gilt „alles offen“.
+
+- Umfang (ganze Bereiche, einzelne Schichten oder einzelne Positionen) + optionales Limit (z. B. max. _n_
+  Buchungen in dieser Welle). Ohne Welle gilt „alles offen“.
 
 ### 6.5 Anwesenheit
+
 - Schichtleitung bzw. Rolle mit `attendance.confirm` hakt in einer Liste ab **oder** scannt den persönlichen
   QR-Code der Helfenden.
 - Punkte werden **mit der Bestätigung der Anwesenheit** gutgeschrieben, also bei Ankunft/Schichtbeginn,
@@ -161,10 +167,11 @@ Buchungen in dieser Welle). Ohne Welle gilt „alles offen“.
 - „Nicht erschienen“ → keine Punkte + interner Vermerk. Eine bereits erfolgte Bestätigung kann korrigiert
   werden (Punkte werden zurückgebucht; ist dadurch ein bereits ausgegebenes Goodie nicht mehr gedeckt,
   entsteht ein interner Vermerk).
-- Nachträgliche Korrektur jederzeit möglich (Audit-Log). Auto-Bestätigung nach *x* Stunden: konfigurierbar,
+- Nachträgliche Korrektur jederzeit möglich (Audit-Log). Auto-Bestätigung nach _x_ Stunden: konfigurierbar,
   Standard aus.
 
 ### 6.6 Kurzfristiger Ersatz
+
 Leitung markiert Platz als „dringend“ → Rundmail an passende, zeitlich verfügbare Helfende (Bedingungen +
 keine Überschneidung) mit Direktlink. Optionaler Punktebonus.
 
@@ -174,7 +181,7 @@ keine Überschneidung) mit Direktlink. Optionaler Punktebonus.
 
 - **Punkte-Regel** je Position (mit Vererbung Bereich → Schicht → Position):
   fixe Punkte pro Schicht und/oder pro Stunde, Multiplikatoren für Zeitfenster (z. B. Nacht) oder Tage,
-  optionale Boni (z. B. Kurzfrist-Einspringen: „Buchung < *x* h vor Beginn“).
+  optionale Boni (z. B. Kurzfrist-Einspringen: „Buchung < _x_ h vor Beginn“).
 - **Punktekonto als Ledger** (unveränderliche Buchungssätze): `gutschrift_schicht`, `abbuchung_goodie`,
   `rueckbuchung_goodie`, `manuelle_korrektur` (mit Pflicht-Begründung), `storno_gutschrift`.
 - Gutschrift erfolgt mit Bestätigung der Anwesenheit (auch Vorab-Check-in, §6.5).
@@ -187,6 +194,7 @@ keine Überschneidung) mit Direktlink. Optionaler Punktebonus.
 ## 8. Goodies
 
 ### 8.1 Definition
+
 - Name, Beschreibung, Bild, **Punktepreis** (≥ 0), **Berechtigung** (Bedingung, z. B. „≥ 1 Schicht im
   Bereich Abbau“ für Zollstöcke), **Max. pro Person**, **Varianten** (z. B. Größe), **zusätzliche
   Profilfelder** (werden erst bei Auswahl abgefragt, z. B. T-Shirt-Größe).
@@ -197,6 +205,7 @@ keine Überschneidung) mit Direktlink. Optionaler Punktebonus.
   (z. B. T-Shirt vor der ersten Schicht). Wird ein Vorschuss nicht gedeckt, entsteht ein interner Vermerk.
 
 ### 8.2 Pflicht-Goodies
+
 - Goodies können als **Pflicht** mit Priorität markiert werden (z. B. Freiticket = 1 Punkt).
   Die ersten bestätigten Punkte werden automatisch dafür verwendet, in Prioritätsreihenfolge.
 - **Erstattung statt Ausgabe** konfigurierbar, z. B. „Ich habe schon ein Ticket gekauft“: Die Punkte werden
@@ -205,6 +214,7 @@ keine Überschneidung) mit Direktlink. Optionaler Punktebonus.
   von Wichtel; optional mit Feldern für die Erstattung (z. B. Ticketnummer), konfigurierbar wie Profilfelder.
 
 ### 8.3 Ablauf
+
 1. Helfende sehen im Goodie-Bereich: was sie bekommen können, was ihnen noch fehlt („noch 2 Punkte“, „nur
    für Abbau-Helfende“), Kontostand.
 2. **Auswahl** nur mit bestätigten Punkten (außer Vorschuss-Goodies) → Punkte werden abgebucht, Status
@@ -218,12 +228,12 @@ keine Überschneidung) mit Direktlink. Optionaler Punktebonus.
 
 ## 9. Qualifikationen
 
-- Konfigurierbar: Name, Beschreibung, Nachweisart (*Ankreuzen*, *Upload*, *beides*), Ablauf (optional),
+- Konfigurierbar: Name, Beschreibung, Nachweisart (_Ankreuzen_, _Upload_, _beides_), Ablauf (optional),
   welche Rolle/welcher Bereich prüft.
 - Ablauf: Helfende beantragen → Prüfung (bestätigen/ablehnen mit Begründung) → schaltet Positionen frei.
 - Leitungen können Qualifikationen auch direkt vergeben.
-- **Dokumentenaufbewahrung** je Qualifikation konfigurierbar: *behalten*, *nach Bestätigung löschen*
-  (übrig bleibt „bestätigt am … durch …“), *nach Jahrgangsende löschen*. Einsicht nur mit
+- **Dokumentenaufbewahrung** je Qualifikation konfigurierbar: _behalten_, _nach Bestätigung löschen_
+  (übrig bleibt „bestätigt am … durch …“), _nach Jahrgangsende löschen_. Einsicht nur mit
   `qualification.documents.view` im Geltungsbereich.
 
 ---
@@ -281,24 +291,26 @@ Entität, Bereich.
 
 ## 15. Technik
 
-| Bereich | Wahl | Begründung |
-|---|---|---|
-| Sprache | TypeScript (strict) | Durchgängige Typen DB → UI, eine Codebasis |
-| Framework | SvelteKit (Node-Adapter) | Schnelles, mobilfreundliches UI; Server-Logik im selben Projekt |
-| Datenbank | PostgreSQL | Transaktionen, Constraints (z. B. Überbuchung verhindern) |
-| ORM/Migrationen | Drizzle | Typsicher, SQL-nah, versionierte Migrationen |
-| Validierung | Zod | Gemeinsame Schemas für Formulare und Server |
-| Auth | Session-basiert (eigene, schlanke Implementierung oder Better Auth), Argon2 | E-Mail/Passwort + später OIDC |
-| i18n | Paraglide | Typsichere Übersetzungen |
-| Styling | Tailwind CSS + eigene Komponenten | Theming über CSS-Variablen (Branding) |
-| Jobs | pg-boss (Postgres-basiert) | Mails, Erinnerungen, Wellen – ohne zusätzlichen Redis |
-| Mail | Nodemailer (SMTP) | |
-| Dateien | Lokales Volume (später optional S3-kompatibel) | Qualifikationsnachweise, Bilder |
-| Tests | Vitest (Domänenlogik), Playwright (E2E, auch Mobile-Viewport) | Kernregeln (Buchung, Punkte, Goodies) vollständig getestet |
-| Deployment | Ein Docker-Image + `docker-compose.yml` mit Postgres | |
-| CI | GitHub Actions: Lint, Typecheck, Tests, Image-Build | |
+| Bereich         | Wahl                                                                               | Begründung                                                                        |
+| --------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Sprache         | TypeScript (strict)                                                                | Durchgängige Typen DB → UI, eine Codebasis                                        |
+| Framework       | SvelteKit (Node-Adapter)                                                           | Schnelles, mobilfreundliches UI; Server-Logik im selben Projekt                   |
+| Datenbank       | PostgreSQL                                                                         | Transaktionen, Constraints (z. B. Überbuchung verhindern)                         |
+| ORM/Migrationen | Drizzle                                                                            | Typsicher, SQL-nah, versionierte Migrationen                                      |
+| Validierung     | Zod                                                                                | Gemeinsame Schemas für Formulare und Server                                       |
+| Auth            | Eigene, schlanke Sitzungsverwaltung (gehashte Tokens in der DB), Argon2id          | E-Mail/Passwort; OIDC später ergänzbar                                            |
+| i18n            | Eigene, typsichere Kataloge (`de.ts` ist Quelle, `en.ts` vom Typchecker erzwungen) | Keine zusätzliche Build-Stufe, fehlende Übersetzungen fallen beim Typcheck auf    |
+| Styling         | Tailwind CSS + eigene Komponenten                                                  | Theming über CSS-Variablen (Branding)                                             |
+| Jobs            | pg-boss (Postgres-basiert)                                                         | Mails, Erinnerungen, Wellen – ohne zusätzlichen Redis                             |
+| Entwicklung     | PGlite (eingebettete PostgreSQL)                                                   | `npm run dev` ohne Docker/Datenbank; Tests laufen gegen echte PostgreSQL-Semantik |
+| Mail            | Nodemailer (SMTP)                                                                  |                                                                                   |
+| Dateien         | Lokales Volume (später optional S3-kompatibel)                                     | Qualifikationsnachweise, Bilder                                                   |
+| Tests           | Vitest (Domänenlogik), Playwright (E2E, auch Mobile-Viewport)                      | Kernregeln (Buchung, Punkte, Goodies) vollständig getestet                        |
+| Deployment      | Ein Docker-Image + `docker-compose.yml` mit Postgres                               |                                                                                   |
+| CI              | GitHub Actions: Lint, Typecheck, Tests, Image-Build                                |                                                                                   |
 
 **Architektur-Grundsätze**
+
 - Domänenlogik (Buchungsregeln, Bedingungen, Punkte, Goodies) als reine, testbare Module unabhängig von
   UI und Datenbank.
 - Kritische Operationen (Buchen, Nachrücken, Goodie-Auswahl mit Kontingent) in Datenbank-Transaktionen mit
@@ -308,6 +320,8 @@ Entität, Bereich.
 ---
 
 ## 16. Meilensteine (Vorschlag)
+
+Design-Richtlinien: [DESIGN.md](DESIGN.md).
 
 1. **Fundament**: Projekt-Setup, Docker, CI, Auth (Registrierung, Login, Bestätigung), i18n, Branding,
    Jahrgänge, Bereichsbaum, Rollen & Berechtigungen, Audit-Log.
