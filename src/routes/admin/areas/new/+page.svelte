@@ -14,6 +14,7 @@
 		descriptionDe: '',
 		descriptionEn: '',
 		sortOrder: 0,
+		cancelDeadlineHours: null as string | number | null,
 		...(form?.values ?? {})
 	});
 </script>

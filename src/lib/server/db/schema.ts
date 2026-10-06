@@ -118,6 +118,10 @@ export const instanceSettings = pgTable(
 		defaultLocale: localeEnum('default_locale').notNull().default('de'),
 		timezone: text('timezone').notNull().default('Europe/Berlin'),
 		registrationOpen: boolean('registration_open').notNull().default(true),
+		/** Helpers may cancel bookings themselves until this many hours before the shift. */
+		cancelDeadlineHours: integer('cancel_deadline_hours').notNull().default(48),
+		/** Required gap between two shifts of the same person. */
+		minBreakMinutes: integer('min_break_minutes').notNull().default(0),
 		/** SHA-256 of the one-time setup token; null once setup is complete. */
 		setupTokenHash: text('setup_token_hash'),
 		updatedAt: timestamps.updatedAt
@@ -162,9 +166,111 @@ export const areas = pgTable(
 		descriptionDe: text('description_de').notNull().default(''),
 		descriptionEn: text('description_en').notNull().default(''),
 		sortOrder: integer('sort_order').notNull().default(0),
+		/** Overrides the instance-wide cancel deadline for shifts in this area (and sub-areas). */
+		cancelDeadlineHours: integer('cancel_deadline_hours'),
 		...timestamps
 	},
 	(t) => [index('areas_edition_idx').on(t.editionId), index('areas_parent_idx').on(t.parentId)]
+);
+
+// ---------------------------------------------------------------------------
+// Shifts, positions & assignments
+// ---------------------------------------------------------------------------
+
+export const shiftVisibilityEnum = pgEnum('shift_visibility', ['public', 'internal']);
+export const bookingModeEnum = pgEnum('booking_mode', ['open', 'request']);
+export const assignmentStatusEnum = pgEnum('assignment_status', [
+	'requested',
+	'booked',
+	'rejected',
+	'cancelled'
+]);
+export const attendanceEnum = pgEnum('attendance', ['unknown', 'attended', 'no_show']);
+
+export const shifts = pgTable(
+	'shifts',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		editionId: uuid('edition_id')
+			.notNull()
+			.references(() => editions.id, { onDelete: 'cascade' }),
+		areaId: uuid('area_id')
+			.notNull()
+			.references(() => areas.id, { onDelete: 'restrict' }),
+		titleDe: text('title_de').notNull(),
+		titleEn: text('title_en').notNull().default(''),
+		descriptionDe: text('description_de').notNull().default(''),
+		descriptionEn: text('description_en').notNull().default(''),
+		location: text('location').notNull().default(''),
+		meetingPoint: text('meeting_point').notNull().default(''),
+		contact: text('contact').notNull().default(''),
+		startsAt: timestamp('starts_at', { withTimezone: true }).notNull(),
+		endsAt: timestamp('ends_at', { withTimezone: true }).notNull(),
+		/** `internal` shifts are only visible to people with a role covering the area. */
+		visibility: shiftVisibilityEnum('visibility').notNull().default('public'),
+		/** Overrides area/instance cancel deadline. */
+		cancelDeadlineHours: integer('cancel_deadline_hours'),
+		/** Shifts created together by the series generator share this id. */
+		seriesId: uuid('series_id'),
+		...timestamps
+	},
+	(t) => [
+		index('shifts_edition_start_idx').on(t.editionId, t.startsAt),
+		index('shifts_area_idx').on(t.areaId),
+		check('shifts_time_order', sql`${t.startsAt} < ${t.endsAt}`)
+	]
+);
+
+export const shiftPositions = pgTable(
+	'shift_positions',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		shiftId: uuid('shift_id')
+			.notNull()
+			.references(() => shifts.id, { onDelete: 'cascade' }),
+		nameDe: text('name_de').notNull(),
+		nameEn: text('name_en').notNull().default(''),
+		descriptionDe: text('description_de').notNull().default(''),
+		descriptionEn: text('description_en').notNull().default(''),
+		capacity: integer('capacity').notNull(),
+		bookingMode: bookingModeEnum('booking_mode').notNull().default('open'),
+		sortOrder: integer('sort_order').notNull().default(0)
+	},
+	(t) => [
+		index('shift_positions_shift_idx').on(t.shiftId),
+		check('shift_positions_capacity', sql`${t.capacity} >= 1`)
+	]
+);
+
+export const assignments = pgTable(
+	'assignments',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		positionId: uuid('position_id')
+			.notNull()
+			.references(() => shiftPositions.id, { onDelete: 'cascade' }),
+		/** Denormalised for overlap checks and per-shift uniqueness. */
+		shiftId: uuid('shift_id')
+			.notNull()
+			.references(() => shifts.id, { onDelete: 'cascade' }),
+		userId: uuid('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		status: assignmentStatusEnum('status').notNull(),
+		attendance: attendanceEnum('attendance').notNull().default('unknown'),
+		attendanceAt: timestamp('attendance_at', { withTimezone: true }),
+		attendanceBy: uuid('attendance_by').references(() => users.id, { onDelete: 'set null' }),
+		createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+		...timestamps
+	},
+	(t) => [
+		index('assignments_position_idx').on(t.positionId),
+		index('assignments_user_idx').on(t.userId),
+		// A person holds at most one active place per shift.
+		uniqueIndex('assignments_one_active_per_shift')
+			.on(t.shiftId, t.userId)
+			.where(sql`${t.status} in ('requested', 'booked')`)
+	]
 );
 
 // ---------------------------------------------------------------------------
@@ -244,3 +350,6 @@ export type Area = typeof areas.$inferSelect;
 export type Role = typeof roles.$inferSelect;
 export type RoleAssignment = typeof roleAssignments.$inferSelect;
 export type AuditEntry = typeof auditLog.$inferSelect;
+export type Shift = typeof shifts.$inferSelect;
+export type ShiftPosition = typeof shiftPositions.$inferSelect;
+export type Assignment = typeof assignments.$inferSelect;

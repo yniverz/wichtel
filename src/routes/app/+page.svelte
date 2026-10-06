@@ -2,7 +2,8 @@
 	import { page } from '$app/state';
 	import Button from '#lib/components/Button.svelte';
 	import { getI18n } from '#lib/i18n/context.ts';
-	import { formatDateRange } from '#lib/i18n/index.ts';
+	import Badge from '#lib/components/Badge.svelte';
+	import { formatDateRange, formatDayShort, formatTime, localized } from '#lib/i18n/index.ts';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -34,7 +35,52 @@
 				<h2 class="border-b border-line pb-2 text-sm font-bold">
 					{i18n.t('app.home.shifts.title')}
 				</h2>
-				<p class="mt-4 max-w-prose text-ink-muted">{i18n.t('app.home.shifts.soon')}</p>
+				{#if data.mine.length === 0}
+					<p class="mt-4 max-w-prose text-ink-muted">{i18n.t('app.home.shifts.none')}</p>
+					<div class="mt-4">
+						<Button href="/app/shifts">{i18n.t('app.home.shifts.browse')}</Button>
+					</div>
+				{:else}
+					<ul>
+						{#each data.mine as shift (shift.id)}
+							<li class="border-b border-line">
+								<a
+									href="/app/shifts"
+									class="grid grid-cols-[5.5rem_1fr_auto] items-start gap-3 py-3"
+								>
+									<span class="text-sm leading-tight font-bold tabular-nums">
+										{formatDayShort(shift.day, i18n.locale)}<br />
+										<span class="font-normal text-ink-muted"
+											>{formatTime(shift.startsAt, i18n.locale, data.timezone)}–{formatTime(
+												shift.endsAt,
+												i18n.locale,
+												data.timezone
+											)}</span
+										>
+									</span>
+									<span class="min-w-0">
+										<span class="block font-bold">{localized(shift, 'title', i18n.locale)}</span>
+										<span class="block truncate text-sm text-ink-muted"
+											>{shift.meetingPoint ||
+												shift.location ||
+												shift.areaPath
+													.map((a) => localized(a, 'name', i18n.locale))
+													.join(' › ')}</span
+										>
+									</span>
+									{#if shift.mine?.status === 'requested'}<Badge tone="warning"
+											>{i18n.t('shifts.status.requested')}</Badge
+										>{/if}
+								</a>
+							</li>
+						{/each}
+					</ul>
+					<a
+						href="/app/shifts"
+						class="mt-3 inline-block text-sm font-semibold text-brand-text hover:underline"
+						>{i18n.t('app.home.shifts.more')} →</a
+					>
+				{/if}
 			</section>
 			<section>
 				<h2 class="border-b border-line pb-2 text-sm font-bold">

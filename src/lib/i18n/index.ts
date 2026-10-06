@@ -46,13 +46,10 @@ export function negotiateLocale(acceptLanguage: string | null, fallback: Locale)
 /**
  * Reads a bilingual field (`nameDe`/`nameEn`), falling back to German if the English text is empty.
  */
-export function localized<T extends Record<string, unknown>>(
-	entity: T,
-	field: string,
-	locale: Locale
-): string {
-	const de = entity[`${field}De`];
-	const en = entity[`${field}En`];
+export function localized(entity: object, field: string, locale: Locale): string {
+	const record = entity as Record<string, unknown>;
+	const de = record[`${field}De`];
+	const en = record[`${field}En`];
 	if (locale === 'en' && typeof en === 'string' && en.trim() !== '') return en;
 	return typeof de === 'string' ? de : '';
 }
@@ -82,4 +79,37 @@ export function formatDateTime(value: Date, locale: Locale, timeZone?: string): 
 		timeStyle: 'short',
 		timeZone
 	}).format(value);
+}
+
+const intlLocale = (locale: Locale) => (locale === 'de' ? 'de-DE' : 'en-GB');
+
+/** "18:00" in the festival time zone. */
+export function formatTime(value: Date | string, locale: Locale, timeZone: string): string {
+	return new Intl.DateTimeFormat(intlLocale(locale), {
+		hour: '2-digit',
+		minute: '2-digit',
+		timeZone
+	}).format(typeof value === 'string' ? new Date(value) : value);
+}
+
+/** Short day label for an ISO date, e.g. "Fr 12.06." / "Fri 12 Jun". */
+export function formatDayShort(date: string, locale: Locale): string {
+	return new Intl.DateTimeFormat(intlLocale(locale), {
+		weekday: 'short',
+		day: 'numeric',
+		month: locale === 'de' ? '2-digit' : 'short',
+		timeZone: 'UTC'
+	})
+		.format(new Date(`${date}T12:00:00Z`))
+		.replace(',', '');
+}
+
+/** Long day label, e.g. "Freitag, 12. Juni". */
+export function formatDayLong(date: string, locale: Locale): string {
+	return new Intl.DateTimeFormat(intlLocale(locale), {
+		weekday: 'long',
+		day: 'numeric',
+		month: 'long',
+		timeZone: 'UTC'
+	}).format(new Date(`${date}T12:00:00Z`));
 }

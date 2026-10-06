@@ -62,8 +62,10 @@ export const optionalUuid = z
 	.transform((v) => (v === '' ? null : v))
 	.pipe(z.uuid('error.notFound').nullable());
 
+/** An HTML checkbox: absent when unchecked, so the key must be optional. */
 export const checkbox = z
-	.union([z.literal('on'), z.literal('true'), z.literal(''), z.undefined()])
+	.string()
+	.optional()
 	.transform((v) => v === 'on' || v === 'true');
 
 export type FieldErrors = Record<string, MessageKey>;

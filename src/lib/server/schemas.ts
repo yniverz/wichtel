@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { PERMISSIONS } from '#lib/domain/permissions.ts';
+import { isWallTime } from '#lib/domain/time.ts';
 import { LOCALES } from '#lib/i18n/index.ts';
 import {
 	checkbox,
@@ -14,6 +15,20 @@ import {
 
 /** Form schemas shared between several routes. */
 
+/** Empty string → null, otherwise a whole number of hours. */
+const optionalHours = z
+	.string()
+	.trim()
+	.transform((v) => (v === '' ? null : Number(v)))
+	.pipe(
+		z
+			.number('error.invalidNumber')
+			.int('error.invalidNumber')
+			.min(0)
+			.max(24 * 60)
+			.nullable()
+	);
+
 export const editionSchema = z.object({
 	name: requiredText(100),
 	startsOn: isoDate,
@@ -26,7 +41,8 @@ export const areaSchema = z.object({
 	nameEn: optionalText(100),
 	descriptionDe: optionalText(2000),
 	descriptionEn: optionalText(2000),
-	sortOrder: z.coerce.number('error.required').int().min(-9999).max(9999).default(0)
+	sortOrder: z.coerce.number('error.required').int().min(-9999).max(9999).default(0),
+	cancelDeadlineHours: optionalHours
 });
 
 export const roleSchema = z.object({
@@ -55,5 +71,85 @@ export const settingsSchema = z.object({
 			return false;
 		}
 	}, 'error.required'),
-	registrationOpen: checkbox
+	registrationOpen: checkbox,
+	cancelDeadlineHours: z.coerce
+		.number('error.invalidNumber')
+		.int('error.invalidNumber')
+		.min(0)
+		.max(24 * 60),
+	minBreakMinutes: z.coerce
+		.number('error.invalidNumber')
+		.int('error.invalidNumber')
+		.min(0)
+		.max(24 * 60)
+});
+
+const wallTime = z.string().refine(isWallTime, 'error.invalidTime');
+
+const positionSchema = z.object({
+	id: z.uuid().optional(),
+	nameDe: z.string().trim().min(1, 'error.required').max(100, 'error.tooLong'),
+	nameEn: z.string().trim().max(100, 'error.tooLong').default(''),
+	descriptionDe: z.string().trim().max(1000, 'error.tooLong').default(''),
+	descriptionEn: z.string().trim().max(1000, 'error.tooLong').default(''),
+	capacity: z.coerce.number('error.invalidNumber').int('error.invalidNumber').min(1).max(500),
+	bookingMode: z.enum(['open', 'request'])
+});
+
+/** Positions are edited client-side and submitted as one JSON field. */
+const positionsJson = z
+	.string()
+	.transform((raw, ctx) => {
+		try {
+			return JSON.parse(raw) as unknown;
+		} catch {
+			ctx.addIssue({ code: 'custom', message: 'error.positionsRequired' });
+			return z.NEVER;
+		}
+	})
+	.pipe(
+		z.array(positionSchema, 'error.positionsRequired').min(1, 'error.positionsRequired').max(20)
+	);
+
+const shiftDetails = {
+	areaId: z.uuid('error.required'),
+	titleDe: requiredText(120),
+	titleEn: optionalText(120),
+	descriptionDe: optionalText(4000),
+	descriptionEn: optionalText(4000),
+	location: optionalText(200),
+	meetingPoint: optionalText(200),
+	contact: optionalText(200),
+	visibility: z.enum(['public', 'internal']).default('public'),
+	cancelDeadlineHours: optionalHours,
+	positions: positionsJson
+};
+
+export const shiftSchema = z.object({
+	...shiftDetails,
+	date: isoDate,
+	start: wallTime,
+	end: wallTime
+});
+
+export const seriesSchema = z.object({
+	...shiftDetails,
+	from: isoDate,
+	to: isoDate,
+	'weekdays[]': z.array(z.coerce.number().int().min(0).max(6)).default([]),
+	slots: z
+		.string()
+		.transform((raw) => {
+			try {
+				return JSON.parse(raw) as unknown;
+			} catch {
+				return [];
+			}
+		})
+		.pipe(
+			z
+				.array(z.object({ start: wallTime, end: wallTime }))
+				.min(1, 'error.seriesEmpty')
+				.max(24)
+		)
 });

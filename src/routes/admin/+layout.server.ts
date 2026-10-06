@@ -1,4 +1,5 @@
 import { getAdminContext } from '#lib/server/guards.ts';
+import { hasShiftAccess } from '#lib/server/shift-access.ts';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async (event) => {
@@ -19,6 +20,7 @@ export const load: LayoutServerLoad = async (event) => {
 		access: {
 			isAdmin: authz.isAdmin,
 			areas: authz.canSomewhere('area.manage'),
+			shifts: hasShiftAccess(ctx),
 			people:
 				authz.isAdmin ||
 				authz.canSomewhere('role.assign') ||

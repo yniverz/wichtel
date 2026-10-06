@@ -22,7 +22,7 @@
 	};
 	const nav = $derived<NavItem[]>([
 		{ href: '/app', label: 'nav.home', icon: 'home' },
-		{ href: '/app/shifts', label: 'nav.shifts', icon: 'shifts', soon: true },
+		{ href: '/app/shifts', label: 'nav.shifts', icon: 'shifts' },
 		{ href: '/app/goodies', label: 'nav.goodies', icon: 'goodies', soon: true },
 		{ href: '/app/profile', label: 'nav.profile', icon: 'profile' },
 		...(data.canAdmin ? [{ href: '/admin', label: 'nav.admin', icon: 'admin' } as NavItem] : [])

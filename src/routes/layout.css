@@ -77,6 +77,10 @@
 		background: var(--accent, #f4c430);
 		color: var(--accent-fg, #1d1b17);
 	}
+}
+
+/* Form controls: in the components layer so they win over @tailwindcss/forms base styles. */
+@layer components {
 	[type='text'],
 	[type='email'],
 	[type='password'],
@@ -84,6 +88,8 @@
 	[type='url'],
 	[type='date'],
 	[type='number'],
+	[type='time'],
+	[type='datetime-local'],
 	[type='search'],
 	textarea,
 	select {
@@ -92,15 +98,20 @@
 	[type='checkbox'] {
 		@apply rounded-sm border-ink/40 text-brand focus:ring-brand;
 	}
-}
 
-@layer components {
 	/* Condensed, heavy display type – headlines and big numbers, like a line-up poster. */
 	.font-display {
 		font-stretch: 72%;
 		font-weight: 800;
 		letter-spacing: -0.005em;
 		line-height: 0.95;
+	}
+	/* Horizontal scrollers (day tabs) without a visible scrollbar. */
+	.scrollbar-none {
+		scrollbar-width: none;
+	}
+	.scrollbar-none::-webkit-scrollbar {
+		display: none;
 	}
 	.font-display-wide {
 		font-stretch: 112%;

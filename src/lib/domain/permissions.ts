@@ -116,6 +116,13 @@ export class Authz {
 		return rolePermissions.every((p) => isPermission(p) && own.has(p));
 	}
 
+	/** Whether any role of the user covers the area (used for visibility of internal shifts). */
+	hasRoleCovering(areaId: string): boolean {
+		if (this.isAdmin) return true;
+		const scope = new Set(this.lineage(areaId));
+		return this.grants.some((g) => g.areaId === null || scope.has(g.areaId));
+	}
+
 	get hasAnyGrant(): boolean {
 		return this.isAdmin || this.grants.length > 0;
 	}

@@ -4,8 +4,8 @@ Ein einfach zu bedienendes Helfer- und Schichtsystem für ehrenamtliche Festival
 
 _An easy-to-use volunteer and shift management system for non-profit festivals._
 
-> **Status:** Meilenstein 1 (Fundament) ist fertig – Konten, Rollen, Bereiche, Jahrgänge, Branding.
-> Schichtbuchung folgt in Meilenstein 2. Noch nicht für den Produktiveinsatz gedacht.
+> **Status:** Meilensteine 1 (Fundament) und 2 (Schichten & Buchung) sind fertig. Punkte und Goodies
+> folgen in Meilenstein 3. Noch nicht für den Produktiveinsatz gedacht.
 
 ## Funktionen
 
@@ -20,9 +20,16 @@ _An easy-to-use volunteer and shift management system for non-profit festivals._
   Hintergrundbild, Favicon – mit Live-Vorschau
 - Deutsch/Englisch, Hell-/Dunkelmodus, für Handys optimiert
 - Unveränderliches Protokoll aller Verwaltungsaktionen
+- **Schichten** mit mehreren Positionen (eigene Platzzahl, Buchung direkt oder auf Anfrage),
+  sichtbar für alle oder nur intern, Serien („jeden Fr/Sa 18–22 und 22–02 Uhr“), Duplizieren
+- **Buchen auf dem Handy**: Programm nach Tagen, Filter (Tag, Bereich, freie Plätze, meine),
+  Eintragen mit einem Tipp; Überschneidungen und Mindestpausen werden verhindert
+- **Austragen** bis zu einer Frist (Instanz → Bereich → Schicht konfigurierbar), danach über die Leitung
+- **Leitungen**: Planungsübersicht mit Belegung, Anfragen bestätigen/ablehnen, Personen eintragen
+  (Regeln nur mit Sonderrecht übergehbar), Anwesenheit ab dem Schichttag abhaken
 
-**Geplant** – siehe [docs/KONZEPT.md](docs/KONZEPT.md): Schichten, Buchungswellen, Warteliste,
-Schichtbörse, Punkte, Goodies mit QR-Ausgabe, Qualifikationen, Rundmails, Dashboards.
+**Geplant** – siehe [docs/KONZEPT.md](docs/KONZEPT.md): Punkte, Goodies mit QR-Ausgabe,
+Qualifikationen, Buchungswellen, Warteliste, Schichtbörse, Rundmails, Dashboards.
 
 ## Entwicklung
 

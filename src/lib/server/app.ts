@@ -18,10 +18,12 @@ import type { AccountContext } from './services/accounts.ts';
 
 /**
  * Process-wide singletons. Initialised once by the `init` server hook; route code accesses them via
- * the getters below.
+ * the getters below. Kept on `globalThis` so that hot module reloading in development (which
+ * re-evaluates this module) does not lose the open database.
  */
-let database: Database | undefined;
-let mailer: Mailer | undefined;
+const state = ((
+	globalThis as { __wichtel?: { database?: Database; mailer?: Mailer } }
+).__wichtel ??= {});
 
 export const config = {
 	publicUrl: PUBLIC_URL,
@@ -29,11 +31,12 @@ export const config = {
 };
 
 export async function initApp(): Promise<void> {
-	if (database) return;
-	database = await connect(DATABASE_URL);
+	if (state.database) return;
+	const database = await connect(DATABASE_URL);
 	await database.migrate();
+	state.database = database;
 
-	mailer = SMTP_HOST
+	state.mailer = SMTP_HOST
 		? createSmtpMailer({
 				host: SMTP_HOST,
 				port: SMTP_PORT,
@@ -54,11 +57,11 @@ export async function initApp(): Promise<void> {
 }
 
 export function db(): DB {
-	if (!database) throw new Error('Database not initialised');
-	return database.db;
+	if (!state.database) throw new Error('Database not initialised');
+	return state.database.db;
 }
 
 export function accountContext(): AccountContext {
-	if (!mailer) throw new Error('Mailer not initialised');
-	return { db: db(), mailer, baseUrl: PUBLIC_URL };
+	if (!state.mailer) throw new Error('Mailer not initialised');
+	return { db: db(), mailer: state.mailer, baseUrl: PUBLIC_URL };
 }

@@ -25,6 +25,7 @@
 		descriptionDe: data.item.descriptionDe,
 		descriptionEn: data.item.descriptionEn,
 		sortOrder: data.item.sortOrder,
+		cancelDeadlineHours: data.item.cancelDeadlineHours as string | number | null,
 		...(result?.action === 'update' ? (result.values ?? {}) : {})
 	});
 	const title = $derived(localized(data.item, 'name', i18n.locale));

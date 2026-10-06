@@ -13,6 +13,7 @@
 		descriptionDe: string;
 		descriptionEn: string;
 		sortOrder: string | number;
+		cancelDeadlineHours: string | number | null;
 	};
 
 	let {
@@ -90,7 +91,7 @@
 		</div>
 	</div>
 
-	<div class="max-w-40">
+	<div class="grid gap-4 sm:grid-cols-2">
 		<Field
 			label={i18n.t('admin.areas.sortOrder')}
 			name="sortOrder"
@@ -98,6 +99,16 @@
 			value={String(values.sortOrder)}
 			hint={i18n.t('admin.areas.sortOrderHint')}
 			error={result?.errors?.sortOrder}
+		/>
+		<Field
+			label={i18n.t('admin.areas.cancelDeadline')}
+			name="cancelDeadlineHours"
+			type="number"
+			min="0"
+			optional
+			value={values.cancelDeadlineHours === null ? '' : String(values.cancelDeadlineHours)}
+			hint={i18n.t('admin.areas.cancelDeadlineHint')}
+			error={result?.errors?.cancelDeadlineHours}
 		/>
 	</div>
 

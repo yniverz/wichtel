@@ -12,6 +12,7 @@ export interface AreaInput {
 	descriptionDe: string;
 	descriptionEn: string;
 	sortOrder: number;
+	cancelDeadlineHours: number | null;
 }
 
 export function listAreas(db: Tx, editionId: string): Promise<Area[]> {

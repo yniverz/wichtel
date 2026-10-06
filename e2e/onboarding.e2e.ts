@@ -28,6 +28,31 @@ test('admin completes setup and creates an area', async ({ page }) => {
 	await expect(page.getByText('Aufbau')).toBeVisible();
 });
 
+test('lead creates a shift with two positions', async ({ page }) => {
+	await page.goto('/login');
+	await page.getByLabel('E-Mail-Adresse').fill(ADMIN.email);
+	await page.getByLabel('Passwort').fill(ADMIN.password);
+	await page.getByRole('button', { name: 'Anmelden' }).click();
+	await expect(page).toHaveURL(/\/app$/);
+
+	await page.goto('/admin/shifts/new');
+	await page.getByLabel('Titel (Deutsch)').fill('Bühnenaufbau');
+	await page.getByLabel('Datum', { exact: true }).fill('2027-05-27');
+	await page.getByLabel('Beginn', { exact: true }).fill('09:00');
+	await page.getByLabel('Ende', { exact: true }).fill('13:00');
+	await page.getByRole('button', { name: '+ Position hinzufügen' }).click();
+	await page.locator('#pos-1-de').fill('Schichtleitung');
+	await page.locator('#pos-1-cap').fill('1');
+	await page.getByRole('button', { name: 'Anlegen' }).click();
+
+	await expect(page).toHaveURL(/\/admin\/shifts\/[0-9a-f-]{36}$/);
+	await expect(page.getByRole('heading', { name: 'Bühnenaufbau' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Schichtleitung', level: 3 })).toBeVisible();
+
+	await page.goto('/admin/shifts');
+	await expect(page.getByText('09:00–13:00')).toBeVisible();
+});
+
 test('volunteer registers and is asked to confirm the e-mail address', async ({ page }) => {
 	await page.goto('/register');
 	await page.getByLabel('Vorname').fill(HELPER.firstName);

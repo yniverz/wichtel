@@ -233,6 +233,28 @@
 		</div>
 	</Card>
 
+	<Card title={i18n.t('admin.settings.booking')}>
+		<div class="grid gap-4 sm:grid-cols-2">
+			<Field
+				label={i18n.t('admin.settings.cancelDeadlineHours')}
+				name="cancelDeadlineHours"
+				type="number"
+				min="0"
+				value={String(v.cancelDeadlineHours)}
+				error={result?.errors?.cancelDeadlineHours}
+			/>
+			<Field
+				label={i18n.t('admin.settings.minBreakMinutes')}
+				name="minBreakMinutes"
+				type="number"
+				min="0"
+				step="5"
+				value={String(v.minBreakMinutes)}
+				error={result?.errors?.minBreakMinutes}
+			/>
+		</div>
+	</Card>
+
 	<Card title={i18n.t('admin.settings.general')}>
 		<div class="space-y-5">
 			<label class="flex items-center gap-3">
