@@ -199,9 +199,10 @@ keine Überschneidung) mit Direktlink. Optionaler Punktebonus.
 ### 8.2 Pflicht-Goodies
 - Goodies können als **Pflicht** mit Priorität markiert werden (z. B. Freiticket = 1 Punkt).
   Die ersten bestätigten Punkte werden automatisch dafür verwendet, in Prioritätsreihenfolge.
-- **Alternative bei Verzicht** konfigurierbar, z. B. „Ich habe schon ein Ticket“ → Status
-  `erstattung_ausstehend` → durch Berechtigte als `erstattet` markiert (die Erstattung selbst läuft außerhalb
-  von Wichtel).
+- **Erstattung statt Ausgabe** konfigurierbar, z. B. „Ich habe schon ein Ticket gekauft“: Die Punkte werden
+  trotzdem für das Pflicht-Goodie verbraucht (es wird nicht frei), statt der Ausgabe gibt es den Status
+  `erstattung_ausstehend` → durch Berechtigte als `erstattet` markiert. Die Rückzahlung selbst läuft außerhalb
+  von Wichtel; optional mit Feldern für die Erstattung (z. B. Ticketnummer), konfigurierbar wie Profilfelder.
 
 ### 8.3 Ablauf
 1. Helfende sehen im Goodie-Bereich: was sie bekommen können, was ihnen noch fehlt („noch 2 Punkte“, „nur
