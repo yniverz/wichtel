@@ -151,7 +151,16 @@ Buchungen in dieser Welle). Ohne Welle gilt „alles offen“.
 ### 6.5 Anwesenheit
 - Schichtleitung bzw. Rolle mit `attendance.confirm` hakt in einer Liste ab **oder** scannt den persönlichen
   QR-Code der Helfenden.
-- Erst mit „erschienen“ werden Punkte gutgeschrieben. „Nicht erschienen“ → keine Punkte + interner Vermerk.
+- Punkte werden **mit der Bestätigung der Anwesenheit** gutgeschrieben, also bei Ankunft/Schichtbeginn,
+  nicht erst nach Schichtende.
+- **Vorab-Check-in** (z. B. an der Helferanmeldung): Die Anwesenheit kann schon vor Schichtbeginn bestätigt
+  werden, damit die Punkte sofort echt sind und z. B. das Pflicht-Freiticket direkt ausgegeben werden kann.
+  Zeitfenster konfigurierbar (Standard: ab 00:00 Uhr am Tag der Schicht).
+- **Check-in-Ansicht der Helferanmeldung**: QR scannen → heutige Schichten der Person sehen → mit einem Tap
+  bestätigen → fällige Pflicht-Goodies werden sofort angezeigt und können direkt ausgegeben werden.
+- „Nicht erschienen“ → keine Punkte + interner Vermerk. Eine bereits erfolgte Bestätigung kann korrigiert
+  werden (Punkte werden zurückgebucht; ist dadurch ein bereits ausgegebenes Goodie nicht mehr gedeckt,
+  entsteht ein interner Vermerk).
 - Nachträgliche Korrektur jederzeit möglich (Audit-Log). Auto-Bestätigung nach *x* Stunden: konfigurierbar,
   Standard aus.
 
@@ -168,6 +177,7 @@ keine Überschneidung) mit Direktlink. Optionaler Punktebonus.
   optionale Boni (z. B. Kurzfrist-Einspringen: „Buchung < *x* h vor Beginn“).
 - **Punktekonto als Ledger** (unveränderliche Buchungssätze): `gutschrift_schicht`, `abbuchung_goodie`,
   `rueckbuchung_goodie`, `manuelle_korrektur` (mit Pflicht-Begründung), `storno_gutschrift`.
+- Gutschrift erfolgt mit Bestätigung der Anwesenheit (auch Vorab-Check-in, §6.5).
 - Anzeige für Helfende: **bestätigte Punkte** (ausgebbar) und **vorgemerkte Punkte** (aus gebuchten,
   noch nicht bestätigten Schichten, nur informativ).
 - Punkte gelten nur im jeweiligen Jahrgang. Keine Rangliste.
@@ -261,7 +271,8 @@ Entität, Bereich.
 ## 14. Branding & Sprache
 
 - Instanz-Einstellungen im Admin-UI: Festivalname, Logo, Favicon, Primär-/Akzentfarben, Hintergrundbilder,
-  Impressum/Datenschutz-Links, Kontaktadresse. Optional per Umgebungsvariablen vorbelegbar.
+  Impressum/Datenschutz-Links, Kontaktadresse. Live-Vorschau beim Bearbeiten; Farbkontraste werden auf
+  Lesbarkeit geprüft.
 - UI-Sprache DE/EN, pro Person wählbar; Inhalte mit Rückfall auf DE.
 - Hell/Dunkel-Modus.
 
