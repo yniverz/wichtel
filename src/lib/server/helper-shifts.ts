@@ -7,6 +7,7 @@ import { loadAreaTree } from './services/areas.ts';
 import { cancelHoursForShifts, listUserAssignments } from './services/assignments.ts';
 import { listShifts } from './services/shifts.ts';
 import { getSettings } from './services/settings.ts';
+import { pointsFor } from './services/points.ts';
 
 /** What a volunteer sees of one shift. Only data that is safe to show to every helper. */
 export interface HelperShift {
@@ -35,6 +36,7 @@ export interface HelperShift {
 		capacity: number;
 		free: number;
 		mode: 'open' | 'request';
+		points: number;
 	}[];
 	mine: {
 		assignmentId: string;
@@ -114,7 +116,8 @@ export async function loadHelperShifts(
 				descriptionEn: p.descriptionEn,
 				capacity: p.capacity,
 				free: freeSpots(p.capacity, p.booked),
-				mode: p.bookingMode
+				mode: p.bookingMode,
+				points: pointsFor(s, p, tree, settings).total
 			})),
 			mine: activeMine
 				? {

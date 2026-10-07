@@ -113,3 +113,10 @@ export function formatDayLong(date: string, locale: Locale): string {
 		timeZone: 'UTC'
 	}).format(new Date(`${date}T12:00:00Z`));
 }
+
+/** "1 Punkt" / "3 Punkte" */
+export function formatPoints(count: number, t: Translate): string {
+	return Math.abs(count) === 1
+		? t('points.one').replace('1', String(count))
+		: t('points.many', { count });
+}

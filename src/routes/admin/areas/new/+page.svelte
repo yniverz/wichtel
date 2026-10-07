@@ -15,6 +15,8 @@
 		descriptionEn: '',
 		sortOrder: 0,
 		cancelDeadlineHours: null as string | number | null,
+		pointsPerShift: null as string | number | null,
+		pointsPerHour: null as string | number | null,
 		...(form?.values ?? {})
 	});
 </script>

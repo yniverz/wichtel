@@ -4,7 +4,7 @@ Wichtel ist ein Helfer- und Schichtsystem für ehrenamtliche Festivals (Zielgrö
 mehrwöchige Aufbau-/Festival-/Abbauphase). Helfende melden sich an, buchen Schichten, sammeln Punkte und
 tauschen diese gegen Goodies.
 
-Stand: 2026-10-07 · Status: Meilensteine 1 und 2 umgesetzt
+Stand: 2026-10-07 · Status: Meilensteine 1–3 umgesetzt
 
 ---
 

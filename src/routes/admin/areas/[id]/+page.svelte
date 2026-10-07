@@ -26,6 +26,8 @@
 		descriptionEn: data.item.descriptionEn,
 		sortOrder: data.item.sortOrder,
 		cancelDeadlineHours: data.item.cancelDeadlineHours as string | number | null,
+		pointsPerShift: data.item.pointsPerShift as string | number | null,
+		pointsPerHour: data.item.pointsPerHour as string | number | null,
 		...(result?.action === 'update' ? (result.values ?? {}) : {})
 	});
 	const title = $derived(localized(data.item, 'name', i18n.locale));

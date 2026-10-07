@@ -47,6 +47,11 @@ export const users = pgTable('users', {
 	/** Instance administrators: manage settings, editions, role definitions and other admins. */
 	isAdmin: boolean('is_admin').notNull().default(false),
 	emailVerifiedAt: timestamp('email_verified_at', { withTimezone: true }),
+	/** Random token behind the personal QR code (desk check-in / goodie pickup). Rotatable. */
+	qrToken: text('qr_token')
+		.notNull()
+		.unique()
+		.default(sql`replace(gen_random_uuid()::text, '-', '')`),
 	...timestamps
 });
 
@@ -122,6 +127,16 @@ export const instanceSettings = pgTable(
 		cancelDeadlineHours: integer('cancel_deadline_hours').notNull().default(48),
 		/** Required gap between two shifts of the same person. */
 		minBreakMinutes: integer('min_break_minutes').notNull().default(0),
+		// Point rules (defaults; areas and positions can override per-shift/per-hour values)
+		pointsPerShift: integer('points_per_shift').notNull().default(1),
+		pointsPerHour: integer('points_per_hour').notNull().default(0),
+		/** Extra points for shifts touching the night window (0 = off). */
+		nightBonus: integer('night_bonus').notNull().default(0),
+		nightStart: text('night_start').notNull().default('00:00'),
+		nightEnd: text('night_end').notNull().default('06:00'),
+		/** Extra points when booked less than `lastMinuteHours` before the start (0 = off). */
+		lastMinuteBonus: integer('last_minute_bonus').notNull().default(0),
+		lastMinuteHours: integer('last_minute_hours').notNull().default(24),
 		/** SHA-256 of the one-time setup token; null once setup is complete. */
 		setupTokenHash: text('setup_token_hash'),
 		updatedAt: timestamps.updatedAt
@@ -168,6 +183,9 @@ export const areas = pgTable(
 		sortOrder: integer('sort_order').notNull().default(0),
 		/** Overrides the instance-wide cancel deadline for shifts in this area (and sub-areas). */
 		cancelDeadlineHours: integer('cancel_deadline_hours'),
+		/** Point rule overrides (null = inherit from parent area / instance). */
+		pointsPerShift: integer('points_per_shift'),
+		pointsPerHour: integer('points_per_hour'),
 		...timestamps
 	},
 	(t) => [index('areas_edition_idx').on(t.editionId), index('areas_parent_idx').on(t.parentId)]
@@ -234,7 +252,10 @@ export const shiftPositions = pgTable(
 		descriptionEn: text('description_en').notNull().default(''),
 		capacity: integer('capacity').notNull(),
 		bookingMode: bookingModeEnum('booking_mode').notNull().default('open'),
-		sortOrder: integer('sort_order').notNull().default(0)
+		sortOrder: integer('sort_order').notNull().default(0),
+		/** Point rule overrides for this position (null = inherit). */
+		pointsPerShift: integer('points_per_shift'),
+		pointsPerHour: integer('points_per_hour')
 	},
 	(t) => [
 		index('shift_positions_shift_idx').on(t.shiftId),
@@ -318,6 +339,121 @@ export const roleAssignments = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// Points & goodies
+// ---------------------------------------------------------------------------
+
+export const goodies = pgTable(
+	'goodies',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		editionId: uuid('edition_id')
+			.notNull()
+			.references(() => editions.id, { onDelete: 'cascade' }),
+		nameDe: text('name_de').notNull(),
+		nameEn: text('name_en').notNull().default(''),
+		descriptionDe: text('description_de').notNull().default(''),
+		descriptionEn: text('description_en').notNull().default(''),
+		imageAssetId: uuid('image_asset_id').references(() => assets.id, { onDelete: 'set null' }),
+		price: integer('price').notNull().default(1),
+		maxPerPerson: integer('max_per_person').notNull().default(1),
+		/** How many may be picked by helpers themselves; null = unlimited. Leads can always hand out. */
+		selfServiceLimit: integer('self_service_limit'),
+		/** Informational stock count; null = not tracked. */
+		stock: integer('stock'),
+		/** Choices such as sizes; empty = no variants. */
+		variants: text('variants')
+			.array()
+			.notNull()
+			.default(sql`'{}'::text[]`),
+		/** Only people who attended at least one shift in one of these areas (incl. sub-areas). */
+		requiredAreaIds: uuid('required_area_ids')
+			.array()
+			.notNull()
+			.default(sql`'{}'::uuid[]`),
+		/** Redeemed automatically, in `mandatoryPriority` order, as soon as enough points exist. */
+		mandatory: boolean('mandatory').notNull().default(false),
+		mandatoryPriority: integer('mandatory_priority').notNull().default(0),
+		/** Helpers may ask for a refund instead (e.g. already bought a ticket). Points stay used. */
+		refundable: boolean('refundable').notNull().default(false),
+		/** May be selected against points of booked (not yet worked) shifts. */
+		advance: boolean('advance').notNull().default(false),
+		active: boolean('active').notNull().default(true),
+		sortOrder: integer('sort_order').notNull().default(0),
+		...timestamps
+	},
+	(t) => [
+		index('goodies_edition_idx').on(t.editionId),
+		check('goodies_price', sql`${t.price} >= 0`),
+		check('goodies_max', sql`${t.maxPerPerson} >= 1`)
+	]
+);
+
+export const claimStatusEnum = pgEnum('claim_status', [
+	'selected',
+	'issued',
+	'cancelled',
+	'refund_pending',
+	'refunded'
+]);
+
+export const goodieClaims = pgTable(
+	'goodie_claims',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		goodieId: uuid('goodie_id')
+			.notNull()
+			.references(() => goodies.id, { onDelete: 'restrict' }),
+		editionId: uuid('edition_id')
+			.notNull()
+			.references(() => editions.id, { onDelete: 'cascade' }),
+		userId: uuid('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		variant: text('variant'),
+		status: claimStatusEnum('status').notNull().default('selected'),
+		/** Points charged for this claim. */
+		points: integer('points').notNull(),
+		/** Counted against the goodie's self-service limit. */
+		selfService: boolean('self_service').notNull().default(true),
+		issuedAt: timestamp('issued_at', { withTimezone: true }),
+		issuedBy: uuid('issued_by').references(() => users.id, { onDelete: 'set null' }),
+		createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+		...timestamps
+	},
+	(t) => [
+		index('goodie_claims_user_idx').on(t.userId, t.editionId),
+		index('goodie_claims_goodie_idx').on(t.goodieId)
+	]
+);
+
+export const pointsKindEnum = pgEnum('points_kind', ['shift', 'goodie', 'adjustment']);
+
+/** Append-only points ledger. A person's balance is the sum of their entries in an edition. */
+export const pointsLedger = pgTable(
+	'points_ledger',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		editionId: uuid('edition_id')
+			.notNull()
+			.references(() => editions.id, { onDelete: 'cascade' }),
+		userId: uuid('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		amount: integer('amount').notNull(),
+		kind: pointsKindEnum('kind').notNull(),
+		assignmentId: uuid('assignment_id').references(() => assignments.id, { onDelete: 'set null' }),
+		claimId: uuid('claim_id').references(() => goodieClaims.id, { onDelete: 'set null' }),
+		reason: text('reason'),
+		createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+		createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
+	},
+	(t) => [
+		index('points_ledger_user_idx').on(t.userId, t.editionId),
+		index('points_ledger_assignment_idx').on(t.assignmentId)
+	]
+);
+
+// ---------------------------------------------------------------------------
 // Audit log
 // ---------------------------------------------------------------------------
 
@@ -353,3 +489,6 @@ export type AuditEntry = typeof auditLog.$inferSelect;
 export type Shift = typeof shifts.$inferSelect;
 export type ShiftPosition = typeof shiftPositions.$inferSelect;
 export type Assignment = typeof assignments.$inferSelect;
+export type Goodie = typeof goodies.$inferSelect;
+export type GoodieClaim = typeof goodieClaims.$inferSelect;
+export type PointsEntry = typeof pointsLedger.$inferSelect;

@@ -114,6 +114,15 @@
 	</div>
 
 	<div class="space-y-6">
+		{#if page.data.access.desk}
+			<a
+				href="/admin/desk/{data.person.id}"
+				class="block rounded-lg border border-line bg-surface-raised p-5 hover:border-ink"
+			>
+				<span class="text-sm text-ink-muted">{i18n.t('admin.people.points')}</span>
+				<span class="mt-1 block font-semibold">{i18n.t('admin.people.openDesk')} →</span>
+			</a>
+		{/if}
 		{#if data.person.email}
 			<Card title={i18n.t('admin.people.contact')}>
 				<dl class="space-y-2 text-sm">

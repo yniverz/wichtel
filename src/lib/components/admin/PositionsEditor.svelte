@@ -7,6 +7,8 @@
 		descriptionEn: string;
 		capacity: number;
 		bookingMode: 'open' | 'request';
+		/** Points override for this position; null = inherit from area/instance. */
+		pointsPerShift?: number | null;
 		/** Read-only info for existing positions. */
 		booked?: number;
 	}
@@ -52,7 +54,7 @@
 
 	{#each positions as position, i (i)}
 		<div
-			class="grid grid-cols-2 gap-3 rounded-md border border-line bg-surface-raised p-3 sm:grid-cols-[2fr_2fr_6rem_9rem_auto] sm:items-end"
+			class="grid grid-cols-2 gap-3 rounded-md border border-line bg-surface-raised p-3 sm:grid-cols-[2fr_2fr_5rem_9rem_5rem_auto] sm:items-end"
 		>
 			<div class="col-span-2 space-y-1 sm:col-span-1">
 				<label class="text-xs font-medium" for="pos-{i}-de"
@@ -102,6 +104,27 @@
 					<option value="open">{i18n.t('admin.shifts.mode.open')}</option>
 					<option value="request">{i18n.t('admin.shifts.mode.request')}</option>
 				</select>
+			</div>
+			<div class="space-y-1">
+				<label
+					class="text-xs font-medium"
+					for="pos-{i}-pts"
+					title={i18n.t('admin.shifts.position.pointsHint')}
+					>{i18n.t('admin.shifts.position.points')}</label
+				>
+				<input
+					id="pos-{i}-pts"
+					type="number"
+					min="0"
+					max="1000"
+					placeholder={i18n.t('admin.shifts.position.pointsInherit')}
+					class="block h-10 w-full tabular-nums"
+					value={position.pointsPerShift ?? ''}
+					oninput={(e) => {
+						const v = e.currentTarget.value;
+						position.pointsPerShift = v === '' ? null : Number(v);
+					}}
+				/>
 			</div>
 			<div class="col-span-2 flex items-center justify-between gap-2 sm:col-span-1 sm:justify-end">
 				{#if position.booked}<span class="text-xs text-ink-muted"

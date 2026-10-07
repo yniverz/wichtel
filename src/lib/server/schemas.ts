@@ -15,11 +15,18 @@ import {
 
 /** Form schemas shared between several routes. */
 
-/** Empty string → null, otherwise a whole number of hours. */
+const wholeNumber = z.coerce
+	.number('error.invalidNumber')
+	.int('error.invalidNumber')
+	.min(0, 'error.invalidNumber')
+	.max(10000, 'error.invalidNumber');
+
+/** Empty string → null, otherwise a whole number ≥ 0 (hours, points, …). */
 const optionalHours = z
 	.string()
 	.trim()
-	.transform((v) => (v === '' ? null : Number(v)))
+	.optional()
+	.transform((v) => (v === undefined || v === '' ? null : Number(v)))
 	.pipe(
 		z
 			.number('error.invalidNumber')
@@ -42,7 +49,9 @@ export const areaSchema = z.object({
 	descriptionDe: optionalText(2000),
 	descriptionEn: optionalText(2000),
 	sortOrder: z.coerce.number('error.required').int().min(-9999).max(9999).default(0),
-	cancelDeadlineHours: optionalHours
+	cancelDeadlineHours: optionalHours,
+	pointsPerShift: optionalHours,
+	pointsPerHour: optionalHours
 });
 
 export const roleSchema = z.object({
@@ -77,6 +86,13 @@ export const settingsSchema = z.object({
 		.int('error.invalidNumber')
 		.min(0)
 		.max(24 * 60),
+	pointsPerShift: wholeNumber,
+	pointsPerHour: wholeNumber,
+	nightBonus: wholeNumber,
+	nightStart: z.string().refine(isWallTime, 'error.invalidTime'),
+	nightEnd: z.string().refine(isWallTime, 'error.invalidTime'),
+	lastMinuteBonus: wholeNumber,
+	lastMinuteHours: wholeNumber,
 	minBreakMinutes: z.coerce
 		.number('error.invalidNumber')
 		.int('error.invalidNumber')
@@ -93,7 +109,9 @@ const positionSchema = z.object({
 	descriptionDe: z.string().trim().max(1000, 'error.tooLong').default(''),
 	descriptionEn: z.string().trim().max(1000, 'error.tooLong').default(''),
 	capacity: z.coerce.number('error.invalidNumber').int('error.invalidNumber').min(1).max(500),
-	bookingMode: z.enum(['open', 'request'])
+	bookingMode: z.enum(['open', 'request']),
+	pointsPerShift: z.number().int().min(0).max(1000).nullable().default(null),
+	pointsPerHour: z.number().int().min(0).max(1000).nullable().default(null)
 });
 
 /** Positions are edited client-side and submitted as one JSON field. */
@@ -152,4 +170,40 @@ export const seriesSchema = z.object({
 				.min(1, 'error.seriesEmpty')
 				.max(24)
 		)
+});
+
+export const goodieSchema = z.object({
+	nameDe: requiredText(100),
+	nameEn: optionalText(100),
+	descriptionDe: optionalText(1000),
+	descriptionEn: optionalText(1000),
+	price: wholeNumber,
+	maxPerPerson: z.coerce
+		.number('error.invalidNumber')
+		.int('error.invalidNumber')
+		.min(1, 'error.invalidNumber')
+		.max(100),
+	selfServiceLimit: optionalHours,
+	stock: optionalHours,
+	variants: z
+		.string()
+		.max(500, 'error.tooLong')
+		.default('')
+		.transform((v) =>
+			[
+				...new Set(
+					v
+						.split(',')
+						.map((x) => x.trim())
+						.filter(Boolean)
+				)
+			].slice(0, 30)
+		),
+	'requiredAreaIds[]': z.array(z.uuid()).default([]),
+	mandatory: checkbox,
+	mandatoryPriority: z.coerce.number().int().min(0).max(1000).default(0),
+	refundable: checkbox,
+	advance: checkbox,
+	active: checkbox,
+	sortOrder: z.coerce.number().int().min(-9999).max(9999).default(0)
 });

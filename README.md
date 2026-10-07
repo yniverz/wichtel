@@ -4,8 +4,8 @@ Ein einfach zu bedienendes Helfer- und Schichtsystem für ehrenamtliche Festival
 
 _An easy-to-use volunteer and shift management system for non-profit festivals._
 
-> **Status:** Meilensteine 1 (Fundament) und 2 (Schichten & Buchung) sind fertig. Punkte und Goodies
-> folgen in Meilenstein 3. Noch nicht für den Produktiveinsatz gedacht.
+> **Status:** Meilensteine 1–3 (Fundament, Schichten & Buchung, Punkte & Goodies) sind fertig.
+> Noch nicht für den Produktiveinsatz gedacht.
 
 ## Funktionen
 
@@ -27,9 +27,17 @@ _An easy-to-use volunteer and shift management system for non-profit festivals._
 - **Austragen** bis zu einer Frist (Instanz → Bereich → Schicht konfigurierbar), danach über die Leitung
 - **Leitungen**: Planungsübersicht mit Belegung, Anfragen bestätigen/ablehnen, Personen eintragen
   (Regeln nur mit Sonderrecht übergehbar), Anwesenheit ab dem Schichttag abhaken
+- **Punkte**: pro Schicht und/oder pro Stunde, vererbt Instanz → Bereich → Position, optional
+  Nacht- und Kurzfrist-Bonus; Gutschrift mit bestätigter Anwesenheit, unveränderliches Punktekonto,
+  manuelle Korrekturen mit Begründung
+- **Goodies**: Preis, Varianten, Bereichs-Beschränkung, Höchstzahl pro Person, Kontingent für die
+  Selbstauswahl, Bestand, Vorschuss; **Pflicht-Goodies** (z. B. Freiticket) werden automatisch zuerst
+  eingelöst, auf Wunsch erstattet statt ausgegeben
+- **Ausgabe & Check-in**: persönlicher QR-Code, der mit jeder Handykamera direkt zur Person führt;
+  Schichten von heute einchecken, Goodies ausgeben, Erstattungen abhaken, Übersicht „wer hat was“
 
-**Geplant** – siehe [docs/KONZEPT.md](docs/KONZEPT.md): Punkte, Goodies mit QR-Ausgabe,
-Qualifikationen, Buchungswellen, Warteliste, Schichtbörse, Rundmails, Dashboards.
+**Geplant** – siehe [docs/KONZEPT.md](docs/KONZEPT.md): Qualifikationen, konfigurierbare Profilfelder,
+Buchungswellen, Warteliste, Schichtbörse und Tausch, Buddy-Gruppen, E-Mails & Rundmails, Dashboards.
 
 ## Entwicklung
 

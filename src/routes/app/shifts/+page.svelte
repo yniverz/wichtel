@@ -13,6 +13,7 @@
 		formatDayLong,
 		formatDayShort,
 		formatTime,
+		formatPoints,
 		localized
 	} from '#lib/i18n/index.ts';
 	import type { PageProps } from './$types';
@@ -237,6 +238,7 @@
 													{position.free > 0
 														? i18n.t('shifts.free', { free: position.free })
 														: i18n.t('shifts.full')}
+													· {formatPoints(position.points, i18n.t)}
 													{#if position.mode === 'request'}· {i18n.t(
 															'admin.shifts.mode.request'
 														)}{/if}

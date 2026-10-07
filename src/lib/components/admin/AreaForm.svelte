@@ -14,6 +14,8 @@
 		descriptionEn: string;
 		sortOrder: string | number;
 		cancelDeadlineHours: string | number | null;
+		pointsPerShift: string | number | null;
+		pointsPerHour: string | number | null;
 	};
 
 	let {
@@ -111,6 +113,33 @@
 			error={result?.errors?.cancelDeadlineHours}
 		/>
 	</div>
+
+	<fieldset class="space-y-2">
+		<legend class="mb-1 w-full border-b border-ink pb-1 text-sm font-bold">
+			{i18n.t('admin.points.title')}
+		</legend>
+		<p class="text-sm text-ink-muted">{i18n.t('admin.areas.pointsHint')}</p>
+		<div class="grid gap-4 sm:grid-cols-2">
+			<Field
+				label={i18n.t('admin.points.perShift')}
+				name="pointsPerShift"
+				type="number"
+				min="0"
+				optional
+				value={values.pointsPerShift === null ? '' : String(values.pointsPerShift)}
+				error={result?.errors?.pointsPerShift}
+			/>
+			<Field
+				label={i18n.t('admin.points.perHour')}
+				name="pointsPerHour"
+				type="number"
+				min="0"
+				optional
+				value={values.pointsPerHour === null ? '' : String(values.pointsPerHour)}
+				error={result?.errors?.pointsPerHour}
+			/>
+		</div>
+	</fieldset>
 
 	<Button type="submit" loading={submitter.pending}>{submitLabel}</Button>
 </form>

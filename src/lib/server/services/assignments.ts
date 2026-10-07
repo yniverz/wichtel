@@ -18,6 +18,8 @@ import {
 import { audit, type Actor } from '../audit.ts';
 import { DomainError } from '../errors.ts';
 import { loadAreaTree } from './areas.ts';
+import { applyMandatoryGoodies } from './goodies.ts';
+import { syncAssignmentPoints } from './points.ts';
 import { getSettings } from './settings.ts';
 
 const ACTIVE = ['requested', 'booked'] as const;
@@ -246,10 +248,12 @@ export async function leadRemove(
 	await ctx.db.transaction(async (tx) => {
 		const { assignment, shift } = await loadAssignmentForLead(tx, assignmentId);
 		requireLead(authz, 'assignment.manage', shift);
-		await tx
+		const [updated] = await tx
 			.update(assignments)
 			.set({ status: 'cancelled' })
-			.where(eq(assignments.id, assignmentId));
+			.where(eq(assignments.id, assignmentId))
+			.returning();
+		await syncAssignmentPoints(tx, actor, updated);
 		await audit(tx, actor, {
 			action: 'assignment.lead_remove',
 			entityType: 'shift',
@@ -304,14 +308,18 @@ export async function setAttendance(
 		requireLead(authz, 'attendance.confirm', shift);
 		if (assignment.status !== 'booked') throw new DomainError('notFound');
 		if (!checkInOpen(ctx.now, shift.startsAt, timeZone)) throw new DomainError('checkInTooEarly');
-		await tx
+		const [updated] = await tx
 			.update(assignments)
 			.set({
 				attendance,
 				attendanceAt: attendance === 'unknown' ? null : ctx.now,
 				attendanceBy: attendance === 'unknown' ? null : actor.userId
 			})
-			.where(eq(assignments.id, assignmentId));
+			.where(eq(assignments.id, assignmentId))
+			.returning();
+		// Points follow attendance; mandatory goodies are redeemed as soon as points allow.
+		const pointsDiff = await syncAssignmentPoints(tx, actor, updated);
+		if (pointsDiff > 0) await applyMandatoryGoodies(tx, actor, updated.userId, shift.editionId);
 		await audit(tx, actor, {
 			action: 'attendance.set',
 			entityType: 'shift',

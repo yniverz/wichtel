@@ -64,7 +64,9 @@ async function seed() {
 		descriptionDe: '',
 		descriptionEn: '',
 		sortOrder: 0,
-		cancelDeadlineHours: null
+		cancelDeadlineHours: null,
+		pointsPerShift: null,
+		pointsPerHour: null
 	});
 	const ctx = { db, mailer: createMemoryMailer(), baseUrl: 'http://test' };
 	const person = (email: string) =>

@@ -185,7 +185,9 @@ describe('editions, areas and roles', () => {
 				descriptionDe: '',
 				descriptionEn: '',
 				sortOrder: 0,
-				cancelDeadlineHours: null
+				cancelDeadlineHours: null,
+				pointsPerShift: null,
+				pointsPerHour: null
 			});
 		const infra = await area(null, 'Infrastruktur');
 		const aufbau = await area(infra.id, 'Aufbau');
@@ -229,7 +231,9 @@ describe('editions, areas and roles', () => {
 				descriptionDe: '',
 				descriptionEn: '',
 				sortOrder: 0,
-				cancelDeadlineHours: null
+				cancelDeadlineHours: null,
+				pointsPerShift: null,
+				pointsPerHour: null
 			});
 		await expectDomainError(move(infra.id, buehne.id, 'Infrastruktur'), 'areaCycle');
 		await expectDomainError(

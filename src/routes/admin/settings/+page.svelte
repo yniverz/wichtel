@@ -255,6 +255,73 @@
 		</div>
 	</Card>
 
+	<Card title={i18n.t('admin.points.title')} description={i18n.t('admin.settings.pointsLead')}>
+		<div class="space-y-5">
+			<div class="grid gap-4 sm:grid-cols-2">
+				<Field
+					label={i18n.t('admin.points.perShift')}
+					name="pointsPerShift"
+					type="number"
+					min="0"
+					value={String(v.pointsPerShift)}
+					error={result?.errors?.pointsPerShift}
+				/>
+				<Field
+					label={i18n.t('admin.points.perHour')}
+					name="pointsPerHour"
+					type="number"
+					min="0"
+					value={String(v.pointsPerHour)}
+					error={result?.errors?.pointsPerHour}
+				/>
+			</div>
+			<div class="grid gap-4 sm:grid-cols-3">
+				<Field
+					label={i18n.t('admin.settings.nightBonus')}
+					name="nightBonus"
+					type="number"
+					min="0"
+					value={String(v.nightBonus)}
+					hint={i18n.t('admin.settings.bonusOff')}
+					error={result?.errors?.nightBonus}
+				/>
+				<Field
+					label={i18n.t('admin.settings.nightStart')}
+					name="nightStart"
+					type="time"
+					value={v.nightStart}
+					error={result?.errors?.nightStart}
+				/>
+				<Field
+					label={i18n.t('admin.settings.nightEnd')}
+					name="nightEnd"
+					type="time"
+					value={v.nightEnd}
+					error={result?.errors?.nightEnd}
+				/>
+			</div>
+			<div class="grid gap-4 sm:grid-cols-2">
+				<Field
+					label={i18n.t('admin.settings.lastMinuteBonus')}
+					name="lastMinuteBonus"
+					type="number"
+					min="0"
+					value={String(v.lastMinuteBonus)}
+					hint={i18n.t('admin.settings.bonusOff')}
+					error={result?.errors?.lastMinuteBonus}
+				/>
+				<Field
+					label={i18n.t('admin.settings.lastMinuteHours')}
+					name="lastMinuteHours"
+					type="number"
+					min="0"
+					value={String(v.lastMinuteHours)}
+					error={result?.errors?.lastMinuteHours}
+				/>
+			</div>
+		</div>
+	</Card>
+
 	<Card title={i18n.t('admin.settings.general')}>
 		<div class="space-y-5">
 			<label class="flex items-center gap-3">

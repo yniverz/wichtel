@@ -26,6 +26,8 @@ export interface PositionInput {
 	descriptionEn: string;
 	capacity: number;
 	bookingMode: 'open' | 'request';
+	pointsPerShift?: number | null;
+	pointsPerHour?: number | null;
 }
 
 export interface ShiftDetailsInput {
@@ -145,7 +147,9 @@ function positionValues(p: PositionInput, index: number) {
 		descriptionEn: p.descriptionEn,
 		capacity: p.capacity,
 		bookingMode: p.bookingMode,
-		sortOrder: index
+		sortOrder: index,
+		pointsPerShift: p.pointsPerShift ?? null,
+		pointsPerHour: p.pointsPerHour ?? null
 	};
 }
 
