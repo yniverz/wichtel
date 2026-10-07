@@ -16,7 +16,8 @@
 		"test": "vitest --run",
 		"test:e2e": "playwright test",
 		"db:generate": "drizzle-kit generate",
-		"start": "node build"
+		"start": "node build",
+		"verify": "npm run lint && npm run check && npm test && npm run test:e2e"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",

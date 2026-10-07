@@ -56,10 +56,12 @@ export const isoDate = z
 	.refine((v) => !Number.isNaN(Date.parse(v)), 'error.invalidDate');
 
 export const uuid = z.uuid('error.notFound');
+/** An optional id from a `<select>`; a missing field (e.g. not rendered) counts as empty. */
 export const optionalUuid = z
 	.string()
 	.trim()
-	.transform((v) => (v === '' ? null : v))
+	.optional()
+	.transform((v) => (v === undefined || v === '' ? null : v))
 	.pipe(z.uuid('error.notFound').nullable());
 
 /** An HTML checkbox: absent when unchecked, so the key must be optional. */

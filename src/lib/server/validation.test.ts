@@ -34,5 +34,10 @@ describe('parseForm', () => {
 		const schema = z.object({ 'tags[]': z.array(z.string()), parent: optionalUuid });
 		const result = parseForm(schema, form({ 'tags[]': ['a', 'b'], parent: '' }));
 		expect(result).toMatchObject({ ok: true, data: { 'tags[]': ['a', 'b'], parent: null } });
+		// Fields that are not rendered at all are treated as empty, not as invalid.
+		expect(parseForm(z.object({ parent: optionalUuid }), form({}))).toMatchObject({
+			ok: true,
+			data: { parent: null }
+		});
 	});
 });
