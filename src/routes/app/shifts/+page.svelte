@@ -4,6 +4,7 @@
 	import Alert from '#lib/components/Alert.svelte';
 	import Badge from '#lib/components/Badge.svelte';
 	import Button from '#lib/components/Button.svelte';
+	import Field from '#lib/components/Field.svelte';
 	import ConfirmForm from '#lib/components/ConfirmForm.svelte';
 	import SpotMeter from '#lib/components/SpotMeter.svelte';
 	import PlaceLink from '#lib/components/places/PlaceLink.svelte';
@@ -16,7 +17,8 @@
 		formatDayShort,
 		formatTime,
 		formatPoints,
-		localized
+		localized,
+		type MessageKey
 	} from '#lib/i18n/index.ts';
 	import type { PageProps } from './$types';
 
@@ -29,7 +31,13 @@
 	let area = $state<string>('');
 	let onlyFree = $state(false);
 	let onlyMine = $state(false);
-	let open = $state<string | null>(null);
+	let onlyMarket = $state(false);
+	// A link like /app/shifts?shift=… (e-mails, home page) opens that shift.
+	let open = $state<string | null>(page.url.searchParams.get('shift'));
+	$effect(() => {
+		const target = page.url.searchParams.get('shift');
+		if (target) document.getElementById(`row-${target}`)?.scrollIntoView({ block: 'center' });
+	});
 
 	const days = $derived([...new Set(data.shifts.map((s) => s.day))].sort());
 	const rootAreas = $derived(
@@ -42,13 +50,22 @@
 	);
 
 	const hasFree = (s: (typeof data.shifts)[number]) => s.positions.some((p) => p.free > 0);
+	const onMarket = (s: (typeof data.shifts)[number]) =>
+		!s.past && !s.mine && s.positions.some((p) => p.marketOfferId);
+	const anyMarket = $derived(data.shifts.some(onMarket));
+	const chips = $derived<{ key: 'free' | 'mine' | 'market'; label: MessageKey }[]>([
+		{ key: 'free', label: 'shifts.filter.free' },
+		{ key: 'mine', label: 'shifts.filter.mine' },
+		...(anyMarket ? [{ key: 'market' as const, label: 'shifts.filter.market' as const }] : [])
+	]);
 	const filtered = $derived(
 		data.shifts.filter(
 			(s) =>
 				(!day || s.day === day) &&
 				(!area || s.areaRootId === area) &&
 				(!onlyFree || (hasFree(s) && !s.past)) &&
-				(!onlyMine || s.mine)
+				(!onlyMine || s.mine) &&
+				(!onlyMarket || !anyMarket || onMarket(s))
 		)
 	);
 	const grouped = $derived(groupBy(filtered, (s) => s.day));
@@ -56,7 +73,16 @@
 	const hours = (s: { startsAt: string; endsAt: string }) =>
 		Math.round(((Date.parse(s.endsAt) - Date.parse(s.startsAt)) / 3_600_000) * 10) / 10;
 
-	type Result = { success?: string; error?: string };
+	type Result = {
+		success?: string;
+		error?: string;
+		count?: number;
+		action?: string;
+		errors?: Record<string, string>;
+		values?: Record<string, string>;
+		positionId?: string;
+		problems?: { name: string; problem: string }[];
+	};
 	const result = $derived(form as Result | null);
 	let pendingPosition = $state<string | null>(null);
 
@@ -87,7 +113,39 @@
 		area = '';
 		onlyFree = false;
 		onlyMine = false;
+		onlyMarket = false;
 	}
+
+	// Giving a shift away: one dialog for the whole page.
+	let giveAwayDialog: HTMLDialogElement | undefined = $state();
+	let giveAwayId = $state<string | null>(null);
+	function openGiveAway(assignmentId: string) {
+		giveAwayId = assignmentId;
+		giveAwayDialog?.showModal();
+	}
+	$effect(() => {
+		if (result?.success === 'shifts.giveAway.offered') giveAwayDialog?.close();
+	});
+
+	// Booking together with the group.
+	let groupFor = $state<string | null>(null);
+
+	const offerLabel = (offer: { status: string; toName: string | null }) =>
+		offer.status === 'pending_approval'
+			? i18n.t('shifts.offer.pending')
+			: offer.status === 'proposed'
+				? i18n.t('shifts.offer.proposed', { name: offer.toName ?? '' })
+				: offer.toName
+					? i18n.t('shifts.offer.direct', { name: offer.toName })
+					: i18n.t('shifts.offer.market');
+
+	const toastMessage = $derived(
+		result?.error ??
+			(result?.success === 'shifts.group.done'
+				? i18n.t('shifts.group.done', { count: result.count ?? 0 })
+				: result?.success) ??
+			(invited ? i18n.t('invite.success', { wave: invited }) : null)
+	);
 </script>
 
 <svelte:head
@@ -146,15 +204,20 @@
 					{#each rootAreas as a (a.id)}<option value={a.id}>{a.label}</option>{/each}
 				</select>
 			{/if}
-			{#each [{ key: 'free', label: 'shifts.filter.free' }, { key: 'mine', label: 'shifts.filter.mine' }] as const as chip (chip.key)}
-				{@const active = chip.key === 'free' ? onlyFree : onlyMine}
+			{#each chips as chip (chip.key)}
+				{@const active =
+					chip.key === 'free' ? onlyFree : chip.key === 'mine' ? onlyMine : onlyMarket}
 				<button
 					class="h-9 rounded-md border px-3 text-sm font-semibold {active
 						? 'border-ink bg-ink text-surface'
 						: 'border-ink/25 text-ink'}"
 					aria-pressed={active}
-					onclick={() => (chip.key === 'free' ? (onlyFree = !onlyFree) : (onlyMine = !onlyMine))}
-					>{i18n.t(chip.label)}</button
+					onclick={() =>
+						chip.key === 'free'
+							? (onlyFree = !onlyFree)
+							: chip.key === 'mine'
+								? (onlyMine = !onlyMine)
+								: (onlyMarket = !onlyMarket)}>{i18n.t(chip.label)}</button
 				>
 			{/each}
 		</div>
@@ -178,7 +241,8 @@
 				{#each list as shift (shift.id)}
 					{@const expanded = open === shift.id}
 					{@const free = shift.positions.reduce((n, p) => n + p.free, 0)}
-					<li class="border-b border-line {shift.past ? 'opacity-55' : ''}">
+					{@const urgent = !shift.mine && shift.positions.some((p) => p.urgent)}
+					<li id="row-{shift.id}" class="border-b border-line {shift.past ? 'opacity-55' : ''}">
 						<button
 							class="grid w-full grid-cols-[4.75rem_1fr_auto] items-start gap-3 py-3.5 text-left"
 							aria-expanded={expanded}
@@ -197,18 +261,32 @@
 									{shift.areaPath.map((a) => localized(a, 'name', i18n.locale)).join(' › ')}
 									{#if shift.internal}· {i18n.t('shifts.internal')}{/if}
 								</span>
+								{#if shift.buddies.length}
+									<span class="block truncate text-sm text-ink-muted"
+										>{i18n.t('shifts.withBuddies', { names: shift.buddies.join(', ') })}</span
+									>
+								{/if}
 							</span>
 							<span class="flex flex-col items-end gap-1 pt-0.5">
 								{#if shift.mine}
 									<Badge
 										tone={shift.mine.status === 'booked'
 											? 'brand'
-											: shift.mine.status === 'requested' || shift.mine.status === 'waitlisted'
+											: shift.mine.status === 'requested' ||
+												  shift.mine.status === 'waitlisted' ||
+												  shift.mine.status === 'held'
 												? 'warning'
 												: 'neutral'}
 									>
 										{i18n.t(`shifts.status.${shift.mine.status}`)}
 									</Badge>
+								{:else if urgent}
+									<Badge tone="urgent">{i18n.t('shifts.urgent')}</Badge>
+									<span class="text-sm font-semibold tabular-nums"
+										>{i18n.t('shifts.free', { free })}</span
+									>
+								{:else if free === 0 && onMarket(shift)}
+									<span class="text-sm font-semibold">{i18n.t('shifts.filter.market')}</span>
 								{:else if free === 0}
 									<span class="text-sm text-ink-muted">{i18n.t('shifts.full')}</span>
 								{:else}
@@ -291,6 +369,20 @@
 															'admin.shifts.mode.request'
 														)}{/if}
 												</p>
+												{#if position.urgent}
+													<p class="mt-1 flex flex-wrap items-center gap-2 text-sm">
+														<Badge tone="urgent">{i18n.t('shifts.urgent')}</Badge>
+														{#if position.urgent.bonus > 0}<span
+																class="font-semibold text-brand-text"
+																>{i18n.t('shifts.urgentBonus', {
+																	bonus: position.urgent.bonus
+																})}</span
+															>{/if}
+													</p>
+													{#if position.urgent.note}<p class="mt-1 text-sm">
+															{position.urgent.note}
+														</p>{/if}
+												{/if}
 												{#if position.required.length}
 													<p class="mt-1 text-sm">
 														{i18n.t('shifts.requires', {
@@ -313,7 +405,41 @@
 												{/if}
 											</div>
 
-											{#if isMine && shift.mine}
+											{#if isMine && shift.mine && shift.mine.status === 'held'}
+												<div class="flex flex-col items-end gap-1">
+													<div class="flex gap-2">
+														<form method="POST" action="?/cancel" use:enhance>
+															<input
+																type="hidden"
+																name="assignmentId"
+																value={shift.mine.assignmentId}
+															/>
+															<Button type="submit" variant="secondary"
+																>{i18n.t('shifts.hold.decline')}</Button
+															>
+														</form>
+														<form method="POST" action="?/acceptHold" use:enhance>
+															<input
+																type="hidden"
+																name="assignmentId"
+																value={shift.mine.assignmentId}
+															/>
+															<Button type="submit">{i18n.t('shifts.hold.accept')}</Button>
+														</form>
+													</div>
+													{#if shift.mine.holdUntil}
+														<p class="text-xs text-ink-muted">
+															{i18n.t('shifts.hold.until', {
+																date: formatDateTime(
+																	new Date(shift.mine.holdUntil),
+																	i18n.locale,
+																	tz
+																)
+															})}
+														</p>
+													{/if}
+												</div>
+											{:else if isMine && shift.mine}
 												<div class="flex flex-col items-end gap-1">
 													{#if shift.mine.canCancel}
 														<ConfirmForm
@@ -344,6 +470,28 @@
 																: i18n.t('shifts.cancelClosed')}
 														</p>
 													{/if}
+													{#if shift.mine.status === 'booked' && data.features.swap && !shift.past}
+														{#if shift.mine.offer}
+															<p class="text-right text-xs font-semibold">
+																{offerLabel(shift.mine.offer)}
+															</p>
+															<form method="POST" action="?/withdrawOffer" use:enhance>
+																<input type="hidden" name="offerId" value={shift.mine.offer.id} />
+																<button
+																	type="submit"
+																	class="text-xs font-semibold text-brand-text hover:underline"
+																	>{i18n.t('shifts.offer.withdraw')}</button
+																>
+															</form>
+														{:else}
+															<button
+																type="button"
+																class="text-sm font-semibold text-brand-text hover:underline"
+																onclick={() => shift.mine && openGiveAway(shift.mine.assignmentId)}
+																>{i18n.t('shifts.giveAway')}</button
+															>
+														{/if}
+													{/if}
 												</div>
 											{:else if !shift.mine && !shift.past}
 												{#if !shift.bookingOpen}
@@ -368,25 +516,50 @@
 															?.id}#{position.required.find((q) => !q.held)?.id}"
 														variant="secondary">{i18n.t('shifts.getQualified')}</Button
 													>
-												{:else if position.free > 0}
+												{:else if position.marketOfferId && !position.required.some((q) => !q.held)}
 													<form
 														method="POST"
-														action="?/book"
-														use:enhance={() => {
-															pendingPosition = position.id;
-															return async ({ update }) => {
-																await update({ reset: false });
-																pendingPosition = null;
-															};
-														}}
+														action="?/take"
+														use:enhance
+														class="flex flex-col items-end gap-1"
 													>
-														<input type="hidden" name="positionId" value={position.id} />
-														<Button type="submit" loading={pendingPosition === position.id}>
-															{position.mode === 'request'
-																? i18n.t('shifts.request')
-																: i18n.t('shifts.book')}
-														</Button>
+														<input type="hidden" name="offerId" value={position.marketOfferId} />
+														<Button type="submit">{i18n.t('shifts.market.take')}</Button>
+														<span class="text-xs text-ink-muted"
+															>{i18n.t('shifts.market.available')}</span
+														>
 													</form>
+												{:else if position.free > 0}
+													<div class="flex flex-col items-end gap-1">
+														<form
+															method="POST"
+															action="?/book"
+															use:enhance={() => {
+																pendingPosition = position.id;
+																return async ({ update }) => {
+																	await update({ reset: false });
+																	pendingPosition = null;
+																};
+															}}
+														>
+															<input type="hidden" name="positionId" value={position.id} />
+															<Button type="submit" loading={pendingPosition === position.id}>
+																{position.mode === 'request'
+																	? i18n.t('shifts.request')
+																	: i18n.t('shifts.book')}
+															</Button>
+														</form>
+														{#if data.buddies.length && position.mode === 'open' && position.free > 1}
+															<button
+																type="button"
+																class="text-sm font-semibold text-brand-text hover:underline"
+																aria-expanded={groupFor === position.id}
+																onclick={() =>
+																	(groupFor = groupFor === position.id ? null : position.id)}
+																>{i18n.t('shifts.group.book')}</button
+															>
+														{/if}
+													</div>
 												{:else if shift.waitlistEnabled && !position.required.some((q) => !q.held)}
 													<form
 														method="POST"
@@ -408,6 +581,56 @@
 													</form>
 												{/if}
 											{/if}
+											{#if groupFor === position.id}
+												<form
+													method="POST"
+													action="?/bookGroup"
+													use:enhance={() =>
+														async ({ update, result: r }) => {
+															await update({ reset: false });
+															if (r.type === 'success') groupFor = null;
+														}}
+													class="w-full space-y-3 rounded-md border border-line bg-surface-raised p-3"
+												>
+													<input type="hidden" name="positionId" value={position.id} />
+													<fieldset>
+														<legend class="text-sm font-bold"
+															>{i18n.t('shifts.group.choose')}</legend
+														>
+														<div class="mt-2 space-y-1">
+															{#each data.buddies.slice(0, position.free - 1) as buddy (buddy.id)}
+																<label class="flex items-center gap-3 py-1">
+																	<input
+																		type="checkbox"
+																		name="members[]"
+																		value={buddy.id}
+																		checked
+																		class="size-4"
+																	/>
+																	{buddy.name}
+																</label>
+															{/each}
+														</div>
+													</fieldset>
+													<p class="text-xs text-ink-muted">
+														{i18n.t('shifts.group.hint', { hours: data.features.groupHoldHours })}
+													</p>
+													{#if result?.action === 'bookGroup' && result.positionId === position.id && result.problems}
+														<div class="text-sm" role="alert">
+															<p class="font-semibold">{i18n.t('shifts.group.problems')}</p>
+															<ul class="mt-1 list-disc pl-5">
+																{#each result.problems as p, i (i)}
+																	<li>
+																		{p.name}
+																		{i18n.t(`shifts.group.problem.${p.problem}` as MessageKey)}
+																	</li>
+																{/each}
+															</ul>
+														</div>
+													{/if}
+													<Button type="submit" size="sm">{i18n.t('shifts.group.submit')}</Button>
+												</form>
+											{/if}
 										</li>
 									{/each}
 								</ul>
@@ -423,10 +646,50 @@
 	{/each}
 {/if}
 
-<Toast
-	message={result?.error ??
-		result?.success ??
-		(invited ? i18n.t('invite.success', { wave: invited }) : null)}
-	tone={result?.error ? 'error' : 'success'}
-	token={form}
-/>
+<dialog
+	bind:this={giveAwayDialog}
+	class="m-auto w-[min(30rem,calc(100vw-2rem))] rounded-lg border border-ink/20 bg-surface-raised p-0 text-ink shadow-[0_20px_60px_-20px_rgb(0_0_0/0.45)] backdrop:bg-ink/50"
+	aria-labelledby="give-away-title"
+>
+	<div class="space-y-5 p-5">
+		<div>
+			<h2 id="give-away-title" class="text-lg font-bold">{i18n.t('shifts.giveAway.title')}</h2>
+			<p class="mt-1 text-sm text-ink-muted">{i18n.t('shifts.giveAway.lead')}</p>
+		</div>
+		<form method="POST" action="?/offer" use:enhance class="space-y-2 border-t border-line pt-4">
+			<input type="hidden" name="assignmentId" value={giveAwayId ?? ''} />
+			<p class="font-semibold">{i18n.t('shifts.giveAway.market')}</p>
+			<p class="text-sm text-ink-muted">{i18n.t('shifts.giveAway.marketHint')}</p>
+			<Button type="submit" variant="secondary">{i18n.t('shifts.giveAway.market')}</Button>
+		</form>
+		<form
+			method="POST"
+			action="?/offer"
+			use:enhance={() =>
+				async ({ update }) =>
+					update({ reset: false })}
+			class="space-y-3 border-t border-line pt-4"
+		>
+			<input type="hidden" name="assignmentId" value={giveAwayId ?? ''} />
+			<p class="font-semibold">{i18n.t('shifts.giveAway.person')}</p>
+			<p class="text-sm text-ink-muted">{i18n.t('shifts.giveAway.personHint')}</p>
+			<Field
+				label={i18n.t('shifts.giveAway.email')}
+				name="email"
+				type="email"
+				autocomplete="off"
+				required
+				value={result?.action === 'offer' ? (result.values?.email ?? '') : ''}
+				error={result?.action === 'offer' ? result.errors?.email : undefined}
+			/>
+			<Button type="submit">{i18n.t('shifts.giveAway.send')}</Button>
+		</form>
+		<div class="flex justify-end border-t border-line pt-4">
+			<Button type="button" variant="ghost" onclick={() => giveAwayDialog?.close()}
+				>{i18n.t('common.cancel')}</Button
+			>
+		</div>
+	</div>
+</dialog>
+
+<Toast message={toastMessage} tone={result?.error ? 'error' : 'success'} token={form} />

@@ -14,6 +14,7 @@
 		descriptionEn: string;
 		sortOrder: string | number;
 		cancelDeadlineHours: string | number | null;
+		swapNeedsApproval?: string | boolean | null;
 		pointsPerShift: string | number | null;
 		pointsPerHour: string | number | null;
 	};
@@ -112,6 +113,24 @@
 			hint={i18n.t('admin.areas.cancelDeadlineHint')}
 			error={result?.errors?.cancelDeadlineHours}
 		/>
+		<div class="space-y-1.5">
+			<label for="swapNeedsApproval" class="text-sm font-medium"
+				>{i18n.t('admin.areas.swapApproval')}</label
+			>
+			<select id="swapNeedsApproval" name="swapNeedsApproval" class="block h-11 w-full">
+				{#each [['', 'admin.areas.swapApproval.inherit'], ['yes', 'admin.areas.swapApproval.yes'], ['no', 'admin.areas.swapApproval.no']] as const as [value, label] (value)}
+					<option
+						{value}
+						selected={value ===
+							(values.swapNeedsApproval === true || values.swapNeedsApproval === 'yes'
+								? 'yes'
+								: values.swapNeedsApproval === false || values.swapNeedsApproval === 'no'
+									? 'no'
+									: '')}>{i18n.t(label)}</option
+					>
+				{/each}
+			</select>
+		</div>
 	</div>
 
 	<fieldset class="space-y-2">

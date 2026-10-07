@@ -4,13 +4,17 @@
 	let {
 		tone = 'neutral',
 		children
-	}: { tone?: 'neutral' | 'brand' | 'warning' | 'success'; children: Snippet } = $props();
+	}: {
+		tone?: 'neutral' | 'brand' | 'warning' | 'success' | 'urgent';
+		children: Snippet;
+	} = $props();
 
 	const tones = {
 		neutral: 'border border-line text-ink-muted',
 		brand: 'bg-brand text-brand-fg',
 		warning: 'bg-accent text-accent-fg',
-		success: 'border border-emerald-700/40 text-emerald-800 dark:text-emerald-300'
+		success: 'border border-emerald-700/40 text-emerald-800 dark:text-emerald-300',
+		urgent: 'border border-brand text-brand-text uppercase tracking-wide'
 	};
 </script>
 

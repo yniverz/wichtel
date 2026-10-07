@@ -1,4 +1,17 @@
-import { and, asc, eq, gt, inArray, lt, ne, sql } from 'drizzle-orm';
+import {
+	and,
+	asc,
+	eq,
+	gt,
+	inArray,
+	isNotNull,
+	lt,
+	lte,
+	ne,
+	notInArray,
+	or,
+	sql
+} from 'drizzle-orm';
 import {
 	canSelfCancel,
 	checkInOpen,
@@ -11,11 +24,12 @@ import {
 	assignments,
 	shiftPositions,
 	shifts,
+	swapOffers,
 	users,
 	type Assignment,
 	type Shift
 } from '../db/schema.ts';
-import { audit, type Actor } from '../audit.ts';
+import { audit, SYSTEM, type Actor } from '../audit.ts';
 import { DomainError } from '../errors.ts';
 import { loadAreaTree } from './areas.ts';
 import { applyMandatoryGoodies } from './goodies.ts';
@@ -24,7 +38,10 @@ import { heldQualificationIds } from './qualifications.ts';
 import { notifyAssignment } from '../notifications.ts';
 import { getSettings } from './settings.ts';
 
-const ACTIVE = ['requested', 'booked'] as const;
+/** Statuses that hold (or ask for) a place: they block overlapping shifts. */
+export const ACTIVE = ['requested', 'booked', 'held'] as const;
+/** Swap offers that are still running. */
+const RUNNING_OFFERS = ['open', 'proposed', 'pending_approval'] as const;
 const MINUTE = 60_000;
 
 export interface BookingContext {
@@ -35,13 +52,13 @@ export interface BookingContext {
 /** Rule violations a lead may knowingly override (with `assignment.override`). */
 export type OverridableIssue = 'overlap' | 'full' | 'started' | 'qualification';
 
-async function lacksQualifications(tx: Tx, userId: string, required: string[], now: Date) {
+export async function lacksQualifications(tx: Tx, userId: string, required: string[], now: Date) {
 	if (required.length === 0) return false;
 	const held = new Set(await heldQualificationIds(tx, userId, now));
 	return required.some((id) => !held.has(id));
 }
 
-async function lockPosition(tx: Tx, positionId: string) {
+export async function lockPosition(tx: Tx, positionId: string) {
 	const [row] = await tx
 		.select({ position: shiftPositions, shift: shifts })
 		.from(shiftPositions)
@@ -52,18 +69,28 @@ async function lockPosition(tx: Tx, positionId: string) {
 	return row;
 }
 
-async function countActive(tx: Tx, positionId: string) {
+/** Places taken (`booked`, including places reserved for group members) and open requests. */
+export async function countActive(tx: Tx, positionId: string) {
 	const rows = await tx
 		.select({ status: assignments.status, count: sql<number>`count(*)::int` })
 		.from(assignments)
 		.where(and(eq(assignments.positionId, positionId), inArray(assignments.status, [...ACTIVE])))
 		.groupBy(assignments.status);
 	const get = (s: string) => rows.find((r) => r.status === s)?.count ?? 0;
-	return { booked: get('booked'), requested: get('requested') };
+	return { booked: get('booked') + get('held'), requested: get('requested') };
 }
 
-/** Active assignments of the user that collide with the shift (including the required break). */
-async function findOverlaps(tx: Tx, userId: string, shift: Shift, breakMinutes: number) {
+/**
+ * Active assignments of the user that collide with the shift (including the required break).
+ * `exclude` ignores bookings that are about to be given away (swaps).
+ */
+export async function findOverlaps(
+	tx: Tx,
+	userId: string,
+	shift: Shift,
+	breakMinutes: number,
+	exclude: string[] = []
+) {
 	const gap = breakMinutes * MINUTE;
 	return tx
 		.select({ id: assignments.id, titleDe: shifts.titleDe, startsAt: shifts.startsAt })
@@ -74,13 +101,14 @@ async function findOverlaps(tx: Tx, userId: string, shift: Shift, breakMinutes: 
 				eq(assignments.userId, userId),
 				inArray(assignments.status, [...ACTIVE]),
 				ne(assignments.shiftId, shift.id),
+				...(exclude.length ? [notInArray(assignments.id, exclude)] : []),
 				lt(shifts.startsAt, new Date(shift.endsAt.getTime() + gap)),
 				gt(shifts.endsAt, new Date(shift.startsAt.getTime() - gap))
 			)
 		);
 }
 
-async function hasActiveInShift(tx: Tx, userId: string, shiftId: string) {
+export async function hasActiveInShift(tx: Tx, userId: string, shiftId: string) {
 	const [row] = await tx
 		.select({ id: assignments.id })
 		.from(assignments)
@@ -95,7 +123,7 @@ async function hasActiveInShift(tx: Tx, userId: string, shiftId: string) {
 }
 
 /** Serialises bookings per person so two parallel requests cannot create an overlap. */
-async function lockUser(tx: Tx, userId: string) {
+export async function lockUser(tx: Tx, userId: string) {
 	await tx.select({ id: users.id }).from(users).where(eq(users.id, userId)).for('update');
 }
 
@@ -103,7 +131,8 @@ export interface BookingOptions {
 	editionId: string;
 	/** Whether the shift is visible to this person (internal shifts). */
 	canSee: (shift: Shift) => boolean;
-	/** Whether booking is open for this person and shift (waves); omitted = open. */
+	/** Whether booking is open for this person and shift (waves); omitted = open. Positions with an
+	 * urgent call are always open. */
 	isOpen?: (shift: Shift) => boolean;
 }
 
@@ -123,7 +152,8 @@ export async function bookPosition(
 		const { position, shift } = await lockPosition(tx, positionId);
 		if (shift.editionId !== opts.editionId || !opts.canSee(shift))
 			throw new DomainError('notFound');
-		if (opts.isOpen && !opts.isOpen(shift)) throw new DomainError('bookingClosed');
+		if (opts.isOpen && !position.urgentAt && !opts.isOpen(shift))
+			throw new DomainError('bookingClosed');
 		if (shift.startsAt.getTime() <= ctx.now.getTime()) throw new DomainError('shiftStarted');
 		if (await hasActiveInShift(tx, userId, shift.id)) throw new DomainError('alreadyBooked');
 
@@ -143,6 +173,8 @@ export async function bookPosition(
 				shiftId: shift.id,
 				userId,
 				status: position.bookingMode === 'request' ? 'requested' : 'booked',
+				// Answering an urgent call earns the promised bonus.
+				bonusPoints: position.urgentAt ? position.urgentBonus : 0,
 				createdBy: userId
 			})
 			.returning();
@@ -155,13 +187,33 @@ export async function bookPosition(
 	});
 }
 
-async function cancelHoursFor(tx: Tx, shift: Shift, instanceHours: number) {
+export async function cancelHoursFor(tx: Tx, shift: Shift, instanceHours: number) {
 	const tree = await loadAreaTree(tx, shift.editionId);
 	const lineage = tree.lineage(shift.areaId).map((id) => tree.get(id)?.cancelDeadlineHours ?? null);
 	return effectiveCancelHours(shift.cancelDeadlineHours, lineage, instanceHours);
 }
 
-/** A helper withdraws their own request or cancels a booking before the deadline. */
+/** Ends running swap offers that involve one of these bookings (they were cancelled or moved). */
+export async function closeOffersFor(tx: Tx, assignmentIds: string[]) {
+	if (assignmentIds.length === 0) return;
+	await tx
+		.update(swapOffers)
+		.set({ status: 'withdrawn' })
+		.where(
+			and(
+				inArray(swapOffers.status, [...RUNNING_OFFERS]),
+				or(
+					inArray(swapOffers.assignmentId, assignmentIds),
+					inArray(swapOffers.counterAssignmentId, assignmentIds)
+				)
+			)
+		);
+}
+
+/**
+ * A helper withdraws their own request, leaves a waiting list, declines a place reserved by their
+ * group, or cancels a booking before the deadline.
+ */
 export async function cancelOwnAssignment(
 	ctx: BookingContext,
 	userId: string,
@@ -175,7 +227,13 @@ export async function cancelOwnAssignment(
 			.innerJoin(shifts, eq(assignments.shiftId, shifts.id))
 			.where(and(eq(assignments.id, assignmentId), eq(assignments.userId, userId)));
 		const status = row?.assignment.status;
-		if (!row || (status !== 'booked' && status !== 'requested' && status !== 'waitlisted')) {
+		if (
+			!row ||
+			(status !== 'booked' &&
+				status !== 'requested' &&
+				status !== 'waitlisted' &&
+				status !== 'held')
+		) {
 			throw new DomainError('notFound');
 		}
 		if (row.shift.startsAt.getTime() <= ctx.now.getTime()) throw new DomainError('shiftStarted');
@@ -188,9 +246,62 @@ export async function cancelOwnAssignment(
 			.update(assignments)
 			.set({ status: 'cancelled' })
 			.where(eq(assignments.id, assignmentId));
-		if (status === 'booked')
+		await closeOffersFor(tx, [assignmentId]);
+		if (status === 'booked' || status === 'held')
 			await promoteWaitlist(tx, { userId }, row.assignment.positionId, ctx.now);
 	});
+}
+
+/** A group member accepts a place their group reserved for them. */
+export async function acceptHold(
+	ctx: BookingContext,
+	userId: string,
+	assignmentId: string
+): Promise<void> {
+	await ctx.db.transaction(async (tx) => {
+		await lockUser(tx, userId);
+		const [row] = await tx
+			.select({ assignment: assignments, shift: shifts })
+			.from(assignments)
+			.innerJoin(shifts, eq(assignments.shiftId, shifts.id))
+			.where(and(eq(assignments.id, assignmentId), eq(assignments.userId, userId)));
+		if (!row || row.assignment.status !== 'held') throw new DomainError('notFound');
+		if (row.assignment.holdUntil && row.assignment.holdUntil.getTime() < ctx.now.getTime())
+			throw new DomainError('holdExpired');
+		if (row.shift.startsAt.getTime() <= ctx.now.getTime()) throw new DomainError('shiftStarted');
+		await tx
+			.update(assignments)
+			.set({ status: 'booked', holdUntil: null })
+			.where(eq(assignments.id, assignmentId));
+		await notifyAssignment(tx, 'booking_confirmed', assignmentId);
+	});
+}
+
+/** Releases group reservations nobody accepted in time. Returns the number released. */
+export async function expireHolds(db: DB, now = new Date()): Promise<number> {
+	const expired = await db
+		.select({ id: assignments.id, positionId: assignments.positionId })
+		.from(assignments)
+		.where(
+			and(
+				eq(assignments.status, 'held'),
+				isNotNull(assignments.holdUntil),
+				lte(assignments.holdUntil, now)
+			)
+		);
+	for (const hold of expired) {
+		await db.transaction(async (tx) => {
+			const [released] = await tx
+				.update(assignments)
+				.set({ status: 'cancelled' })
+				.where(and(eq(assignments.id, hold.id), eq(assignments.status, 'held')))
+				.returning();
+			if (!released) return;
+			await notifyAssignment(tx, 'hold_expired', hold.id);
+			await promoteWaitlist(tx, SYSTEM, hold.positionId, now);
+		});
+	}
+	return expired.length;
 }
 
 /** Joins the waiting list of a full position. */
@@ -363,10 +474,11 @@ export async function leadRemove(
 			.where(eq(assignments.id, assignmentId))
 			.returning();
 		await syncAssignmentPoints(tx, actor, updated);
-		if (assignment.status === 'booked' || assignment.status === 'requested') {
+		await closeOffersFor(tx, [assignmentId]);
+		if (['booked', 'requested', 'held'].includes(assignment.status)) {
 			await notifyAssignment(tx, 'removed_by_lead', assignmentId);
 		}
-		if (assignment.status === 'booked') {
+		if (assignment.status === 'booked' || assignment.status === 'held') {
 			await promoteWaitlist(tx, actor, assignment.positionId, ctx.now);
 		}
 		await audit(tx, actor, {
@@ -457,6 +569,8 @@ export async function listUserAssignments(db: Tx, userId: string, editionId: str
 			id: assignments.id,
 			status: assignments.status,
 			attendance: assignments.attendance,
+			holdUntil: assignments.holdUntil,
+			createdBy: assignments.createdBy,
 			shiftId: shifts.id,
 			positionId: shiftPositions.id
 		})
@@ -475,6 +589,7 @@ export async function shiftRoster(db: Tx, shiftId: string) {
 			positionId: assignments.positionId,
 			status: assignments.status,
 			attendance: assignments.attendance,
+			holdUntil: assignments.holdUntil,
 			createdAt: assignments.createdAt,
 			userId: users.id,
 			firstName: users.firstName,
@@ -518,4 +633,33 @@ export async function waitlistQueue(db: Tx, editionId: string): Promise<Map<stri
 	const queue = new Map<string, string[]>();
 	for (const r of rows) queue.set(r.positionId, [...(queue.get(r.positionId) ?? []), r.userId]);
 	return queue;
+}
+
+/** Open booking requests of an edition in the areas `authz` manages. */
+export async function pendingRequests(db: Tx, authz: Authz, editionId: string) {
+	const rows = await db
+		.select({
+			id: assignments.id,
+			createdAt: assignments.createdAt,
+			userId: users.id,
+			firstName: users.firstName,
+			lastName: users.lastName,
+			shift: {
+				id: shifts.id,
+				areaId: shifts.areaId,
+				titleDe: shifts.titleDe,
+				titleEn: shifts.titleEn,
+				startsAt: shifts.startsAt,
+				endsAt: shifts.endsAt
+			},
+			positionNameDe: shiftPositions.nameDe,
+			positionNameEn: shiftPositions.nameEn
+		})
+		.from(assignments)
+		.innerJoin(users, eq(assignments.userId, users.id))
+		.innerJoin(shifts, eq(assignments.shiftId, shifts.id))
+		.innerJoin(shiftPositions, eq(assignments.positionId, shiftPositions.id))
+		.where(and(eq(shifts.editionId, editionId), eq(assignments.status, 'requested')))
+		.orderBy(asc(shifts.startsAt), asc(assignments.createdAt));
+	return rows.filter((r) => authz.can('assignment.manage', r.shift.areaId));
 }

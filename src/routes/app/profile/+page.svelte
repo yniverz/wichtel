@@ -128,6 +128,12 @@
 	>
 		{i18n.t('profile.qualifications')} <span aria-hidden="true">→</span>
 	</a>
+	<a
+		href="/app/group"
+		class="flex items-center justify-between rounded-lg border border-line bg-surface-raised p-5 font-semibold hover:border-ink"
+	>
+		{i18n.t('group.title')} <span aria-hidden="true">→</span>
+	</a>
 
 	<Card title={i18n.t('calendar.title')} description={i18n.t('calendar.lead')}>
 		<div class="flex flex-wrap gap-2">

@@ -4,14 +4,21 @@ import { utcToZoned } from '#lib/domain/time.ts';
 import type { DB } from './db/client.ts';
 import type { Shift, User } from './db/schema.ts';
 import { loadAreaTree } from './services/areas.ts';
-import { cancelHoursForShifts, listUserAssignments } from './services/assignments.ts';
+import {
+	cancelHoursForShifts,
+	listUserAssignments,
+	waitlistQueue
+} from './services/assignments.ts';
 import { listShifts } from './services/shifts.ts';
 import { getSettings } from './services/settings.ts';
 import { pointsFor } from './services/points.ts';
 import { heldQualificationIds, listQualifications } from './services/qualifications.ts';
 import { bookingAccess } from './services/waves.ts';
 import { listPlaces, placeView, type PlaceView } from './services/places.ts';
-import { waitlistQueue } from './services/assignments.ts';
+import { marketOffers, offersInvolving } from './services/swaps.ts';
+import { buddiesByShift, getGroup } from './services/groups.ts';
+
+export type MyStatus = 'booked' | 'requested' | 'rejected' | 'waitlisted' | 'held';
 
 /** What a volunteer sees of one shift. Only data that is safe to show to every helper. */
 export interface HelperShift {
@@ -44,16 +51,26 @@ export interface HelperShift {
 		required: { id: string; nameDe: string; nameEn: string; held: boolean }[];
 		preferred: { nameDe: string; nameEn: string }[];
 		waitlisted: number;
+		/** A place someone offers on the shift market (taking it moves their booking to you). */
+		marketOfferId: string | null;
+		/** Active urgent call: bonus points for booking now. */
+		urgent: { bonus: number; note: string } | null;
 	}[];
 	mine: {
 		assignmentId: string;
 		positionId: string;
-		status: 'booked' | 'requested' | 'rejected' | 'waitlisted';
+		status: MyStatus;
 		cancelUntil: string | null;
 		canCancel: boolean;
 		/** 1-based place on the waiting list. */
 		waitlistPlace: number | null;
+		/** Reserved by the group until then (status `held`). */
+		holdUntil: string | null;
+		/** The running swap offer for this booking. */
+		offer: { id: string; status: string; toName: string | null } | null;
 	} | null;
+	/** First names of the person's group members on this shift. */
+	buddies: string[];
 	locationPlace: PlaceView | null;
 	meetingPlace: PlaceView | null;
 	/** Whether booking is open for this person (waves); if not, when it opens. */
@@ -72,7 +89,20 @@ export async function loadHelperShifts(
 	editionId: string,
 	now: Date
 ): Promise<HelperShift[]> {
-	const [settings, tree, all, mine, quals, heldIds, access, queue, placeList] = await Promise.all([
+	const [
+		settings,
+		tree,
+		all,
+		mine,
+		quals,
+		heldIds,
+		access,
+		queue,
+		placeList,
+		market,
+		offers,
+		group
+	] = await Promise.all([
 		getSettings(db),
 		loadAreaTree(db, editionId),
 		listShifts(db, editionId),
@@ -81,14 +111,26 @@ export async function loadHelperShifts(
 		heldQualificationIds(db, user.id, now),
 		bookingAccess(db, user, editionId, now),
 		waitlistQueue(db, editionId),
-		listPlaces(db, editionId)
+		listPlaces(db, editionId),
+		marketOffers(db, editionId, now),
+		offersInvolving(db, user.id, editionId, now),
+		getGroup(db, user.id, editionId)
 	]);
+	const buddies = await buddiesByShift(db, group, user.id);
+	const marketByPosition = new Map<string, string>();
+	for (const o of market) {
+		if (o.fromUserId !== user.id && !marketByPosition.has(o.positionId))
+			marketByPosition.set(o.positionId, o.id);
+	}
+	const myOffers = new Map(
+		offers.filter((o) => o.fromUserId === user.id).map((o) => [o.assignmentId, o])
+	);
 	const placesById = new Map(placeList.map((p) => [p.id, placeView(p)]));
 	const qualificationsById = new Map(quals.map((q) => [q.id, q]));
 	const held = new Set(heldIds);
 	const tz = settings.timezone;
 	// Prefer active assignments over old rejected/cancelled ones of the same shift.
-	const rank = { booked: 4, requested: 3, waitlisted: 2, rejected: 1, cancelled: 0 } as const;
+	const rank = { booked: 5, held: 4, requested: 3, waitlisted: 2, rejected: 1, cancelled: 0 };
 	const mineByShift = new Map<string, (typeof mine)[number]>();
 	for (const a of mine) {
 		const existing = mineByShift.get(a.shiftId);
@@ -101,7 +143,7 @@ export async function loadHelperShifts(
 	const activeIntervals: { shiftId: string; startsAt: Date; endsAt: Date }[] = [];
 	for (const s of all) {
 		const a = mineByShift.get(s.id);
-		if (a && (a.status === 'booked' || a.status === 'requested'))
+		if (a && (a.status === 'booked' || a.status === 'requested' || a.status === 'held'))
 			activeIntervals.push({ shiftId: s.id, startsAt: s.startsAt, endsAt: s.endsAt });
 	}
 	const cancelHours = await cancelHoursForShifts(
@@ -116,6 +158,8 @@ export async function loadHelperShifts(
 		const activeMine = a && a.status !== 'cancelled' ? a : null;
 		const hours = cancelHours.get(s.id);
 		const window = access(s.areaId);
+		const past = s.startsAt.getTime() <= now.getTime();
+		const offer = activeMine ? myOffers.get(activeMine.id) : undefined;
 		return {
 			id: s.id,
 			titleDe: s.titleDe,
@@ -131,7 +175,8 @@ export async function loadHelperShifts(
 			startsAt: s.startsAt.toISOString(),
 			endsAt: s.endsAt.toISOString(),
 			day: utcToZoned(s.startsAt, tz).date,
-			past: s.startsAt.getTime() <= now.getTime(),
+			past,
+			buddies: buddies.get(s.id) ?? [],
 			positions: s.positions.map((p) => ({
 				id: p.id,
 				nameDe: p.nameDe,
@@ -150,7 +195,12 @@ export async function loadHelperShifts(
 					.map((id) => qualificationsById.get(id))
 					.filter((q) => q !== undefined)
 					.map((q) => ({ nameDe: q.nameDe, nameEn: q.nameEn })),
-				waitlisted: p.waitlisted
+				waitlisted: p.waitlisted,
+				marketOfferId: settings.swapEnabled ? (marketByPosition.get(p.id) ?? null) : null,
+				urgent:
+					p.urgentAt && !past && freeSpots(p.capacity, p.booked) > 0
+						? { bonus: p.urgentBonus, note: p.urgentNote }
+						: null
 			})),
 			locationPlace: s.locationPlaceId ? (placesById.get(s.locationPlaceId) ?? null) : null,
 			meetingPlace: s.meetingPlaceId ? (placesById.get(s.meetingPlaceId) ?? null) : null,
@@ -161,19 +211,28 @@ export async function loadHelperShifts(
 				? {
 						assignmentId: activeMine.id,
 						positionId: activeMine.positionId,
-						status: activeMine.status as 'booked' | 'requested' | 'rejected' | 'waitlisted',
+						status: activeMine.status as MyStatus,
 						waitlistPlace:
 							activeMine.status === 'waitlisted'
 								? (queue.get(activeMine.positionId)?.indexOf(user.id) ?? -1) + 1 || null
 								: null,
+						holdUntil: activeMine.holdUntil?.toISOString() ?? null,
+						offer: offer
+							? {
+									id: offer.id,
+									status: offer.status,
+									toName: offer.to ? `${offer.to.firstName} ${offer.to.lastName}` : null
+								}
+							: null,
 						cancelUntil:
 							activeMine.status === 'booked' && hours !== undefined
 								? cancelDeadline(s.startsAt, hours).toISOString()
 								: null,
 						canCancel:
-							s.startsAt.getTime() > now.getTime() &&
+							!past &&
 							(activeMine.status === 'requested' ||
 								activeMine.status === 'waitlisted' ||
+								activeMine.status === 'held' ||
 								(activeMine.status === 'booked' &&
 									hours !== undefined &&
 									canSelfCancel(now, s.startsAt, hours)))

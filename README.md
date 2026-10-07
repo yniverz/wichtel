@@ -48,9 +48,16 @@ _An easy-to-use volunteer and shift management system for non-profit festivals._
   Schichten verweisen auf Ort und Treffpunkt, die Helferanmeldung steht auf der Startseite
 - **Buchungswellen** (Crew zuerst, Wiederkehrende, Einladungslink, dann alle) und **Warteliste**
   mit automatischem Nachrücken
+- **Schichtbörse und Tausch**: eigene Schicht abgeben (für alle oder an eine Person per E-Mail),
+  die Person kann übernehmen oder eine eigene Schicht im Tausch anbieten; späte Übergaben und
+  Positionen mit Bestätigung gibt die Leitung frei (Sammelansicht „Anfragen“)
+- **Gruppen**: per Einladungslink, gegenseitig Schichten sehen, gemeinsam eintragen – die anderen
+  bekommen einen reservierten Platz mit Ablaufzeit
+- **Dringend-Aufruf**: Leitung ruft für eine Position auf, passende und freie Helfende bekommen eine
+  E-Mail mit Direktlink, optional mit Bonuspunkten
 
-**Geplant** – siehe [docs/KONZEPT.md](docs/KONZEPT.md): Schichtbörse und Tausch, Buddy-Gruppen,
-Dringend-Aufruf, Dashboards, Druckansichten, Jahrgang kopieren, SSO.
+**Geplant** – siehe [docs/KONZEPT.md](docs/KONZEPT.md): Dashboards, Druckansichten, Jahrgang
+kopieren, SSO.
 
 ## Entwicklung
 

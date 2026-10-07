@@ -50,6 +50,10 @@ export const areaSchema = z.object({
 	descriptionEn: optionalText(2000),
 	sortOrder: z.coerce.number('error.required').int().min(-9999).max(9999).default(0),
 	cancelDeadlineHours: optionalHours,
+	swapNeedsApproval: z
+		.enum(['', 'yes', 'no'])
+		.optional()
+		.transform((v) => (v === 'yes' ? true : v === 'no' ? false : null)),
 	pointsPerShift: optionalHours,
 	pointsPerHour: optionalHours
 });
@@ -95,6 +99,19 @@ export const settingsSchema = z.object({
 	lastMinuteHours: wholeNumber,
 	reminderHours: wholeNumber,
 	waitlistEnabled: checkbox,
+	swapEnabled: checkbox,
+	swapNeedsApproval: checkbox,
+	buddyGroupsEnabled: checkbox,
+	buddyGroupMaxSize: z.coerce
+		.number('error.invalidNumber')
+		.int('error.invalidNumber')
+		.min(2)
+		.max(50),
+	groupHoldHours: z.coerce
+		.number('error.invalidNumber')
+		.int('error.invalidNumber')
+		.min(1)
+		.max(24 * 14),
 	mapTileUrl: z
 		.string()
 		.trim()

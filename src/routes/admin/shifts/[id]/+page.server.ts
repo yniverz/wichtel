@@ -23,7 +23,8 @@ import {
 } from '#lib/server/services/assignments.ts';
 import { getSettings } from '#lib/server/services/settings.ts';
 import { deleteShift, getShift, updateShift } from '#lib/server/services/shifts.ts';
-import { checkbox, parseForm, uuid } from '#lib/server/validation.ts';
+import { callUrgent, endUrgent } from '#lib/server/services/urgent.ts';
+import { checkbox, optionalText, parseForm, uuid } from '#lib/server/validation.ts';
 import { displayValue } from '#lib/domain/fields.ts';
 import { listFields, valuesFor } from '#lib/server/services/fields.ts';
 import type { Actions, PageServerLoad, RequestEvent } from './$types';
@@ -80,6 +81,8 @@ export const load: PageServerLoad = async (event) => {
 				capacity: p.capacity,
 				booked: p.booked,
 				mode: p.bookingMode,
+				urgentAt: p.urgentAt?.toISOString() ?? null,
+				urgentBonus: p.urgentBonus,
 				people: roster
 					.filter((r) => r.positionId === p.id)
 					.map((r) => ({
@@ -88,6 +91,7 @@ export const load: PageServerLoad = async (event) => {
 						name: `${r.firstName} ${r.lastName}`,
 						phone: showContact ? r.phone : null,
 						status: r.status,
+						holdUntil: r.holdUntil?.toISOString() ?? null,
 						attendance: r.attendance,
 						notes: notesFor(r.userId)
 					}))
@@ -99,7 +103,8 @@ export const load: PageServerLoad = async (event) => {
 			override: authz.can('assignment.override', shift.areaId),
 			attendance: authz.can('attendance.confirm', shift.areaId),
 			mail: authz.can('mail.send', shift.areaId),
-			checkInOpen: checkInOpen(new Date(), shift.startsAt, tz)
+			checkInOpen: checkInOpen(new Date(), shift.startsAt, tz),
+			started: shift.startsAt.getTime() <= Date.now()
 		},
 		areas: canEdit ? shiftAreaOptions(ctx) : [],
 		qualifications: canEdit ? await qualificationOptions(db()) : [],
@@ -188,6 +193,40 @@ export const actions: Actions = {
 		);
 		if (!result.ok) return result.failure;
 		return { action: 'decide', success: 'common.saved' };
+	},
+	urgent: async (event) => {
+		const { ctx } = await loadShiftForLead(event);
+		const parsed = parseForm(
+			z.object({
+				positionId: uuid,
+				bonus: z.coerce.number('error.invalidNumber').int('error.invalidNumber').min(0).max(100),
+				note: optionalText(300)
+			}),
+			await event.request.formData()
+		);
+		if (!parsed.ok)
+			return fail(400, { action: 'urgent', errors: parsed.errors, values: parsed.values });
+		const result = await attempt(
+			() =>
+				callUrgent(
+					db(),
+					actorOf(event),
+					ctx.authz,
+					parsed.data.positionId,
+					{ bonus: parsed.data.bonus, note: parsed.data.note },
+					new Date()
+				),
+			{ action: 'urgent' }
+		);
+		if (!result.ok) return result.failure;
+		return { action: 'urgent', success: 'admin.urgent.sent', count: result.value };
+	},
+	endUrgent: async (event) => {
+		const { ctx } = await loadShiftForLead(event);
+		const parsed = parseForm(z.object({ positionId: uuid }), await event.request.formData());
+		if (!parsed.ok) return fail(400, { action: 'endUrgent', error: 'error.notFound' });
+		await endUrgent(db(), actorOf(event), ctx.authz, parsed.data.positionId);
+		return { action: 'endUrgent', success: 'admin.urgent.ended' };
 	},
 	attendance: async (event) => {
 		const { ctx } = await loadShiftForLead(event);

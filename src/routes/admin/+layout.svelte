@@ -28,6 +28,7 @@
 					label: 'admin.navGroup.planning',
 					items: [
 						{ href: '/admin/shifts', label: 'admin.nav.shifts', show: data.access.shifts },
+						{ href: '/admin/requests', label: 'admin.nav.requests', show: data.access.shifts },
 						{ href: '/admin/waves', label: 'admin.nav.waves', show: data.access.waves },
 						{ href: '/admin/areas', label: 'admin.nav.areas', show: data.access.areas },
 						{ href: '/admin/places', label: 'admin.nav.places', show: data.access.waves },
@@ -129,7 +130,12 @@
 								)
 									? 'bg-ink text-surface'
 									: 'text-ink-muted hover:bg-ink/6 hover:text-ink'}"
-								aria-current={isActive(item.href) ? 'page' : undefined}>{i18n.t(item.label)}</a
+								aria-current={isActive(item.href) ? 'page' : undefined}
+								>{i18n.t(item.label)}{#if item.href === '/admin/requests' && data.openRequests > 0}
+									<span
+										class="ml-1.5 rounded-sm bg-accent px-1.5 text-xs font-bold text-accent-fg tabular-nums"
+										>{data.openRequests}</span
+									>{/if}</a
 							>
 						</li>
 					{/each}

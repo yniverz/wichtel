@@ -32,7 +32,15 @@ export const MAIL_TEMPLATES = [
 	'shift_changed',
 	'shift_cancelled',
 	'reminder',
-	'waitlist_promoted'
+	'waitlist_promoted',
+	'group_hold',
+	'hold_expired',
+	'swap_offered',
+	'swap_proposed',
+	'swap_pending',
+	'swap_completed',
+	'swap_declined',
+	'urgent_call'
 ] as const;
 export type MailTemplate = (typeof MAIL_TEMPLATES)[number];
 

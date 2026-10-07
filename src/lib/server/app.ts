@@ -14,6 +14,7 @@ import { building } from '$app/env';
 import { connect, type Database, type DB } from './db/client.ts';
 import { setPublicUrl } from './notifications.ts';
 import { processOutbox, queueReminders } from './outbox.ts';
+import { expireHolds } from './services/assignments.ts';
 import { createConsoleMailer, createSmtpMailer, type Mailer } from './mail.ts';
 import { prepareSetup } from './services/setup.ts';
 import { cleanupExpiredTokens } from './services/accounts.ts';
@@ -81,6 +82,10 @@ function startWorkers(database: DB, mailer: Mailer) {
 		setInterval(
 			safely(() => queueReminders(database)),
 			5 * 60_000
+		),
+		setInterval(
+			safely(() => expireHolds(database)),
+			60_000
 		)
 	];
 	safely(() => queueReminders(database))();

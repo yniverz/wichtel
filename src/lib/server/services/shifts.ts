@@ -64,7 +64,7 @@ export interface ShiftWithPositions extends Shift {
 	positions: PositionWithCounts[];
 }
 
-const ACTIVE = ['requested', 'booked'] as const;
+const ACTIVE = ['requested', 'booked', 'held'] as const;
 
 async function assertArea(tx: Tx, editionId: string, areaId: string) {
 	const [area] = await tx
@@ -141,7 +141,9 @@ export async function listShifts(
 	const countMap = new Map<string, Counts>();
 	for (const c of counts) {
 		const entry = countMap.get(c.positionId) ?? { booked: 0, requested: 0, waitlisted: 0 };
-		entry[c.status as keyof Counts] = c.count;
+		// Places reserved for group members are taken just like booked ones.
+		const key = c.status === 'held' ? 'booked' : (c.status as keyof Counts);
+		entry[key] += c.count;
 		countMap.set(c.positionId, entry);
 	}
 	const byShift = new Map<string, PositionWithCounts[]>();

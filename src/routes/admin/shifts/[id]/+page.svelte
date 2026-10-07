@@ -11,7 +11,14 @@
 	import ShiftForm from '#lib/components/admin/ShiftForm.svelte';
 	import type { EditablePosition } from '#lib/components/admin/PositionsEditor.svelte';
 	import { getI18n } from '#lib/i18n/context.ts';
-	import { formatDayLong, formatTime, localized, type MessageKey } from '#lib/i18n/index.ts';
+	import {
+		formatDateTime,
+		formatDayLong,
+		formatTime,
+		localized,
+		type MessageKey
+	} from '#lib/i18n/index.ts';
+	import Field from '#lib/components/Field.svelte';
 	import { utcToZoned } from '#lib/domain/time.ts';
 	import type { PageProps } from './$types';
 
@@ -27,6 +34,7 @@
 		positions?: string;
 		issues?: string[];
 		pending?: { positionId: string; userId: string };
+		count?: number;
 	};
 	const result = $derived(form as Result | null);
 	const title = $derived(localized(data.shift, 'title', i18n.locale));
@@ -49,6 +57,7 @@
 	});
 
 	let addTo = $state<string | null>(null);
+	let urgentFor = $state<string | null>(null);
 	const attendanceOptions = [
 		{ value: 'unknown', label: 'admin.shifts.unknown' },
 		{ value: 'attended', label: 'admin.shifts.attended' },
@@ -95,8 +104,15 @@
 								>· {i18n.t('admin.shifts.mode.request')}</span
 							>{/if}
 					</h3>
-					<span class="flex items-center gap-2 text-sm tabular-nums"
-						><SpotMeter capacity={position.capacity} taken={position.booked} />
+					<span class="flex items-center gap-2 text-sm tabular-nums">
+						{#if position.urgentAt && position.booked < position.capacity}
+							<Badge tone="urgent"
+								>{i18n.t('admin.urgent.active', {
+									time: formatTime(position.urgentAt, i18n.locale, tz)
+								})}{position.urgentBonus > 0 ? ` · +${position.urgentBonus}` : ''}</Badge
+							>
+						{/if}
+						<SpotMeter capacity={position.capacity} taken={position.booked} />
 						{position.booked}/{position.capacity}</span
 					>
 				</div>
@@ -143,6 +159,14 @@
 									{/if}
 								{:else if person.status === 'waitlisted'}
 									<Badge>{i18n.t('admin.shifts.waitlisted')}</Badge>
+								{:else if person.status === 'held'}
+									<Badge tone="warning"
+										>{person.holdUntil
+											? i18n.t('admin.shifts.heldUntil', {
+													date: formatDateTime(new Date(person.holdUntil), i18n.locale, tz)
+												})
+											: i18n.t('admin.shifts.held')}</Badge
+									>
 								{:else if data.can.attendance}
 									<form
 										method="POST"
@@ -231,11 +255,65 @@
 							</div>
 						{/if}
 					{:else}
-						<button
-							type="button"
-							class="mt-2 text-sm font-semibold text-brand-text hover:underline"
-							onclick={() => (addTo = position.id)}>+ {i18n.t('admin.shifts.addPerson')}</button
+						<div class="mt-2 flex flex-wrap gap-x-6 gap-y-2">
+							<button
+								type="button"
+								class="text-sm font-semibold text-brand-text hover:underline"
+								onclick={() => (addTo = position.id)}>+ {i18n.t('admin.shifts.addPerson')}</button
+							>
+							{#if !data.can.started && position.booked < position.capacity}
+								<button
+									type="button"
+									class="text-sm font-semibold text-brand-text hover:underline"
+									aria-expanded={urgentFor === position.id}
+									onclick={() => (urgentFor = urgentFor === position.id ? null : position.id)}
+									>{i18n.t('admin.urgent.title')} …</button
+								>
+							{/if}
+							{#if position.urgentAt}
+								<form method="POST" action="?/endUrgent" use:enhance>
+									<input type="hidden" name="positionId" value={position.id} />
+									<button type="submit" class="text-sm font-semibold text-ink-muted hover:underline"
+										>{i18n.t('admin.urgent.end')}</button
+									>
+								</form>
+							{/if}
+						</div>
+					{/if}
+					{#if urgentFor === position.id}
+						<form
+							method="POST"
+							action="?/urgent"
+							use:enhance={() =>
+								async ({ update, result: r }) => {
+									await update({ reset: false });
+									if (r.type === 'success') urgentFor = null;
+								}}
+							class="mt-3 space-y-3 rounded-md border border-brand/50 bg-surface-raised p-3"
 						>
+							<input type="hidden" name="positionId" value={position.id} />
+							<p class="text-sm text-ink-muted">{i18n.t('admin.urgent.lead')}</p>
+							<div class="grid gap-3 sm:grid-cols-[10rem_1fr]">
+								<Field
+									label={i18n.t('admin.urgent.bonus')}
+									name="bonus"
+									type="number"
+									min="0"
+									max="100"
+									value={String(position.urgentBonus || 0)}
+									hint={i18n.t('admin.urgent.bonusHint')}
+									error={result?.action === 'urgent' ? result.errors?.bonus : undefined}
+								/>
+								<Field
+									label={i18n.t('admin.urgent.note')}
+									name="note"
+									optional
+									maxlength={300}
+									error={result?.action === 'urgent' ? result.errors?.note : undefined}
+								/>
+							</div>
+							<Button type="submit" size="sm">{i18n.t('admin.urgent.submit')}</Button>
+						</form>
 					{/if}
 				{/if}
 			</div>
@@ -274,7 +352,10 @@
 
 <Toast
 	message={result && result.action !== 'update' && !result.issues
-		? (result.error ?? result.success)
+		? (result.error ??
+			(result.success === 'admin.urgent.sent'
+				? i18n.t('admin.urgent.sent', { count: result.count ?? 0 })
+				: result.success))
 		: null}
 	tone={result?.error ? 'error' : 'success'}
 	token={form}

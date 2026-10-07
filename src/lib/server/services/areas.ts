@@ -13,6 +13,7 @@ export interface AreaInput {
 	descriptionEn: string;
 	sortOrder: number;
 	cancelDeadlineHours: number | null;
+	swapNeedsApproval?: boolean | null;
 	pointsPerShift: number | null;
 	pointsPerHour: number | null;
 }

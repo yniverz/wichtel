@@ -148,6 +148,15 @@ export const instanceSettings = pgTable(
 		reminderHours: integer('reminder_hours').notNull().default(24),
 		/** Full positions offer a waiting list with automatic moving up. */
 		waitlistEnabled: boolean('waitlist_enabled').notNull().default(true),
+		/** Helpers may hand over or swap booked shifts (shift market, direct swap). */
+		swapEnabled: boolean('swap_enabled').notNull().default(true),
+		/** Handovers after the cancel deadline need a lead's approval (areas can override). */
+		swapNeedsApproval: boolean('swap_needs_approval').notNull().default(false),
+		/** Helpers may form buddy groups and book together. */
+		buddyGroupsEnabled: boolean('buddy_groups_enabled').notNull().default(true),
+		buddyGroupMaxSize: integer('buddy_group_max_size').notNull().default(8),
+		/** How long places reserved for group members are held before they are released. */
+		groupHoldHours: integer('group_hold_hours').notNull().default(24),
 		/** Tile server for embedded maps (loaded only after the viewer agrees). */
 		mapTileUrl: text('map_tile_url')
 			.notNull()
@@ -205,6 +214,8 @@ export const areas = pgTable(
 		sortOrder: integer('sort_order').notNull().default(0),
 		/** Overrides the instance-wide cancel deadline for shifts in this area (and sub-areas). */
 		cancelDeadlineHours: integer('cancel_deadline_hours'),
+		/** Overrides whether late handovers need approval (null = inherit). */
+		swapNeedsApproval: boolean('swap_needs_approval'),
 		/** Point rule overrides (null = inherit from parent area / instance). */
 		pointsPerShift: integer('points_per_shift'),
 		pointsPerHour: integer('points_per_hour'),
@@ -252,7 +263,9 @@ export const assignmentStatusEnum = pgEnum('assignment_status', [
 	'booked',
 	'rejected',
 	'cancelled',
-	'waitlisted'
+	'waitlisted',
+	/** Reserved for a buddy-group member who has not accepted yet (see `holdUntil`). */
+	'held'
 ]);
 export const attendanceEnum = pgEnum('attendance', ['unknown', 'attended', 'no_show']);
 
@@ -323,7 +336,11 @@ export const shiftPositions = pgTable(
 		preferredQualificationIds: uuid('preferred_qualification_ids')
 			.array()
 			.notNull()
-			.default(sql`'{}'::uuid[]`)
+			.default(sql`'{}'::uuid[]`),
+		/** Set while a lead is calling for urgent help; bookings then earn `urgentBonus`. */
+		urgentAt: timestamp('urgent_at', { withTimezone: true }),
+		urgentBonus: integer('urgent_bonus').notNull().default(0),
+		urgentNote: text('urgent_note').notNull().default('')
 	},
 	(t) => [
 		index('shift_positions_shift_idx').on(t.shiftId),
@@ -350,6 +367,10 @@ export const assignments = pgTable(
 		attendanceAt: timestamp('attendance_at', { withTimezone: true }),
 		attendanceBy: uuid('attendance_by').references(() => users.id, { onDelete: 'set null' }),
 		reminderSentAt: timestamp('reminder_sent_at', { withTimezone: true }),
+		/** Places reserved for buddy-group members are released after this time. */
+		holdUntil: timestamp('hold_until', { withTimezone: true }),
+		/** Extra points fixed at booking time (e.g. answering an urgent call). */
+		bonusPoints: integer('bonus_points').notNull().default(0),
 		createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
 		...timestamps
 	},
@@ -362,6 +383,94 @@ export const assignments = pgTable(
 			// Written with the old values only: a freshly added enum value ('waitlisted') may not be
 			// used in the migration that adds it.
 			.where(sql`${t.status} not in ('rejected', 'cancelled')`)
+	]
+);
+
+// ---------------------------------------------------------------------------
+// Shift market & swaps
+// ---------------------------------------------------------------------------
+
+export const swapStatusEnum = pgEnum('swap_status', [
+	/** Waiting for someone to take it (market) or for the addressed person (direct). */
+	'open',
+	/** The addressed person offered one of their shifts in return; the offerer decides. */
+	'proposed',
+	/** Agreed by both sides, waiting for a lead. */
+	'pending_approval',
+	'completed',
+	'withdrawn',
+	'declined'
+]);
+
+export const swapOffers = pgTable(
+	'swap_offers',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		editionId: uuid('edition_id')
+			.notNull()
+			.references(() => editions.id, { onDelete: 'cascade' }),
+		/** The booking being given away. */
+		assignmentId: uuid('assignment_id')
+			.notNull()
+			.references(() => assignments.id, { onDelete: 'cascade' }),
+		fromUserId: uuid('from_user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		/** Direct offer to one person; null = shift market. */
+		toUserId: uuid('to_user_id').references(() => users.id, { onDelete: 'cascade' }),
+		status: swapStatusEnum('status').notNull().default('open'),
+		/** Who takes the shift (set once someone agrees). */
+		takerId: uuid('taker_id').references(() => users.id, { onDelete: 'set null' }),
+		/** The taker's booking given in return (direct swap). */
+		counterAssignmentId: uuid('counter_assignment_id').references(() => assignments.id, {
+			onDelete: 'set null'
+		}),
+		decidedBy: uuid('decided_by').references(() => users.id, { onDelete: 'set null' }),
+		...timestamps
+	},
+	(t) => [
+		index('swap_offers_edition_idx').on(t.editionId, t.status),
+		// One running offer per booking.
+		uniqueIndex('swap_offers_one_running')
+			.on(t.assignmentId)
+			.where(sql`${t.status} in ('open', 'proposed', 'pending_approval')`)
+	]
+);
+
+// ---------------------------------------------------------------------------
+// Buddy groups
+// ---------------------------------------------------------------------------
+
+export const buddyGroups = pgTable('buddy_groups', {
+	id: uuid('id').primaryKey().defaultRandom(),
+	editionId: uuid('edition_id')
+		.notNull()
+		.references(() => editions.id, { onDelete: 'cascade' }),
+	name: text('name').notNull(),
+	/** Secret code for joining (shared as a link). Rotatable. */
+	inviteCode: text('invite_code').notNull().unique(),
+	createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+	...timestamps
+});
+
+export const buddyMembers = pgTable(
+	'buddy_members',
+	{
+		groupId: uuid('group_id')
+			.notNull()
+			.references(() => buddyGroups.id, { onDelete: 'cascade' }),
+		/** Denormalised so that a person is in at most one group per edition. */
+		editionId: uuid('edition_id')
+			.notNull()
+			.references(() => editions.id, { onDelete: 'cascade' }),
+		userId: uuid('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		joinedAt: timestamp('joined_at', { withTimezone: true }).notNull().defaultNow()
+	},
+	(t) => [
+		primaryKey({ columns: [t.groupId, t.userId] }),
+		unique('buddy_members_one_group').on(t.editionId, t.userId)
 	]
 );
 
@@ -771,3 +880,5 @@ export type UserQualification = typeof userQualifications.$inferSelect;
 export type ProfileField = typeof profileFields.$inferSelect;
 export type BookingWave = typeof bookingWaves.$inferSelect;
 export type Place = typeof places.$inferSelect;
+export type SwapOffer = typeof swapOffers.$inferSelect;
+export type BuddyGroup = typeof buddyGroups.$inferSelect;

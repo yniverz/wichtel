@@ -25,6 +25,7 @@
 	const result = $derived(form as Result | null);
 	const v = $derived({ ...data.current, ...(result?.values ?? {}) } as typeof data.current &
 		Record<string, string>);
+	const on = (value: unknown) => value === true || value === 'on' || value === 'true';
 
 	// Live preview state: follows the saved values, but can be edited locally (writable derived).
 	let festivalName = $derived(v.festivalName);
@@ -270,6 +271,39 @@
 				/>
 				{i18n.t('admin.settings.waitlistEnabled')}
 			</label>
+		</div>
+	</Card>
+
+	<Card
+		title={i18n.t('admin.settings.collaboration')}
+		description={i18n.t('admin.settings.swapHint')}
+	>
+		<div class="space-y-3">
+			{#each [['swapEnabled', 'admin.settings.swapEnabled'], ['swapNeedsApproval', 'admin.settings.swapNeedsApproval'], ['buddyGroupsEnabled', 'admin.settings.buddyGroupsEnabled']] as const as [name, label] (name)}
+				<label class="flex items-center gap-3 text-sm">
+					<input type="checkbox" {name} checked={on(v[name])} class="size-4" />
+					{i18n.t(label)}
+				</label>
+			{/each}
+			<div class="grid gap-4 pt-2 sm:grid-cols-2">
+				<Field
+					label={i18n.t('admin.settings.buddyGroupMaxSize')}
+					name="buddyGroupMaxSize"
+					type="number"
+					min="2"
+					max="50"
+					value={String(v.buddyGroupMaxSize)}
+					error={result?.errors?.buddyGroupMaxSize}
+				/>
+				<Field
+					label={i18n.t('admin.settings.groupHoldHours')}
+					name="groupHoldHours"
+					type="number"
+					min="1"
+					value={String(v.groupHoldHours)}
+					error={result?.errors?.groupHoldHours}
+				/>
+			</div>
 		</div>
 	</Card>
 

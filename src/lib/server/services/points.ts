@@ -64,7 +64,8 @@ export async function syncAssignmentPoints(
 	const tree = await loadAreaTree(tx, row.shift.editionId);
 	const target =
 		assignment.status === 'booked' && assignment.attendance === 'attended'
-			? pointsFor(row.shift, row.position, tree, settings, assignment.createdAt).total
+			? pointsFor(row.shift, row.position, tree, settings, assignment.createdAt).total +
+				assignment.bonusPoints
 			: 0;
 	const [current] = await tx
 		.select({ total: sql<number>`coalesce(sum(${pointsLedger.amount}), 0)::int` })
@@ -139,7 +140,12 @@ export async function pointsHistory(db: Tx, userId: string, editionId: string) {
 /** Points the person would earn from booked shifts that are not confirmed yet. */
 export async function pendingPoints(db: Tx, userId: string, editionId: string): Promise<number> {
 	const rows = await db
-		.select({ shift: shifts, position: shiftPositions, createdAt: assignments.createdAt })
+		.select({
+			shift: shifts,
+			position: shiftPositions,
+			createdAt: assignments.createdAt,
+			bonus: assignments.bonusPoints
+		})
 		.from(assignments)
 		.innerJoin(shifts, eq(assignments.shiftId, shifts.id))
 		.innerJoin(shiftPositions, eq(assignments.positionId, shiftPositions.id))
@@ -155,7 +161,7 @@ export async function pendingPoints(db: Tx, userId: string, editionId: string): 
 	const settings = await getSettings(db);
 	const tree = await loadAreaTree(db, editionId);
 	return rows.reduce(
-		(sum, r) => sum + pointsFor(r.shift, r.position, tree, settings, r.createdAt).total,
+		(sum, r) => sum + pointsFor(r.shift, r.position, tree, settings, r.createdAt).total + r.bonus,
 		0
 	);
 }

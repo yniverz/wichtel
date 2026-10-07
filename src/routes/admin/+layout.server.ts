@@ -1,11 +1,21 @@
 import { getAdminContext } from '#lib/server/guards.ts';
 import { hasShiftAccess } from '#lib/server/shift-access.ts';
+import { db } from '#lib/server/app.ts';
+import { pendingRequests } from '#lib/server/services/assignments.ts';
+import { pendingSwaps } from '#lib/server/services/swaps.ts';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async (event) => {
 	const ctx = await getAdminContext(event);
 	const { authz } = ctx;
+	const shifts = hasShiftAccess(ctx);
+	const openRequests =
+		shifts && ctx.edition
+			? (await pendingRequests(db(), authz, ctx.edition.id)).length +
+				(await pendingSwaps(db(), authz, ctx.edition.id)).length
+			: 0;
 	return {
+		openRequests,
 		editions: ctx.editions.map((e) => ({
 			id: e.id,
 			name: e.name,
@@ -20,7 +30,7 @@ export const load: LayoutServerLoad = async (event) => {
 		access: {
 			isAdmin: authz.isAdmin,
 			areas: authz.canSomewhere('area.manage'),
-			shifts: hasShiftAccess(ctx),
+			shifts,
 			waves: authz.can('shift.manage'),
 			mail: authz.canSomewhere('mail.send'),
 			goodies: authz.can('goodie.manage'),

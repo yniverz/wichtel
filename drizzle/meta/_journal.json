@@ -57,6 +57,13 @@
 			"when": 1791393889573,
 			"tag": "0007_places",
 			"breakpoints": true
+		},
+		{
+			"idx": 8,
+			"version": "7",
+			"when": 1791407373953,
+			"tag": "0008_collaboration",
+			"breakpoints": true
 		}
 	]
 }
