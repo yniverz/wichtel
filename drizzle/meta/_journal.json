@@ -43,6 +43,13 @@
 			"when": 1791391578353,
 			"tag": "0005_profile_fields",
 			"breakpoints": true
+		},
+		{
+			"idx": 6,
+			"version": "7",
+			"when": 1791392109065,
+			"tag": "0006_waves_waitlist",
+			"breakpoints": true
 		}
 	]
 }

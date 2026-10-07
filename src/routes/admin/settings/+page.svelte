@@ -261,6 +261,15 @@
 				hint={i18n.t('admin.settings.reminderHint')}
 				error={result?.errors?.reminderHours}
 			/>
+			<label class="flex items-center gap-3 text-sm sm:col-span-2">
+				<input
+					type="checkbox"
+					name="waitlistEnabled"
+					checked={v.waitlistEnabled !== false && String(v.waitlistEnabled) !== 'false'}
+					class="size-4"
+				/>
+				{i18n.t('admin.settings.waitlistEnabled')}
+			</label>
 		</div>
 	</Card>
 

@@ -136,6 +136,8 @@
 											>
 										</form>
 									{/if}
+								{:else if person.status === 'waitlisted'}
+									<Badge>{i18n.t('admin.shifts.waitlisted')}</Badge>
 								{:else if data.can.attendance}
 									<form
 										method="POST"

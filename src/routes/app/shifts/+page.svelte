@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
+	import Alert from '#lib/components/Alert.svelte';
 	import Badge from '#lib/components/Badge.svelte';
 	import Button from '#lib/components/Button.svelte';
 	import ConfirmForm from '#lib/components/ConfirmForm.svelte';
@@ -58,6 +59,28 @@
 	const result = $derived(form as Result | null);
 	let pendingPosition = $state<string | null>(null);
 
+	const cancelLabel = (status: string) =>
+		status === 'requested'
+			? i18n.t('shifts.withdraw')
+			: status === 'waitlisted'
+				? i18n.t('shifts.waitlist.leave')
+				: i18n.t('shifts.cancel');
+
+	// If booking is closed for every shift, say so once at the top.
+	const closedBanner = $derived.by(() => {
+		const upcoming = data.shifts.filter((s) => !s.past);
+		if (upcoming.length === 0 || upcoming.some((s) => s.bookingOpen)) return null;
+		const next = upcoming
+			.map((s) => s.bookingOpensAt)
+			.filter((d): d is string => d !== null)
+			.sort()[0];
+		return next
+			? i18n.t('shifts.banner.opens', { date: formatDateTime(new Date(next), i18n.locale, tz) })
+			: i18n.t('shifts.banner.closed');
+	});
+
+	const invited = $derived(page.url.searchParams.get('invited'));
+
 	function resetFilters() {
 		day = null;
 		area = '';
@@ -78,6 +101,9 @@
 {#if data.shifts.length === 0}
 	<p class="mt-8 text-lg text-ink-muted">{i18n.t('shifts.emptyAll')}</p>
 {:else}
+	{#if closedBanner}
+		<div class="mt-6"><Alert tone="info">{closedBanner}</Alert></div>
+	{/if}
 	<!-- Filters -->
 	<div class="sticky top-14 z-20 -mx-4 border-b border-line bg-surface px-4 pt-3 pb-3">
 		<div
@@ -176,7 +202,7 @@
 									<Badge
 										tone={shift.mine.status === 'booked'
 											? 'brand'
-											: shift.mine.status === 'requested'
+											: shift.mine.status === 'requested' || shift.mine.status === 'waitlisted'
 												? 'warning'
 												: 'neutral'}
 									>
@@ -273,14 +299,15 @@
 															hidden={{ assignmentId: shift.mine.assignmentId }}
 															variant="secondary"
 															message={i18n.t('shifts.cancelConfirm')}
-															confirmLabel={shift.mine.status === 'requested'
-																? i18n.t('shifts.withdraw')
-																: i18n.t('shifts.cancel')}
+															confirmLabel={cancelLabel(shift.mine.status)}
 														>
-															{shift.mine.status === 'requested'
-																? i18n.t('shifts.withdraw')
-																: i18n.t('shifts.cancel')}
+															{cancelLabel(shift.mine.status)}
 														</ConfirmForm>
+													{/if}
+													{#if shift.mine.status === 'waitlisted' && shift.mine.waitlistPlace}
+														<p class="text-xs text-ink-muted">
+															{i18n.t('shifts.waitlist.place', { place: shift.mine.waitlistPlace })}
+														</p>
 													{/if}
 													{#if shift.mine.status === 'booked'}
 														<p class="text-xs text-ink-muted">
@@ -297,7 +324,19 @@
 													{/if}
 												</div>
 											{:else if !shift.mine && !shift.past}
-												{#if shift.conflict}
+												{#if !shift.bookingOpen}
+													<p class="max-w-48 text-right text-xs text-ink-muted">
+														{shift.bookingOpensAt
+															? i18n.t('shifts.bookingOpens', {
+																	date: formatDateTime(
+																		new Date(shift.bookingOpensAt),
+																		i18n.locale,
+																		tz
+																	)
+																})
+															: i18n.t('shifts.bookingClosed')}
+													</p>
+												{:else if shift.conflict}
 													<p class="max-w-48 text-right text-xs text-ink-muted">
 														{i18n.t('shifts.conflict')}
 													</p>
@@ -326,6 +365,25 @@
 																: i18n.t('shifts.book')}
 														</Button>
 													</form>
+												{:else if shift.waitlistEnabled && !position.required.some((q) => !q.held)}
+													<form
+														method="POST"
+														action="?/waitlist"
+														use:enhance
+														class="flex flex-col items-end gap-1"
+													>
+														<input type="hidden" name="positionId" value={position.id} />
+														<Button type="submit" variant="secondary"
+															>{i18n.t('shifts.waitlist.join')}</Button
+														>
+														{#if position.waitlisted}
+															<span class="text-xs text-ink-muted"
+																>{i18n.t('shifts.waitlist.count', {
+																	count: position.waitlisted
+																})}</span
+															>
+														{/if}
+													</form>
 												{/if}
 											{/if}
 										</li>
@@ -344,7 +402,9 @@
 {/if}
 
 <Toast
-	message={result?.error ?? result?.success}
+	message={result?.error ??
+		result?.success ??
+		(invited ? i18n.t('invite.success', { wave: invited }) : null)}
 	tone={result?.error ? 'error' : 'success'}
 	token={form}
 />

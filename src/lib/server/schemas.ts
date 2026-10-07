@@ -94,6 +94,7 @@ export const settingsSchema = z.object({
 	lastMinuteBonus: wholeNumber,
 	lastMinuteHours: wholeNumber,
 	reminderHours: wholeNumber,
+	waitlistEnabled: checkbox,
 	minBreakMinutes: z.coerce
 		.number('error.invalidNumber')
 		.int('error.invalidNumber')
@@ -249,4 +250,14 @@ export const fieldSchema = z.object({
 	showToLeads: checkbox,
 	active: checkbox,
 	sortOrder: z.coerce.number().int().min(-9999).max(9999).default(0)
+});
+
+export const waveSchema = z.object({
+	name: requiredText(100),
+	opensDate: isoDate,
+	opensTime: z.string().refine(isWallTime, 'error.invalidTime'),
+	closesDate: z.string().trim().default(''),
+	closesTime: z.string().trim().default(''),
+	'areaIds[]': z.array(z.uuid()).default([]),
+	audience: z.enum(['everyone', 'crew', 'returning', 'invite'])
 });

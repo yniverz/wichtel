@@ -19,6 +19,7 @@
 				{ href: '/admin', label: 'admin.nav.overview', show: true },
 				{ href: '/admin/desk', label: 'admin.nav.desk', show: data.access.desk },
 				{ href: '/admin/shifts', label: 'admin.nav.shifts', show: data.access.shifts },
+				{ href: '/admin/waves', label: 'admin.nav.waves', show: data.access.waves },
 				{ href: '/admin/goodies', label: 'admin.nav.goodies', show: data.access.goodies },
 				{ href: '/admin/areas', label: 'admin.nav.areas', show: data.access.areas },
 				{ href: '/admin/people', label: 'admin.nav.people', show: data.access.people },

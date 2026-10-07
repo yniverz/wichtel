@@ -9,6 +9,8 @@ import { listShifts } from './services/shifts.ts';
 import { getSettings } from './services/settings.ts';
 import { pointsFor } from './services/points.ts';
 import { heldQualificationIds, listQualifications } from './services/qualifications.ts';
+import { bookingAccess } from './services/waves.ts';
+import { waitlistQueue } from './services/assignments.ts';
 
 /** What a volunteer sees of one shift. Only data that is safe to show to every helper. */
 export interface HelperShift {
@@ -40,14 +42,21 @@ export interface HelperShift {
 		points: number;
 		required: { id: string; nameDe: string; nameEn: string; held: boolean }[];
 		preferred: { nameDe: string; nameEn: string }[];
+		waitlisted: number;
 	}[];
 	mine: {
 		assignmentId: string;
 		positionId: string;
-		status: 'booked' | 'requested' | 'rejected';
+		status: 'booked' | 'requested' | 'rejected' | 'waitlisted';
 		cancelUntil: string | null;
 		canCancel: boolean;
+		/** 1-based place on the waiting list. */
+		waitlistPlace: number | null;
 	} | null;
+	/** Whether booking is open for this person (waves); if not, when it opens. */
+	bookingOpen: boolean;
+	bookingOpensAt: string | null;
+	waitlistEnabled: boolean;
 	/** Overlaps with one of the user's active assignments (including the required break). */
 	conflict: boolean;
 }
@@ -55,24 +64,26 @@ export interface HelperShift {
 /** Builds the volunteer's view of all shifts of an edition. */
 export async function loadHelperShifts(
 	db: DB,
-	user: Pick<User, 'id'>,
+	user: Pick<User, 'id' | 'isAdmin'>,
 	authz: Authz,
 	editionId: string,
 	now: Date
 ): Promise<HelperShift[]> {
-	const [settings, tree, all, mine, quals, heldIds] = await Promise.all([
+	const [settings, tree, all, mine, quals, heldIds, access, queue] = await Promise.all([
 		getSettings(db),
 		loadAreaTree(db, editionId),
 		listShifts(db, editionId),
 		listUserAssignments(db, user.id, editionId),
 		listQualifications(db),
-		heldQualificationIds(db, user.id, now)
+		heldQualificationIds(db, user.id, now),
+		bookingAccess(db, user, editionId, now),
+		waitlistQueue(db, editionId)
 	]);
 	const qualificationsById = new Map(quals.map((q) => [q.id, q]));
 	const held = new Set(heldIds);
 	const tz = settings.timezone;
 	// Prefer active assignments over old rejected/cancelled ones of the same shift.
-	const rank = { booked: 3, requested: 2, rejected: 1, cancelled: 0 } as const;
+	const rank = { booked: 4, requested: 3, waitlisted: 2, rejected: 1, cancelled: 0 } as const;
 	const mineByShift = new Map<string, (typeof mine)[number]>();
 	for (const a of mine) {
 		const existing = mineByShift.get(a.shiftId);
@@ -99,6 +110,7 @@ export async function loadHelperShifts(
 		const a = mineByShift.get(s.id);
 		const activeMine = a && a.status !== 'cancelled' ? a : null;
 		const hours = cancelHours.get(s.id);
+		const window = access(s.areaId);
 		return {
 			id: s.id,
 			titleDe: s.titleDe,
@@ -132,13 +144,21 @@ export async function loadHelperShifts(
 				preferred: p.preferredQualificationIds
 					.map((id) => qualificationsById.get(id))
 					.filter((q) => q !== undefined)
-					.map((q) => ({ nameDe: q.nameDe, nameEn: q.nameEn }))
+					.map((q) => ({ nameDe: q.nameDe, nameEn: q.nameEn })),
+				waitlisted: p.waitlisted
 			})),
+			bookingOpen: window.open,
+			bookingOpensAt: window.opensAt?.toISOString() ?? null,
+			waitlistEnabled: settings.waitlistEnabled,
 			mine: activeMine
 				? {
 						assignmentId: activeMine.id,
 						positionId: activeMine.positionId,
-						status: activeMine.status as 'booked' | 'requested' | 'rejected',
+						status: activeMine.status as 'booked' | 'requested' | 'rejected' | 'waitlisted',
+						waitlistPlace:
+							activeMine.status === 'waitlisted'
+								? (queue.get(activeMine.positionId)?.indexOf(user.id) ?? -1) + 1 || null
+								: null,
 						cancelUntil:
 							activeMine.status === 'booked' && hours !== undefined
 								? cancelDeadline(s.startsAt, hours).toISOString()
@@ -146,6 +166,7 @@ export async function loadHelperShifts(
 						canCancel:
 							s.startsAt.getTime() > now.getTime() &&
 							(activeMine.status === 'requested' ||
+								activeMine.status === 'waitlisted' ||
 								(activeMine.status === 'booked' &&
 									hours !== undefined &&
 									canSelfCancel(now, s.startsAt, hours)))

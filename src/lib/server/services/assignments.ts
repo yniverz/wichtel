@@ -88,7 +88,7 @@ async function hasActiveInShift(tx: Tx, userId: string, shiftId: string) {
 			and(
 				eq(assignments.userId, userId),
 				eq(assignments.shiftId, shiftId),
-				inArray(assignments.status, [...ACTIVE])
+				inArray(assignments.status, [...ACTIVE, 'waitlisted'])
 			)
 		);
 	return Boolean(row);
@@ -99,6 +99,14 @@ async function lockUser(tx: Tx, userId: string) {
 	await tx.select({ id: users.id }).from(users).where(eq(users.id, userId)).for('update');
 }
 
+export interface BookingOptions {
+	editionId: string;
+	/** Whether the shift is visible to this person (internal shifts). */
+	canSee: (shift: Shift) => boolean;
+	/** Whether booking is open for this person and shift (waves); omitted = open. */
+	isOpen?: (shift: Shift) => boolean;
+}
+
 /**
  * A helper books a place (or requests one, depending on the position's booking mode).
  * `canSee` decides whether the shift is visible to this person (internal shifts).
@@ -107,7 +115,7 @@ export async function bookPosition(
 	ctx: BookingContext,
 	userId: string,
 	positionId: string,
-	opts: { editionId: string; canSee: (shift: Shift) => boolean }
+	opts: BookingOptions
 ): Promise<Assignment> {
 	const settings = await getSettings(ctx.db);
 	return ctx.db.transaction(async (tx) => {
@@ -115,6 +123,7 @@ export async function bookPosition(
 		const { position, shift } = await lockPosition(tx, positionId);
 		if (shift.editionId !== opts.editionId || !opts.canSee(shift))
 			throw new DomainError('notFound');
+		if (opts.isOpen && !opts.isOpen(shift)) throw new DomainError('bookingClosed');
 		if (shift.startsAt.getTime() <= ctx.now.getTime()) throw new DomainError('shiftStarted');
 		if (await hasActiveInShift(tx, userId, shift.id)) throw new DomainError('alreadyBooked');
 
@@ -165,7 +174,8 @@ export async function cancelOwnAssignment(
 			.from(assignments)
 			.innerJoin(shifts, eq(assignments.shiftId, shifts.id))
 			.where(and(eq(assignments.id, assignmentId), eq(assignments.userId, userId)));
-		if (!row || !ACTIVE.includes(row.assignment.status as (typeof ACTIVE)[number])) {
+		const status = row?.assignment.status;
+		if (!row || (status !== 'booked' && status !== 'requested' && status !== 'waitlisted')) {
 			throw new DomainError('notFound');
 		}
 		if (row.shift.startsAt.getTime() <= ctx.now.getTime()) throw new DomainError('shiftStarted');
@@ -178,7 +188,86 @@ export async function cancelOwnAssignment(
 			.update(assignments)
 			.set({ status: 'cancelled' })
 			.where(eq(assignments.id, assignmentId));
+		if (status === 'booked')
+			await promoteWaitlist(tx, { userId }, row.assignment.positionId, ctx.now);
 	});
+}
+
+/** Joins the waiting list of a full position. */
+export async function joinWaitlist(
+	ctx: BookingContext,
+	userId: string,
+	positionId: string,
+	opts: BookingOptions
+): Promise<Assignment> {
+	const settings = await getSettings(ctx.db);
+	if (!settings.waitlistEnabled) throw new DomainError('notFound');
+	return ctx.db.transaction(async (tx) => {
+		await lockUser(tx, userId);
+		const { position, shift } = await lockPosition(tx, positionId);
+		if (shift.editionId !== opts.editionId || !opts.canSee(shift))
+			throw new DomainError('notFound');
+		if (opts.isOpen && !opts.isOpen(shift)) throw new DomainError('bookingClosed');
+		if (shift.startsAt.getTime() <= ctx.now.getTime()) throw new DomainError('shiftStarted');
+		if (await hasActiveInShift(tx, userId, shift.id)) throw new DomainError('alreadyBooked');
+		const { booked } = await countActive(tx, position.id);
+		if (freeSpots(position.capacity, booked) > 0) throw new DomainError('positionNotFull');
+		if (await lacksQualifications(tx, userId, position.requiredQualificationIds, ctx.now)) {
+			throw new DomainError('qualificationMissing');
+		}
+		const [entry] = await tx
+			.insert(assignments)
+			.values({ positionId, shiftId: shift.id, userId, status: 'waitlisted', createdBy: userId })
+			.returning();
+		return entry;
+	});
+}
+
+/**
+ * Fills free places of a position from its waiting list, in order. People who meanwhile have an
+ * overlapping shift are skipped (and stay on the list). Returns the number of people moved up.
+ */
+export async function promoteWaitlist(
+	tx: Tx,
+	actor: Actor,
+	positionId: string,
+	now: Date
+): Promise<number> {
+	const settings = await getSettings(tx);
+	const { position, shift } = await lockPosition(tx, positionId);
+	if (shift.startsAt.getTime() <= now.getTime()) return 0;
+	let { booked } = await countActive(tx, position.id);
+	const waiting = await tx
+		.select()
+		.from(assignments)
+		.where(and(eq(assignments.positionId, positionId), eq(assignments.status, 'waitlisted')))
+		.orderBy(asc(assignments.createdAt));
+	let promoted = 0;
+	for (const entry of waiting) {
+		if (freeSpots(position.capacity, booked) === 0) break;
+		await lockUser(tx, entry.userId);
+		if ((await findOverlaps(tx, entry.userId, shift, settings.minBreakMinutes)).length > 0)
+			continue;
+		const status = position.bookingMode === 'request' ? 'requested' : 'booked';
+		await tx.update(assignments).set({ status }).where(eq(assignments.id, entry.id));
+		await notifyAssignment(
+			tx,
+			status === 'booked' ? 'waitlist_promoted' : 'booking_requested',
+			entry.id
+		);
+		if (status === 'booked') booked++;
+		promoted++;
+	}
+	if (promoted > 0) {
+		await audit(tx, actor, {
+			action: 'waitlist.promote',
+			entityType: 'shift',
+			entityId: shift.id,
+			editionId: shift.editionId,
+			data: { positionId, promoted }
+		});
+	}
+	return promoted;
 }
 
 // ---------------------------------------------------------------------------
@@ -276,6 +365,9 @@ export async function leadRemove(
 		await syncAssignmentPoints(tx, actor, updated);
 		if (assignment.status === 'booked' || assignment.status === 'requested') {
 			await notifyAssignment(tx, 'removed_by_lead', assignmentId);
+		}
+		if (assignment.status === 'booked') {
+			await promoteWaitlist(tx, actor, assignment.positionId, ctx.now);
 		}
 		await audit(tx, actor, {
 			action: 'assignment.lead_remove',
@@ -392,7 +484,9 @@ export async function shiftRoster(db: Tx, shiftId: string) {
 		})
 		.from(assignments)
 		.innerJoin(users, eq(assignments.userId, users.id))
-		.where(and(eq(assignments.shiftId, shiftId), inArray(assignments.status, [...ACTIVE])))
+		.where(
+			and(eq(assignments.shiftId, shiftId), inArray(assignments.status, [...ACTIVE, 'waitlisted']))
+		)
 		.orderBy(asc(assignments.createdAt));
 }
 
@@ -411,4 +505,17 @@ export async function cancelHoursForShifts(db: Tx, editionId: string, list: Shif
 		);
 	}
 	return result;
+}
+
+/** Waiting lists of an edition: position id → user ids in order. */
+export async function waitlistQueue(db: Tx, editionId: string): Promise<Map<string, string[]>> {
+	const rows = await db
+		.select({ positionId: assignments.positionId, userId: assignments.userId })
+		.from(assignments)
+		.innerJoin(shifts, eq(assignments.shiftId, shifts.id))
+		.where(and(eq(shifts.editionId, editionId), eq(assignments.status, 'waitlisted')))
+		.orderBy(asc(assignments.createdAt));
+	const queue = new Map<string, string[]>();
+	for (const r of rows) queue.set(r.positionId, [...(queue.get(r.positionId) ?? []), r.userId]);
+	return queue;
 }

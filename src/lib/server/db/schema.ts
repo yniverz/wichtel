@@ -145,6 +145,8 @@ export const instanceSettings = pgTable(
 		lastMinuteHours: integer('last_minute_hours').notNull().default(24),
 		/** Reminder e-mail this many hours before a shift (0 = no reminders). */
 		reminderHours: integer('reminder_hours').notNull().default(24),
+		/** Full positions offer a waiting list with automatic moving up. */
+		waitlistEnabled: boolean('waitlist_enabled').notNull().default(true),
 		/** SHA-256 of the one-time setup token; null once setup is complete. */
 		setupTokenHash: text('setup_token_hash'),
 		updatedAt: timestamps.updatedAt
@@ -209,7 +211,8 @@ export const assignmentStatusEnum = pgEnum('assignment_status', [
 	'requested',
 	'booked',
 	'rejected',
-	'cancelled'
+	'cancelled',
+	'waitlisted'
 ]);
 export const attendanceEnum = pgEnum('attendance', ['unknown', 'attended', 'no_show']);
 
@@ -306,10 +309,12 @@ export const assignments = pgTable(
 	(t) => [
 		index('assignments_position_idx').on(t.positionId),
 		index('assignments_user_idx').on(t.userId),
-		// A person holds at most one active place per shift.
+		// A person holds at most one active place (or waiting-list entry) per shift.
 		uniqueIndex('assignments_one_active_per_shift')
 			.on(t.shiftId, t.userId)
-			.where(sql`${t.status} in ('requested', 'booked')`)
+			// Written with the old values only: a freshly added enum value ('waitlisted') may not be
+			// used in the migration that adds it.
+			.where(sql`${t.status} not in ('rejected', 'cancelled')`)
 	]
 );
 
@@ -355,6 +360,61 @@ export const roleAssignments = pgTable(
 			.nullsNotDistinct(),
 		index('role_assignments_user_edition_idx').on(t.userId, t.editionId)
 	]
+);
+
+// ---------------------------------------------------------------------------
+// Booking waves
+// ---------------------------------------------------------------------------
+
+export const waveAudienceEnum = pgEnum('wave_audience', [
+	'everyone',
+	'crew',
+	'returning',
+	'invite'
+]);
+
+/**
+ * Time-controlled release of booking. Without any wave, booking is open for everyone; as soon
+ * as an edition has waves, booking is only possible within a wave that covers the person and area.
+ */
+export const bookingWaves = pgTable(
+	'booking_waves',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		editionId: uuid('edition_id')
+			.notNull()
+			.references(() => editions.id, { onDelete: 'cascade' }),
+		name: text('name').notNull(),
+		opensAt: timestamp('opens_at', { withTimezone: true }).notNull(),
+		closesAt: timestamp('closes_at', { withTimezone: true }),
+		/** Areas (incl. sub-areas) this wave opens; empty = all. */
+		areaIds: uuid('area_ids')
+			.array()
+			.notNull()
+			.default(sql`'{}'::uuid[]`),
+		audience: waveAudienceEnum('audience').notNull().default('everyone'),
+		/** Secret code for `audience = invite` (link `/invite/<code>`). */
+		inviteCode: text('invite_code')
+			.notNull()
+			.unique()
+			.default(sql`replace(gen_random_uuid()::text, '-', '')`),
+		...timestamps
+	},
+	(t) => [index('booking_waves_edition_idx').on(t.editionId)]
+);
+
+export const waveInvites = pgTable(
+	'wave_invites',
+	{
+		waveId: uuid('wave_id')
+			.notNull()
+			.references(() => bookingWaves.id, { onDelete: 'cascade' }),
+		userId: uuid('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
+	},
+	(t) => [primaryKey({ columns: [t.waveId, t.userId] })]
 );
 
 // ---------------------------------------------------------------------------
@@ -662,3 +722,4 @@ export type PointsEntry = typeof pointsLedger.$inferSelect;
 export type Qualification = typeof qualifications.$inferSelect;
 export type UserQualification = typeof userQualifications.$inferSelect;
 export type ProfileField = typeof profileFields.$inferSelect;
+export type BookingWave = typeof bookingWaves.$inferSelect;

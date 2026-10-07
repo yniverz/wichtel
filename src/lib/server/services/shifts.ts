@@ -17,6 +17,7 @@ import {
 import { audit, diff, type Actor } from '../audit.ts';
 import { DomainError } from '../errors.ts';
 import { notifyShiftPeople } from '../notifications.ts';
+import { promoteWaitlist } from './assignments.ts';
 
 export interface PositionInput {
 	/** Existing position id when editing; absent for new positions. */
@@ -53,6 +54,7 @@ export interface ShiftInput extends ShiftDetailsInput, Interval {
 export interface PositionWithCounts extends ShiftPosition {
 	booked: number;
 	requested: number;
+	waitlisted: number;
 }
 
 export interface ShiftWithPositions extends Shift {
@@ -113,20 +115,26 @@ export async function listShifts(
 				count: sql<number>`count(*)::int`
 			})
 			.from(assignments)
-			.where(and(inArray(assignments.shiftId, ids), inArray(assignments.status, [...ACTIVE])))
+			.where(
+				and(
+					inArray(assignments.shiftId, ids),
+					inArray(assignments.status, [...ACTIVE, 'waitlisted'])
+				)
+			)
 			.groupBy(assignments.positionId, assignments.status)
 	]);
 
-	const countMap = new Map<string, { booked: number; requested: number }>();
+	type Counts = { booked: number; requested: number; waitlisted: number };
+	const countMap = new Map<string, Counts>();
 	for (const c of counts) {
-		const entry = countMap.get(c.positionId) ?? { booked: 0, requested: 0 };
-		entry[c.status as 'booked' | 'requested'] = c.count;
+		const entry = countMap.get(c.positionId) ?? { booked: 0, requested: 0, waitlisted: 0 };
+		entry[c.status as keyof Counts] = c.count;
 		countMap.set(c.positionId, entry);
 	}
 	const byShift = new Map<string, PositionWithCounts[]>();
 	for (const p of positionRows) {
 		const list = byShift.get(p.shiftId) ?? [];
-		list.push({ ...p, ...(countMap.get(p.id) ?? { booked: 0, requested: 0 }) });
+		list.push({ ...p, ...(countMap.get(p.id) ?? { booked: 0, requested: 0, waitlisted: 0 }) });
 		byShift.set(p.shiftId, list);
 	}
 	return shiftRows.map((s) => ({ ...s, positions: byShift.get(s.id) ?? [] }));
@@ -269,6 +277,11 @@ export async function updateShift(
 			}
 		}
 
+		// More places (or a later start) may let people move up from the waiting list.
+		for (const p of positions) {
+			if (p.id && existing.has(p.id)) await promoteWaitlist(tx, actor, p.id, new Date());
+		}
+
 		const changes = diff(before as unknown as Record<string, unknown>, details);
 
 		// People who are on the shift hear about changes that affect them.
@@ -314,7 +327,9 @@ export async function deleteShift(db: DB, actor: Actor, id: string): Promise<str
 		const affected = await tx
 			.select({ userId: assignments.userId })
 			.from(assignments)
-			.where(and(eq(assignments.shiftId, id), inArray(assignments.status, [...ACTIVE])));
+			.where(
+				and(eq(assignments.shiftId, id), inArray(assignments.status, [...ACTIVE, 'waitlisted']))
+			);
 		await notifyShiftPeople(
 			tx,
 			'shift_cancelled',
