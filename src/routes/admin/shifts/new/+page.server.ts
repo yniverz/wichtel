@@ -1,5 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import { db } from '#lib/server/app.ts';
+import { qualificationOptions } from '#lib/server/services/qualifications.ts';
 import {
 	actorOf,
 	attempt,
@@ -20,6 +21,7 @@ export const load: PageServerLoad = async (event) => {
 	const ctx = await getAdminContext(event);
 	const { edition } = requireEdition(ctx);
 	const areas = shiftAreaOptions(ctx);
+	const qualifications = await qualificationOptions(db());
 	if (areas.length === 0) error(403, 'error.forbidden');
 	const tz = (await getSettings(db())).timezone;
 
@@ -28,10 +30,18 @@ export const load: PageServerLoad = async (event) => {
 	if (fromId) {
 		const source = await getShift(db(), fromId);
 		if (source && source.editionId === edition.id && canSeeShiftArea(ctx, source.areaId)) {
-			return { areas, ...formValuesFromShift(source, tz, false) };
+			return {
+				areas,
+				qualifications,
+				...formValuesFromShift(source, tz, false)
+			};
 		}
 	}
-	return { areas, ...seriesValuesFromRequest(event.url, areas, edition.startsOn) };
+	return {
+		areas,
+		qualifications,
+		...seriesValuesFromRequest(event.url, areas, edition.startsOn)
+	};
 };
 
 export const actions: Actions = {

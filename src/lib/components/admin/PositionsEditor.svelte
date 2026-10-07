@@ -9,6 +9,8 @@
 		bookingMode: 'open' | 'request';
 		/** Points override for this position; null = inherit from area/instance. */
 		pointsPerShift?: number | null;
+		requiredQualificationIds?: string[];
+		preferredQualificationIds?: string[];
 		/** Read-only info for existing positions. */
 		booked?: number;
 	}
@@ -16,8 +18,29 @@
 
 <script lang="ts">
 	import { getI18n } from '#lib/i18n/context.ts';
+	import { localized } from '#lib/i18n/index.ts';
 
-	let { initial, error }: { initial: EditablePosition[]; error?: string } = $props();
+	let {
+		initial,
+		error,
+		qualifications = []
+	}: {
+		initial: EditablePosition[];
+		error?: string;
+		qualifications?: { id: string; nameDe: string; nameEn: string }[];
+	} = $props();
+
+	function requirementOf(p: EditablePosition, id: string) {
+		if (p.requiredQualificationIds?.includes(id)) return 'required';
+		if (p.preferredQualificationIds?.includes(id)) return 'preferred';
+		return '';
+	}
+	function setRequirement(p: EditablePosition, id: string, value: string) {
+		p.requiredQualificationIds = (p.requiredQualificationIds ?? []).filter((x) => x !== id);
+		p.preferredQualificationIds = (p.preferredQualificationIds ?? []).filter((x) => x !== id);
+		if (value === 'required') p.requiredQualificationIds.push(id);
+		if (value === 'preferred') p.preferredQualificationIds.push(id);
+	}
 	const i18n = getI18n();
 
 	const blank = (): EditablePosition => ({
@@ -139,6 +162,27 @@
 					>
 				{/if}
 			</div>
+			{#if qualifications.length}
+				<div
+					class="col-span-full flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-line pt-2 text-xs"
+				>
+					<span class="font-medium">{i18n.t('admin.shifts.position.requirements')}:</span>
+					{#each qualifications as q (q.id)}
+						<label class="flex items-center gap-1.5">
+							<span>{localized(q, 'name', i18n.locale)}</span>
+							<select
+								class="h-8 py-0 text-xs"
+								value={requirementOf(position, q.id)}
+								onchange={(e) => setRequirement(position, q.id, e.currentTarget.value)}
+							>
+								<option value="">{i18n.t('admin.shifts.requirement.none')}</option>
+								<option value="required">{i18n.t('admin.shifts.requirement.required')}</option>
+								<option value="preferred">{i18n.t('admin.shifts.requirement.preferred')}</option>
+							</select>
+						</label>
+					{/each}
+				</div>
+			{/if}
 		</div>
 	{/each}
 

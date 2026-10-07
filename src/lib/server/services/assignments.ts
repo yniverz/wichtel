@@ -20,6 +20,7 @@ import { DomainError } from '../errors.ts';
 import { loadAreaTree } from './areas.ts';
 import { applyMandatoryGoodies } from './goodies.ts';
 import { syncAssignmentPoints } from './points.ts';
+import { heldQualificationIds } from './qualifications.ts';
 import { notifyAssignment } from '../notifications.ts';
 import { getSettings } from './settings.ts';
 
@@ -32,7 +33,13 @@ export interface BookingContext {
 }
 
 /** Rule violations a lead may knowingly override (with `assignment.override`). */
-export type OverridableIssue = 'overlap' | 'full' | 'started';
+export type OverridableIssue = 'overlap' | 'full' | 'started' | 'qualification';
+
+async function lacksQualifications(tx: Tx, userId: string, required: string[], now: Date) {
+	if (required.length === 0) return false;
+	const held = new Set(await heldQualificationIds(tx, userId, now));
+	return required.some((id) => !held.has(id));
+}
 
 async function lockPosition(tx: Tx, positionId: string) {
 	const [row] = await tx
@@ -113,6 +120,9 @@ export async function bookPosition(
 
 		const { booked } = await countActive(tx, position.id);
 		if (freeSpots(position.capacity, booked) === 0) throw new DomainError('positionFull');
+		if (await lacksQualifications(tx, userId, position.requiredQualificationIds, ctx.now)) {
+			throw new DomainError('qualificationMissing');
+		}
 
 		const overlaps = await findOverlaps(tx, userId, shift, settings.minBreakMinutes);
 		if (overlaps.length > 0) throw new DomainError('overlap');
@@ -218,6 +228,9 @@ export async function leadAssign(
 		if ((await findOverlaps(tx, input.userId, shift, settings.minBreakMinutes)).length)
 			issues.push('overlap');
 		if (shift.startsAt.getTime() <= ctx.now.getTime()) issues.push('started');
+		if (await lacksQualifications(tx, input.userId, position.requiredQualificationIds, ctx.now)) {
+			issues.push('qualification');
+		}
 
 		if (issues.length > 0) {
 			if (!input.override) return { issues };

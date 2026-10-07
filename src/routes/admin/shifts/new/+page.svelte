@@ -30,6 +30,7 @@
 	{values}
 	{positions}
 	areas={data.areas}
+	qualifications={data.qualifications}
 	result={form}
 	submitLabel={i18n.t('common.create')}
 />

@@ -243,6 +243,26 @@
 															'admin.shifts.mode.request'
 														)}{/if}
 												</p>
+												{#if position.required.length}
+													<p class="mt-1 text-sm">
+														{i18n.t('shifts.requires', {
+															names: position.required
+																.map(
+																	(q) => `${localized(q, 'name', i18n.locale)}${q.held ? ' ✓' : ''}`
+																)
+																.join(', ')
+														})}
+													</p>
+												{/if}
+												{#if position.preferred.length}
+													<p class="text-sm text-ink-muted">
+														{i18n.t('shifts.preferred', {
+															names: position.preferred
+																.map((q) => localized(q, 'name', i18n.locale))
+																.join(', ')
+														})}
+													</p>
+												{/if}
 											</div>
 
 											{#if isMine && shift.mine}
@@ -281,6 +301,12 @@
 													<p class="max-w-48 text-right text-xs text-ink-muted">
 														{i18n.t('shifts.conflict')}
 													</p>
+												{:else if position.free > 0 && position.required.some((q) => !q.held)}
+													<Button
+														href="/app/qualifications?q={position.required.find((q) => !q.held)
+															?.id}#{position.required.find((q) => !q.held)?.id}"
+														variant="secondary">{i18n.t('shifts.getQualified')}</Button
+													>
 												{:else if position.free > 0}
 													<form
 														method="POST"

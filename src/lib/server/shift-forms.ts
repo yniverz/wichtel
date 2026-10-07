@@ -57,7 +57,9 @@ export function formValuesFromShift(shift: ShiftWithPositions, timeZone: string,
 			descriptionEn: p.descriptionEn,
 			capacity: p.capacity,
 			bookingMode: p.bookingMode,
-			pointsPerShift: p.pointsPerShift
+			pointsPerShift: p.pointsPerShift,
+			requiredQualificationIds: p.requiredQualificationIds,
+			preferredQualificationIds: p.preferredQualificationIds
 		}))
 	};
 }

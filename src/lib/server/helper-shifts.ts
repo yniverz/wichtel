@@ -8,6 +8,7 @@ import { cancelHoursForShifts, listUserAssignments } from './services/assignment
 import { listShifts } from './services/shifts.ts';
 import { getSettings } from './services/settings.ts';
 import { pointsFor } from './services/points.ts';
+import { heldQualificationIds, listQualifications } from './services/qualifications.ts';
 
 /** What a volunteer sees of one shift. Only data that is safe to show to every helper. */
 export interface HelperShift {
@@ -37,6 +38,8 @@ export interface HelperShift {
 		free: number;
 		mode: 'open' | 'request';
 		points: number;
+		required: { id: string; nameDe: string; nameEn: string; held: boolean }[];
+		preferred: { nameDe: string; nameEn: string }[];
 	}[];
 	mine: {
 		assignmentId: string;
@@ -57,12 +60,16 @@ export async function loadHelperShifts(
 	editionId: string,
 	now: Date
 ): Promise<HelperShift[]> {
-	const [settings, tree, all, mine] = await Promise.all([
+	const [settings, tree, all, mine, quals, heldIds] = await Promise.all([
 		getSettings(db),
 		loadAreaTree(db, editionId),
 		listShifts(db, editionId),
-		listUserAssignments(db, user.id, editionId)
+		listUserAssignments(db, user.id, editionId),
+		listQualifications(db),
+		heldQualificationIds(db, user.id, now)
 	]);
+	const qualificationsById = new Map(quals.map((q) => [q.id, q]));
+	const held = new Set(heldIds);
 	const tz = settings.timezone;
 	// Prefer active assignments over old rejected/cancelled ones of the same shift.
 	const rank = { booked: 3, requested: 2, rejected: 1, cancelled: 0 } as const;
@@ -117,7 +124,15 @@ export async function loadHelperShifts(
 				capacity: p.capacity,
 				free: freeSpots(p.capacity, p.booked),
 				mode: p.bookingMode,
-				points: pointsFor(s, p, tree, settings).total
+				points: pointsFor(s, p, tree, settings).total,
+				required: p.requiredQualificationIds
+					.map((id) => qualificationsById.get(id))
+					.filter((q) => q !== undefined)
+					.map((q) => ({ id: q.id, nameDe: q.nameDe, nameEn: q.nameEn, held: held.has(q.id) })),
+				preferred: p.preferredQualificationIds
+					.map((id) => qualificationsById.get(id))
+					.filter((q) => q !== undefined)
+					.map((q) => ({ nameDe: q.nameDe, nameEn: q.nameEn }))
 			})),
 			mine: activeMine
 				? {

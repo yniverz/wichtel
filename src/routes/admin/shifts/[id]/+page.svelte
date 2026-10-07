@@ -237,6 +237,7 @@
 			values={editValues}
 			positions={editPositions}
 			areas={data.areas}
+			qualifications={data.qualifications}
 			result={result?.action === 'update' ? result : null}
 			submitLabel={i18n.t('common.save')}
 		/>

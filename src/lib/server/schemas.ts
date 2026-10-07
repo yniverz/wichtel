@@ -112,7 +112,9 @@ const positionSchema = z.object({
 	capacity: z.coerce.number('error.invalidNumber').int('error.invalidNumber').min(1).max(500),
 	bookingMode: z.enum(['open', 'request']),
 	pointsPerShift: z.number().int().min(0).max(1000).nullable().default(null),
-	pointsPerHour: z.number().int().min(0).max(1000).nullable().default(null)
+	pointsPerHour: z.number().int().min(0).max(1000).nullable().default(null),
+	requiredQualificationIds: z.array(z.uuid()).max(20).default([]),
+	preferredQualificationIds: z.array(z.uuid()).max(20).default([])
 });
 
 /** Positions are edited client-side and submitted as one JSON field. */
@@ -205,6 +207,18 @@ export const goodieSchema = z.object({
 	mandatoryPriority: z.coerce.number().int().min(0).max(1000).default(0),
 	refundable: checkbox,
 	advance: checkbox,
+	active: checkbox,
+	sortOrder: z.coerce.number().int().min(-9999).max(9999).default(0)
+});
+
+export const qualificationSchema = z.object({
+	nameDe: requiredText(100),
+	nameEn: optionalText(100),
+	descriptionDe: optionalText(1000),
+	descriptionEn: optionalText(1000),
+	proof: z.enum(['confirm', 'upload', 'either']),
+	documentRetention: z.enum(['keep', 'delete_after_review']),
+	validityDays: optionalHours,
 	active: checkbox,
 	sortOrder: z.coerce.number().int().min(-9999).max(9999).default(0)
 });

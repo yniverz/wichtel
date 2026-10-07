@@ -2,6 +2,7 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import { z } from 'zod';
 import { checkInOpen } from '#lib/domain/booking.ts';
 import { db } from '#lib/server/app.ts';
+import { qualificationOptions } from '#lib/server/services/qualifications.ts';
 import {
 	actorOf,
 	attempt,
@@ -82,6 +83,7 @@ export const load: PageServerLoad = async (event) => {
 			checkInOpen: checkInOpen(new Date(), shift.startsAt, tz)
 		},
 		areas: canEdit ? shiftAreaOptions(ctx) : [],
+		qualifications: canEdit ? await qualificationOptions(db()) : [],
 		form: canEdit ? formValuesFromShift(shift, tz, true) : null
 	};
 };

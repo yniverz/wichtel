@@ -29,6 +29,8 @@ export interface PositionInput {
 	bookingMode: 'open' | 'request';
 	pointsPerShift?: number | null;
 	pointsPerHour?: number | null;
+	requiredQualificationIds?: string[];
+	preferredQualificationIds?: string[];
 }
 
 export interface ShiftDetailsInput {
@@ -150,7 +152,11 @@ function positionValues(p: PositionInput, index: number) {
 		bookingMode: p.bookingMode,
 		sortOrder: index,
 		pointsPerShift: p.pointsPerShift ?? null,
-		pointsPerHour: p.pointsPerHour ?? null
+		pointsPerHour: p.pointsPerHour ?? null,
+		requiredQualificationIds: p.requiredQualificationIds ?? [],
+		preferredQualificationIds: (p.preferredQualificationIds ?? []).filter(
+			(id) => !(p.requiredQualificationIds ?? []).includes(id)
+		)
 	};
 }
 

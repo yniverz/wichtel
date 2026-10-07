@@ -32,6 +32,7 @@
 		values,
 		positions,
 		areas,
+		qualifications = [],
 		result,
 		submitLabel,
 		schedule
@@ -40,6 +41,7 @@
 		values: ShiftFormValues;
 		positions: EditablePosition[];
 		areas: { id: string; nameDe: string; nameEn: string; depth: number }[];
+		qualifications?: { id: string; nameDe: string; nameEn: string }[];
 		result?: { error?: string; success?: string; errors?: Record<string, string> } | null;
 		submitLabel: string;
 		/** Replaces the single date/time fields (used by the series form). */
@@ -119,7 +121,7 @@
 	{/if}
 
 	{#key JSON.stringify(positions)}
-		<PositionsEditor initial={positions} error={e.positions} />
+		<PositionsEditor initial={positions} error={e.positions} {qualifications} />
 	{/key}
 
 	<fieldset class="space-y-4">

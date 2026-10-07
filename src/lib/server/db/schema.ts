@@ -263,7 +263,17 @@ export const shiftPositions = pgTable(
 		sortOrder: integer('sort_order').notNull().default(0),
 		/** Point rule overrides for this position (null = inherit). */
 		pointsPerShift: integer('points_per_shift'),
-		pointsPerHour: integer('points_per_hour')
+		pointsPerHour: integer('points_per_hour'),
+		/** All of these qualifications are needed to book (leads may override). */
+		requiredQualificationIds: uuid('required_qualification_ids')
+			.array()
+			.notNull()
+			.default(sql`'{}'::uuid[]`),
+		/** Shown as "nice to have"; never blocks. */
+		preferredQualificationIds: uuid('preferred_qualification_ids')
+			.array()
+			.notNull()
+			.default(sql`'{}'::uuid[]`)
 	},
 	(t) => [
 		index('shift_positions_shift_idx').on(t.shiftId),
@@ -463,6 +473,62 @@ export const pointsLedger = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// Qualifications
+// ---------------------------------------------------------------------------
+
+export const proofEnum = pgEnum('qualification_proof', ['confirm', 'upload', 'either']);
+export const retentionEnum = pgEnum('document_retention', ['keep', 'delete_after_review']);
+export const userQualificationStatusEnum = pgEnum('user_qualification_status', [
+	'pending',
+	'approved',
+	'rejected'
+]);
+
+/** Qualifications are defined once per instance and kept across editions. */
+export const qualifications = pgTable('qualifications', {
+	id: uuid('id').primaryKey().defaultRandom(),
+	nameDe: text('name_de').notNull(),
+	nameEn: text('name_en').notNull().default(''),
+	descriptionDe: text('description_de').notNull().default(''),
+	descriptionEn: text('description_en').notNull().default(''),
+	proof: proofEnum('proof').notNull().default('either'),
+	documentRetention: retentionEnum('document_retention').notNull().default('delete_after_review'),
+	/** Approval expires after this many days; null = valid indefinitely. */
+	validityDays: integer('validity_days'),
+	active: boolean('active').notNull().default(true),
+	sortOrder: integer('sort_order').notNull().default(0),
+	...timestamps
+});
+
+export const userQualifications = pgTable(
+	'user_qualifications',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		userId: uuid('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		qualificationId: uuid('qualification_id')
+			.notNull()
+			.references(() => qualifications.id, { onDelete: 'cascade' }),
+		status: userQualificationStatusEnum('status').notNull().default('pending'),
+		/** Name of the privately stored proof document (see `UPLOAD_DIR/private`). */
+		documentId: uuid('document_id'),
+		documentName: text('document_name'),
+		documentType: text('document_type'),
+		note: text('note').notNull().default(''),
+		reviewNote: text('review_note').notNull().default(''),
+		reviewedBy: uuid('reviewed_by').references(() => users.id, { onDelete: 'set null' }),
+		reviewedAt: timestamp('reviewed_at', { withTimezone: true }),
+		expiresAt: timestamp('expires_at', { withTimezone: true }),
+		...timestamps
+	},
+	(t) => [
+		unique('user_qualifications_unique').on(t.userId, t.qualificationId),
+		index('user_qualifications_status_idx').on(t.status)
+	]
+);
+
+// ---------------------------------------------------------------------------
 // E-mail
 // ---------------------------------------------------------------------------
 
@@ -536,3 +602,5 @@ export type Assignment = typeof assignments.$inferSelect;
 export type Goodie = typeof goodies.$inferSelect;
 export type GoodieClaim = typeof goodieClaims.$inferSelect;
 export type PointsEntry = typeof pointsLedger.$inferSelect;
+export type Qualification = typeof qualifications.$inferSelect;
+export type UserQualification = typeof userQualifications.$inferSelect;

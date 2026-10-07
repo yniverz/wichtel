@@ -9,7 +9,7 @@
 	import PageHeader from '#lib/components/PageHeader.svelte';
 	import { pendingForm } from '#lib/forms.svelte.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
-	import { formatDate, localized } from '#lib/i18n/index.ts';
+	import { formatDate, localized, type MessageKey } from '#lib/i18n/index.ts';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -143,6 +143,55 @@
 							</dd>
 						</div>{/if}
 				</dl>
+			</Card>
+		{/if}
+
+		{#if data.qualifications}
+			<Card title={i18n.t('admin.quals.ofPerson')}>
+				{#if result?.action === 'qualification'}<div class="mb-3">
+						<FormMessage error={result.error} success={result.success} />
+					</div>{/if}
+				{#if data.qualifications.held.length === 0}
+					<p class="text-sm text-ink-muted">{i18n.t('admin.quals.none')}</p>
+				{:else}
+					<ul class="divide-y divide-line text-sm">
+						{#each data.qualifications.held as q (q.id)}
+							<li class="flex items-center justify-between gap-2 py-2">
+								<span>
+									{localized(q, 'name', i18n.locale)}
+									<span class="text-ink-muted"
+										>· {i18n.t(`quals.status.${q.status}` as MessageKey)}{#if q.expiresAt}
+											· {formatDate(new Date(q.expiresAt), i18n.locale)}{/if}</span
+									>
+								</span>
+								{#if q.status === 'approved'}
+									<ConfirmForm
+										action="?/revokeQualification"
+										hidden={{ id: q.id }}
+										variant="ghost"
+										message={i18n.t('admin.quals.revokeConfirm')}
+										confirmLabel={i18n.t('admin.quals.revoke')}
+									>
+										{i18n.t('admin.quals.revoke')}
+									</ConfirmForm>
+								{/if}
+							</li>
+						{/each}
+					</ul>
+				{/if}
+				{#if data.qualifications.options.length}
+					<form method="POST" action="?/grantQualification" use:enhance class="mt-4 flex gap-2">
+						<label class="sr-only" for="grant-q">{i18n.t('admin.quals.grant')}</label>
+						<select id="grant-q" name="qualificationId" class="h-9 min-w-0 flex-1 py-0 text-sm">
+							{#each data.qualifications.options as o (o.id)}<option value={o.id}
+									>{localized(o, 'name', i18n.locale)}</option
+								>{/each}
+						</select>
+						<Button type="submit" size="sm" variant="secondary"
+							>{i18n.t('admin.quals.grantSubmit')}</Button
+						>
+					</form>
+				{/if}
 			</Card>
 		{/if}
 

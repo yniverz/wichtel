@@ -2,6 +2,12 @@ import { error, fail } from '@sveltejs/kit';
 import { z } from 'zod';
 import { db } from '#lib/server/app.ts';
 import {
+	grantQualification,
+	listUserQualifications,
+	qualificationOptions,
+	revokeQualification
+} from '#lib/server/services/qualifications.ts';
+import {
 	actorOf,
 	attempt,
 	getAdminContext,
@@ -31,6 +37,7 @@ export const load: PageServerLoad = async (event) => {
 	}
 	const person = await getPerson(db(), event.params.id);
 	if (!person) error(404, 'error.notFound');
+	const canReviewQualifications = authz.canSomewhere('qualification.review');
 
 	const edition = ctx.edition;
 	const tree = ctx.tree;
@@ -68,7 +75,19 @@ export const load: PageServerLoad = async (event) => {
 		})),
 		assignableRoles: assignableRoles.map((r) => ({ id: r.id, nameDe: r.nameDe, nameEn: r.nameEn })),
 		scopes,
-		isSelf: person.id === ctx.user.id
+		isSelf: person.id === ctx.user.id,
+		qualifications: canReviewQualifications
+			? {
+					held: (await listUserQualifications(db(), person.id)).map(({ entry, qualification }) => ({
+						id: entry.id,
+						status: entry.status,
+						expiresAt: entry.expiresAt?.toISOString() ?? null,
+						nameDe: qualification.nameDe,
+						nameEn: qualification.nameEn
+					})),
+					options: await qualificationOptions(db())
+				}
+			: null
 	};
 };
 
@@ -119,5 +138,36 @@ export const actions: Actions = {
 		);
 		if (!result.ok) return result.failure;
 		return { action: 'admin', success: 'common.saved' };
+	},
+	grantQualification: async (event) => {
+		const ctx = await getAdminContext(event);
+		if (!ctx.authz.canSomewhere('qualification.review')) error(403, 'error.forbidden');
+		const parsed = parseForm(z.object({ qualificationId: uuid }), await event.request.formData());
+		if (!parsed.ok) return fail(400, { action: 'qualification', error: 'error.notFound' });
+		const result = await attempt(
+			() =>
+				grantQualification(db(), actorOf(event), {
+					userId: event.params.id,
+					qualificationId: parsed.data.qualificationId,
+					now: new Date()
+				}),
+			{ action: 'qualification' }
+		);
+		if (!result.ok) return result.failure;
+		return { action: 'qualification', success: 'common.saved' };
+	},
+	revokeQualification: async (event) => {
+		const ctx = await getAdminContext(event);
+		if (!ctx.authz.canSomewhere('qualification.review')) error(403, 'error.forbidden');
+		const parsed = parseForm(z.object({ id: uuid }), await event.request.formData());
+		if (!parsed.ok) return fail(400, { action: 'qualification', error: 'error.notFound' });
+		const result = await attempt(
+			() => revokeQualification(db(), actorOf(event), parsed.data.id, '', new Date()),
+			{
+				action: 'qualification'
+			}
+		);
+		if (!result.ok) return result.failure;
+		return { action: 'qualification', success: 'common.saved' };
 	}
 };
