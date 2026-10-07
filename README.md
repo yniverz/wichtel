@@ -4,8 +4,9 @@ Ein einfach zu bedienendes Helfer- und Schichtsystem für ehrenamtliche Festival
 
 _An easy-to-use volunteer and shift management system for non-profit festivals._
 
-> **Status:** Meilensteine 1–4 sind fertig (Fundament, Schichten & Buchung, Punkte & Goodies,
-> Komfort). Noch nicht für den Produktiveinsatz gedacht.
+> **Status:** Meilensteine 1–6 und die KI-Anbindung (MCP) sind fertig. Noch nicht für den
+> Produktiveinsatz gedacht: Datenschutz-Funktionen (Auskunft, Löschung), Backups und ein Testlauf
+> unter echter Last fehlen noch.
 
 ## Funktionen
 
