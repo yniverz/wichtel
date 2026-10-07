@@ -8,6 +8,8 @@
 		location: string;
 		meetingPoint: string;
 		contact: string;
+		locationPlaceId?: string | null;
+		meetingPlaceId?: string | null;
 		visibility: string;
 		cancelDeadlineHours: string | number | null;
 		date?: string;
@@ -33,6 +35,7 @@
 		positions,
 		areas,
 		qualifications = [],
+		places = [],
 		result,
 		submitLabel,
 		schedule
@@ -42,6 +45,7 @@
 		positions: EditablePosition[];
 		areas: { id: string; nameDe: string; nameEn: string; depth: number }[];
 		qualifications?: { id: string; nameDe: string; nameEn: string }[];
+		places?: { id: string; nameDe: string; nameEn: string }[];
 		result?: { error?: string; success?: string; errors?: Record<string, string> } | null;
 		submitLabel: string;
 		/** Replaces the single date/time fields (used by the series form). */
@@ -128,6 +132,27 @@
 		<legend class="mb-1 w-full border-b border-ink pb-1 text-sm font-bold"
 			>{i18n.t('shifts.location')}</legend
 		>
+		{#if places.length}
+			<div class="grid gap-4 sm:grid-cols-2">
+				{#each [{ name: 'locationPlaceId', label: 'admin.shifts.locationPlace' }, { name: 'meetingPlaceId', label: 'admin.shifts.meetingPlace' }] as const as sel (sel.name)}
+					<div class="space-y-1.5">
+						<label for={sel.name} class="text-sm font-medium">{i18n.t(sel.label)}</label>
+						<select
+							id={sel.name}
+							name={sel.name}
+							class="block h-11 w-full"
+							value={values[sel.name] ?? ''}
+						>
+							<option value="">{i18n.t('admin.shifts.placeNone')}</option>
+							{#each places as pl (pl.id)}<option value={pl.id}
+									>{localized(pl, 'name', i18n.locale)}</option
+								>{/each}
+						</select>
+					</div>
+				{/each}
+			</div>
+			<p class="-mt-2 text-sm text-ink-muted">{i18n.t('admin.shifts.placeDetailHint')}</p>
+		{/if}
 		<div class="grid gap-4 sm:grid-cols-2">
 			<Field
 				label={i18n.t('admin.shifts.location')}

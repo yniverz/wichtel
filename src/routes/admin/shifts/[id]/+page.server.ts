@@ -2,6 +2,7 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import { z } from 'zod';
 import { checkInOpen } from '#lib/domain/booking.ts';
 import { db } from '#lib/server/app.ts';
+import { listPlaces } from '#lib/server/services/places.ts';
 import { qualificationOptions } from '#lib/server/services/qualifications.ts';
 import {
 	actorOf,
@@ -102,6 +103,13 @@ export const load: PageServerLoad = async (event) => {
 		},
 		areas: canEdit ? shiftAreaOptions(ctx) : [],
 		qualifications: canEdit ? await qualificationOptions(db()) : [],
+		places: canEdit
+			? (await listPlaces(db(), shift.editionId)).map((pl) => ({
+					id: pl.id,
+					nameDe: pl.nameDe,
+					nameEn: pl.nameEn
+				}))
+			: [],
 		form: canEdit ? formValuesFromShift(shift, tz, true) : null
 	};
 };

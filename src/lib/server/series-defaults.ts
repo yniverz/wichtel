@@ -14,6 +14,8 @@ export function seriesValuesFromRequest(url: URL, areas: { id: string }[], defau
 			contact: '',
 			visibility: 'public',
 			cancelDeadlineHours: null as number | null,
+			locationPlaceId: '',
+			meetingPlaceId: '',
 			date: defaultDate,
 			start: '',
 			end: ''

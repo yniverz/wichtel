@@ -6,6 +6,7 @@ export interface CalendarEvent {
 	end: Date;
 	summary: string;
 	location?: string;
+	geo?: { lat: number; lng: number };
 	description?: string;
 	url?: string;
 	updated: Date;
@@ -58,6 +59,7 @@ export function buildCalendar(name: string, events: CalendarEvent[]): string {
 			`DTEND:${stamp(e.end)}`,
 			`SUMMARY:${escapeText(e.summary)}`,
 			...(e.location ? [`LOCATION:${escapeText(e.location)}`] : []),
+			...(e.geo ? [`GEO:${e.geo.lat};${e.geo.lng}`] : []),
 			...(e.description ? [`DESCRIPTION:${escapeText(e.description)}`] : []),
 			...(e.url ? [`URL:${e.url}`] : []),
 			'END:VEVENT'

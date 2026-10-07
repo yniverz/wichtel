@@ -10,6 +10,7 @@ import { getSettings } from './services/settings.ts';
 import { pointsFor } from './services/points.ts';
 import { heldQualificationIds, listQualifications } from './services/qualifications.ts';
 import { bookingAccess } from './services/waves.ts';
+import { listPlaces, placeView, type PlaceView } from './services/places.ts';
 import { waitlistQueue } from './services/assignments.ts';
 
 /** What a volunteer sees of one shift. Only data that is safe to show to every helper. */
@@ -53,6 +54,8 @@ export interface HelperShift {
 		/** 1-based place on the waiting list. */
 		waitlistPlace: number | null;
 	} | null;
+	locationPlace: PlaceView | null;
+	meetingPlace: PlaceView | null;
 	/** Whether booking is open for this person (waves); if not, when it opens. */
 	bookingOpen: boolean;
 	bookingOpensAt: string | null;
@@ -69,7 +72,7 @@ export async function loadHelperShifts(
 	editionId: string,
 	now: Date
 ): Promise<HelperShift[]> {
-	const [settings, tree, all, mine, quals, heldIds, access, queue] = await Promise.all([
+	const [settings, tree, all, mine, quals, heldIds, access, queue, placeList] = await Promise.all([
 		getSettings(db),
 		loadAreaTree(db, editionId),
 		listShifts(db, editionId),
@@ -77,8 +80,10 @@ export async function loadHelperShifts(
 		listQualifications(db),
 		heldQualificationIds(db, user.id, now),
 		bookingAccess(db, user, editionId, now),
-		waitlistQueue(db, editionId)
+		waitlistQueue(db, editionId),
+		listPlaces(db, editionId)
 	]);
+	const placesById = new Map(placeList.map((p) => [p.id, placeView(p)]));
 	const qualificationsById = new Map(quals.map((q) => [q.id, q]));
 	const held = new Set(heldIds);
 	const tz = settings.timezone;
@@ -147,6 +152,8 @@ export async function loadHelperShifts(
 					.map((q) => ({ nameDe: q.nameDe, nameEn: q.nameEn })),
 				waitlisted: p.waitlisted
 			})),
+			locationPlace: s.locationPlaceId ? (placesById.get(s.locationPlaceId) ?? null) : null,
+			meetingPlace: s.meetingPlaceId ? (placesById.get(s.meetingPlaceId) ?? null) : null,
 			bookingOpen: window.open,
 			bookingOpensAt: window.opensAt?.toISOString() ?? null,
 			waitlistEnabled: settings.waitlistEnabled,

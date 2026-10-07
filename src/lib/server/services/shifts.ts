@@ -9,6 +9,7 @@ import type { DB, Tx } from '../db/client.ts';
 import {
 	areas,
 	assignments,
+	places,
 	shiftPositions,
 	shifts,
 	type Shift,
@@ -45,6 +46,8 @@ export interface ShiftDetailsInput {
 	contact: string;
 	visibility: 'public' | 'internal';
 	cancelDeadlineHours: number | null;
+	locationPlaceId?: string | null;
+	meetingPlaceId?: string | null;
 }
 
 export interface ShiftInput extends ShiftDetailsInput, Interval {
@@ -69,6 +72,16 @@ async function assertArea(tx: Tx, editionId: string, areaId: string) {
 		.from(areas)
 		.where(and(eq(areas.id, areaId), eq(areas.editionId, editionId)));
 	if (!area) throw new DomainError('notFound', 'areaId');
+}
+
+async function assertPlaces(tx: Tx, editionId: string, details: ShiftDetailsInput) {
+	const ids = [details.locationPlaceId, details.meetingPlaceId].filter((id): id is string => !!id);
+	if (ids.length === 0) return;
+	const found = await tx
+		.select({ id: places.id })
+		.from(places)
+		.where(and(inArray(places.id, ids), eq(places.editionId, editionId)));
+	if (found.length !== new Set(ids).size) throw new DomainError('notFound', 'locationPlaceId');
 }
 
 function assertInterval({ startsAt, endsAt }: Interval) {
@@ -178,6 +191,7 @@ export async function createShift(
 	assertPositions(input.positions);
 	return db.transaction(async (tx) => {
 		await assertArea(tx, editionId, input.areaId);
+		await assertPlaces(tx, editionId, input);
 		const { positions, ...details } = input;
 		const [shift] = await tx
 			.insert(shifts)
@@ -215,6 +229,7 @@ export async function createSeries(
 	if (intervals.length > MAX_SERIES_SHIFTS) throw new DomainError('seriesTooLarge');
 	return db.transaction(async (tx) => {
 		await assertArea(tx, editionId, details.areaId);
+		await assertPlaces(tx, editionId, details);
 		const seriesId = crypto.randomUUID();
 		const created = await tx
 			.insert(shifts)
@@ -250,6 +265,7 @@ export async function updateShift(
 		const before = await getShift(tx, id);
 		if (!before) throw new DomainError('notFound');
 		await assertArea(tx, before.editionId, input.areaId);
+		await assertPlaces(tx, before.editionId, input);
 
 		const { positions, ...details } = input;
 		await tx.update(shifts).set(details).where(eq(shifts.id, id));

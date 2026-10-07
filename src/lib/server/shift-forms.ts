@@ -17,7 +17,9 @@ export function detailsFromForm(data: ShiftForm | SeriesForm): ShiftDetailsInput
 		meetingPoint: data.meetingPoint,
 		contact: data.contact,
 		visibility: data.visibility,
-		cancelDeadlineHours: data.cancelDeadlineHours
+		cancelDeadlineHours: data.cancelDeadlineHours,
+		locationPlaceId: data.locationPlaceId,
+		meetingPlaceId: data.meetingPlaceId
 	};
 }
 
@@ -45,6 +47,8 @@ export function formValuesFromShift(shift: ShiftWithPositions, timeZone: string,
 			contact: shift.contact,
 			visibility: shift.visibility,
 			cancelDeadlineHours: shift.cancelDeadlineHours,
+			locationPlaceId: shift.locationPlaceId ?? '',
+			meetingPlaceId: shift.meetingPlaceId ?? '',
 			date: start.date,
 			start: start.time,
 			end: end.time

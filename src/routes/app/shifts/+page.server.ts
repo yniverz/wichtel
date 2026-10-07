@@ -20,9 +20,11 @@ export const load: PageServerLoad = async (event) => {
 	const user = requireVerifiedUser(event);
 	const database = db();
 	const edition = await getCurrentEdition(database);
-	if (!edition) return { shifts: [], timezone: (await getSettings(database)).timezone };
+	if (!edition)
+		return { shifts: [], timezone: (await getSettings(database)).timezone, sitePlanAssetId: null };
 	const authz = await loadAuthz(database, user, edition.id);
 	return {
+		sitePlanAssetId: edition.sitePlanAssetId,
 		shifts: await loadHelperShifts(database, user, authz, edition.id, new Date()),
 		timezone: (await getSettings(database)).timezone
 	};

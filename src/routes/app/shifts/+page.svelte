@@ -6,6 +6,7 @@
 	import Button from '#lib/components/Button.svelte';
 	import ConfirmForm from '#lib/components/ConfirmForm.svelte';
 	import SpotMeter from '#lib/components/SpotMeter.svelte';
+	import PlaceLink from '#lib/components/places/PlaceLink.svelte';
 	import Toast from '#lib/components/Toast.svelte';
 	import { groupBy } from '#lib/grouping.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
@@ -235,12 +236,33 @@
 											hours: hours(shift).toLocaleString(i18n.locale)
 										})}
 									</dd>
-									{#if shift.location}<dt class="text-ink-muted">{i18n.t('shifts.location')}</dt>
-										<dd>{shift.location}</dd>{/if}
-									{#if shift.meetingPoint}<dt class="text-ink-muted">
-											{i18n.t('shifts.meetingPoint')}
-										</dt>
-										<dd>{shift.meetingPoint}</dd>{/if}
+									{#if shift.location || shift.locationPlace}
+										<dt class="text-ink-muted">{i18n.t('shifts.location')}</dt>
+										<dd>
+											{#if shift.locationPlace}<PlaceLink
+													place={shift.locationPlace}
+													sitePlanAssetId={data.sitePlanAssetId}
+												/>{/if}
+											{#if shift.location}<span class={shift.locationPlace ? 'text-ink-muted' : ''}
+													>{shift.locationPlace ? `· ${shift.location}` : shift.location}</span
+												>{/if}
+										</dd>
+									{/if}
+									{#if shift.meetingPoint || shift.meetingPlace}
+										<dt class="text-ink-muted">{i18n.t('shifts.meetingPoint')}</dt>
+										<dd>
+											{#if shift.meetingPlace}<PlaceLink
+													place={shift.meetingPlace}
+													sitePlanAssetId={data.sitePlanAssetId}
+												/>{/if}
+											{#if shift.meetingPoint}<span
+													class={shift.meetingPlace ? 'text-ink-muted' : ''}
+													>{shift.meetingPlace
+														? `· ${shift.meetingPoint}`
+														: shift.meetingPoint}</span
+												>{/if}
+										</dd>
+									{/if}
 									{#if shift.contact}<dt class="text-ink-muted">{i18n.t('shifts.contact')}</dt>
 										<dd>{shift.contact}</dd>{/if}
 								</dl>

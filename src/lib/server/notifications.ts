@@ -9,7 +9,17 @@ import {
 } from '#lib/i18n/index.ts';
 import { utcToZoned } from '#lib/domain/time.ts';
 import type { Tx } from './db/client.ts';
-import { assignments, emailOutbox, mailTemplates, shifts, users, type Shift } from './db/schema.ts';
+import {
+	assignments,
+	emailOutbox,
+	mailTemplates,
+	places,
+	shifts,
+	users,
+	type Place,
+	type Shift
+} from './db/schema.ts';
+import { mapLinks } from '#lib/domain/places.ts';
 import { getSettings } from './services/settings.ts';
 
 export const MAIL_TEMPLATES = [
@@ -78,16 +88,52 @@ export async function templateText(tx: Tx, key: MailTemplate, locale: Locale) {
 	};
 }
 
+type ShiftForMail = Pick<
+	Shift,
+	| 'titleDe'
+	| 'titleEn'
+	| 'startsAt'
+	| 'endsAt'
+	| 'location'
+	| 'meetingPoint'
+	| 'locationPlaceId'
+	| 'meetingPlaceId'
+>;
+
+/** Loads the structured places a shift refers to. */
+export async function placesOf(tx: Tx, shift: Pick<Shift, 'locationPlaceId' | 'meetingPlaceId'>) {
+	const ids = [shift.locationPlaceId, shift.meetingPlaceId].filter((id): id is string => !!id);
+	const rows = ids.length ? await tx.select().from(places).where(inArray(places.id, ids)) : [];
+	const byId = new Map(rows.map((p) => [p.id, p]));
+	return {
+		location: shift.locationPlaceId ? byId.get(shift.locationPlaceId) : undefined,
+		meeting: shift.meetingPlaceId ? byId.get(shift.meetingPlaceId) : undefined
+	};
+}
+
+function describePlace(place: Place | undefined, detail: string, locale: Locale) {
+	const parts = [
+		place ? localized(place, 'name', locale) + (place.address ? ` (${place.address})` : '') : '',
+		detail
+	].filter(Boolean);
+	const link = place ? mapLinks(place)?.google : undefined;
+	return { text: parts.join(' – '), link };
+}
+
 /** Placeholders describing a shift, in the recipient's language and the festival time zone. */
 export function shiftParams(
-	shift: Pick<Shift, 'titleDe' | 'titleEn' | 'startsAt' | 'endsAt' | 'location' | 'meetingPoint'>,
+	shift: ShiftForMail,
 	locale: Locale,
-	timeZone: string
+	timeZone: string,
+	shiftPlaces: { location?: Place; meeting?: Place } = {}
 ) {
 	const t = translator(locale);
+	const location = describePlace(shiftPlaces.location, shift.location, locale);
+	const meeting = describePlace(shiftPlaces.meeting, shift.meetingPoint, locale);
 	const where = [
-		shift.location ? `${t('mail.location')}: ${shift.location}` : '',
-		shift.meetingPoint ? `${t('mail.meetingPoint')}: ${shift.meetingPoint}` : ''
+		location.text ? `${t('mail.location')}: ${location.text}` : '',
+		meeting.text ? `${t('mail.meetingPoint')}: ${meeting.text}` : '',
+		meeting.link ?? location.link ?? ''
 	].filter(Boolean);
 	return {
 		shift: localized(shift, 'title', locale),
@@ -144,23 +190,35 @@ export async function notifyAssignment(tx: Tx, key: MailTemplate, assignmentId: 
 		.where(eq(assignments.id, assignmentId));
 	if (!row) return;
 	const settings = await getSettings(tx);
-	await sendTemplate(tx, key, row.user, shiftParams(row.shift, row.user.locale, settings.timezone));
+	const shiftPlaces = await placesOf(tx, row.shift);
+	await sendTemplate(
+		tx,
+		key,
+		row.user,
+		shiftParams(row.shift, row.user.locale, settings.timezone, shiftPlaces)
+	);
 }
 
 /** Notifies several people about a shift (change or cancellation); `shift` may already be deleted. */
 export async function notifyShiftPeople(
 	tx: Tx,
 	key: MailTemplate,
-	shift: Pick<Shift, 'titleDe' | 'titleEn' | 'startsAt' | 'endsAt' | 'location' | 'meetingPoint'>,
+	shift: ShiftForMail,
 	userIds: string[]
 ) {
 	if (userIds.length === 0) return;
 	const settings = await getSettings(tx);
+	const shiftPlaces = await placesOf(tx, shift);
 	const people = await tx
 		.select()
 		.from(users)
 		.where(inArray(users.id, [...new Set(userIds)]));
 	for (const person of people) {
-		await sendTemplate(tx, key, person, shiftParams(shift, person.locale, settings.timezone));
+		await sendTemplate(
+			tx,
+			key,
+			person,
+			shiftParams(shift, person.locale, settings.timezone, shiftPlaces)
+		);
 	}
 }

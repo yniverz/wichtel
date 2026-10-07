@@ -4,6 +4,7 @@ import {
 	boolean,
 	check,
 	date,
+	doublePrecision,
 	index,
 	integer,
 	jsonb,
@@ -147,6 +148,11 @@ export const instanceSettings = pgTable(
 		reminderHours: integer('reminder_hours').notNull().default(24),
 		/** Full positions offer a waiting list with automatic moving up. */
 		waitlistEnabled: boolean('waitlist_enabled').notNull().default(true),
+		/** Tile server for embedded maps (loaded only after the viewer agrees). */
+		mapTileUrl: text('map_tile_url')
+			.notNull()
+			.default('https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
+		mapAttribution: text('map_attribution').notNull().default('© OpenStreetMap contributors'),
 		/** SHA-256 of the one-time setup token; null once setup is complete. */
 		setupTokenHash: text('setup_token_hash'),
 		updatedAt: timestamps.updatedAt
@@ -167,6 +173,12 @@ export const editions = pgTable(
 		endsOn: date('ends_on').notNull(),
 		/** The edition helpers currently see. At most one edition is current. */
 		isCurrent: boolean('is_current').notNull().default(false),
+		/** Uploaded site plan (image) on which places can be pinned. */
+		sitePlanAssetId: uuid('site_plan_asset_id').references(() => assets.id, {
+			onDelete: 'set null'
+		}),
+		/** The place of the volunteer desk, shown on the volunteers' home page. */
+		deskPlaceId: uuid('desk_place_id'),
 		archivedAt: timestamp('archived_at', { withTimezone: true }),
 		...timestamps
 	},
@@ -202,6 +214,34 @@ export const areas = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// Places
+// ---------------------------------------------------------------------------
+
+export const places = pgTable(
+	'places',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		editionId: uuid('edition_id')
+			.notNull()
+			.references(() => editions.id, { onDelete: 'cascade' }),
+		nameDe: text('name_de').notNull(),
+		nameEn: text('name_en').notNull().default(''),
+		descriptionDe: text('description_de').notNull().default(''),
+		descriptionEn: text('description_en').notNull().default(''),
+		address: text('address').notNull().default(''),
+		/** Geographic pin (WGS 84). */
+		lat: doublePrecision('lat'),
+		lng: doublePrecision('lng'),
+		/** Pin on the edition's site plan, relative to the image (0–1). */
+		planX: doublePrecision('plan_x'),
+		planY: doublePrecision('plan_y'),
+		sortOrder: integer('sort_order').notNull().default(0),
+		...timestamps
+	},
+	(t) => [index('places_edition_idx').on(t.editionId)]
+);
+
+// ---------------------------------------------------------------------------
 // Shifts, positions & assignments
 // ---------------------------------------------------------------------------
 
@@ -232,6 +272,13 @@ export const shifts = pgTable(
 		descriptionEn: text('description_en').notNull().default(''),
 		location: text('location').notNull().default(''),
 		meetingPoint: text('meeting_point').notNull().default(''),
+		/** Structured places with pins; the text fields above add details ("behind the tent"). */
+		locationPlaceId: uuid('location_place_id').references((): AnyPgColumn => places.id, {
+			onDelete: 'set null'
+		}),
+		meetingPlaceId: uuid('meeting_place_id').references((): AnyPgColumn => places.id, {
+			onDelete: 'set null'
+		}),
 		contact: text('contact').notNull().default(''),
 		startsAt: timestamp('starts_at', { withTimezone: true }).notNull(),
 		endsAt: timestamp('ends_at', { withTimezone: true }).notNull(),
@@ -723,3 +770,4 @@ export type Qualification = typeof qualifications.$inferSelect;
 export type UserQualification = typeof userQualifications.$inferSelect;
 export type ProfileField = typeof profileFields.$inferSelect;
 export type BookingWave = typeof bookingWaves.$inferSelect;
+export type Place = typeof places.$inferSelect;

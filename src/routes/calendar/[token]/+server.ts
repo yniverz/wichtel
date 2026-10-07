@@ -3,7 +3,7 @@ import { and, asc, eq, inArray } from 'drizzle-orm';
 import { db } from '#lib/server/app.ts';
 import { assignments, shiftPositions, shifts, users } from '#lib/server/db/schema.ts';
 import { buildCalendar } from '#lib/server/ical.ts';
-import { appUrl } from '#lib/server/notifications.ts';
+import { appUrl, placesOf } from '#lib/server/notifications.ts';
 import { getSettings } from '#lib/server/services/settings.ts';
 import { localized, translator } from '#lib/i18n/index.ts';
 import type { RequestHandler } from './$types';
@@ -25,25 +25,40 @@ export const GET: RequestHandler = async ({ params }) => {
 		)
 		.orderBy(asc(shifts.startsAt));
 
-	const body = buildCalendar(
-		settings.festivalName,
-		rows.map(({ assignment, shift, position }) => ({
-			uid: `${assignment.id}@wichtel`,
-			start: shift.startsAt,
-			end: shift.endsAt,
-			updated: shift.updatedAt > assignment.updatedAt ? shift.updatedAt : assignment.updatedAt,
-			summary: `${assignment.status === 'requested' ? `(${t('shifts.status.requested')}) ` : ''}${localized(shift, 'title', user.locale)} · ${settings.festivalName}`,
-			location: [shift.location, shift.meetingPoint].filter(Boolean).join(' – '),
-			description: [
-				localized(position, 'name', user.locale),
-				shift.contact ? `${t('shifts.contact')}: ${shift.contact}` : '',
-				localized(shift, 'description', user.locale)
-			]
-				.filter(Boolean)
-				.join('\n'),
-			url: appUrl('/app/shifts')
-		}))
+	const events = await Promise.all(
+		rows.map(async ({ assignment, shift, position }) => {
+			const { location, meeting } = await placesOf(db(), shift);
+			const place = meeting ?? location;
+			return {
+				uid: `${assignment.id}@wichtel`,
+				start: shift.startsAt,
+				end: shift.endsAt,
+				updated: shift.updatedAt > assignment.updatedAt ? shift.updatedAt : assignment.updatedAt,
+				summary: `${assignment.status === 'requested' ? `(${t('shifts.status.requested')}) ` : ''}${localized(shift, 'title', user.locale)} · ${settings.festivalName}`,
+				location: [
+					place
+						? [localized(place, 'name', user.locale), place.address].filter(Boolean).join(', ')
+						: '',
+					shift.meetingPoint || shift.location
+				]
+					.filter(Boolean)
+					.join(' – '),
+				geo:
+					place && place.lat !== null && place.lng !== null
+						? { lat: place.lat, lng: place.lng }
+						: undefined,
+				description: [
+					localized(position, 'name', user.locale),
+					shift.contact ? `${t('shifts.contact')}: ${shift.contact}` : '',
+					localized(shift, 'description', user.locale)
+				]
+					.filter(Boolean)
+					.join('\n'),
+				url: appUrl('/app/shifts')
+			};
+		})
 	);
+	const body = buildCalendar(settings.festivalName, events);
 	return new Response(body, {
 		headers: {
 			'content-type': 'text/calendar; charset=utf-8',

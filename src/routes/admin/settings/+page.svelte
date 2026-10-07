@@ -340,6 +340,23 @@
 		</div>
 	</Card>
 
+	<Card title={i18n.t('admin.settings.maps')} description={i18n.t('admin.settings.mapHint')}>
+		<div class="grid gap-4 sm:grid-cols-2">
+			<Field
+				label={i18n.t('admin.settings.mapTileUrl')}
+				name="mapTileUrl"
+				value={v.mapTileUrl}
+				error={result?.errors?.mapTileUrl}
+			/>
+			<Field
+				label={i18n.t('admin.settings.mapAttribution')}
+				name="mapAttribution"
+				optional
+				value={v.mapAttribution}
+			/>
+		</div>
+	</Card>
+
 	<Card title={i18n.t('admin.settings.general')}>
 		<div class="space-y-5">
 			<label class="flex items-center gap-3">

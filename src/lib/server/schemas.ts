@@ -95,6 +95,12 @@ export const settingsSchema = z.object({
 	lastMinuteHours: wholeNumber,
 	reminderHours: wholeNumber,
 	waitlistEnabled: checkbox,
+	mapTileUrl: z
+		.string()
+		.trim()
+		.max(300, 'error.tooLong')
+		.refine((v) => /^https:\/\/[^\s]+\{z\}[^\s]*\{x\}[^\s]*\{y\}/.test(v), 'error.invalidUrl'),
+	mapAttribution: optionalText(300),
 	minBreakMinutes: z.coerce
 		.number('error.invalidNumber')
 		.int('error.invalidNumber')
@@ -144,6 +150,8 @@ const shiftDetails = {
 	contact: optionalText(200),
 	visibility: z.enum(['public', 'internal']).default('public'),
 	cancelDeadlineHours: optionalHours,
+	locationPlaceId: optionalUuid,
+	meetingPlaceId: optionalUuid,
 	positions: positionsJson
 };
 
@@ -260,4 +268,23 @@ export const waveSchema = z.object({
 	closesTime: z.string().trim().default(''),
 	'areaIds[]': z.array(z.uuid()).default([]),
 	audience: z.enum(['everyone', 'crew', 'returning', 'invite'])
+});
+
+const optionalFraction = z
+	.string()
+	.trim()
+	.optional()
+	.transform((v) => (v === undefined || v === '' ? null : Number(v)))
+	.pipe(z.number().min(0).max(1).nullable());
+
+export const placeSchema = z.object({
+	nameDe: requiredText(100),
+	nameEn: optionalText(100),
+	descriptionDe: optionalText(1000),
+	descriptionEn: optionalText(1000),
+	address: optionalText(300),
+	coordinates: z.string().trim().max(500).default(''),
+	planX: optionalFraction,
+	planY: optionalFraction,
+	sortOrder: z.coerce.number().int().min(-9999).max(9999).default(0)
 });

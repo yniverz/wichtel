@@ -66,6 +66,7 @@
 	{positions}
 	areas={data.areas}
 	qualifications={data.qualifications}
+	places={data.places}
 	result={echo}
 	submitLabel={i18n.t('admin.shifts.series.submit')}
 >

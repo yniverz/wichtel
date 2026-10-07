@@ -2,7 +2,7 @@ import { and, asc, eq, gt, isNull, lt, lte, sql } from 'drizzle-orm';
 import type { DB } from './db/client.ts';
 import { assignments, emailOutbox, shifts, users } from './db/schema.ts';
 import type { Mailer } from './mail.ts';
-import { sendTemplate, shiftParams } from './notifications.ts';
+import { placesOf, sendTemplate, shiftParams } from './notifications.ts';
 import { getSettings } from './services/settings.ts';
 
 const MAX_ATTEMPTS = 6;
@@ -80,11 +80,12 @@ export async function queueReminders(db: DB, now = new Date()): Promise<number> 
 				.where(and(eq(assignments.id, row.assignmentId), isNull(assignments.reminderSentAt)))
 				.returning({ id: assignments.id });
 			if (claimed.length === 0) return;
+			const shiftPlaces = await placesOf(tx, row.shift);
 			await sendTemplate(
 				tx,
 				'reminder',
 				row.user,
-				shiftParams(row.shift, row.user.locale, settings.timezone)
+				shiftParams(row.shift, row.user.locale, settings.timezone, shiftPlaces)
 			);
 		});
 	}

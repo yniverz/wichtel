@@ -43,6 +43,9 @@ _An easy-to-use volunteer and shift management system for non-profit festivals._
   Löschung nach der Prüfung; Positionen können sie verlangen oder „gern sehen“
 - **Profilfelder** frei konfigurierbar – abgefragt bei der Registrierung, im Profil oder erst bei
   der Goodie-Auswahl; auf Wunsch für Leitungen in der Besetzung sichtbar
+- **Orte & Geländeplan**: Orte mit Pin auf dem eigenen Geländeplan (ohne externe Dienste) und/oder
+  auf einer Karte (OpenStreetMap, erst nach Zustimmung geladen), Links zu Google Maps/Apple Karten/OSM;
+  Schichten verweisen auf Ort und Treffpunkt, die Helferanmeldung steht auf der Startseite
 - **Buchungswellen** (Crew zuerst, Wiederkehrende, Einladungslink, dann alle) und **Warteliste**
   mit automatischem Nachrücken
 

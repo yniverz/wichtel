@@ -50,6 +50,13 @@
 			"when": 1791392109065,
 			"tag": "0006_waves_waitlist",
 			"breakpoints": true
+		},
+		{
+			"idx": 7,
+			"version": "7",
+			"when": 1791393889573,
+			"tag": "0007_places",
+			"breakpoints": true
 		}
 	]
 }

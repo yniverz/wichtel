@@ -30,6 +30,7 @@
 						{ href: '/admin/shifts', label: 'admin.nav.shifts', show: data.access.shifts },
 						{ href: '/admin/waves', label: 'admin.nav.waves', show: data.access.waves },
 						{ href: '/admin/areas', label: 'admin.nav.areas', show: data.access.areas },
+						{ href: '/admin/places', label: 'admin.nav.places', show: data.access.waves },
 						{ href: '/admin/goodies', label: 'admin.nav.goodies', show: data.access.goodies }
 					]
 				},

@@ -31,6 +31,7 @@
 	{positions}
 	areas={data.areas}
 	qualifications={data.qualifications}
+	places={data.places}
 	result={form}
 	submitLabel={i18n.t('common.create')}
 />

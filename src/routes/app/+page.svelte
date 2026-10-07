@@ -4,6 +4,7 @@
 	import { getI18n } from '#lib/i18n/context.ts';
 	import Alert from '#lib/components/Alert.svelte';
 	import Badge from '#lib/components/Badge.svelte';
+	import PlaceDetails from '#lib/components/places/PlaceDetails.svelte';
 	import { formatDateRange, formatDayShort, formatTime, localized } from '#lib/i18n/index.ts';
 	import type { PageProps } from './$types';
 
@@ -97,6 +98,17 @@
 				<p class="mt-2 text-sm text-ink-muted">{i18n.t('app.home.points.text')}</p>
 			</section>
 		</div>
+	{/if}
+
+	{#if data.desk}
+		<section aria-labelledby="desk" class="max-w-2xl">
+			<h2 id="desk" class="border-b border-line pb-2 text-sm font-bold">
+				{i18n.t('app.home.desk')}
+			</h2>
+			<div class="mt-4">
+				<PlaceDetails place={data.desk} sitePlanAssetId={data.sitePlanAssetId} />
+			</div>
+		</section>
 	{/if}
 
 	<section class="divide-y divide-line border-y border-line">
