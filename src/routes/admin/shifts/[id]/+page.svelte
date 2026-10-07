@@ -69,6 +69,9 @@
 
 <PageHeader {title} back={{ href: '/admin/shifts', label: i18n.t('admin.shifts.title') }}>
 	{#snippet actions()}
+		<Button href="/print/shift/{data.shift.id}" variant="secondary" size="sm"
+			>{i18n.t('print.crew')}</Button
+		>
 		{#if data.can.edit}<Button
 				href="/admin/shifts/new?from={data.shift.id}"
 				variant="secondary"

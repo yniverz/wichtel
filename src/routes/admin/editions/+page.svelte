@@ -26,6 +26,18 @@
 	const result = $derived(form as Result | null);
 	const createResult = $derived(result?.action === 'create' ? result : null);
 	let showCreate = $state(false);
+	let showCopy = $state(false);
+	const copyResult = $derived(result?.action === 'copy' ? result : null);
+	$effect(() => {
+		if (copyResult?.success) showCopy = false;
+	});
+	const copyParts = [
+		['places', 'admin.editions.copy.places'],
+		['shifts', 'admin.editions.copy.shifts'],
+		['goodies', 'admin.editions.copy.goodies'],
+		['roles', 'admin.editions.copy.roles'],
+		['waves', 'admin.editions.copy.waves']
+	] as const;
 	$effect(() => {
 		if (data.list.length === 0) showCreate = true;
 	});
@@ -37,11 +49,81 @@
 
 <PageHeader title={i18n.t('admin.editions.title')} lead={i18n.t('admin.editions.lead')}>
 	{#snippet actions()}
-		{#if !showCreate}<Button onclick={() => (showCreate = true)}
-				>{i18n.t('admin.editions.new')}</Button
+		{#if !showCopy && data.list.length > 0}<Button
+				variant="secondary"
+				onclick={() => {
+					showCopy = true;
+					showCreate = false;
+				}}>{i18n.t('admin.editions.copy.open')}</Button
+			>{/if}
+		{#if !showCreate}<Button
+				onclick={() => {
+					showCreate = true;
+					showCopy = false;
+				}}>{i18n.t('admin.editions.new')}</Button
 			>{/if}
 	{/snippet}
 </PageHeader>
+
+{#if copyResult?.success}
+	<div class="mb-4"><FormMessage success={copyResult.success} /></div>
+{/if}
+
+{#if showCopy}
+	<Card
+		title={i18n.t('admin.editions.copy.title')}
+		description={i18n.t('admin.editions.copy.lead')}
+		class="mb-6"
+	>
+		<form method="POST" action="?/copy" class="space-y-4" use:enhance>
+			<FormMessage error={copyResult?.error} />
+			<div class="space-y-1.5">
+				<label for="sourceId" class="text-sm font-medium"
+					>{i18n.t('admin.editions.copy.source')}</label
+				>
+				<select id="sourceId" name="sourceId" class="block h-11 w-full">
+					{#each data.list as edition (edition.id)}
+						<option value={edition.id} selected={edition.isCurrent}>{edition.name}</option>
+					{/each}
+				</select>
+			</div>
+			<div class="grid gap-4 sm:grid-cols-2">
+				<Field
+					label={i18n.t('admin.editions.name')}
+					name="name"
+					placeholder={i18n.t('admin.editions.namePlaceholder')}
+					value={copyResult?.values?.name ?? ''}
+					error={copyResult?.errors?.name}
+				/>
+				<Field
+					label={i18n.t('admin.editions.copy.startsOn')}
+					name="startsOn"
+					type="date"
+					value={copyResult?.values?.startsOn ?? ''}
+					hint={i18n.t('admin.editions.copy.startsOnHint')}
+					error={copyResult?.errors?.startsOn}
+				/>
+			</div>
+			<fieldset class="space-y-2">
+				<legend class="mb-1 text-sm font-medium">{i18n.t('admin.editions.copy.what')}</legend>
+				<p class="text-sm text-ink-muted">{i18n.t('admin.editions.copy.always')}</p>
+				{#each copyParts as [name, label] (name)}
+					<label class="flex items-center gap-3 text-sm">
+						<input type="checkbox" {name} checked class="size-4" />
+						{i18n.t(label)}
+					</label>
+				{/each}
+				<p class="pt-1 text-sm text-ink-muted">{i18n.t('admin.editions.copy.never')}</p>
+			</fieldset>
+			<div class="flex gap-2">
+				<Button type="submit">{i18n.t('admin.editions.copy.submit')}</Button>
+				<Button type="button" variant="ghost" onclick={() => (showCopy = false)}
+					>{i18n.t('common.cancel')}</Button
+				>
+			</div>
+		</form>
+	</Card>
+{/if}
 
 {#if result?.action === 'makeCurrent'}
 	<div class="mb-4"><FormMessage error={result.error} success={result.success} /></div>

@@ -27,6 +27,10 @@
 
 <PageHeader title={i18n.t('admin.shifts.title')} lead={i18n.t('admin.shifts.lead')}>
 	{#snippet actions()}
+		<Button
+			href="/print/plan{data.filterArea ? `?area=${data.filterArea}` : ''}"
+			variant="secondary">{i18n.t('print.plan')}</Button
+		>
 		{#if data.canCreate}
 			<Button href="/admin/shifts/series" variant="secondary"
 				>{i18n.t('admin.shifts.series')}</Button
@@ -69,7 +73,7 @@
 {/if}
 
 {#each grouped as [day, list] (day)}
-	<section class="mb-8">
+	<section class="mb-8 scroll-mt-20" id="day-{day}">
 		<h2 class="font-display border-b-2 border-ink pb-1 text-2xl uppercase">
 			{formatDayLong(day, i18n.locale)}
 		</h2>

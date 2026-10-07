@@ -56,8 +56,14 @@ _An easy-to-use volunteer and shift management system for non-profit festivals._
 - **Dringend-Aufruf**: Leitung ruft für eine Position auf, passende und freie Helfende bekommen eine
   E-Mail mit Direktlink, optional mit Bonuspunkten
 
-**Geplant** – siehe [docs/KONZEPT.md](docs/KONZEPT.md): Dashboards, Druckansichten, Jahrgang
-kopieren, SSO.
+- **Übersicht für Leitungen**: Besetzung in Prozent, Heatmap nach Bereich und Tag, als Nächstes
+  unterbesetzte Schichten, heutige Anwesenheit, offene Anfragen – aktualisiert sich jede Minute
+- **Druckansichten**: Schichtplan je Bereich/Tag und Helferliste je Schicht mit Leerzeilen und
+  Abhak-Spalte
+- **Jahrgang kopieren**: Bereiche, Orte, Schichten, Goodies, Leitungen und Wellen, alle Zeiten um
+  ganze Tage verschoben
+
+**Geplant** – siehe [docs/KONZEPT.md](docs/KONZEPT.md): SSO, Löschfristen, Exporte.
 
 ## Entwicklung
 

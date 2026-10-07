@@ -15,6 +15,7 @@ import {
 	requireEdition
 } from '#lib/server/guards.ts';
 import { setAdmin } from '#lib/server/services/accounts.ts';
+import { getSettings } from '#lib/server/services/settings.ts';
 import { getPerson } from '#lib/server/services/people.ts';
 import {
 	assignRole,
@@ -25,6 +26,9 @@ import {
 import { checkbox, optionalUuid, parseForm, uuid } from '#lib/server/validation.ts';
 import { displayValue } from '#lib/domain/fields.ts';
 import { listFields, valuesOf } from '#lib/server/services/fields.ts';
+import { and, asc, eq, inArray } from 'drizzle-orm';
+import { assignments as assignmentTable, shifts } from '#lib/server/db/schema.ts';
+import { canSeeShiftArea } from '#lib/server/shift-access.ts';
 import type { Actions, PageServerLoad } from './$types';
 
 async function personDetails(userId: string) {
@@ -71,7 +75,46 @@ export const load: PageServerLoad = async (event) => {
 		scopes.some((s) => authz.canAssignRole(r.permissions, s.id || null))
 	);
 
+	// The person's shifts in this edition, as far as the viewer may see them.
+	const personShifts = edition
+		? (
+				await db()
+					.select({
+						id: shifts.id,
+						areaId: shifts.areaId,
+						titleDe: shifts.titleDe,
+						titleEn: shifts.titleEn,
+						startsAt: shifts.startsAt,
+						endsAt: shifts.endsAt,
+						status: assignmentTable.status,
+						attendance: assignmentTable.attendance
+					})
+					.from(assignmentTable)
+					.innerJoin(shifts, eq(assignmentTable.shiftId, shifts.id))
+					.where(
+						and(
+							eq(assignmentTable.userId, person.id),
+							eq(shifts.editionId, edition.id),
+							inArray(assignmentTable.status, ['booked', 'requested', 'held', 'waitlisted'])
+						)
+					)
+					.orderBy(asc(shifts.startsAt))
+			)
+				.filter((r) => canSeeShiftArea(ctx, r.areaId))
+				.map((r) => ({
+					id: r.id,
+					titleDe: r.titleDe,
+					titleEn: r.titleEn,
+					status: r.status,
+					attendance: r.attendance,
+					startsAt: r.startsAt.toISOString(),
+					endsAt: r.endsAt.toISOString()
+				}))
+		: [];
+
 	return {
+		shifts: personShifts,
+		timezone: (await getSettings(db())).timezone,
 		person: {
 			id: person.id,
 			firstName: person.firstName,

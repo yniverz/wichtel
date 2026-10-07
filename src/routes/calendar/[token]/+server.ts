@@ -21,7 +21,10 @@ export const GET: RequestHandler = async ({ params }) => {
 		.innerJoin(shifts, eq(assignments.shiftId, shifts.id))
 		.innerJoin(shiftPositions, eq(assignments.positionId, shiftPositions.id))
 		.where(
-			and(eq(assignments.userId, user.id), inArray(assignments.status, ['booked', 'requested']))
+			and(
+				eq(assignments.userId, user.id),
+				inArray(assignments.status, ['booked', 'requested', 'held'])
+			)
 		)
 		.orderBy(asc(shifts.startsAt));
 
@@ -34,7 +37,7 @@ export const GET: RequestHandler = async ({ params }) => {
 				start: shift.startsAt,
 				end: shift.endsAt,
 				updated: shift.updatedAt > assignment.updatedAt ? shift.updatedAt : assignment.updatedAt,
-				summary: `${assignment.status === 'requested' ? `(${t('shifts.status.requested')}) ` : ''}${localized(shift, 'title', user.locale)} · ${settings.festivalName}`,
+				summary: `${assignment.status === 'requested' || assignment.status === 'held' ? `(${t(`shifts.status.${assignment.status}`)}) ` : ''}${localized(shift, 'title', user.locale)} · ${settings.festivalName}`,
 				location: [
 					place
 						? [localized(place, 'name', user.locale), place.address].filter(Boolean).join(', ')

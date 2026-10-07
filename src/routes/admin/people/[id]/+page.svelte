@@ -9,7 +9,14 @@
 	import PageHeader from '#lib/components/PageHeader.svelte';
 	import { pendingForm } from '#lib/forms.svelte.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
-	import { formatDate, localized, type MessageKey } from '#lib/i18n/index.ts';
+	import {
+		formatDate,
+		formatDayShort,
+		formatTime,
+		localized,
+		type MessageKey
+	} from '#lib/i18n/index.ts';
+	import { utcToZoned } from '#lib/domain/time.ts';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -38,6 +45,40 @@
 
 <div class="grid gap-6 lg:grid-cols-3">
 	<div class="space-y-6 lg:col-span-2">
+		{#if data.shifts.length}
+			<Card title={i18n.t('admin.people.shifts')}>
+				<ul class="divide-y divide-line">
+					{#each data.shifts as shift (shift.id)}
+						<li>
+							<a
+								href="/admin/shifts/{shift.id}"
+								class="grid grid-cols-[8rem_1fr_auto] items-baseline gap-3 py-2 text-sm hover:underline"
+							>
+								<span class="tabular-nums"
+									>{formatDayShort(
+										utcToZoned(new Date(shift.startsAt), data.timezone).date,
+										i18n.locale
+									)}
+									{formatTime(shift.startsAt, i18n.locale, data.timezone)}</span
+								>
+								<span class="font-semibold">{localized(shift, 'title', i18n.locale)}</span>
+								<span class="text-ink-muted">
+									{shift.status === 'booked'
+										? shift.attendance === 'attended'
+											? i18n.t('admin.shifts.attended')
+											: shift.attendance === 'no_show'
+												? i18n.t('admin.shifts.noShow')
+												: ''
+										: i18n.t(
+												`shifts.status.${shift.status as 'requested' | 'held' | 'waitlisted'}`
+											)}
+								</span>
+							</a>
+						</li>
+					{/each}
+				</ul>
+			</Card>
+		{/if}
 		{#if edition}
 			<Card title={i18n.t('admin.people.rolesIn', { edition: edition.name })}>
 				{#if result?.action === 'remove' || result?.action === 'assign'}

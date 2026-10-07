@@ -14,6 +14,16 @@
 	const i18n = getI18n();
 	type Result = { at?: string; error?: string; success?: string; errors?: Record<string, string> };
 	const result = $derived(form as Result | null);
+	/** Placeholders some templates offer in addition to the common ones. */
+	const extra: Record<string, string> = {
+		group_hold: '{person}, {until}',
+		swap_offered: '{person}',
+		swap_proposed: '{person}, {given}',
+		swap_pending: '{person}',
+		swap_completed: '{person}',
+		swap_declined: '{person}',
+		urgent_call: '{position}, {free}, {bonus}, {note}'
+	};
 </script>
 
 <svelte:head
@@ -35,6 +45,11 @@
 						>{i18n.t('admin.templates.customised')}</Badge
 					>{/if}
 			</summary>
+			{#if extra[t.key]}
+				<p class="border-t border-line px-4 pt-3 text-sm text-ink-muted">
+					{i18n.t('admin.templates.extra', { list: extra[t.key] })}
+				</p>
+			{/if}
 			<div class="grid gap-6 border-t border-line p-4 lg:grid-cols-2">
 				{#each t.versions as v (v.locale)}
 					{@const at = `${t.key}:${v.locale}`}
