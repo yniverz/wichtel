@@ -53,7 +53,8 @@ test('lead creates a shift with two positions', async ({ page }) => {
 	await expect(page.getByText('09:00–13:00')).toBeVisible();
 });
 
-test('volunteer registers and is asked to confirm the e-mail address', async ({ page }) => {
+// The e2e server runs without SMTP, so no e-mail confirmation is needed.
+test('volunteer registers and lands in the app', async ({ page }) => {
 	await page.goto('/register');
 	await page.getByLabel('Vorname').fill(HELPER.firstName);
 	await page.getByLabel('Nachname').fill(HELPER.lastName);
@@ -63,7 +64,5 @@ test('volunteer registers and is asked to confirm the e-mail address', async ({ 
 	await page.getByRole('button', { name: 'Konto erstellen' }).click();
 
 	await expect(page).toHaveURL(/\/app$/);
-	await expect(
-		page.getByRole('heading', { name: 'Bitte bestätige deine E-Mail-Adresse' })
-	).toBeVisible();
+	await expect(page.getByRole('heading', { name: `Hallo ${HELPER.firstName}!` })).toBeVisible();
 });

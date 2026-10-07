@@ -54,6 +54,12 @@ async function expectDomainError(promise: Promise<unknown>, code: string) {
 }
 
 describe('accounts', () => {
+	it('needs no confirmation when no mail server is configured', async () => {
+		const user = await register({ ...ctx, skipEmailVerification: true }, helper);
+		expect(user.emailVerifiedAt).toBeInstanceOf(Date);
+		expect(mailer.sent).toHaveLength(0);
+	});
+
 	it('registers, verifies and logs in', async () => {
 		const user = await register(ctx, helper);
 		expect(user.email).toBe('kim@example.org');

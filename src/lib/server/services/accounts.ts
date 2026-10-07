@@ -18,6 +18,11 @@ export interface AccountContext {
 	mailer: Mailer;
 	/** Public base URL for links in e-mails, without trailing slash. */
 	baseUrl: string;
+	/**
+	 * Without a mail server nobody could confirm their address, so new accounts count as confirmed
+	 * right away.
+	 */
+	skipEmailVerification?: boolean;
 }
 
 export interface RegisterInput {
@@ -44,12 +49,17 @@ export async function register(ctx: AccountContext, input: RegisterInput): Promi
 	const passwordHash = await hashPassword(input.password);
 	const [user] = await ctx.db
 		.insert(users)
-		.values({ ...input, email, passwordHash })
+		.values({
+			...input,
+			email,
+			passwordHash,
+			emailVerifiedAt: ctx.skipEmailVerification ? new Date() : null
+		})
 		.onConflictDoNothing({ target: users.email })
 		.returning();
 	if (!user) throw new DomainError('emailTaken', 'email');
 
-	await sendVerificationEmail(ctx, user);
+	if (!ctx.skipEmailVerification) await sendVerificationEmail(ctx, user);
 	return user;
 }
 

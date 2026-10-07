@@ -22,7 +22,8 @@ export const variables = defineEnvVars({
 		schema: optional
 	},
 	SMTP_HOST: {
-		description: 'SMTP server. If unset, e-mails are printed to the log.',
+		description:
+			'SMTP server. If unset, e-mails are printed to the log and new accounts need no e-mail confirmation.',
 		schema: optional
 	},
 	SMTP_PORT: {
