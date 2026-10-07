@@ -612,6 +612,49 @@ export const de = {
 	'audit.goodie.refunded': 'Goodie erstattet',
 	'audit.points.adjust': 'Punkte korrigiert',
 
+	'mailtpl.booking_confirmed.subject': 'Du bist eingetragen: {shift}',
+	'mailtpl.booking_confirmed.body':
+		'Hallo {name},\n\ndu bist für diese Schicht eingetragen:\n\n{shift}\n{date}, {time}{location}\n\nAlle deine Schichten: {link}\n\nDanke, dass du mithilfst!\n\nDein {festival}-Team',
+	'mailtpl.booking_requested.subject': 'Anfrage gesendet: {shift}',
+	'mailtpl.booking_requested.body':
+		'Hallo {name},\n\ndeine Anfrage für diese Schicht ist angekommen:\n\n{shift}\n{date}, {time}{location}\n\nDie Leitung bestätigt sie so bald wie möglich. Wir melden uns per E-Mail.\n\nDein {festival}-Team',
+	'mailtpl.request_approved.subject': 'Bestätigt: {shift}',
+	'mailtpl.request_approved.body':
+		'Hallo {name},\n\ndeine Anfrage wurde bestätigt – du bist eingetragen:\n\n{shift}\n{date}, {time}{location}\n\nAlle deine Schichten: {link}\n\nDein {festival}-Team',
+	'mailtpl.request_rejected.subject': 'Leider nicht geklappt: {shift}',
+	'mailtpl.request_rejected.body':
+		'Hallo {name},\n\ndeine Anfrage für diese Schicht wurde leider abgelehnt:\n\n{shift}\n{date}, {time}{location}\n\nSchau gern nach anderen Schichten: {link}\n\nDein {festival}-Team',
+	'mailtpl.added_by_lead.subject': 'Du wurdest eingetragen: {shift}',
+	'mailtpl.added_by_lead.body':
+		'Hallo {name},\n\ndie Leitung hat dich für diese Schicht eingetragen:\n\n{shift}\n{date}, {time}{location}\n\nAlle deine Schichten: {link}\n\nDein {festival}-Team',
+	'mailtpl.removed_by_lead.subject': 'Ausgetragen: {shift}',
+	'mailtpl.removed_by_lead.body':
+		'Hallo {name},\n\ndu wurdest aus dieser Schicht ausgetragen:\n\n{shift}\n{date}, {time}{location}\n\nBei Fragen wende dich bitte an die Schichtleitung.\n\nDein {festival}-Team',
+	'mailtpl.shift_changed.subject': 'Geändert: {shift}',
+	'mailtpl.shift_changed.body':
+		'Hallo {name},\n\nan einer deiner Schichten hat sich etwas geändert. So sieht sie jetzt aus:\n\n{shift}\n{date}, {time}{location}\n\nAlle deine Schichten: {link}\n\nDein {festival}-Team',
+	'mailtpl.shift_cancelled.subject': 'Abgesagt: {shift}',
+	'mailtpl.shift_cancelled.body':
+		'Hallo {name},\n\ndiese Schicht findet leider nicht statt:\n\n{shift}\n{date}, {time}{location}\n\nVielleicht passt dir eine andere: {link}\n\nDein {festival}-Team',
+	'mailtpl.reminder.subject': 'Erinnerung: {shift}, {date}',
+	'mailtpl.reminder.body':
+		'Hallo {name},\n\nkleine Erinnerung an deine Schicht:\n\n{shift}\n{date}, {time}{location}\n\nWir freuen uns auf dich!\n\nDein {festival}-Team',
+	'mailtpl.waitlist_promoted.subject': 'Nachgerückt: {shift}',
+	'mailtpl.waitlist_promoted.body':
+		'Hallo {name},\n\nein Platz ist frei geworden – du bist von der Warteliste nachgerückt:\n\n{shift}\n{date}, {time}{location}\n\nFalls du doch nicht kannst, trag dich bitte aus: {link}\n\nDein {festival}-Team',
+	'mail.location': 'Ort',
+	'mail.meetingPoint': 'Treffpunkt',
+	'calendar.title': 'Kalender-Abo',
+	'calendar.lead':
+		'Deine Schichten automatisch in deinem Handy-Kalender – Änderungen kommen von selbst an.',
+	'calendar.subscribe': 'Im Kalender abonnieren',
+	'calendar.copy': 'Link kopieren',
+	'calendar.copied': 'Kopiert.',
+	'calendar.rotate': 'Neuen Link erzeugen',
+	'calendar.rotateConfirm': 'Neuen Link erzeugen? Der alte Link funktioniert danach nicht mehr.',
+	'admin.settings.reminderHours': 'Erinnerungs-Mail (Stunden vor Beginn)',
+	'admin.settings.reminderHint': '0 = keine Erinnerungen',
+
 	'mail.greeting': 'Hallo {name},',
 	'mail.signature': 'Dein {festival}-Team',
 	'mail.ignore': 'Falls du das nicht warst, kannst du diese E-Mail einfach ignorieren.',

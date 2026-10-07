@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import Button from '#lib/components/Button.svelte';
 	import Card from '#lib/components/Card.svelte';
+	import ConfirmForm from '#lib/components/ConfirmForm.svelte';
 	import Field from '#lib/components/Field.svelte';
 	import FormMessage from '#lib/components/FormMessage.svelte';
 	import { pendingForm } from '#lib/forms.svelte.ts';
@@ -14,6 +15,7 @@
 	const i18n = getI18n();
 	const profileForm = pendingForm({ reset: false });
 	const passwordForm = pendingForm();
+	let copied = $state(false);
 
 	type Result = {
 		action?: string;
@@ -101,6 +103,30 @@
 				>{i18n.t('profile.passwordSubmit')}</Button
 			>
 		</form>
+	</Card>
+
+	<Card title={i18n.t('calendar.title')} description={i18n.t('calendar.lead')}>
+		<div class="flex flex-wrap gap-2">
+			<Button href={data.calendarUrl.replace(/^https?:/, 'webcal:')}
+				>{i18n.t('calendar.subscribe')}</Button
+			>
+			<Button
+				variant="secondary"
+				onclick={async () => {
+					await navigator.clipboard.writeText(data.calendarUrl);
+					copied = true;
+					setTimeout(() => (copied = false), 2000);
+				}}>{copied ? i18n.t('calendar.copied') : i18n.t('calendar.copy')}</Button
+			>
+			<ConfirmForm
+				action="?/rotateCalendar"
+				variant="ghost"
+				message={i18n.t('calendar.rotateConfirm')}
+				confirmLabel={i18n.t('calendar.rotate')}
+			>
+				{i18n.t('calendar.rotate')}
+			</ConfirmForm>
+		</div>
 	</Card>
 
 	<form method="POST" action="/logout" class="md:hidden">

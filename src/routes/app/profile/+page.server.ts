@@ -1,6 +1,8 @@
 import { fail } from '@sveltejs/kit';
 import { z } from 'zod';
-import { db } from '#lib/server/app.ts';
+import { eq, sql } from 'drizzle-orm';
+import { config, db } from '#lib/server/app.ts';
+import { users } from '#lib/server/db/schema.ts';
 import { setSessionCookie } from '#lib/server/cookies.ts';
 import { attempt, requireUser } from '#lib/server/guards.ts';
 import { createSession } from '#lib/server/sessions.ts';
@@ -17,7 +19,8 @@ export const load: PageServerLoad = (event) => {
 			lastName: user.lastName,
 			phone: user.phone,
 			locale: user.locale
-		}
+		},
+		calendarUrl: `${config.publicUrl}/calendar/${user.calendarToken}.ics`
 	};
 };
 
@@ -55,5 +58,13 @@ export const actions: Actions = {
 		const session = await createSession(db(), user.id);
 		setSessionCookie(event, session.token, session.expiresAt);
 		return { action: 'password', success: 'profile.passwordChanged' };
+	},
+	rotateCalendar: async (event) => {
+		const user = requireUser(event);
+		await db()
+			.update(users)
+			.set({ calendarToken: sql`replace(gen_random_uuid()::text, '-', '')` })
+			.where(eq(users.id, user.id));
+		return { action: 'calendar', success: 'common.saved' };
 	}
 };

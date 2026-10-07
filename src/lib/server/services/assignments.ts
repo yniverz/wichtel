@@ -20,6 +20,7 @@ import { DomainError } from '../errors.ts';
 import { loadAreaTree } from './areas.ts';
 import { applyMandatoryGoodies } from './goodies.ts';
 import { syncAssignmentPoints } from './points.ts';
+import { notifyAssignment } from '../notifications.ts';
 import { getSettings } from './settings.ts';
 
 const ACTIVE = ['requested', 'booked'] as const;
@@ -126,6 +127,11 @@ export async function bookPosition(
 				createdBy: userId
 			})
 			.returning();
+		await notifyAssignment(
+			tx,
+			assignment.status === 'requested' ? 'booking_requested' : 'booking_confirmed',
+			assignment.id
+		);
 		return assignment;
 	});
 }
@@ -235,6 +241,7 @@ export async function leadAssign(
 			editionId: shift.editionId,
 			data: { userId: input.userId, positionId: position.id, overridden: issues }
 		});
+		await notifyAssignment(tx, 'added_by_lead', assignment.id);
 		return { issues, assignment };
 	});
 }
@@ -254,6 +261,9 @@ export async function leadRemove(
 			.where(eq(assignments.id, assignmentId))
 			.returning();
 		await syncAssignmentPoints(tx, actor, updated);
+		if (assignment.status === 'booked' || assignment.status === 'requested') {
+			await notifyAssignment(tx, 'removed_by_lead', assignmentId);
+		}
 		await audit(tx, actor, {
 			action: 'assignment.lead_remove',
 			entityType: 'shift',
@@ -284,6 +294,7 @@ export async function decideRequest(
 			.update(assignments)
 			.set({ status: approve ? 'booked' : 'rejected' })
 			.where(eq(assignments.id, assignmentId));
+		await notifyAssignment(tx, approve ? 'request_approved' : 'request_rejected', assignmentId);
 		await audit(tx, actor, {
 			action: approve ? 'assignment.approve' : 'assignment.reject',
 			entityType: 'shift',

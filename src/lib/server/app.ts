@@ -10,7 +10,10 @@ import {
 	SMTP_USER,
 	UPLOAD_DIR
 } from '$app/env/private';
+import { building } from '$app/env';
 import { connect, type Database, type DB } from './db/client.ts';
+import { setPublicUrl } from './notifications.ts';
+import { processOutbox, queueReminders } from './outbox.ts';
 import { createConsoleMailer, createSmtpMailer, type Mailer } from './mail.ts';
 import { prepareSetup } from './services/setup.ts';
 import { cleanupExpiredTokens } from './services/accounts.ts';
@@ -22,7 +25,13 @@ import type { AccountContext } from './services/accounts.ts';
  * re-evaluates this module) does not lose the open database.
  */
 const state = ((
-	globalThis as { __wichtel?: { database?: Database; mailer?: Mailer } }
+	globalThis as {
+		__wichtel?: {
+			database?: Database;
+			mailer?: Mailer;
+			timers?: ReturnType<typeof setInterval>[];
+		};
+	}
 ).__wichtel ??= {});
 
 export const config = {
@@ -54,6 +63,27 @@ export async function initApp(): Promise<void> {
 		);
 	}
 	await cleanupExpiredTokens(database.db);
+	setPublicUrl(PUBLIC_URL);
+	startWorkers(database.db, state.mailer);
+}
+
+/** Background jobs: sending queued e-mails and scheduling reminders. */
+function startWorkers(database: DB, mailer: Mailer) {
+	if (building || state.timers) return;
+	const safely = (job: () => Promise<unknown>) => () => {
+		job().catch((e) => console.error('[worker]', e));
+	};
+	state.timers = [
+		setInterval(
+			safely(() => processOutbox(database, mailer)),
+			10_000
+		),
+		setInterval(
+			safely(() => queueReminders(database)),
+			5 * 60_000
+		)
+	];
+	safely(() => queueReminders(database))();
 }
 
 export function db(): DB {

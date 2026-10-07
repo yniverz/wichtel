@@ -602,6 +602,49 @@ export const en: Record<keyof typeof de, string> = {
 	'audit.goodie.refunded': 'Goodie refunded',
 	'audit.points.adjust': 'Points corrected',
 
+	'mailtpl.booking_confirmed.subject': 'You are signed up: {shift}',
+	'mailtpl.booking_confirmed.body':
+		'Hi {name},\n\nyou are signed up for this shift:\n\n{shift}\n{date}, {time}{location}\n\nAll your shifts: {link}\n\nThanks for helping!\n\nYour {festival} team',
+	'mailtpl.booking_requested.subject': 'Request sent: {shift}',
+	'mailtpl.booking_requested.body':
+		'Hi {name},\n\nwe received your request for this shift:\n\n{shift}\n{date}, {time}{location}\n\nA lead will confirm it as soon as possible. We will let you know by email.\n\nYour {festival} team',
+	'mailtpl.request_approved.subject': 'Confirmed: {shift}',
+	'mailtpl.request_approved.body':
+		'Hi {name},\n\nyour request has been confirmed – you are signed up:\n\n{shift}\n{date}, {time}{location}\n\nAll your shifts: {link}\n\nYour {festival} team',
+	'mailtpl.request_rejected.subject': 'Not this time: {shift}',
+	'mailtpl.request_rejected.body':
+		'Hi {name},\n\nunfortunately your request for this shift was declined:\n\n{shift}\n{date}, {time}{location}\n\nHave a look at other shifts: {link}\n\nYour {festival} team',
+	'mailtpl.added_by_lead.subject': 'You were added: {shift}',
+	'mailtpl.added_by_lead.body':
+		'Hi {name},\n\na lead added you to this shift:\n\n{shift}\n{date}, {time}{location}\n\nAll your shifts: {link}\n\nYour {festival} team',
+	'mailtpl.removed_by_lead.subject': 'Removed: {shift}',
+	'mailtpl.removed_by_lead.body':
+		'Hi {name},\n\nyou have been removed from this shift:\n\n{shift}\n{date}, {time}{location}\n\nIf you have questions, please contact the shift lead.\n\nYour {festival} team',
+	'mailtpl.shift_changed.subject': 'Changed: {shift}',
+	'mailtpl.shift_changed.body':
+		'Hi {name},\n\none of your shifts has changed. This is how it looks now:\n\n{shift}\n{date}, {time}{location}\n\nAll your shifts: {link}\n\nYour {festival} team',
+	'mailtpl.shift_cancelled.subject': 'Cancelled: {shift}',
+	'mailtpl.shift_cancelled.body':
+		'Hi {name},\n\nunfortunately this shift has been cancelled:\n\n{shift}\n{date}, {time}{location}\n\nMaybe another one suits you: {link}\n\nYour {festival} team',
+	'mailtpl.reminder.subject': 'Reminder: {shift}, {date}',
+	'mailtpl.reminder.body':
+		'Hi {name},\n\na quick reminder of your shift:\n\n{shift}\n{date}, {time}{location}\n\nSee you there!\n\nYour {festival} team',
+	'mailtpl.waitlist_promoted.subject': 'You moved up: {shift}',
+	'mailtpl.waitlist_promoted.body':
+		'Hi {name},\n\na place became free – you moved up from the waiting list:\n\n{shift}\n{date}, {time}{location}\n\nIf you cannot make it after all, please cancel: {link}\n\nYour {festival} team',
+	'mail.location': 'Location',
+	'mail.meetingPoint': 'Meeting point',
+	'calendar.title': 'Calendar feed',
+	'calendar.lead':
+		'Your shifts automatically in your phone calendar – changes arrive by themselves.',
+	'calendar.subscribe': 'Subscribe in calendar',
+	'calendar.copy': 'Copy link',
+	'calendar.copied': 'Copied.',
+	'calendar.rotate': 'Create new link',
+	'calendar.rotateConfirm': 'Create a new link? The old link stops working.',
+	'admin.settings.reminderHours': 'Reminder email (hours before start)',
+	'admin.settings.reminderHint': '0 = no reminders',
+
 	'mail.greeting': 'Hi {name},',
 	'mail.signature': 'Your {festival} team',
 	'mail.ignore': 'If this was not you, you can simply ignore this email.',

@@ -16,6 +16,7 @@ import {
 } from '../db/schema.ts';
 import { audit, diff, type Actor } from '../audit.ts';
 import { DomainError } from '../errors.ts';
+import { notifyShiftPeople } from '../notifications.ts';
 
 export interface PositionInput {
 	/** Existing position id when editing; absent for new positions. */
@@ -263,6 +264,25 @@ export async function updateShift(
 		}
 
 		const changes = diff(before as unknown as Record<string, unknown>, details);
+
+		// People who are on the shift hear about changes that affect them.
+		const relevant =
+			before.startsAt.getTime() !== input.startsAt.getTime() ||
+			before.endsAt.getTime() !== input.endsAt.getTime() ||
+			before.location !== input.location ||
+			before.meetingPoint !== input.meetingPoint;
+		if (relevant) {
+			const people = await tx
+				.select({ userId: assignments.userId })
+				.from(assignments)
+				.where(and(eq(assignments.shiftId, id), inArray(assignments.status, [...ACTIVE])));
+			await notifyShiftPeople(
+				tx,
+				'shift_changed',
+				{ ...before, ...details, startsAt: input.startsAt, endsAt: input.endsAt },
+				people.map((p) => p.userId)
+			);
+		}
 		await audit(tx, actor, {
 			action: 'shift.update',
 			entityType: 'shift',
@@ -289,6 +309,12 @@ export async function deleteShift(db: DB, actor: Actor, id: string): Promise<str
 			.select({ userId: assignments.userId })
 			.from(assignments)
 			.where(and(eq(assignments.shiftId, id), inArray(assignments.status, [...ACTIVE])));
+		await notifyShiftPeople(
+			tx,
+			'shift_cancelled',
+			shift,
+			affected.map((a) => a.userId)
+		);
 		await tx.delete(shifts).where(eq(shifts.id, id));
 		await audit(tx, actor, {
 			action: 'shift.delete',

@@ -9,6 +9,7 @@ import {
 	jsonb,
 	pgEnum,
 	pgTable,
+	primaryKey,
 	text,
 	timestamp,
 	unique,
@@ -49,6 +50,11 @@ export const users = pgTable('users', {
 	emailVerifiedAt: timestamp('email_verified_at', { withTimezone: true }),
 	/** Random token behind the personal QR code (desk check-in / goodie pickup). Rotatable. */
 	qrToken: text('qr_token')
+		.notNull()
+		.unique()
+		.default(sql`replace(gen_random_uuid()::text, '-', '')`),
+	/** Secret token for the personal iCal feed. Rotatable. */
+	calendarToken: text('calendar_token')
 		.notNull()
 		.unique()
 		.default(sql`replace(gen_random_uuid()::text, '-', '')`),
@@ -137,6 +143,8 @@ export const instanceSettings = pgTable(
 		/** Extra points when booked less than `lastMinuteHours` before the start (0 = off). */
 		lastMinuteBonus: integer('last_minute_bonus').notNull().default(0),
 		lastMinuteHours: integer('last_minute_hours').notNull().default(24),
+		/** Reminder e-mail this many hours before a shift (0 = no reminders). */
+		reminderHours: integer('reminder_hours').notNull().default(24),
 		/** SHA-256 of the one-time setup token; null once setup is complete. */
 		setupTokenHash: text('setup_token_hash'),
 		updatedAt: timestamps.updatedAt
@@ -281,6 +289,7 @@ export const assignments = pgTable(
 		attendance: attendanceEnum('attendance').notNull().default('unknown'),
 		attendanceAt: timestamp('attendance_at', { withTimezone: true }),
 		attendanceBy: uuid('attendance_by').references(() => users.id, { onDelete: 'set null' }),
+		reminderSentAt: timestamp('reminder_sent_at', { withTimezone: true }),
 		createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
 		...timestamps
 	},
@@ -451,6 +460,41 @@ export const pointsLedger = pgTable(
 		index('points_ledger_user_idx').on(t.userId, t.editionId),
 		index('points_ledger_assignment_idx').on(t.assignmentId)
 	]
+);
+
+// ---------------------------------------------------------------------------
+// E-mail
+// ---------------------------------------------------------------------------
+
+/** Transactional outbox: e-mails are queued in the same transaction as the change they report. */
+export const emailOutbox = pgTable(
+	'email_outbox',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		to: text('to').notNull(),
+		subject: text('subject').notNull(),
+		text: text('text').notNull(),
+		html: text('html').notNull(),
+		createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+		sendAfter: timestamp('send_after', { withTimezone: true }).notNull().defaultNow(),
+		sentAt: timestamp('sent_at', { withTimezone: true }),
+		attempts: integer('attempts').notNull().default(0),
+		lastError: text('last_error')
+	},
+	(t) => [index('email_outbox_pending_idx').on(t.sentAt, t.sendAfter)]
+);
+
+/** Admin overrides of the default e-mail texts (per template and language). */
+export const mailTemplates = pgTable(
+	'mail_templates',
+	{
+		key: text('key').notNull(),
+		locale: localeEnum('locale').notNull(),
+		subject: text('subject').notNull(),
+		body: text('body').notNull(),
+		updatedAt: timestamps.updatedAt
+	},
+	(t) => [primaryKey({ columns: [t.key, t.locale] })]
 );
 
 // ---------------------------------------------------------------------------

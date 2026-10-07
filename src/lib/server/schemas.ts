@@ -93,6 +93,7 @@ export const settingsSchema = z.object({
 	nightEnd: z.string().refine(isWallTime, 'error.invalidTime'),
 	lastMinuteBonus: wholeNumber,
 	lastMinuteHours: wholeNumber,
+	reminderHours: wholeNumber,
 	minBreakMinutes: z.coerce
 		.number('error.invalidNumber')
 		.int('error.invalidNumber')

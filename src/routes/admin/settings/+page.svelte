@@ -252,6 +252,15 @@
 				value={String(v.minBreakMinutes)}
 				error={result?.errors?.minBreakMinutes}
 			/>
+			<Field
+				label={i18n.t('admin.settings.reminderHours')}
+				name="reminderHours"
+				type="number"
+				min="0"
+				value={String(v.reminderHours)}
+				hint={i18n.t('admin.settings.reminderHint')}
+				error={result?.errors?.reminderHours}
+			/>
 		</div>
 	</Card>
 
