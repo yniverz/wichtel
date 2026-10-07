@@ -100,9 +100,9 @@
 									class="block w-full text-sm file:mr-3 file:rounded-md file:border-0 file:bg-ink file:px-3 file:py-2 file:text-sm file:font-semibold file:text-surface"
 								/>
 								<p class="text-xs text-ink-muted">
-									{i18n.t('quals.privacy')}{#if q.deletedAfterReview}{' '}{i18n.t(
-											'quals.deletedAfterReview'
-										)}{/if}
+									{q.deletedAfterReview
+										? `${i18n.t('quals.privacy')} ${i18n.t('quals.deletedAfterReview')}`
+										: i18n.t('quals.privacy')}
 								</p>
 							</div>
 						{/if}
