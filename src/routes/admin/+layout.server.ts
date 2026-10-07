@@ -22,6 +22,7 @@ export const load: LayoutServerLoad = async (event) => {
 			areas: authz.canSomewhere('area.manage'),
 			shifts: hasShiftAccess(ctx),
 			waves: authz.can('shift.manage'),
+			mail: authz.canSomewhere('mail.send'),
 			goodies: authz.can('goodie.manage'),
 			qualifications: authz.isAdmin || authz.canSomewhere('qualification.review'),
 			desk:

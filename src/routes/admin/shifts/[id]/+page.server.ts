@@ -97,6 +97,7 @@ export const load: PageServerLoad = async (event) => {
 			manage: authz.can('assignment.manage', shift.areaId),
 			override: authz.can('assignment.override', shift.areaId),
 			attendance: authz.can('attendance.confirm', shift.areaId),
+			mail: authz.can('mail.send', shift.areaId),
 			checkInOpen: checkInOpen(new Date(), shift.startsAt, tz)
 		},
 		areas: canEdit ? shiftAreaOptions(ctx) : [],

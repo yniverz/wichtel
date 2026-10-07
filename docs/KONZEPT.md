@@ -4,7 +4,7 @@ Wichtel ist ein Helfer- und Schichtsystem für ehrenamtliche Festivals (Zielgrö
 mehrwöchige Aufbau-/Festival-/Abbauphase). Helfende melden sich an, buchen Schichten, sammeln Punkte und
 tauschen diese gegen Goodies.
 
-Stand: 2026-10-07 · Status: Meilensteine 1–3 umgesetzt
+Stand: 2026-10-07 · Status: Meilensteine 1–4 umgesetzt
 
 ---
 
@@ -291,23 +291,23 @@ Entität, Bereich.
 
 ## 15. Technik
 
-| Bereich         | Wahl                                                                               | Begründung                                                                        |
-| --------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| Sprache         | TypeScript (strict)                                                                | Durchgängige Typen DB → UI, eine Codebasis                                        |
-| Framework       | SvelteKit (Node-Adapter)                                                           | Schnelles, mobilfreundliches UI; Server-Logik im selben Projekt                   |
-| Datenbank       | PostgreSQL                                                                         | Transaktionen, Constraints (z. B. Überbuchung verhindern)                         |
-| ORM/Migrationen | Drizzle                                                                            | Typsicher, SQL-nah, versionierte Migrationen                                      |
-| Validierung     | Zod                                                                                | Gemeinsame Schemas für Formulare und Server                                       |
-| Auth            | Eigene, schlanke Sitzungsverwaltung (gehashte Tokens in der DB), Argon2id          | E-Mail/Passwort; OIDC später ergänzbar                                            |
-| i18n            | Eigene, typsichere Kataloge (`de.ts` ist Quelle, `en.ts` vom Typchecker erzwungen) | Keine zusätzliche Build-Stufe, fehlende Übersetzungen fallen beim Typcheck auf    |
-| Styling         | Tailwind CSS + eigene Komponenten                                                  | Theming über CSS-Variablen (Branding)                                             |
-| Jobs            | pg-boss (Postgres-basiert)                                                         | Mails, Erinnerungen, Wellen – ohne zusätzlichen Redis                             |
-| Entwicklung     | PGlite (eingebettete PostgreSQL)                                                   | `npm run dev` ohne Docker/Datenbank; Tests laufen gegen echte PostgreSQL-Semantik |
-| Mail            | Nodemailer (SMTP)                                                                  |                                                                                   |
-| Dateien         | Lokales Volume (später optional S3-kompatibel)                                     | Qualifikationsnachweise, Bilder                                                   |
-| Tests           | Vitest (Domänenlogik), Playwright (E2E, auch Mobile-Viewport)                      | Kernregeln (Buchung, Punkte, Goodies) vollständig getestet                        |
-| Deployment      | Ein Docker-Image + `docker-compose.yml` mit Postgres                               |                                                                                   |
-| CI              | GitHub Actions: Lint, Typecheck, Tests, Image-Build                                |                                                                                   |
+| Bereich         | Wahl                                                                               | Begründung                                                                          |
+| --------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Sprache         | TypeScript (strict)                                                                | Durchgängige Typen DB → UI, eine Codebasis                                          |
+| Framework       | SvelteKit (Node-Adapter)                                                           | Schnelles, mobilfreundliches UI; Server-Logik im selben Projekt                     |
+| Datenbank       | PostgreSQL                                                                         | Transaktionen, Constraints (z. B. Überbuchung verhindern)                           |
+| ORM/Migrationen | Drizzle                                                                            | Typsicher, SQL-nah, versionierte Migrationen                                        |
+| Validierung     | Zod                                                                                | Gemeinsame Schemas für Formulare und Server                                         |
+| Auth            | Eigene, schlanke Sitzungsverwaltung (gehashte Tokens in der DB), Argon2id          | E-Mail/Passwort; OIDC später ergänzbar                                              |
+| i18n            | Eigene, typsichere Kataloge (`de.ts` ist Quelle, `en.ts` vom Typchecker erzwungen) | Keine zusätzliche Build-Stufe, fehlende Übersetzungen fallen beim Typcheck auf      |
+| Styling         | Tailwind CSS + eigene Komponenten                                                  | Theming über CSS-Variablen (Branding)                                               |
+| Jobs            | Transaktionale Outbox-Tabelle + Worker im App-Prozess                              | Mails entstehen in derselben Transaktion wie die Änderung; kein zusätzlicher Dienst |
+| Entwicklung     | PGlite (eingebettete PostgreSQL)                                                   | `npm run dev` ohne Docker/Datenbank; Tests laufen gegen echte PostgreSQL-Semantik   |
+| Mail            | Nodemailer (SMTP)                                                                  |                                                                                     |
+| Dateien         | Lokales Volume (später optional S3-kompatibel)                                     | Qualifikationsnachweise, Bilder                                                     |
+| Tests           | Vitest (Domänenlogik), Playwright (E2E, auch Mobile-Viewport)                      | Kernregeln (Buchung, Punkte, Goodies) vollständig getestet                          |
+| Deployment      | Ein Docker-Image + `docker-compose.yml` mit Postgres                               |                                                                                     |
+| CI              | GitHub Actions: Lint, Typecheck, Tests, Image-Build                                |                                                                                     |
 
 **Architektur-Grundsätze**
 

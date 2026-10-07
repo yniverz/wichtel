@@ -65,6 +65,11 @@
 				variant="secondary"
 				size="sm">{i18n.t('admin.shifts.duplicate')}</Button
 			>{/if}
+		{#if data.can.mail}<Button
+				href="/admin/mail?shift={data.shift.id}"
+				variant="secondary"
+				size="sm">{i18n.t('admin.mail.toShift')}</Button
+			>{/if}
 	{/snippet}
 </PageHeader>
 

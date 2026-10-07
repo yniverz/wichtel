@@ -13,31 +13,76 @@
 	let menuOpen = $state(false);
 	afterNavigate(() => (menuOpen = false));
 
-	const nav = $derived(
+	type NavItem = { href: string; label: MessageKey; show: boolean };
+	type NavGroup = { label: MessageKey | null; items: NavItem[] };
+	// Grouped by what people do, so the admin area stays easy to scan.
+	const groups = $derived(
 		(
 			[
-				{ href: '/admin', label: 'admin.nav.overview', show: true },
-				{ href: '/admin/desk', label: 'admin.nav.desk', show: data.access.desk },
-				{ href: '/admin/shifts', label: 'admin.nav.shifts', show: data.access.shifts },
-				{ href: '/admin/waves', label: 'admin.nav.waves', show: data.access.waves },
-				{ href: '/admin/goodies', label: 'admin.nav.goodies', show: data.access.goodies },
-				{ href: '/admin/areas', label: 'admin.nav.areas', show: data.access.areas },
-				{ href: '/admin/people', label: 'admin.nav.people', show: data.access.people },
+				{ label: null, items: [{ href: '/admin', label: 'admin.nav.overview', show: true }] },
 				{
-					href: '/admin/qualifications',
-					label: 'admin.nav.qualifications',
-					show: data.access.qualifications
+					label: 'admin.navGroup.onSite',
+					items: [{ href: '/admin/desk', label: 'admin.nav.desk', show: data.access.desk }]
 				},
-				{ href: '/admin/roles', label: 'admin.nav.roles', show: data.access.isAdmin },
-				{ href: '/admin/fields', label: 'admin.nav.fields', show: data.access.isAdmin },
-				{ href: '/admin/editions', label: 'admin.nav.editions', show: data.access.isAdmin },
-				{ href: '/admin/settings', label: 'admin.nav.settings', show: data.access.isAdmin },
-				{ href: '/admin/audit', label: 'admin.nav.audit', show: data.access.audit }
-			] satisfies { href: string; label: MessageKey; show: boolean }[]
-		).filter((n) => n.show)
+				{
+					label: 'admin.navGroup.planning',
+					items: [
+						{ href: '/admin/shifts', label: 'admin.nav.shifts', show: data.access.shifts },
+						{ href: '/admin/waves', label: 'admin.nav.waves', show: data.access.waves },
+						{ href: '/admin/areas', label: 'admin.nav.areas', show: data.access.areas },
+						{ href: '/admin/goodies', label: 'admin.nav.goodies', show: data.access.goodies }
+					]
+				},
+				{
+					label: 'admin.navGroup.people',
+					items: [
+						{ href: '/admin/people', label: 'admin.nav.people', show: data.access.people },
+						{
+							href: '/admin/qualifications',
+							label: 'admin.nav.qualifications',
+							show: data.access.qualifications
+						},
+						{ href: '/admin/roles', label: 'admin.nav.roles', show: data.access.isAdmin },
+						{ href: '/admin/fields', label: 'admin.nav.fields', show: data.access.isAdmin }
+					]
+				},
+				{
+					label: 'admin.navGroup.communication',
+					items: [
+						{ href: '/admin/mail', label: 'admin.nav.mail', show: data.access.mail },
+						{
+							href: '/admin/mail/templates',
+							label: 'admin.nav.templates',
+							show: data.access.isAdmin
+						}
+					]
+				},
+				{
+					label: 'admin.navGroup.system',
+					items: [
+						{ href: '/admin/editions', label: 'admin.nav.editions', show: data.access.isAdmin },
+						{ href: '/admin/settings', label: 'admin.nav.settings', show: data.access.isAdmin },
+						{ href: '/admin/audit', label: 'admin.nav.audit', show: data.access.audit }
+					]
+				}
+			] satisfies NavGroup[]
+		)
+			.map((g) => ({ ...g, items: g.items.filter((i) => i.show) }))
+			.filter((g) => g.items.length > 0)
 	);
-	const isActive = (href: string) =>
-		href === '/admin' ? page.url.pathname === '/admin' : page.url.pathname.startsWith(href);
+	const nav = $derived(groups.flatMap((g) => g.items));
+	// The most specific matching entry is active (e.g. "E-Mail-Vorlagen" rather than "Rundmails").
+	const activeHref = $derived(
+		nav
+			.map((n) => n.href)
+			.filter((href) =>
+				href === '/admin'
+					? page.url.pathname === '/admin'
+					: page.url.pathname === href || page.url.pathname.startsWith(`${href}/`)
+			)
+			.sort((a, b) => b.length - a.length)[0]
+	);
+	const isActive = (href: string) => href === activeHref;
 	const next = $derived(page.url.pathname);
 </script>
 
@@ -67,21 +112,30 @@
 {/snippet}
 
 {#snippet navList()}
-	<ul class="space-y-0.5">
-		{#each nav as item (item.href)}
-			<li>
-				<a
-					href={item.href}
-					class="flex items-center rounded-md px-3 py-2 text-sm font-semibold transition-colors {isActive(
-						item.href
-					)
-						? 'bg-ink text-surface'
-						: 'text-ink-muted hover:bg-ink/6 hover:text-ink'}"
-					aria-current={isActive(item.href) ? 'page' : undefined}>{i18n.t(item.label)}</a
-				>
-			</li>
+	<div class="space-y-4">
+		{#each groups as group (group.label ?? 'top')}
+			<div>
+				{#if group.label}
+					<p class="mb-1 px-3 text-xs font-bold text-ink-muted">{i18n.t(group.label)}</p>
+				{/if}
+				<ul class="space-y-0.5">
+					{#each group.items as item (item.href)}
+						<li>
+							<a
+								href={item.href}
+								class="flex items-center rounded-md px-3 py-1.5 text-sm font-semibold transition-colors {isActive(
+									item.href
+								)
+									? 'bg-ink text-surface'
+									: 'text-ink-muted hover:bg-ink/6 hover:text-ink'}"
+								aria-current={isActive(item.href) ? 'page' : undefined}>{i18n.t(item.label)}</a
+							>
+						</li>
+					{/each}
+				</ul>
+			</div>
 		{/each}
-	</ul>
+	</div>
 {/snippet}
 
 <div class="min-h-dvh lg:grid lg:grid-cols-[16rem_1fr]">
