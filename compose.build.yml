@@ -1,0 +1,6 @@
+# Build the image from this checkout instead of pulling it:
+#   docker compose -f docker-compose.yml -f compose.build.yml up -d --build
+services:
+  app:
+    image: wichtel:local
+    build: .

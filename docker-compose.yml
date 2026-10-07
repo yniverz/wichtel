@@ -1,22 +1,31 @@
-# Example production setup: Wichtel + PostgreSQL.
-# Put a reverse proxy with TLS (Caddy, Traefik, nginx) in front of port 3000.
+# Production setup: Wichtel + PostgreSQL.
+# Works with `docker compose` (values from .env next to this file) and as a
+# Portainer stack (values from the stack's environment variables).
+# Put a reverse proxy with TLS (Caddy, Traefik, nginx) in front of the app port.
 services:
   app:
-    image: ghcr.io/yniverz/wichtel:latest
-    build: .
+    image: ${WICHTEL_IMAGE:-ghcr.io/yniverz/wichtel:latest}
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
-    env_file: .env
     environment:
-      DATABASE_URL: postgres://wichtel:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/wichtel
+      DATABASE_URL: postgres://wichtel:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@db:5432/wichtel
+      PUBLIC_URL: ${PUBLIC_URL:?set PUBLIC_URL, e.g. https://helfen.example.de}
+      SETUP_TOKEN: ${SETUP_TOKEN:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
       # Behind a reverse proxy: trust its headers for protocol, host and client IP.
       PROTOCOL_HEADER: x-forwarded-proto
       HOST_HEADER: x-forwarded-host
       ADDRESS_HEADER: x-forwarded-for
     ports:
-      - '127.0.0.1:3006:3000'
+      # Host address and port the app is reachable on (container listens on 3000).
+      - '${WICHTEL_BIND:-127.0.0.1}:${WICHTEL_PORT:-3006}:3000'
     volumes:
       - uploads:/data
 
@@ -25,7 +34,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: wichtel
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
       POSTGRES_DB: wichtel
     volumes:
       - postgres:/var/lib/postgresql/data

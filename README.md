@@ -77,15 +77,24 @@ Beim ersten Start steht im Terminal ein Einrichtungslink (`/setup?token=…`). E
 ## Betrieb
 
 Wichtel läuft als ein Docker-Container mit PostgreSQL. Migrationen laufen beim Start automatisch.
+Das Image wird bei jedem Push auf `main` als `ghcr.io/yniverz/wichtel:latest` veröffentlicht.
 
 ```bash
-cp .env.example .env   # PUBLIC_URL, POSTGRES_PASSWORD, SMTP_* setzen
+cp .env.example .env   # PUBLIC_URL, POSTGRES_PASSWORD, SMTP_*, WICHTEL_PORT setzen
 docker compose up -d
 docker compose logs app   # enthält den Einrichtungslink
 ```
 
+Selbst bauen statt Image laden: `docker compose -f docker-compose.yml -f compose.build.yml up -d --build`.
+
+**Portainer:** _Stacks → Add stack_, Inhalt von `docker-compose.yml` in den Web-Editor kopieren
+(oder _Repository_ mit dieser Repo-URL wählen) und unter _Environment variables_ mindestens
+`POSTGRES_PASSWORD` und `PUBLIC_URL` setzen, optional `WICHTEL_PORT`, `WICHTEL_BIND` und `SMTP_*`.
+Den Einrichtungslink zeigen die Logs des `app`-Containers.
+
 - Hinter einen Reverse Proxy mit TLS stellen (Caddy, Traefik, nginx); `docker-compose.yml` setzt
-  bereits die `X-Forwarded-*`-Header als vertrauenswürdig.
+  bereits die `X-Forwarded-*`-Header als vertrauenswürdig. Port und Bind-Adresse: `WICHTEL_PORT`
+  (Standard 3006) und `WICHTEL_BIND` (Standard `127.0.0.1`).
 - Hochgeladene Dateien liegen im Volume `/data`; Datenbank und Volume sichern.
 - `GET /healthz` meldet, ob App und Datenbank erreichbar sind.
 
