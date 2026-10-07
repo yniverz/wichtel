@@ -16,6 +16,8 @@ import { getPerson } from '#lib/server/services/people.ts';
 import { adjustPoints, pointsHistory } from '#lib/server/services/points.ts';
 import { getSettings } from '#lib/server/services/settings.ts';
 import { parseForm, requiredText, uuid } from '#lib/server/validation.ts';
+import { displayValue } from '#lib/domain/fields.ts';
+import { fieldsFor, listFields, valuesOf } from '#lib/server/services/fields.ts';
 import type { Actions, PageServerLoad, RequestEvent } from './$types';
 
 async function context(event: RequestEvent) {
@@ -32,11 +34,21 @@ export const load: PageServerLoad = async (event) => {
 	const database = db();
 	const now = new Date();
 	const tz = (await getSettings(database)).timezone;
-	const [today, overview, history] = await Promise.all([
+	const [today, overview, history, allFields, values] = await Promise.all([
 		shiftsForCheckIn(database, person.id, edition.id, now, tz),
 		goodieOverview(database, person.id, edition.id),
-		pointsHistory(database, person.id, edition.id)
+		pointsHistory(database, person.id, edition.id),
+		listFields(database),
+		valuesOf(database, person.id)
 	]);
+	const detailsFor = (goodieId: string) =>
+		fieldsFor(allFields, { goodieId })
+			.map((f) => ({
+				labelDe: f.labelDe,
+				labelEn: f.labelEn,
+				value: displayValue(values[f.id], '✓', '–')
+			}))
+			.filter((d) => d.value !== '');
 	return {
 		timezone: tz,
 		access,
@@ -60,7 +72,8 @@ export const load: PageServerLoad = async (event) => {
 				id: claim.id,
 				status: claim.status,
 				variant: claim.variant,
-				goodie: { nameDe: goodie.nameDe, nameEn: goodie.nameEn }
+				goodie: { nameDe: goodie.nameDe, nameEn: goodie.nameEn },
+				details: detailsFor(goodie.id)
 			})),
 		handOut: overview.goodies
 			.filter(

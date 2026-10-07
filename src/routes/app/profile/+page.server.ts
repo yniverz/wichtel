@@ -9,9 +9,18 @@ import { createSession } from '#lib/server/sessions.ts';
 import { changePassword, updateProfile } from '#lib/server/services/accounts.ts';
 import { parseForm, password, phone, requiredText } from '#lib/server/validation.ts';
 import { LOCALES } from '#lib/i18n/index.ts';
+import { fieldView } from '#lib/server/field-views.ts';
+import {
+	fieldsFor,
+	listFields,
+	readFieldInput,
+	saveValues,
+	validateFields,
+	valuesOf
+} from '#lib/server/services/fields.ts';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = (event) => {
+export const load: PageServerLoad = async (event) => {
 	const user = requireUser(event);
 	return {
 		profile: {
@@ -20,7 +29,9 @@ export const load: PageServerLoad = (event) => {
 			phone: user.phone,
 			locale: user.locale
 		},
-		calendarUrl: `${config.publicUrl}/calendar/${user.calendarToken}.ics`
+		calendarUrl: `${config.publicUrl}/calendar/${user.calendarToken}.ics`,
+		fields: fieldsFor(await listFields(db()), 'profile').map(fieldView),
+		fieldValues: await valuesOf(db(), user.id)
 	};
 };
 
@@ -66,5 +77,13 @@ export const actions: Actions = {
 			.set({ calendarToken: sql`replace(gen_random_uuid()::text, '-', '')` })
 			.where(eq(users.id, user.id));
 		return { action: 'calendar', success: 'common.saved' };
+	},
+	fields: async (event) => {
+		const user = requireUser(event);
+		const fields = fieldsFor(await listFields(db()), 'profile');
+		const checked = validateFields(fields, readFieldInput(await event.request.formData(), fields));
+		if (!checked.ok) return fail(400, { action: 'fields', errors: checked.errors });
+		await saveValues(db(), user.id, checked.values);
+		return { action: 'fields', success: 'common.saved' };
 	}
 };

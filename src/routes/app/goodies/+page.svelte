@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import Button from '#lib/components/Button.svelte';
 	import ConfirmForm from '#lib/components/ConfirmForm.svelte';
+	import FieldInputs from '#lib/components/FieldInputs.svelte';
 	import Toast from '#lib/components/Toast.svelte';
 	import { getI18n } from '#lib/i18n/context.ts';
 	import { formatDate, formatPoints, localized, type MessageKey } from '#lib/i18n/index.ts';
@@ -11,8 +12,14 @@
 	let { data, form }: PageProps = $props();
 	const i18n = getI18n();
 	const pts = (n: number) => formatPoints(n, i18n.t);
-	type Result = { success?: string; error?: string };
+	type Result = {
+		success?: string;
+		error?: string;
+		goodieId?: string;
+		errors?: Record<string, string>;
+	};
 	const result = $derived(form as Result | null);
+	const fieldErrors = $derived(result?.errors ? result : null);
 	let pending = $state<string | null>(null);
 	let qrDialog: HTMLDialogElement | undefined = $state();
 
@@ -184,6 +191,16 @@
 										}}
 									>
 										<input type="hidden" name="goodieId" value={g.id} />
+										{#if g.fields.length}
+											<div class="w-full space-y-3">
+												<p class="text-sm font-semibold">{i18n.t('goodies.fieldsNeeded')}</p>
+												<FieldInputs
+													fields={g.fields}
+													values={data.fieldValues}
+													errors={fieldErrors?.goodieId === g.id ? (fieldErrors.errors ?? {}) : {}}
+												/>
+											</div>
+										{/if}
 										{#if g.variants.length}
 											<label class="sr-only" for="variant-{g.id}">{i18n.t('goodies.variant')}</label
 											>

@@ -23,7 +23,21 @@ import {
 	removeAssignment
 } from '#lib/server/services/roles.ts';
 import { checkbox, optionalUuid, parseForm, uuid } from '#lib/server/validation.ts';
+import { displayValue } from '#lib/domain/fields.ts';
+import { listFields, valuesOf } from '#lib/server/services/fields.ts';
 import type { Actions, PageServerLoad } from './$types';
+
+async function personDetails(userId: string) {
+	const [fields, values] = await Promise.all([listFields(db()), valuesOf(db(), userId)]);
+	return fields
+		.map((f) => ({
+			id: f.id,
+			labelDe: f.labelDe,
+			labelEn: f.labelEn,
+			value: displayValue(values[f.id], '✓', '–')
+		}))
+		.filter((d) => d.value !== '');
+}
 
 export const load: PageServerLoad = async (event) => {
 	const ctx = await getAdminContext(event);
@@ -76,6 +90,8 @@ export const load: PageServerLoad = async (event) => {
 		assignableRoles: assignableRoles.map((r) => ({ id: r.id, nameDe: r.nameDe, nameEn: r.nameEn })),
 		scopes,
 		isSelf: person.id === ctx.user.id,
+		details:
+			authz.isAdmin || authz.can('helper.contact.view') ? await personDetails(person.id) : [],
 		qualifications: canReviewQualifications
 			? {
 					held: (await listUserQualifications(db(), person.id)).map(({ entry, qualification }) => ({

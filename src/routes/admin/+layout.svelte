@@ -28,6 +28,7 @@
 					show: data.access.qualifications
 				},
 				{ href: '/admin/roles', label: 'admin.nav.roles', show: data.access.isAdmin },
+				{ href: '/admin/fields', label: 'admin.nav.fields', show: data.access.isAdmin },
 				{ href: '/admin/editions', label: 'admin.nav.editions', show: data.access.isAdmin },
 				{ href: '/admin/settings', label: 'admin.nav.settings', show: data.access.isAdmin },
 				{ href: '/admin/audit', label: 'admin.nav.audit', show: data.access.audit }

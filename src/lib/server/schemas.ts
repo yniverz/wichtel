@@ -222,3 +222,31 @@ export const qualificationSchema = z.object({
 	active: checkbox,
 	sortOrder: z.coerce.number().int().min(-9999).max(9999).default(0)
 });
+
+export const fieldSchema = z.object({
+	labelDe: requiredText(200),
+	labelEn: optionalText(200),
+	helpDe: optionalText(500),
+	helpEn: optionalText(500),
+	type: z.enum(['text', 'textarea', 'number', 'date', 'select', 'multiselect', 'checkbox']),
+	options: z
+		.string()
+		.max(1000, 'error.tooLong')
+		.default('')
+		.transform((v) =>
+			[
+				...new Set(
+					v
+						.split(',')
+						.map((x) => x.trim())
+						.filter(Boolean)
+				)
+			].slice(0, 50)
+		),
+	required: checkbox,
+	context: z.enum(['registration', 'profile', 'goodie']),
+	'goodieIds[]': z.array(z.uuid()).default([]),
+	showToLeads: checkbox,
+	active: checkbox,
+	sortOrder: z.coerce.number().int().min(-9999).max(9999).default(0)
+});

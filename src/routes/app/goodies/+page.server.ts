@@ -13,6 +13,15 @@ import {
 } from '#lib/server/services/goodies.ts';
 import { pointsHistory } from '#lib/server/services/points.ts';
 import { parseForm, uuid } from '#lib/server/validation.ts';
+import { fieldView } from '#lib/server/field-views.ts';
+import {
+	fieldsFor,
+	listFields,
+	readFieldInput,
+	saveValues,
+	validateFields,
+	valuesOf
+} from '#lib/server/services/fields.ts';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
@@ -28,10 +37,12 @@ export const load: PageServerLoad = async (event) => {
 			areaNames: {} as Record<string, { nameDe: string; nameEn: string }>
 		};
 	}
-	const [overview, history, tree] = await Promise.all([
+	const [overview, history, tree, allFields, fieldValues] = await Promise.all([
 		goodieOverview(database, user.id, edition.id),
 		pointsHistory(database, user.id, edition.id),
-		loadAreaTree(database, edition.id)
+		loadAreaTree(database, edition.id),
+		listFields(database),
+		valuesOf(database, user.id)
 	]);
 	const areaNames: Record<string, { nameDe: string; nameEn: string }> = {};
 	for (const { area } of tree.flat())
@@ -39,6 +50,7 @@ export const load: PageServerLoad = async (event) => {
 	return {
 		qr,
 		areaNames,
+		fieldValues,
 		history: history.map((h) => ({
 			...h,
 			createdAt: h.createdAt.toISOString(),
@@ -74,7 +86,8 @@ export const load: PageServerLoad = async (event) => {
 					advance: g.advance,
 					requiredAreaIds: g.requiredAreaIds,
 					remaining: g.remaining,
-					availability: g.availability
+					availability: g.availability,
+					fields: fieldsFor(allFields, { goodieId: g.id }).map(fieldView)
 				}))
 		}
 	};
@@ -83,11 +96,13 @@ export const load: PageServerLoad = async (event) => {
 export const actions: Actions = {
 	claim: async (event) => {
 		const user = requireVerifiedUser(event);
-		const parsed = parseForm(
-			z.object({ goodieId: uuid, variant: z.string().optional() }),
-			await event.request.formData()
-		);
+		const form = await event.request.formData();
+		const parsed = parseForm(z.object({ goodieId: uuid, variant: z.string().optional() }), form);
 		if (!parsed.ok) return fail(400, { error: 'error.notFound' });
+		const fields = fieldsFor(await listFields(db()), { goodieId: parsed.data.goodieId });
+		const checked = validateFields(fields, readFieldInput(form, fields));
+		if (!checked.ok) return fail(400, { goodieId: parsed.data.goodieId, errors: checked.errors });
+		await saveValues(db(), user.id, checked.values);
 		const result = await attempt(() =>
 			claimGoodie(db(), actorOf(event), user.id, parsed.data.goodieId, parsed.data.variant || null)
 		);

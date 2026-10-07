@@ -146,6 +146,18 @@
 			</Card>
 		{/if}
 
+		{#if data.details.length}
+			<Card title={i18n.t('admin.people.fields')}>
+				<dl class="space-y-2 text-sm">
+					{#each data.details as d (d.id)}
+						<div>
+							<dt class="text-ink-muted">{localized(d, 'label', i18n.locale)}</dt>
+							<dd>{d.value}</dd>
+						</div>
+					{/each}
+				</dl>
+			</Card>
+		{/if}
 		{#if data.qualifications}
 			<Card title={i18n.t('admin.quals.ofPerson')}>
 				{#if result?.action === 'qualification'}<div class="mb-3">

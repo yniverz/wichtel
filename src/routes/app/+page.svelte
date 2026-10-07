@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import Button from '#lib/components/Button.svelte';
 	import { getI18n } from '#lib/i18n/context.ts';
+	import Alert from '#lib/components/Alert.svelte';
 	import Badge from '#lib/components/Badge.svelte';
 	import { formatDateRange, formatDayShort, formatTime, localized } from '#lib/i18n/index.ts';
 	import type { PageProps } from './$types';
@@ -26,6 +27,12 @@
 			</p>
 		{/if}
 	</header>
+
+	{#if data.missingFields}
+		<Alert tone="warning">
+			<a href="/app/profile" class="font-semibold underline">{i18n.t('app.home.missingFields')}</a>
+		</Alert>
+	{/if}
 
 	{#if !data.edition}
 		<p class="text-lg text-ink-muted">{i18n.t('app.home.noEdition')}</p>

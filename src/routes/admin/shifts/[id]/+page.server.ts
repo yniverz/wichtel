@@ -23,6 +23,8 @@ import {
 import { getSettings } from '#lib/server/services/settings.ts';
 import { deleteShift, getShift, updateShift } from '#lib/server/services/shifts.ts';
 import { checkbox, parseForm, uuid } from '#lib/server/validation.ts';
+import { displayValue } from '#lib/domain/fields.ts';
+import { listFields, valuesFor } from '#lib/server/services/fields.ts';
 import type { Actions, PageServerLoad, RequestEvent } from './$types';
 
 async function loadShiftForLead(event: RequestEvent) {
@@ -39,6 +41,20 @@ export const load: PageServerLoad = async (event) => {
 	const { authz } = ctx;
 	const tz = (await getSettings(db())).timezone;
 	const roster = await shiftRoster(db(), shift.id);
+	const leadFields = (await listFields(db())).filter((f) => f.active && f.showToLeads);
+	const leadValues = await valuesFor(
+		db(),
+		roster.map((r) => r.userId),
+		leadFields.map((f) => f.id)
+	);
+	const notesFor = (userId: string) =>
+		leadFields
+			.map((f) => ({
+				labelDe: f.labelDe,
+				labelEn: f.labelEn,
+				value: displayValue(leadValues.get(userId)?.[f.id], '✓', '–')
+			}))
+			.filter((n) => n.value !== '');
 	const showContact = authz.can('helper.contact.view', shift.areaId);
 	const canEdit = authz.can('shift.manage', shift.areaId);
 
@@ -71,7 +87,8 @@ export const load: PageServerLoad = async (event) => {
 						name: `${r.firstName} ${r.lastName}`,
 						phone: showContact ? r.phone : null,
 						status: r.status,
-						attendance: r.attendance
+						attendance: r.attendance,
+						notes: notesFor(r.userId)
 					}))
 			}))
 		},

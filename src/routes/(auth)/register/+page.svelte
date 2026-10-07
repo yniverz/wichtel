@@ -4,12 +4,13 @@
 	import Alert from '#lib/components/Alert.svelte';
 	import Button from '#lib/components/Button.svelte';
 	import Field from '#lib/components/Field.svelte';
+	import FieldInputs from '#lib/components/FieldInputs.svelte';
 	import FormMessage from '#lib/components/FormMessage.svelte';
 	import { pendingForm } from '#lib/forms.svelte.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
 	import type { PageProps } from './$types';
 
-	let { form }: PageProps = $props();
+	let { data, form }: PageProps = $props();
 	const i18n = getI18n();
 	const submitter = pendingForm({ reset: false });
 	const settings = $derived(page.data.settings);
@@ -68,6 +69,13 @@
 			hint={i18n.t('auth.register.passwordHint')}
 			error={form?.errors?.password}
 		/>
+		{#if data.fields.length}
+			<FieldInputs
+				fields={data.fields}
+				values={form?.fieldValues ?? {}}
+				errors={form?.errors ?? {}}
+			/>
+		{/if}
 		{#if settings.privacyUrl}
 			<p class="text-sm text-ink-muted">
 				{i18n.t('auth.register.privacy')}

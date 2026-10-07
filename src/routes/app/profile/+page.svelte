@@ -5,6 +5,7 @@
 	import Card from '#lib/components/Card.svelte';
 	import ConfirmForm from '#lib/components/ConfirmForm.svelte';
 	import Field from '#lib/components/Field.svelte';
+	import FieldInputs from '#lib/components/FieldInputs.svelte';
 	import FormMessage from '#lib/components/FormMessage.svelte';
 	import { pendingForm } from '#lib/forms.svelte.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
@@ -15,6 +16,7 @@
 	const i18n = getI18n();
 	const profileForm = pendingForm({ reset: false });
 	const passwordForm = pendingForm();
+	const fieldsForm = pendingForm({ reset: false });
 	let copied = $state(false);
 
 	type Result = {
@@ -27,6 +29,7 @@
 	const result = $derived(form as Result | null);
 	const profileResult = $derived(result?.action === 'profile' ? result : null);
 	const passwordResult = $derived(result?.action === 'password' ? result : null);
+	const fieldsResult = $derived(result?.action === 'fields' ? result : null);
 	const values = $derived({ ...data.profile, ...(profileResult?.values ?? {}) });
 </script>
 
@@ -79,6 +82,20 @@
 			<Button type="submit" loading={profileForm.pending}>{i18n.t('common.save')}</Button>
 		</form>
 	</Card>
+
+	{#if data.fields.length}
+		<Card title={i18n.t('profile.more')} description={i18n.t('profile.moreHint')}>
+			<form method="POST" action="?/fields" class="space-y-4" use:enhance={fieldsForm.submit}>
+				<FormMessage error={fieldsResult?.error} success={fieldsResult?.success} />
+				<FieldInputs
+					fields={data.fields}
+					values={data.fieldValues}
+					errors={fieldsResult?.errors ?? {}}
+				/>
+				<Button type="submit" loading={fieldsForm.pending}>{i18n.t('common.save')}</Button>
+			</form>
+		</Card>
+	{/if}
 
 	<Card title={i18n.t('profile.password')}>
 		<form method="POST" action="?/password" class="space-y-4" use:enhance={passwordForm.submit}>

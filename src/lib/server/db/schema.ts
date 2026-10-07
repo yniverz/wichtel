@@ -529,6 +529,63 @@ export const userQualifications = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// Configurable profile fields
+// ---------------------------------------------------------------------------
+
+export const fieldTypeEnum = pgEnum('field_type', [
+	'text',
+	'textarea',
+	'number',
+	'date',
+	'select',
+	'multiselect',
+	'checkbox'
+]);
+export const fieldContextEnum = pgEnum('field_context', ['registration', 'profile', 'goodie']);
+
+export const profileFields = pgTable('profile_fields', {
+	id: uuid('id').primaryKey().defaultRandom(),
+	labelDe: text('label_de').notNull(),
+	labelEn: text('label_en').notNull().default(''),
+	helpDe: text('help_de').notNull().default(''),
+	helpEn: text('help_en').notNull().default(''),
+	type: fieldTypeEnum('type').notNull().default('text'),
+	/** Choices for select / multiselect. */
+	options: text('options')
+		.array()
+		.notNull()
+		.default(sql`'{}'::text[]`),
+	required: boolean('required').notNull().default(false),
+	/** When the field is asked: at registration, only in the profile, or when choosing goodies. */
+	context: fieldContextEnum('context').notNull().default('profile'),
+	/** For context `goodie`: the goodies that need this field. */
+	goodieIds: uuid('goodie_ids')
+		.array()
+		.notNull()
+		.default(sql`'{}'::uuid[]`),
+	/** Leads see the value next to the person in shift rosters (e.g. allergies for catering). */
+	showToLeads: boolean('show_to_leads').notNull().default(false),
+	active: boolean('active').notNull().default(true),
+	sortOrder: integer('sort_order').notNull().default(0),
+	...timestamps
+});
+
+export const profileValues = pgTable(
+	'profile_values',
+	{
+		userId: uuid('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		fieldId: uuid('field_id')
+			.notNull()
+			.references(() => profileFields.id, { onDelete: 'cascade' }),
+		value: jsonb('value').$type<string | number | boolean | string[]>().notNull(),
+		updatedAt: timestamps.updatedAt
+	},
+	(t) => [primaryKey({ columns: [t.userId, t.fieldId] })]
+);
+
+// ---------------------------------------------------------------------------
 // E-mail
 // ---------------------------------------------------------------------------
 
@@ -604,3 +661,4 @@ export type GoodieClaim = typeof goodieClaims.$inferSelect;
 export type PointsEntry = typeof pointsLedger.$inferSelect;
 export type Qualification = typeof qualifications.$inferSelect;
 export type UserQualification = typeof userQualifications.$inferSelect;
+export type ProfileField = typeof profileFields.$inferSelect;

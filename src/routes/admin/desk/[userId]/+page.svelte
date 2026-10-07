@@ -128,6 +128,16 @@
 											><Badge tone="warning">{i18n.t('goodies.claim.refund_pending')}</Badge></span
 										>{/if}
 								</p>
+								{#if c.details.length}
+									<p class="w-full text-sm text-ink-muted">
+										{c.details
+											.map(
+												(d) =>
+													`${localized({ labelDe: d.labelDe, labelEn: d.labelEn }, 'label', i18n.locale)}: ${d.value}`
+											)
+											.join(' · ')}
+									</p>
+								{/if}
 								<div class="flex gap-2">
 									{#if c.status === 'selected'}
 										<ConfirmForm

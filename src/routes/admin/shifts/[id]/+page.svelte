@@ -111,6 +111,16 @@
 											class="block text-sm text-ink-muted tabular-nums hover:underline"
 											>{person.phone}</a
 										>{/if}
+									{#if person.notes.length}
+										<span class="block text-sm text-ink-muted">
+											{person.notes
+												.map(
+													(n) =>
+														`${localized({ labelDe: n.labelDe, labelEn: n.labelEn }, 'label', i18n.locale)}: ${n.value}`
+												)
+												.join(' · ')}
+										</span>
+									{/if}
 								</div>
 
 								{#if person.status === 'requested'}
