@@ -32,7 +32,8 @@ export const actions: Actions = {
 		if (!parsed.ok) return fail(400, { errors: parsed.errors, values: parsed.values });
 
 		const current = await getSettings(db());
-		const update: SettingsUpdate = { ...parsed.data };
+		const { 'mcpTools[]': mcpTools, ...fields } = parsed.data;
+		const update: SettingsUpdate = { ...fields, mcpTools };
 		const replaced: string[] = [];
 
 		for (const [field, column] of IMAGE_FIELDS) {

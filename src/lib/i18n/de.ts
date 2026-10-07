@@ -1166,6 +1166,68 @@ export const de = {
 	'admin.people.shifts': 'Schichten',
 	'print.planTitle': 'Schichtplan',
 	'print.crewTitle': 'Helferliste',
+	// AI assistants (MCP)
+	'perm.mcp.use': 'KI-Assistent verbinden (z. B. Claude), mit den eigenen Rechten',
+	'mcp.consent.title': 'Zugriff erlauben',
+	'mcp.consent.lead':
+		'„{client}“ möchte in deinem Namen ({user}) auf Wichtel zugreifen – mit genau deinen Rechten.',
+	'mcp.consent.redirect': 'Danach geht es zurück zu {host}.',
+	'mcp.consent.access': 'Was darf die Verbindung?',
+	'mcp.consent.note':
+		'Der Zugang gilt 90 Tage. Du kannst ihn jederzeit in deinem Profil trennen. Jede Änderung steht im Protokoll.',
+	'mcp.consent.allow': 'Erlauben',
+	'mcp.consent.deny': 'Ablehnen',
+	'mcp.consent.invalid': 'Diese Anfrage ist ungültig.',
+	'mcp.consent.notAllowed':
+		'Deine Rolle erlaubt keinen KI-Zugang. Frag die Verwaltung, wenn du ihn brauchst.',
+	'mcp.scope.write': 'Lesen und ändern',
+	'mcp.scope.writeHint':
+		'Z. B. Schichten anlegen oder Leute eintragen – soweit deine Rolle das darf.',
+	'mcp.scope.read': 'Nur lesen',
+	'mcp.scope.readHint': 'Pläne, Besetzung und Anfragen ansehen, nichts ändern.',
+	'mcp.profile.title': 'Mit Claude verbinden',
+	'mcp.profile.lead':
+		'Lass Claude in deinem Namen planen, z. B. „Leg für Samstag drei Abbau-Schichten an“. Claude hat dabei genau deine Rechte.',
+	'mcp.profile.url': 'Adresse des Connectors',
+	'mcp.profile.step1': 'In Claude: Einstellungen → Connectors → „Eigenen Connector hinzufügen“.',
+	'mcp.profile.step2': 'Diese Adresse eintragen und speichern.',
+	'mcp.profile.step3':
+		'„Verbinden“ wählen – du landest hier, meldest dich an und erlaubst den Zugriff.',
+	'mcp.profile.code': 'In Claude Code:',
+	'mcp.profile.connections': 'Verbundene Zugänge',
+	'mcp.profile.none': 'Noch nichts verbunden.',
+	'mcp.profile.validUntil': 'gültig bis {date}',
+	'mcp.profile.lastUsed': 'zuletzt genutzt {date}',
+	'mcp.profile.disconnect': 'Trennen',
+	'mcp.profile.disconnectConfirm':
+		'„{name}“ trennen? Der Zugang funktioniert danach sofort nicht mehr.',
+	'mcp.disconnected': 'Verbindung getrennt.',
+	'admin.settings.mcp': 'KI-Assistenten (MCP)',
+	'admin.settings.mcpLead':
+		'Wer das Recht „KI-Assistent verbinden“ hat, kann z. B. Claude mit Wichtel verbinden. Der Assistent hat nie mehr Rechte als die Person selbst.',
+	'admin.settings.mcpTools': 'Was Assistenten ändern dürfen',
+	'admin.settings.mcpToolsHint':
+		'Lesen geht immer. Rollen, Einstellungen und Konten können Assistenten grundsätzlich nicht ändern.',
+	'admin.settings.mcpGroup.shifts': 'Schichten planen',
+	'admin.settings.mcpGroup.shifts.hint': 'Schichten und Serien anlegen, ändern, löschen.',
+	'admin.settings.mcpGroup.staffing': 'Besetzung',
+	'admin.settings.mcpGroup.staffing.hint':
+		'Leute ein- und austragen, Anfragen und Übergaben entscheiden, Dringend-Aufrufe.',
+	'admin.settings.mcpGroup.structure': 'Bereiche und Orte',
+	'admin.settings.mcpGroup.structure.hint': 'Bereiche und Orte anlegen.',
+	'admin.settings.mcpGroup.mail': 'Rundmails',
+	'admin.settings.mcpGroup.mail.hint': 'E-Mails an Bereiche, Schichten oder alle Helfenden senden.',
+	'admin.settings.mcpGroup.points': 'Punkte',
+	'admin.settings.mcpGroup.points.hint': 'Punkte manuell gutschreiben oder abziehen.',
+	'admin.settings.mcpPersonalData': 'Personenbezogene Daten für Assistenten',
+	'admin.settings.mcpPersonalData.full':
+		'Namen und Kontaktdaten (soweit die Person sie sehen darf)',
+	'admin.settings.mcpPersonalData.names': 'Nur Namen, keine Telefonnummern oder E-Mail-Adressen',
+	'admin.settings.mcpPersonalData.pseudonymous': 'Pseudonyme statt Namen („Person 4F2A9C“)',
+	'admin.settings.mcpPersonalDataHint':
+		'Was ein Assistent sieht, verarbeitet dessen Anbieter (z. B. Anthropic). Ein- und Austragen funktioniert auch mit Pseudonymen.',
+	'audit.mcp.connect': 'KI-Assistent verbunden',
+	'audit.mcp.disconnect': 'KI-Assistent getrennt',
 	'mail.greeting': 'Hallo {name},',
 	'mail.signature': 'Dein {festival}-Team',
 	'mail.ignore': 'Falls du das nicht warst, kannst du diese E-Mail einfach ignorieren.',

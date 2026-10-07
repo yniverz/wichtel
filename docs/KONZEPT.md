@@ -271,6 +271,21 @@ Zeitverschiebung (Ankerdatum alt → neu). Buchungen, Punkte und Goodie-Vorgäng
 
 ---
 
+## 12a. KI-Assistenten (MCP)
+
+- Endpunkt `/mcp` (Streamable HTTP, zustandslos) in der App; Anmeldung per OAuth 2.1 (dynamische
+  Client-Registrierung, Code-Flow mit PKCE S256, rotierende Refresh-Tokens, Verbindung 90 Tage).
+- Recht `mcp.use` entscheidet, wer verbinden darf; jeder Aufruf prüft es neu. Werkzeuge nutzen
+  dieselben Funktionen und Rechteprüfungen wie die Oberfläche.
+- Je Verbindung „nur lesen“ oder „lesen und ändern“. Admin schaltet Gruppen frei (Schichten,
+  Besetzung, Bereiche/Orte, Rundmails, Punkte; letzte zwei standardmäßig aus). Rollen,
+  Einstellungen und Konten sind nie über MCP änderbar.
+- Personenbezogene Daten: voll / nur Namen (Standard) / Pseudonyme.
+- Folgenreiche Aktionen (Serien, Löschen, Dringend-Aufruf, Rundmail) liefern zuerst eine
+  Vorschau; Änderungen stehen im Protokoll mit „via MCP: <App>“.
+
+---
+
 ## 13. Audit-Log
 
 Unveränderliches Protokoll aller schreibenden Aktionen von Leitungen/Admins und aller sicherheits- und

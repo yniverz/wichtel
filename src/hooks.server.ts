@@ -5,12 +5,18 @@ import { SESSION_COOKIE, validateSession } from '#lib/server/sessions.ts';
 import { getSettings } from '#lib/server/services/settings.ts';
 import { isLocale, negotiateLocale } from '#lib/i18n/index.ts';
 import { LOCALE_COOKIE, setSessionCookie } from '#lib/server/cookies.ts';
+import { isCrossSiteForm } from '#lib/server/csrf.ts';
 
 export const init: ServerInit = async () => {
 	await initApp();
 };
 
 export const handle: Handle = async ({ event, resolve }) => {
+	if (!dev && isCrossSiteForm(event.request, event.url)) {
+		return new Response(`Cross-site ${event.request.method} form submissions are forbidden`, {
+			status: 403
+		});
+	}
 	event.locals.user = null;
 	event.locals.sessionId = null;
 

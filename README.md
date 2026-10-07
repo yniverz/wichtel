@@ -63,6 +63,12 @@ _An easy-to-use volunteer and shift management system for non-profit festivals._
 - **Jahrgang kopieren**: Bereiche, Orte, Schichten, Goodies, Leitungen und Wellen, alle Zeiten um
   ganze Tage verschoben
 
+- **KI-Assistenten (MCP)**: Wichtel als Connector in Claude (claude.ai, Desktop, Claude Code)
+  hinzufügen, Anmeldung per OAuth mit Zustimmungsseite. Der Assistent handelt mit den Rechten der
+  Person, wer ihn nutzen darf, steuert das Recht „KI-Assistent verbinden“ in den Rollen. In den
+  Einstellungen: welche Werkzeug-Gruppen ändern dürfen und ob Namen, nur Namen ohne Kontaktdaten
+  oder Pseudonyme sichtbar sind. Verbindungen gelten 90 Tage und lassen sich im Profil trennen.
+
 **Geplant** – siehe [docs/KONZEPT.md](docs/KONZEPT.md): SSO, Löschfristen, Exporte.
 
 ## Entwicklung

@@ -9,7 +9,7 @@
 	import FormMessage from '#lib/components/FormMessage.svelte';
 	import { pendingForm } from '#lib/forms.svelte.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
-	import { LOCALES } from '#lib/i18n/index.ts';
+	import { formatDate, LOCALES } from '#lib/i18n/index.ts';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -18,6 +18,7 @@
 	const passwordForm = pendingForm();
 	const fieldsForm = pendingForm({ reset: false });
 	let copied = $state(false);
+	let mcpCopied = $state(false);
 
 	type Result = {
 		action?: string;
@@ -158,6 +159,79 @@
 			</ConfirmForm>
 		</div>
 	</Card>
+
+	{#if data.mcp}
+		<Card title={i18n.t('mcp.profile.title')} description={i18n.t('mcp.profile.lead')}>
+			<div class="space-y-5">
+				<div>
+					<p class="text-sm font-semibold">{i18n.t('mcp.profile.url')}</p>
+					<div class="mt-1 flex flex-wrap items-center gap-2">
+						<code class="rounded-sm bg-ink/5 px-2 py-1 text-sm break-all">{data.mcp.url}</code>
+						<Button
+							variant="secondary"
+							size="sm"
+							onclick={async () => {
+								await navigator.clipboard.writeText(data.mcp?.url ?? '');
+								mcpCopied = true;
+								setTimeout(() => (mcpCopied = false), 2000);
+							}}>{mcpCopied ? i18n.t('calendar.copied') : i18n.t('calendar.copy')}</Button
+						>
+					</div>
+				</div>
+				<ol class="list-decimal space-y-1 pl-5 text-sm">
+					<li>{i18n.t('mcp.profile.step1')}</li>
+					<li>{i18n.t('mcp.profile.step2')}</li>
+					<li>{i18n.t('mcp.profile.step3')}</li>
+				</ol>
+				<p class="text-sm text-ink-muted">
+					{i18n.t('mcp.profile.code')}
+					<code class="break-all">claude mcp add --transport http wichtel {data.mcp.url}</code>
+				</p>
+				<div>
+					<p class="border-b border-line pb-1 text-sm font-bold">
+						{i18n.t('mcp.profile.connections')}
+					</p>
+					{#if data.mcp.connections.length === 0}
+						<p class="py-2 text-sm text-ink-muted">{i18n.t('mcp.profile.none')}</p>
+					{:else}
+						<ul class="divide-y divide-line">
+							{#each data.mcp.connections as c (c.id)}
+								<li class="flex flex-wrap items-center justify-between gap-3 py-2.5">
+									<div class="min-w-0 text-sm">
+										<p class="font-semibold">
+											{c.clientName}
+											<span class="font-normal text-ink-muted"
+												>· {c.scope === 'write'
+													? i18n.t('mcp.scope.write')
+													: i18n.t('mcp.scope.read')}</span
+											>
+										</p>
+										<p class="text-ink-muted">
+											{i18n.t('mcp.profile.validUntil', {
+												date: formatDate(new Date(c.expiresAt), i18n.locale)
+											})}{#if c.lastUsedAt}
+												· {i18n.t('mcp.profile.lastUsed', {
+													date: formatDate(new Date(c.lastUsedAt), i18n.locale)
+												})}{/if}
+										</p>
+									</div>
+									<ConfirmForm
+										action="?/disconnect"
+										hidden={{ id: c.id }}
+										variant="secondary"
+										message={i18n.t('mcp.profile.disconnectConfirm', { name: c.clientName })}
+										confirmLabel={i18n.t('mcp.profile.disconnect')}
+									>
+										{i18n.t('mcp.profile.disconnect')}
+									</ConfirmForm>
+								</li>
+							{/each}
+						</ul>
+					{/if}
+				</div>
+			</div>
+		</Card>
+	{/if}
 
 	<form method="POST" action="/logout" class="md:hidden">
 		<Button type="submit" variant="secondary" block>{i18n.t('nav.logout')}</Button>

@@ -18,11 +18,28 @@ import {
 	validateFields,
 	valuesOf
 } from '#lib/server/services/fields.ts';
+import { canUseMcp } from '#lib/server/mcp/access.ts';
+import { listConnections, revokeConnection } from '#lib/server/services/oauth.ts';
+import { uuid } from '#lib/server/validation.ts';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
 	const user = requireUser(event);
+	const mcp = (await canUseMcp(db(), user))
+		? {
+				url: `${config.publicUrl}/mcp`,
+				connections: (await listConnections(db(), user.id)).map((c) => ({
+					id: c.id,
+					clientName: c.clientName,
+					scope: c.scope,
+					createdAt: c.createdAt.toISOString(),
+					lastUsedAt: c.lastUsedAt?.toISOString() ?? null,
+					expiresAt: c.expiresAt.toISOString()
+				}))
+			}
+		: null;
 	return {
+		mcp,
 		profile: {
 			firstName: user.firstName,
 			lastName: user.lastName,
@@ -69,6 +86,13 @@ export const actions: Actions = {
 		const session = await createSession(db(), user.id);
 		setSessionCookie(event, session.token, session.expiresAt);
 		return { action: 'password', success: 'profile.passwordChanged' };
+	},
+	disconnect: async (event) => {
+		const user = requireUser(event);
+		const parsed = parseForm(z.object({ id: uuid }), await event.request.formData());
+		if (!parsed.ok) return fail(400, { action: 'mcp', error: 'error.notFound' });
+		await revokeConnection(db(), user.id, parsed.data.id);
+		return { action: 'mcp', success: 'mcp.disconnected' };
 	},
 	rotateCalendar: async (event) => {
 		const user = requireUser(event);

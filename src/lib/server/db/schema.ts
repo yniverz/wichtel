@@ -162,6 +162,17 @@ export const instanceSettings = pgTable(
 			.notNull()
 			.default('https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
 		mapAttribution: text('map_attribution').notNull().default('© OpenStreetMap contributors'),
+		/** Tool groups an AI assistant (MCP) may use; reading is always possible. */
+		mcpTools: text('mcp_tools')
+			.array()
+			.notNull()
+			.default(sql`'{shifts,staffing,structure}'::text[]`),
+		/** How people appear to AI assistants: `full`, `names` (no contact data) or `pseudonymous`. */
+		mcpPersonalData: text('mcp_personal_data').notNull().default('names'),
+		/** Secret salt for stable pseudonyms. */
+		pseudonymSalt: text('pseudonym_salt')
+			.notNull()
+			.default(sql`replace(gen_random_uuid()::text, '-', '')`),
 		/** SHA-256 of the one-time setup token; null once setup is complete. */
 		setupTokenHash: text('setup_token_hash'),
 		updatedAt: timestamps.updatedAt
@@ -472,6 +483,70 @@ export const buddyMembers = pgTable(
 		primaryKey({ columns: [t.groupId, t.userId] }),
 		unique('buddy_members_one_group').on(t.editionId, t.userId)
 	]
+);
+
+// ---------------------------------------------------------------------------
+// AI assistants (MCP) via OAuth 2.1
+// ---------------------------------------------------------------------------
+
+/** Apps that registered themselves (dynamic client registration), e.g. Claude. */
+export const oauthClients = pgTable('oauth_clients', {
+	id: text('id').primaryKey(),
+	name: text('name').notNull(),
+	redirectUris: text('redirect_uris').array().notNull(),
+	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
+});
+
+/** A connection a person approved: one app acting on their behalf. */
+export const oauthGrants = pgTable(
+	'oauth_grants',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		userId: uuid('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		clientId: text('client_id')
+			.notNull()
+			.references(() => oauthClients.id, { onDelete: 'cascade' }),
+		/** `read` or `write` */
+		scope: text('scope').notNull(),
+		createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+		lastUsedAt: timestamp('last_used_at', { withTimezone: true }),
+		expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+		revokedAt: timestamp('revoked_at', { withTimezone: true })
+	},
+	(t) => [index('oauth_grants_user_idx').on(t.userId)]
+);
+
+/** Short-lived authorization codes (PKCE), exchanged once for tokens. */
+export const oauthCodes = pgTable('oauth_codes', {
+	codeHash: text('code_hash').primaryKey(),
+	clientId: text('client_id')
+		.notNull()
+		.references(() => oauthClients.id, { onDelete: 'cascade' }),
+	userId: uuid('user_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
+	redirectUri: text('redirect_uri').notNull(),
+	codeChallenge: text('code_challenge').notNull(),
+	scope: text('scope').notNull(),
+	expiresAt: timestamp('expires_at', { withTimezone: true }).notNull()
+});
+
+/** Access and refresh tokens (stored hashed). */
+export const oauthTokens = pgTable(
+	'oauth_tokens',
+	{
+		tokenHash: text('token_hash').primaryKey(),
+		grantId: uuid('grant_id')
+			.notNull()
+			.references(() => oauthGrants.id, { onDelete: 'cascade' }),
+		/** `access` or `refresh` */
+		kind: text('kind').notNull(),
+		expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+		createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
+	},
+	(t) => [index('oauth_tokens_grant_idx').on(t.grantId)]
 );
 
 // ---------------------------------------------------------------------------
@@ -882,3 +957,4 @@ export type BookingWave = typeof bookingWaves.$inferSelect;
 export type Place = typeof places.$inferSelect;
 export type SwapOffer = typeof swapOffers.$inferSelect;
 export type BuddyGroup = typeof buddyGroups.$inferSelect;
+export type OAuthGrant = typeof oauthGrants.$inferSelect;

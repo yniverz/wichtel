@@ -64,6 +64,13 @@
 			"when": 1791407373953,
 			"tag": "0008_collaboration",
 			"breakpoints": true
+		},
+		{
+			"idx": 9,
+			"version": "7",
+			"when": 1791410763737,
+			"tag": "0009_mcp",
+			"breakpoints": true
 		}
 	]
 }

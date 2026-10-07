@@ -12,7 +12,9 @@ export default defineConfig({
 				runes: ({ filename }) =>
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
-			adapter: adapter()
+			adapter: adapter(),
+			// Checked in hooks.server.ts instead, so OAuth/MCP endpoints can be exempted.
+			csrf: { trustedOrigins: ['*'] }
 		})
 	],
 	test: {

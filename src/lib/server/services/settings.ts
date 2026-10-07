@@ -3,7 +3,9 @@ import type { DB, Tx } from '../db/client.ts';
 import { instanceSettings, type InstanceSettings } from '../db/schema.ts';
 import { audit, diff, type Actor } from '../audit.ts';
 
-export type SettingsUpdate = Partial<Omit<InstanceSettings, 'id' | 'updatedAt' | 'setupTokenHash'>>;
+export type SettingsUpdate = Partial<
+	Omit<InstanceSettings, 'id' | 'updatedAt' | 'setupTokenHash' | 'pseudonymSalt'>
+>;
 
 let cache: InstanceSettings | null = null;
 
@@ -50,10 +52,10 @@ async function getSettingsUncached(tx: Tx): Promise<InstanceSettings> {
 }
 
 /** Settings without secrets, safe to send to the browser. */
-export type PublicSettings = Omit<InstanceSettings, 'setupTokenHash'>;
+export type PublicSettings = Omit<InstanceSettings, 'setupTokenHash' | 'pseudonymSalt'>;
 
 export function publicSettings(settings: InstanceSettings): PublicSettings {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { setupTokenHash, ...rest } = settings;
+	const { setupTokenHash, pseudonymSalt, ...rest } = settings;
 	return rest;
 }

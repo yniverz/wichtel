@@ -26,6 +26,7 @@
 	const v = $derived({ ...data.current, ...(result?.values ?? {}) } as typeof data.current &
 		Record<string, string>);
 	const on = (value: unknown) => value === true || value === 'on' || value === 'true';
+	const mcpGroups = ['shifts', 'staffing', 'structure', 'mail', 'points'] as const;
 
 	// Live preview state: follows the saved values, but can be edited locally (writable derived).
 	let festivalName = $derived(v.festivalName);
@@ -303,6 +304,45 @@
 					value={String(v.groupHoldHours)}
 					error={result?.errors?.groupHoldHours}
 				/>
+			</div>
+		</div>
+	</Card>
+
+	<Card title={i18n.t('admin.settings.mcp')} description={i18n.t('admin.settings.mcpLead')}>
+		<div class="space-y-5">
+			<fieldset class="space-y-2">
+				<legend class="mb-1 text-sm font-bold">{i18n.t('admin.settings.mcpTools')}</legend>
+				<p class="text-sm text-ink-muted">{i18n.t('admin.settings.mcpToolsHint')}</p>
+				{#each mcpGroups as group (group)}
+					<label class="flex items-start gap-3 text-sm">
+						<input
+							type="checkbox"
+							name="mcpTools[]"
+							value={group}
+							checked={data.current.mcpTools.includes(group)}
+							class="mt-0.5 size-4"
+						/>
+						<span>
+							<span class="block font-semibold">{i18n.t(`admin.settings.mcpGroup.${group}`)}</span>
+							<span class="block text-ink-muted"
+								>{i18n.t(`admin.settings.mcpGroup.${group}.hint`)}</span
+							>
+						</span>
+					</label>
+				{/each}
+			</fieldset>
+			<div class="space-y-1.5">
+				<label for="mcpPersonalData" class="text-sm font-medium"
+					>{i18n.t('admin.settings.mcpPersonalData')}</label
+				>
+				<select id="mcpPersonalData" name="mcpPersonalData" class="block h-11 w-full">
+					{#each ['full', 'names', 'pseudonymous'] as const as mode (mode)}
+						<option value={mode} selected={v.mcpPersonalData === mode}
+							>{i18n.t(`admin.settings.mcpPersonalData.${mode}`)}</option
+						>
+					{/each}
+				</select>
+				<p class="text-sm text-ink-muted">{i18n.t('admin.settings.mcpPersonalDataHint')}</p>
 			</div>
 		</div>
 	</Card>

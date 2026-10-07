@@ -1,3 +1,4 @@
+import { createHash, randomBytes } from 'node:crypto';
 import { expect, test } from '@playwright/test';
 import { ADMIN, HELPER, SETUP_TOKEN } from './fixtures.ts';
 
@@ -65,4 +66,88 @@ test('volunteer registers and lands in the app', async ({ page }) => {
 
 	await expect(page).toHaveURL(/\/app$/);
 	await expect(page.getByRole('heading', { name: `Hallo ${HELPER.firstName}!` })).toBeVisible();
+});
+
+test('admin connects an AI assistant via OAuth and plans with it', async ({ page, request }) => {
+	const meta = await (await request.get('/.well-known/oauth-protected-resource/mcp')).json();
+	expect(meta.resource).toBe('http://localhost:4173/mcp');
+	const server = await (await request.get('/.well-known/oauth-authorization-server')).json();
+
+	// Dynamic client registration, as Claude does it.
+	const redirect = 'http://localhost:4999/callback';
+	const registered = await request.post(server.registration_endpoint, {
+		data: { client_name: 'E2E Assistant', redirect_uris: [redirect] }
+	});
+	expect(registered.status()).toBe(201);
+	const { client_id } = await registered.json();
+
+	const verifier = randomBytes(32).toString('base64url');
+	const challenge = createHash('sha256').update(verifier).digest('base64url');
+
+	await page.goto('/login');
+	await page.getByLabel('E-Mail-Adresse').fill(ADMIN.email);
+	await page.getByLabel('Passwort').fill(ADMIN.password);
+	await page.getByRole('button', { name: 'Anmelden' }).click();
+	await expect(page).toHaveURL(/\/app$/);
+
+	const authorize = new URL(server.authorization_endpoint);
+	for (const [k, v] of Object.entries({
+		client_id,
+		redirect_uri: redirect,
+		response_type: 'code',
+		code_challenge: challenge,
+		code_challenge_method: 'S256',
+		state: 'e2e-state'
+	}))
+		authorize.searchParams.set(k, v);
+	await page.goto(authorize.toString());
+	await expect(page.getByText('„E2E Assistant“ möchte in deinem Namen')).toBeVisible();
+	// The redirect back to the "assistant" (nothing listens there; only the URL matters).
+	const [callback] = await Promise.all([
+		page.waitForRequest((r) => r.url().startsWith(redirect)),
+		page.getByRole('button', { name: 'Erlauben' }).click()
+	]);
+	const back = new URL(callback.url());
+	expect(back.searchParams.get('code')).toBeTruthy();
+	expect(back.searchParams.get('state')).toBe('e2e-state');
+
+	// Server-to-server form post without Origin header.
+	const tokens = await (
+		await request.post(server.token_endpoint, {
+			form: {
+				grant_type: 'authorization_code',
+				code: back.searchParams.get('code')!,
+				client_id,
+				redirect_uri: redirect,
+				code_verifier: verifier
+			}
+		})
+	).json();
+	expect(tokens.token_type).toBe('Bearer');
+
+	const call = async (name: string, args: object) => {
+		const res = await request.post('/mcp', {
+			headers: {
+				authorization: `Bearer ${tokens.access_token}`,
+				accept: 'application/json, text/event-stream'
+			},
+			data: { jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }
+		});
+		expect(res.status()).toBe(200);
+		return JSON.parse((await res.json()).result.content[0].text);
+	};
+	const areas = await call('list_areas', {});
+	const aufbau = areas.find((a: { name: string }) => a.name === 'Aufbau');
+	const shift = await call('create_shift', {
+		areaId: aufbau.id,
+		title: 'Per Claude geplant',
+		date: '2027-05-28',
+		start: '10:00',
+		end: '14:00',
+		positions: [{ name: 'Team', capacity: 4 }]
+	});
+	expect(shift.start).toBe('2027-05-28 10:00');
+
+	await page.goto('/admin/audit');
+	await expect(page.getByText('KI-Assistent verbunden')).toBeVisible();
 });

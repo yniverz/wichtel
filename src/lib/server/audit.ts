@@ -5,6 +5,8 @@ import { auditLog } from './db/schema.ts';
 export interface Actor {
 	userId: string | null;
 	ip?: string | null;
+	/** Set when the action came through an AI assistant, e.g. "Claude (MCP)". */
+	via?: string;
 }
 
 export const SYSTEM: Actor = { userId: null };
@@ -27,7 +29,7 @@ export async function audit(tx: Tx, actor: Actor, entry: AuditInput): Promise<vo
 		entityType: entry.entityType,
 		entityId: entry.entityId ?? null,
 		editionId: entry.editionId ?? null,
-		data: entry.data ?? {},
+		data: actor.via ? { ...entry.data, via: actor.via } : (entry.data ?? {}),
 		reason: entry.reason ?? null
 	});
 }

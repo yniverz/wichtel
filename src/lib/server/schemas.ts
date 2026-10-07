@@ -1,3 +1,4 @@
+import { MCP_TOOL_GROUPS, PERSONAL_DATA_MODES } from './mcp/groups.ts';
 import { z } from 'zod';
 import { PERMISSIONS } from '#lib/domain/permissions.ts';
 import { isWallTime } from '#lib/domain/time.ts';
@@ -107,6 +108,8 @@ export const settingsSchema = z.object({
 		.int('error.invalidNumber')
 		.min(2)
 		.max(50),
+	'mcpTools[]': z.array(z.enum(MCP_TOOL_GROUPS)).default([]),
+	mcpPersonalData: z.enum(PERSONAL_DATA_MODES),
 	groupHoldHours: z.coerce
 		.number('error.invalidNumber')
 		.int('error.invalidNumber')

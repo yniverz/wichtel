@@ -19,13 +19,18 @@ export const PERMISSIONS = [
 	'goodie.issue',
 	'points.adjust',
 	'mail.send',
-	'audit.view'
+	'audit.view',
+	/** Connect an AI assistant (MCP) that acts with the person's own permissions. */
+	'mcp.use'
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
 
 export const PERMISSION_GROUPS: { key: string; permissions: Permission[] }[] = [
-	{ key: 'structure', permissions: ['area.manage', 'role.assign', 'dashboard.view', 'audit.view'] },
+	{
+		key: 'structure',
+		permissions: ['area.manage', 'role.assign', 'dashboard.view', 'audit.view', 'mcp.use']
+	},
 	{
 		key: 'shifts',
 		permissions: ['shift.manage', 'assignment.manage', 'assignment.override', 'attendance.confirm']

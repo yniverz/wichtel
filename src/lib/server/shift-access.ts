@@ -1,4 +1,6 @@
-import type { Permission } from '#lib/domain/permissions.ts';
+import type { AreaTree } from '#lib/domain/area-tree.ts';
+import type { Authz, Permission } from '#lib/domain/permissions.ts';
+import type { Area } from './db/schema.ts';
 import type { AdminContext } from './guards.ts';
 
 /** Permissions that give access to the shift planning area. */
@@ -15,16 +17,21 @@ export function hasShiftAccess(ctx: AdminContext): boolean {
 /** Area ids whose shifts the user may see in planning, or 'all'. */
 export function shiftAreaScope(ctx: AdminContext): 'all' | Set<string> {
 	if (!ctx.tree) return new Set();
+	return planningScope(ctx.authz, ctx.tree);
+}
+
+/** Like `shiftAreaScope`, for callers without an admin page context (e.g. the MCP endpoint). */
+export function planningScope(authz: Authz, tree: AreaTree<Area>): 'all' | Set<string> {
 	const roots: string[] = [];
 	for (const p of SHIFT_PERMISSIONS) {
-		const scope = ctx.authz.scopesFor(p);
+		const scope = authz.scopesFor(p);
 		if (scope === 'all') return 'all';
 		roots.push(...scope);
 	}
-	return ctx.tree.covered(roots);
+	return tree.covered(roots);
 }
 
-export function canSeeShiftArea(ctx: AdminContext, areaId: string): boolean {
+export function canSeeShiftArea(ctx: AdminContext | { authz: Authz }, areaId: string): boolean {
 	return SHIFT_PERMISSIONS.some((p) => ctx.authz.can(p, areaId));
 }
 
