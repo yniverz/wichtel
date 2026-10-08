@@ -200,7 +200,8 @@ export async function exportPersonalData(db: Tx, userId: string, now = new Date(
 				action: auditLog.action,
 				entityType: auditLog.entityType,
 				byYou: sql<boolean>`${auditLog.actorId} = ${userId}`,
-				ip: auditLog.ip
+				// Only the person's own addresses; entries about them made by others keep their IPs.
+				ip: sql<string | null>`case when ${auditLog.actorId} = ${userId} then ${auditLog.ip} end`
 			})
 			.from(auditLog)
 			.where(

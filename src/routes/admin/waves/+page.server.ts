@@ -88,7 +88,7 @@ export const actions: Actions = {
 		const saved = await attempt(
 			() =>
 				id
-					? updateWave(db(), actorOf(event), id, result.input)
+					? updateWave(db(), actorOf(event), edition.id, id, result.input)
 					: createWave(db(), actorOf(event), edition.id, result.input).then(() => undefined),
 			{ action: id || 'new' }
 		);
@@ -98,9 +98,13 @@ export const actions: Actions = {
 	delete: async (event) => {
 		const ctx = await getAdminContext(event);
 		requireWaveManager(ctx);
+		const { edition } = requireEdition(ctx);
 		const parsed = parseForm(z.object({ id: uuid }), await event.request.formData());
 		if (!parsed.ok) return fail(400, { error: 'error.notFound' });
-		await deleteWave(db(), actorOf(event), parsed.data.id);
+		const result = await attempt(() =>
+			deleteWave(db(), actorOf(event), edition.id, parsed.data.id)
+		);
+		if (!result.ok) return result.failure;
 		return { success: 'common.saved' };
 	}
 };

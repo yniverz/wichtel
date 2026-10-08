@@ -22,6 +22,14 @@ describe('Authz', () => {
 		expect(a.can('shift.manage')).toBe(false);
 	});
 
+	it('never covers areas of another edition, not even with edition-wide grants', () => {
+		const a = authz([{ areaId: null, permissions: ['shift.manage', 'role.assign'] }]);
+		expect(a.can('shift.manage', 'area-of-another-year')).toBe(false);
+		expect(a.hasRoleCovering('area-of-another-year')).toBe(false);
+		expect(a.canAssignRole(['shift.manage'], 'area-of-another-year')).toBe(false);
+		expect(authz([], true).can('shift.manage', 'area-of-another-year')).toBe(true);
+	});
+
 	it('edition-wide grants apply everywhere', () => {
 		const a = authz([{ areaId: null, permissions: ['attendance.confirm'] }]);
 		expect(a.can('attendance.confirm')).toBe(true);

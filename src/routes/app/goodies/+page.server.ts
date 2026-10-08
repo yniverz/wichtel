@@ -93,9 +93,17 @@ export const load: PageServerLoad = async (event) => {
 	};
 };
 
+/** Claims are always about the signed-in person and the current edition. */
+async function ownScope(userId: string) {
+	const edition = await getCurrentEdition(db());
+	return edition ? { editionId: edition.id, userId } : null;
+}
+
 export const actions: Actions = {
 	claim: async (event) => {
 		const user = requireVerifiedUser(event);
+		const scope = await ownScope(user.id);
+		if (!scope) return fail(400, { error: 'error.notFound' });
 		const form = await event.request.formData();
 		const parsed = parseForm(z.object({ goodieId: uuid, variant: z.string().optional() }), form);
 		if (!parsed.ok) return fail(400, { error: 'error.notFound' });
@@ -104,26 +112,35 @@ export const actions: Actions = {
 		if (!checked.ok) return fail(400, { goodieId: parsed.data.goodieId, errors: checked.errors });
 		await saveValues(db(), user.id, checked.values);
 		const result = await attempt(() =>
-			claimGoodie(db(), actorOf(event), user.id, parsed.data.goodieId, parsed.data.variant || null)
+			claimGoodie(
+				db(),
+				actorOf(event),
+				user.id,
+				parsed.data.goodieId,
+				parsed.data.variant || null,
+				scope.editionId
+			)
 		);
 		if (!result.ok) return result.failure;
 		return { success: 'goodies.picked' };
 	},
 	cancel: async (event) => {
 		const user = requireVerifiedUser(event);
+		const scope = await ownScope(user.id);
 		const parsed = parseForm(z.object({ claimId: uuid }), await event.request.formData());
-		if (!parsed.ok) return fail(400, { error: 'error.notFound' });
+		if (!parsed.ok || !scope) return fail(400, { error: 'error.notFound' });
 		const result = await attempt(() =>
-			cancelClaim(db(), actorOf(event), parsed.data.claimId, user.id)
+			cancelClaim(db(), actorOf(event), parsed.data.claimId, scope, true)
 		);
 		if (!result.ok) return result.failure;
 		return { success: 'common.saved' };
 	},
 	refund: async (event) => {
 		const user = requireVerifiedUser(event);
+		const scope = await ownScope(user.id);
 		const parsed = parseForm(z.object({ claimId: uuid }), await event.request.formData());
-		if (!parsed.ok) return fail(400, { error: 'error.notFound' });
-		const result = await attempt(() => requestRefund(db(), user.id, parsed.data.claimId));
+		if (!parsed.ok || !scope) return fail(400, { error: 'error.notFound' });
+		const result = await attempt(() => requestRefund(db(), scope, parsed.data.claimId));
 		if (!result.ok) return result.failure;
 		return { success: 'common.saved' };
 	}

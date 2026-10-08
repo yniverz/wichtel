@@ -121,33 +121,50 @@ export const actions: Actions = {
 		return { success: 'admin.desk.done' };
 	},
 	issue: async (event) => {
-		const { access } = await context(event);
+		const { access, edition, person } = await context(event);
 		if (!access.issue) error(403, 'error.forbidden');
 		const parsed = parseForm(claimId, await event.request.formData());
 		if (!parsed.ok) return fail(400, { error: 'error.notFound' });
 		const result = await attempt(() =>
-			issueClaim(db(), actorOf(event), parsed.data.claimId, new Date())
+			issueClaim(
+				db(),
+				actorOf(event),
+				parsed.data.claimId,
+				{ editionId: edition.id, userId: person.id },
+				new Date()
+			)
 		);
 		if (!result.ok) return result.failure;
 		return { success: 'admin.desk.done' };
 	},
 	refunded: async (event) => {
-		const { access } = await context(event);
+		const { access, edition, person } = await context(event);
 		if (!access.issue) error(403, 'error.forbidden');
 		const parsed = parseForm(claimId, await event.request.formData());
 		if (!parsed.ok) return fail(400, { error: 'error.notFound' });
 		const result = await attempt(() =>
-			markRefunded(db(), actorOf(event), parsed.data.claimId, new Date())
+			markRefunded(
+				db(),
+				actorOf(event),
+				parsed.data.claimId,
+				{ editionId: edition.id, userId: person.id },
+				new Date()
+			)
 		);
 		if (!result.ok) return result.failure;
 		return { success: 'admin.desk.done' };
 	},
 	cancel: async (event) => {
-		const { access } = await context(event);
+		const { access, edition, person } = await context(event);
 		if (!access.issue) error(403, 'error.forbidden');
 		const parsed = parseForm(claimId, await event.request.formData());
 		if (!parsed.ok) return fail(400, { error: 'error.notFound' });
-		const result = await attempt(() => cancelClaim(db(), actorOf(event), parsed.data.claimId));
+		const result = await attempt(() =>
+			cancelClaim(db(), actorOf(event), parsed.data.claimId, {
+				editionId: edition.id,
+				userId: person.id
+			})
+		);
 		if (!result.ok) return result.failure;
 		return { success: 'admin.desk.done' };
 	},

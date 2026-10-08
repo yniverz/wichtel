@@ -238,10 +238,16 @@ export async function takeOffer(
 	ctx: BookingContext,
 	takerId: string,
 	offerId: string,
-	opts: { canSee: (shift: Shift) => boolean; counterAssignmentId?: string | null }
+	opts: {
+		/** The edition the taker is booking in (the current one). */
+		editionId: string | null;
+		canSee: (shift: Shift) => boolean;
+		counterAssignmentId?: string | null;
+	}
 ): Promise<TakeResult> {
 	return ctx.db.transaction(async (tx) => {
 		const offer = await loadOffer(tx, offerId);
+		if (offer.editionId !== opts.editionId) throw new DomainError('notFound');
 		if (offer.status !== 'open' || offer.fromUserId === takerId) throw new DomainError('notFound');
 		if (offer.toUserId && offer.toUserId !== takerId) throw new DomainError('notFound');
 		if (!offer.toUserId && opts.counterAssignmentId) throw new DomainError('notFound');

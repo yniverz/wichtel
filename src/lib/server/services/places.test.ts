@@ -126,7 +126,7 @@ describe('places', () => {
 			DomainError
 		);
 		await setDeskPlace(db, actor, edition.id, gate.id);
-		await deletePlace(db, actor, gate.id);
+		await deletePlace(db, actor, edition.id, gate.id);
 		expect((await getShift(db, shift.id))?.meetingPlaceId).toBeNull();
 	});
 });

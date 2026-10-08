@@ -191,7 +191,9 @@ describe('qualifications', () => {
 		await grantQualification(db, actor, { userId: kim.id, qualificationId: q.id, now: ctx.now });
 		await bookPosition(ctx, kim.id, shift.positions[0].id, opts);
 
-		const lead = new Authz(false, [{ areaId: null, permissions: ['assignment.manage'] }], () => []);
+		const lead = new Authz(false, [{ areaId: null, permissions: ['assignment.manage'] }], (id) => [
+			id
+		]);
 		const result = await leadAssign(ctx, actor, lead, {
 			positionId: shift.positions[0].id,
 			userId: lou.id,

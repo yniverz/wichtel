@@ -61,7 +61,7 @@ export const actions: Actions = {
 		const result = await attempt(
 			() =>
 				id
-					? updatePlace(db(), actorOf(event), id, input)
+					? updatePlace(db(), actorOf(event), edition.id, id, input)
 					: createPlace(db(), actorOf(event), edition.id, input).then(() => undefined),
 			{ action: id || 'new' }
 		);
@@ -71,9 +71,13 @@ export const actions: Actions = {
 	delete: async (event) => {
 		const ctx = await getAdminContext(event);
 		requirePlaceManager(ctx);
+		const { edition } = requireEdition(ctx);
 		const parsed = parseForm(z.object({ id: uuid }), await event.request.formData());
 		if (!parsed.ok) return fail(400, { error: 'error.notFound' });
-		await deletePlace(db(), actorOf(event), parsed.data.id);
+		const result = await attempt(() =>
+			deletePlace(db(), actorOf(event), edition.id, parsed.data.id)
+		);
+		if (!result.ok) return result.failure;
 		return { success: 'common.saved' };
 	},
 	plan: async (event) => {

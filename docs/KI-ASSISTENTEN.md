@@ -15,6 +15,9 @@ den Rechten der angemeldeten Person** – nie mit mehr.
      Konten können Assistenten grundsätzlich nicht ändern.
    - _Personenbezogene Daten_: Namen und Kontaktdaten, nur Namen (Standard) oder Pseudonyme
      („Person 4F2A9C“). Was ein Assistent sieht, verarbeitet dessen Anbieter.
+   - _Erlaubte Rücksprung-Adressen_: Nur Apps, die auf diese Hosts zurückleiten, können sich
+     verbinden (Standard: `claude.ai`, `claude.com`; `localhost` für Claude Code geht immer).
+     Andere Assistenten hier ergänzen.
 3. `PUBLIC_URL` muss die öffentliche https-Adresse sein, und der Server muss aus dem Internet
    erreichbar sein (claude.ai ruft ihn von dort auf).
 
@@ -49,5 +52,7 @@ und laufen erst nach Bestätigung. Jede Änderung steht im Protokoll mit dem Ver
 - Endpunkt `/mcp` (Streamable HTTP, zustandslos).
 - Anmeldung per OAuth 2.1: Metadaten unter `/.well-known/oauth-protected-resource` und
   `/.well-known/oauth-authorization-server`, dynamische Client-Registrierung, Code-Flow mit PKCE
-  (S256), rotierende Refresh-Tokens (Zugriffstoken 1 Stunde).
+  (S256), rotierende Refresh-Tokens (Zugriffstoken 1 Stunde). Wird ein schon benutzter
+  Refresh-Token erneut eingereicht, wird die ganze Verbindung getrennt.
+- Ändert oder setzt jemand sein Passwort zurück, werden alle KI-Verbindungen der Person getrennt.
 - Bei jedem Aufruf wird geprüft, ob die Person das Recht noch hat.

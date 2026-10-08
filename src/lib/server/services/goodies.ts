@@ -294,12 +294,14 @@ export async function claimGoodie(
 	actor: Actor,
 	userId: string,
 	goodieId: string,
-	variant: string | null
+	variant: string | null,
+	/** Only goodies of this edition (the current one) can be picked. */
+	editionId: string
 ): Promise<GoodieClaim> {
 	return db.transaction(async (tx) => {
 		await lockUser(tx, userId);
 		const goodie = await getGoodie(tx, goodieId);
-		if (!goodie) throw new DomainError('notFound');
+		if (!goodie || goodie.editionId !== editionId) throw new DomainError('notFound');
 		const overview = await goodieOverview(tx, userId, goodie.editionId);
 		const state = overview.goodies.find((g) => g.id === goodieId)!;
 		if (state.availability !== 'available') throw new DomainError(`goodie.${state.availability}`);
@@ -352,27 +354,43 @@ export async function issueDirectly(
 	});
 }
 
-async function loadClaim(tx: Tx, claimId: string) {
+/** Where a claim must belong: the edition being worked on and the person on the page. */
+export interface ClaimScope {
+	editionId: string;
+	userId: string;
+}
+
+async function loadClaim(tx: Tx, claimId: string, scope: ClaimScope) {
 	const [row] = await tx
 		.select({ claim: goodieClaims, goodie: goodies })
 		.from(goodieClaims)
 		.innerJoin(goodies, eq(goodieClaims.goodieId, goodies.id))
-		.where(eq(goodieClaims.id, claimId))
+		.where(
+			and(
+				eq(goodieClaims.id, claimId),
+				eq(goodieClaims.editionId, scope.editionId),
+				eq(goodieClaims.userId, scope.userId)
+			)
+		)
 		.for('update', { of: goodieClaims });
 	if (!row) throw new DomainError('notFound');
 	return row;
 }
 
-/** Cancels a not yet issued claim and returns the points. `ownerId` restricts to own claims. */
+/**
+ * Cancels a not yet issued claim and returns the points. `bySelf`: the person cancels their own
+ * claim (mandatory goodies cannot be returned that way).
+ */
 export async function cancelClaim(
 	db: DB,
 	actor: Actor,
 	claimId: string,
-	ownerId?: string
+	scope: ClaimScope,
+	bySelf = false
 ): Promise<void> {
 	await db.transaction(async (tx) => {
-		const { claim, goodie } = await loadClaim(tx, claimId);
-		if (ownerId && claim.userId !== ownerId) throw new DomainError('notFound');
+		const { claim, goodie } = await loadClaim(tx, claimId, scope);
+		const ownerId = bySelf ? scope.userId : undefined;
 		if (claim.status !== 'selected') throw new DomainError('claimNotOpen');
 		// Mandatory goodies cannot be returned for points – only refunded.
 		if (goodie.mandatory && ownerId) throw new DomainError('claimNotOpen');
@@ -400,10 +418,10 @@ export async function cancelClaim(
 }
 
 /** "I already have one": the claim becomes a pending refund. Points stay used. */
-export async function requestRefund(db: DB, userId: string, claimId: string): Promise<void> {
+export async function requestRefund(db: DB, scope: ClaimScope, claimId: string): Promise<void> {
 	await db.transaction(async (tx) => {
-		const { claim, goodie } = await loadClaim(tx, claimId);
-		if (claim.userId !== userId || !goodie.refundable) throw new DomainError('notFound');
+		const { claim, goodie } = await loadClaim(tx, claimId, scope);
+		if (!goodie.refundable) throw new DomainError('notFound');
 		if (claim.status !== 'selected') throw new DomainError('claimNotOpen');
 		await tx
 			.update(goodieClaims)
@@ -412,9 +430,15 @@ export async function requestRefund(db: DB, userId: string, claimId: string): Pr
 	});
 }
 
-export async function issueClaim(db: DB, actor: Actor, claimId: string, now: Date): Promise<void> {
+export async function issueClaim(
+	db: DB,
+	actor: Actor,
+	claimId: string,
+	scope: ClaimScope,
+	now: Date
+): Promise<void> {
 	await db.transaction(async (tx) => {
-		const { claim, goodie } = await loadClaim(tx, claimId);
+		const { claim, goodie } = await loadClaim(tx, claimId, scope);
 		if (claim.status !== 'selected') throw new DomainError('claimNotOpen');
 		await tx
 			.update(goodieClaims)
@@ -434,10 +458,11 @@ export async function markRefunded(
 	db: DB,
 	actor: Actor,
 	claimId: string,
+	scope: ClaimScope,
 	now: Date
 ): Promise<void> {
 	await db.transaction(async (tx) => {
-		const { claim, goodie } = await loadClaim(tx, claimId);
+		const { claim, goodie } = await loadClaim(tx, claimId, scope);
 		if (claim.status !== 'refund_pending') throw new DomainError('claimNotOpen');
 		await tx
 			.update(goodieClaims)

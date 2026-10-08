@@ -1,0 +1,2 @@
+ALTER TABLE "instance_settings" ADD COLUMN "oauth_redirect_hosts" text[] DEFAULT '{claude.ai,claude.com}'::text[] NOT NULL;--> statement-breakpoint
+ALTER TABLE "oauth_tokens" ADD COLUMN "used_at" timestamp with time zone;

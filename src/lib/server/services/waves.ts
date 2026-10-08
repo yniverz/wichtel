@@ -52,13 +52,19 @@ export async function createWave(db: DB, actor: Actor, editionId: string, input:
 	});
 }
 
-export async function updateWave(db: DB, actor: Actor, id: string, input: WaveInput) {
+export async function updateWave(
+	db: DB,
+	actor: Actor,
+	editionId: string,
+	id: string,
+	input: WaveInput
+) {
 	check(input);
 	await db.transaction(async (tx) => {
 		const [wave] = await tx
 			.update(bookingWaves)
 			.set(input)
-			.where(eq(bookingWaves.id, id))
+			.where(and(eq(bookingWaves.id, id), eq(bookingWaves.editionId, editionId)))
 			.returning();
 		if (!wave) throw new DomainError('notFound');
 		await audit(tx, actor, {
@@ -71,9 +77,12 @@ export async function updateWave(db: DB, actor: Actor, id: string, input: WaveIn
 	});
 }
 
-export async function deleteWave(db: DB, actor: Actor, id: string) {
+export async function deleteWave(db: DB, actor: Actor, editionId: string, id: string) {
 	await db.transaction(async (tx) => {
-		const [wave] = await tx.delete(bookingWaves).where(eq(bookingWaves.id, id)).returning();
+		const [wave] = await tx
+			.delete(bookingWaves)
+			.where(and(eq(bookingWaves.id, id), eq(bookingWaves.editionId, editionId)))
+			.returning();
 		if (!wave) throw new DomainError('notFound');
 		await audit(tx, actor, {
 			action: 'wave.delete',

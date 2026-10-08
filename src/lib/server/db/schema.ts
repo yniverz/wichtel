@@ -173,6 +173,14 @@ export const instanceSettings = pgTable(
 			.array()
 			.notNull()
 			.default(sql`'{shifts,staffing,structure}'::text[]`),
+		/**
+		 * Hosts AI assistants may send people back to after they agreed (OAuth redirect URIs).
+		 * Sub-domains count; apps on the same machine (localhost) are always allowed.
+		 */
+		oauthRedirectHosts: text('oauth_redirect_hosts')
+			.array()
+			.notNull()
+			.default(sql`'{claude.ai,claude.com}'::text[]`),
 		/** How people appear to AI assistants: `full`, `names` (no contact data) or `pseudonymous`. */
 		mcpPersonalData: text('mcp_personal_data').notNull().default('names'),
 		// Legal notice (Impressum) and privacy policy, see /legal/*
@@ -572,6 +580,8 @@ export const oauthTokens = pgTable(
 		/** `access` or `refresh` */
 		kind: text('kind').notNull(),
 		expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+		/** Refresh tokens are kept after use: presenting one again means it was stolen. */
+		usedAt: timestamp('used_at', { withTimezone: true }),
 		createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
 	},
 	(t) => [index('oauth_tokens_grant_idx').on(t.grantId)]

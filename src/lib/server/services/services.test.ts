@@ -340,7 +340,7 @@ describe('editions, areas and roles', () => {
 		const [assignment] = await database.db.query.roleAssignments.findMany({
 			where: (t, { eq }) => eq(t.userId, other.id)
 		});
-		await removeAssignment(database.db, { userId: lead.id }, leadAuthz, assignment.id);
+		await removeAssignment(database.db, { userId: lead.id }, leadAuthz, assignment.id, edition.id);
 		expect((await loadAuthz(database.db, other, edition.id)).hasAnyGrant).toBe(false);
 	});
 

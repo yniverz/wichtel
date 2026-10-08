@@ -1,7 +1,15 @@
-import { and, asc, eq, sql } from 'drizzle-orm';
+import { and, asc, eq, isNull, sql } from 'drizzle-orm';
 import { Authz, isPermission, type Permission } from '#lib/domain/permissions.ts';
 import type { DB, Tx } from '../db/client.ts';
-import { areas, roleAssignments, roles, users, type Role, type User } from '../db/schema.ts';
+import {
+	areas,
+	editions,
+	roleAssignments,
+	roles,
+	users,
+	type Role,
+	type User
+} from '../db/schema.ts';
 import { audit, diff, type Actor } from '../audit.ts';
 import { DomainError } from '../errors.ts';
 import { loadAreaTree } from './areas.ts';
@@ -100,15 +108,41 @@ export async function loadAuthz(
 ): Promise<Authz> {
 	if (!editionId) return new Authz(user.isAdmin, [], () => []);
 	const [grants, tree] = await Promise.all([
+		// Roles of an archived edition no longer give any rights (former leads keep nothing).
 		db
-			.select({ areaId: roleAssignments.areaId, permissions: roles.permissions })
+			.select({
+				areaId: roleAssignments.areaId,
+				permissions: roles.permissions,
+				isCurrent: editions.isCurrent
+			})
 			.from(roleAssignments)
 			.innerJoin(roles, eq(roleAssignments.roleId, roles.id))
-			.where(and(eq(roleAssignments.userId, user.id), eq(roleAssignments.editionId, editionId))),
+			.innerJoin(editions, eq(roleAssignments.editionId, editions.id))
+			.where(
+				and(
+					eq(roleAssignments.userId, user.id),
+					eq(roleAssignments.editionId, editionId),
+					isNull(editions.archivedAt)
+				)
+			),
 		loadAreaTree(db, editionId)
 	]);
-	return new Authz(user.isAdmin, grants, (id) => tree.lineage(id));
+	// People are instance-wide: their contact data and proofs are only visible through roles of
+	// the current edition, not through roles of past (or upcoming) years.
+	const effective = grants.map((g) => ({
+		areaId: g.areaId,
+		permissions: g.isCurrent
+			? g.permissions
+			: g.permissions.filter((p) => !CURRENT_EDITION_ONLY.includes(p))
+	}));
+	return new Authz(user.isAdmin, effective, (id) => tree.lineage(id));
 }
+
+/** Permissions on personal data that only count in the current edition. */
+const CURRENT_EDITION_ONLY: readonly string[] = [
+	'helper.contact.view',
+	'qualification.documents.view'
+];
 
 export interface AssignmentView {
 	id: string;
@@ -198,14 +232,16 @@ export async function removeAssignment(
 	db: DB,
 	actor: Actor,
 	actorAuthz: Authz,
-	assignmentId: string
+	assignmentId: string,
+	/** The edition `actorAuthz` was loaded for; assignments of other editions are out of reach. */
+	editionId: string
 ): Promise<void> {
 	await db.transaction(async (tx) => {
 		const [row] = await tx
 			.select({ assignment: roleAssignments, role: roles })
 			.from(roleAssignments)
 			.innerJoin(roles, eq(roleAssignments.roleId, roles.id))
-			.where(eq(roleAssignments.id, assignmentId));
+			.where(and(eq(roleAssignments.id, assignmentId), eq(roleAssignments.editionId, editionId)));
 		if (!row) throw new DomainError('notFound');
 		// Removing follows the same rule as granting: you need the role's permissions at that scope.
 		if (!actorAuthz.canAssignRole(row.role.permissions, row.assignment.areaId)) {

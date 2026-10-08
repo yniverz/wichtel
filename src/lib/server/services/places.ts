@@ -1,4 +1,4 @@
-import { asc, eq } from 'drizzle-orm';
+import { and, asc, eq } from 'drizzle-orm';
 import type { DB, Tx } from '../db/client.ts';
 import { editions, places, type Place } from '../db/schema.ts';
 import { audit, diff, type Actor } from '../audit.ts';
@@ -31,9 +31,18 @@ export async function createPlace(db: DB, actor: Actor, editionId: string, input
 	});
 }
 
-export async function updatePlace(db: DB, actor: Actor, id: string, input: PlaceInput) {
+export async function updatePlace(
+	db: DB,
+	actor: Actor,
+	editionId: string,
+	id: string,
+	input: PlaceInput
+) {
 	await db.transaction(async (tx) => {
-		const [before] = await tx.select().from(places).where(eq(places.id, id));
+		const [before] = await tx
+			.select()
+			.from(places)
+			.where(and(eq(places.id, id), eq(places.editionId, editionId)));
 		if (!before) throw new DomainError('notFound');
 		await tx.update(places).set(input).where(eq(places.id, id));
 		const changes = diff(
@@ -52,9 +61,12 @@ export async function updatePlace(db: DB, actor: Actor, id: string, input: Place
 }
 
 /** Shifts referring to the place keep their free-text details; the link is removed. */
-export async function deletePlace(db: DB, actor: Actor, id: string) {
+export async function deletePlace(db: DB, actor: Actor, editionId: string, id: string) {
 	await db.transaction(async (tx) => {
-		const [place] = await tx.delete(places).where(eq(places.id, id)).returning();
+		const [place] = await tx
+			.delete(places)
+			.where(and(eq(places.id, id), eq(places.editionId, editionId)))
+			.returning();
 		if (!place) throw new DomainError('notFound');
 		await tx.update(editions).set({ deskPlaceId: null }).where(eq(editions.deskPlaceId, id));
 		await audit(tx, actor, {

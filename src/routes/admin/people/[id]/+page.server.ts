@@ -175,10 +175,11 @@ export const actions: Actions = {
 	},
 	remove: async (event) => {
 		const ctx = await getAdminContext(event);
+		const { edition } = requireEdition(ctx);
 		const parsed = parseForm(z.object({ id: uuid }), await event.request.formData());
 		if (!parsed.ok) return fail(400, { action: 'remove', error: 'error.notFound' });
 		const result = await attempt(
-			() => removeAssignment(db(), actorOf(event), ctx.authz, parsed.data.id),
+			() => removeAssignment(db(), actorOf(event), ctx.authz, parsed.data.id, edition.id),
 			{
 				action: 'remove'
 			}

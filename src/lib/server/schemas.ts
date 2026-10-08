@@ -1,4 +1,5 @@
 import { MCP_TOOL_GROUPS, PERSONAL_DATA_MODES } from './mcp/groups.ts';
+import { normaliseHosts } from './services/oauth.ts';
 import { z } from 'zod';
 import { PERMISSIONS } from '#lib/domain/permissions.ts';
 import { isWallTime } from '#lib/domain/time.ts';
@@ -108,6 +109,12 @@ export const settingsSchema = z.object({
 		.max(50),
 	'mcpTools[]': z.array(z.enum(MCP_TOOL_GROUPS)).default([]),
 	mcpPersonalData: z.enum(PERSONAL_DATA_MODES),
+	/** One host per line (or comma-separated), see `oauth.ts`. */
+	oauthRedirectHosts: z
+		.string()
+		.max(2000, 'error.tooLong')
+		.default('')
+		.transform((v) => normaliseHosts(v.split(/[\s,]+/))),
 	groupHoldHours: z.coerce
 		.number('error.invalidNumber')
 		.int('error.invalidNumber')

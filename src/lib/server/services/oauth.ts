@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { and, desc, eq, gt, isNull, lt, or } from 'drizzle-orm';
+import { and, desc, eq, gt, isNull, lt, notExists, or } from 'drizzle-orm';
 import type { DB, Tx } from '../db/client.ts';
 import {
 	oauthClients,
@@ -10,8 +10,9 @@ import {
 	type OAuthGrant,
 	type User
 } from '../db/schema.ts';
-import { audit } from '../audit.ts';
+import { audit, SYSTEM as SYSTEM_ACTOR } from '../audit.ts';
 import { randomToken, sha256 } from '../crypto.ts';
+import { getSettings } from './settings.ts';
 
 /**
  * A small OAuth 2.1 authorization server for AI assistants (MCP clients such as Claude):
@@ -37,13 +38,37 @@ export class OAuthError extends Error {
 	}
 }
 
-/** https anywhere; plain http only for apps on the same machine (e.g. Claude Code). */
-export function isAllowedRedirect(uri: string): boolean {
+const LOCAL_HOSTS = ['localhost', '127.0.0.1', '[::1]'];
+
+/** Normalises the admin's list of allowed hosts ("https://Claude.ai/" → "claude.ai"). */
+export function normaliseHosts(input: string[]): string[] {
+	const hosts = input
+		.map((h) =>
+			h
+				.trim()
+				.toLowerCase()
+				.replace(/^https?:\/\//, '')
+				.replace(/[/:].*$/, '')
+				.replace(/^\*?\./, '')
+		)
+		.filter((h) => /^[a-z0-9.-]+\.[a-z]{2,}$/.test(h));
+	return [...new Set(hosts)];
+}
+
+/**
+ * Where an assistant may send people back to: https on an allowed host (or one of its
+ * sub-domains), or an app on the same machine (e.g. Claude Code on localhost). Without this list,
+ * anyone could register an app called "Claude" that sends the authorization code elsewhere.
+ */
+export function isAllowedRedirect(uri: string, allowedHosts: readonly string[]): boolean {
 	try {
 		const url = new URL(uri);
-		if (url.hash) return false;
-		if (url.protocol === 'https:') return true;
-		return url.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
+		if (url.hash || url.username || url.password) return false;
+		if (LOCAL_HOSTS.includes(url.hostname))
+			return url.protocol === 'http:' || url.protocol === 'https:';
+		if (url.protocol !== 'https:') return false;
+		const host = url.hostname.toLowerCase();
+		return allowedHosts.some((allowed) => host === allowed || host.endsWith(`.${allowed}`));
 	} catch {
 		return false;
 	}
@@ -59,10 +84,15 @@ export function pkceChallenge(verifier: string): string {
 
 export async function registerClient(db: DB, input: { name: string; redirectUris: string[] }) {
 	const uris = input.redirectUris;
-	if (uris.length === 0 || uris.length > 10 || !uris.every(isAllowedRedirect)) {
+	const { oauthRedirectHosts } = await getSettings(db);
+	if (
+		uris.length === 0 ||
+		uris.length > 10 ||
+		!uris.every((uri) => isAllowedRedirect(uri, oauthRedirectHosts))
+	) {
 		throw new OAuthError(
 			'invalid_redirect_uri',
-			'Redirect URIs must use https (or http://localhost).'
+			'This redirect URI is not allowed. An admin can allow its host in the settings.'
 		);
 	}
 	const [client] = await db
@@ -97,6 +127,9 @@ export async function validateAuthorization(
 	if (!client) throw new OAuthError('invalid_client', 'Unknown client.');
 	if (!client.redirectUris.includes(redirectUri))
 		throw new OAuthError('invalid_request', 'Redirect URI is not registered.');
+	// Checked again: the admin may have narrowed the list since the app registered.
+	if (!isAllowedRedirect(redirectUri, (await getSettings(db)).oauthRedirectHosts))
+		throw new OAuthError('invalid_request', 'Redirect URI is not allowed.');
 	if (params.get('response_type') !== 'code')
 		throw new OAuthError('unsupported_response_type', 'Only the code flow is supported.');
 	const codeChallenge = params.get('code_challenge') ?? '';
@@ -203,22 +236,36 @@ export async function exchangeCode(
 	});
 }
 
-/** Rotates a refresh token: the old one stops working. */
+/**
+ * Rotates a refresh token: the old one stops working. A refresh token that is presented a second
+ * time was copied – the whole connection is then revoked (RFC 9700, refresh token reuse).
+ */
 export async function refreshTokens(
 	db: DB,
 	input: { refreshToken: string; clientId: string },
 	now = new Date()
 ): Promise<TokenResponse> {
-	return db.transaction(async (tx) => {
+	const reused = await db.transaction(async (tx) => {
+		const hash = sha256(input.refreshToken);
 		const [token] = await tx
-			.delete(oauthTokens)
+			.update(oauthTokens)
+			.set({ usedAt: now })
 			.where(
-				and(eq(oauthTokens.tokenHash, sha256(input.refreshToken)), eq(oauthTokens.kind, 'refresh'))
+				and(
+					eq(oauthTokens.tokenHash, hash),
+					eq(oauthTokens.kind, 'refresh'),
+					isNull(oauthTokens.usedAt)
+				)
 			)
 			.returning();
-		const [grant] = token
-			? await tx.select().from(oauthGrants).where(eq(oauthGrants.id, token.grantId))
-			: [];
+		if (!token) {
+			const [used] = await tx
+				.select({ grantId: oauthTokens.grantId })
+				.from(oauthTokens)
+				.where(and(eq(oauthTokens.tokenHash, hash), eq(oauthTokens.kind, 'refresh')));
+			return used?.grantId ?? 'invalid';
+		}
+		const [grant] = await tx.select().from(oauthGrants).where(eq(oauthGrants.id, token.grantId));
 		if (
 			!token ||
 			!grant ||
@@ -230,6 +277,39 @@ export async function refreshTokens(
 			throw new OAuthError('invalid_grant', 'The refresh token is invalid or expired.');
 		}
 		return issueTokens(tx, grant, now);
+	});
+	if (typeof reused !== 'string') return reused;
+	if (reused !== 'invalid') await revokeGrant(db, reused, now, 'mcp.token_reuse');
+	throw new OAuthError('invalid_grant', 'The refresh token is invalid or expired.');
+}
+
+async function revokeGrant(db: DB, grantId: string, now: Date, action: string) {
+	await db.transaction(async (tx) => {
+		const [grant] = await tx
+			.update(oauthGrants)
+			.set({ revokedAt: now })
+			.where(and(eq(oauthGrants.id, grantId), isNull(oauthGrants.revokedAt)))
+			.returning();
+		await tx.delete(oauthTokens).where(eq(oauthTokens.grantId, grantId));
+		if (grant)
+			await audit(tx, SYSTEM_ACTOR, {
+				action,
+				entityType: 'user',
+				entityId: grant.userId,
+				data: { grantId }
+			});
+	});
+}
+
+/** Ends all AI connections of a person, e.g. after a password change. */
+export async function revokeAllConnections(db: DB, userId: string, now = new Date()) {
+	await db.transaction(async (tx) => {
+		const grants = await tx
+			.update(oauthGrants)
+			.set({ revokedAt: now })
+			.where(and(eq(oauthGrants.userId, userId), isNull(oauthGrants.revokedAt)))
+			.returning({ id: oauthGrants.id });
+		for (const g of grants) await tx.delete(oauthTokens).where(eq(oauthTokens.grantId, g.id));
 	});
 }
 
@@ -308,4 +388,13 @@ export async function cleanupOAuth(db: DB, now = new Date()) {
 	await db
 		.delete(oauthGrants)
 		.where(or(lt(oauthGrants.expiresAt, now), lt(oauthGrants.revokedAt, now)));
+	// Apps that registered but were never connected (or no longer are) after a day.
+	await db
+		.delete(oauthClients)
+		.where(
+			and(
+				lt(oauthClients.createdAt, new Date(now.getTime() - 24 * 60 * MINUTE)),
+				notExists(db.select().from(oauthGrants).where(eq(oauthGrants.clientId, oauthClients.id)))
+			)
+		);
 }

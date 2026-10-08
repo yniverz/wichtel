@@ -32,8 +32,11 @@
 				user: `${page.data.user?.firstName} ${page.data.user?.lastName}`
 			})}
 		</p>
-		<p class="text-sm text-ink-muted">
-			{i18n.t('mcp.consent.redirect', { host: data.redirectHost })}
+		<p class="rounded-md border border-line p-3 text-sm">
+			{i18n.t('mcp.consent.redirect')}<strong class="font-mono break-all"
+				>{data.redirectHost}</strong
+			>
+			<span class="mt-1 block text-ink-muted">{i18n.t('mcp.consent.nameHint')}</span>
 		</p>
 		{#if form?.error}<Alert tone="error">{form.error}</Alert>{/if}
 		<form method="POST" class="space-y-5">

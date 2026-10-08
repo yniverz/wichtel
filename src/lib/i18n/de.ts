@@ -1171,7 +1171,13 @@ export const de = {
 	'mcp.consent.title': 'Zugriff erlauben',
 	'mcp.consent.lead':
 		'„{client}“ möchte in deinem Namen ({user}) auf Wichtel zugreifen – mit genau deinen Rechten.',
-	'mcp.consent.redirect': 'Danach geht es zurück zu {host}.',
+	'mcp.consent.redirect': 'Der Zugangscode geht danach an: ',
+	'mcp.consent.nameHint':
+		'Den Namen oben gibt die App selbst an. Erlaube nur, wenn du diese Adresse kennst und die Verbindung gerade selbst angestoßen hast.',
+	'admin.settings.oauthHosts': 'Erlaubte Rücksprung-Adressen für KI-Assistenten',
+	'admin.settings.oauthHostsHint':
+		'Ein Host pro Zeile, Unterdomains zählen mit. Für Claude: claude.ai und claude.com. Apps auf demselben Rechner (localhost, z. B. Claude Code) sind immer erlaubt. Andere Adressen lehnt Wichtel ab, damit niemand eine App „Claude“ nennen und den Zugang an sich selbst schicken kann.',
+	'audit.mcp.token_reuse': 'KI-Verbindung getrennt (Token mehrfach benutzt)',
 	'mcp.consent.access': 'Was darf die Verbindung?',
 	'mcp.consent.note':
 		'Der Zugang gilt 90 Tage. Du kannst ihn jederzeit in deinem Profil trennen. Jede Änderung steht im Protokoll.',

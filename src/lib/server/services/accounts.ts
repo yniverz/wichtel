@@ -8,6 +8,7 @@ import { linkMail, type Mailer } from '../mail.ts';
 import { invalidateUserSessions } from '../sessions.ts';
 import { audit, type Actor } from '../audit.ts';
 import { getSettings } from './settings.ts';
+import { revokeAllConnections } from './oauth.ts';
 
 const HOUR = 60 * 60 * 1000;
 const VERIFY_TTL = 48 * HOUR;
@@ -205,7 +206,9 @@ export async function resetPassword(db: DB, token: string, newPassword: string):
 		.set({ passwordHash, emailVerifiedAt: new Date() })
 		.where(eq(users.id, userId))
 		.returning();
+	// Whoever knew the old password may have connected an AI assistant: end those connections too.
 	await invalidateUserSessions(db, userId);
+	await revokeAllConnections(db, userId);
 	await db.transaction((tx) =>
 		audit(tx, { userId }, { action: 'user.password_reset', entityType: 'user', entityId: userId })
 	);
@@ -224,6 +227,7 @@ export async function changePassword(
 	const passwordHash = await hashPassword(newPassword);
 	await db.update(users).set({ passwordHash }).where(eq(users.id, user.id));
 	await invalidateUserSessions(db, user.id);
+	await revokeAllConnections(db, user.id);
 }
 
 export interface ProfileUpdate {

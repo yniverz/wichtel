@@ -78,6 +78,13 @@
 			"when": 1791447299702,
 			"tag": "0010_privacy",
 			"breakpoints": true
+		},
+		{
+			"idx": 11,
+			"version": "7",
+			"when": 1791449672928,
+			"tag": "0011_security",
+			"breakpoints": true
 		}
 	]
 }

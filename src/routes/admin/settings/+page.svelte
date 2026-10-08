@@ -344,6 +344,21 @@
 				</select>
 				<p class="text-sm text-ink-muted">{i18n.t('admin.settings.mcpPersonalDataHint')}</p>
 			</div>
+			<div class="space-y-1.5">
+				<label for="oauthRedirectHosts" class="text-sm font-medium"
+					>{i18n.t('admin.settings.oauthHosts')}</label
+				>
+				<textarea
+					id="oauthRedirectHosts"
+					name="oauthRedirectHosts"
+					rows="3"
+					class="block w-full rounded-md border-line bg-surface font-mono text-sm"
+					>{Array.isArray(v.oauthRedirectHosts)
+						? v.oauthRedirectHosts.join('\n')
+						: v.oauthRedirectHosts}</textarea
+				>
+				<p class="text-sm text-ink-muted">{i18n.t('admin.settings.oauthHostsHint')}</p>
+			</div>
 		</div>
 	</Card>
 

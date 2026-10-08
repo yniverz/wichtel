@@ -78,7 +78,11 @@ export class Authz {
 	 */
 	can(permission: Permission, areaId?: string | null): boolean {
 		if (this.isAdmin) return true;
-		const scope = areaId ? new Set(this.lineage(areaId)) : null;
+		const lineage = areaId ? this.lineage(areaId) : null;
+		// An area outside this edition's tree (e.g. of another year) is never covered, not even by
+		// an edition-wide grant: grants only apply to the edition they were given for.
+		if (lineage && lineage.length === 0) return false;
+		const scope = lineage ? new Set(lineage) : null;
 		return this.grants.some(
 			(g) =>
 				g.permissions.includes(permission) &&
@@ -124,7 +128,9 @@ export class Authz {
 	/** Whether any role of the user covers the area (used for visibility of internal shifts). */
 	hasRoleCovering(areaId: string): boolean {
 		if (this.isAdmin) return true;
-		const scope = new Set(this.lineage(areaId));
+		const lineage = this.lineage(areaId);
+		if (lineage.length === 0) return false;
+		const scope = new Set(lineage);
 		return this.grants.some((g) => g.areaId === null || scope.has(g.areaId));
 	}
 

@@ -203,24 +203,36 @@ describe('goodies', () => {
 			goodie({ nameDe: 'Shirt', price: 1, variants: ['M', 'L'] })
 		);
 		await expectDomainError(
-			claimGoodie(s.db, actor, s.kim.id, shirt.id, 'M'),
+			claimGoodie(s.db, actor, s.kim.id, shirt.id, 'M', s.edition.id),
 			'goodie.notEnoughPoints'
 		);
 		await s.work(await s.shiftIn(s.bar.id, '2027-06-12T10:00:00Z', '2027-06-12T14:00:00Z'));
 
-		await expectDomainError(claimGoodie(s.db, actor, s.kim.id, shirt.id, null), 'variantRequired');
-		const claim = await claimGoodie(s.db, actor, s.kim.id, shirt.id, 'M');
+		await expectDomainError(
+			claimGoodie(s.db, actor, s.kim.id, shirt.id, null, s.edition.id),
+			'variantRequired'
+		);
+		const claim = await claimGoodie(s.db, actor, s.kim.id, shirt.id, 'M', s.edition.id);
 		expect(await pointsBalance(s.db, s.kim.id, s.edition.id)).toBe(0);
 		await expectDomainError(
-			claimGoodie(s.db, actor, s.kim.id, shirt.id, 'L'),
+			claimGoodie(s.db, actor, s.kim.id, shirt.id, 'L', s.edition.id),
 			'goodie.limitReached'
 		);
 
-		await cancelClaim(s.db, actor, claim.id, s.kim.id);
+		await cancelClaim(s.db, actor, claim.id, { editionId: s.edition.id, userId: s.kim.id }, true);
 		expect(await pointsBalance(s.db, s.kim.id, s.edition.id)).toBe(1);
-		const again = await claimGoodie(s.db, actor, s.kim.id, shirt.id, 'L');
-		await issueClaim(s.db, actor, again.id, new Date());
-		await expectDomainError(cancelClaim(s.db, actor, again.id, s.kim.id), 'claimNotOpen');
+		const again = await claimGoodie(s.db, actor, s.kim.id, shirt.id, 'L', s.edition.id);
+		await issueClaim(
+			s.db,
+			actor,
+			again.id,
+			{ editionId: s.edition.id, userId: s.kim.id },
+			new Date()
+		);
+		await expectDomainError(
+			cancelClaim(s.db, actor, again.id, { editionId: s.edition.id, userId: s.kim.id }, true),
+			'claimNotOpen'
+		);
 	});
 
 	it('enforces area restrictions, contingents and advance goodies', async () => {
@@ -245,10 +257,13 @@ describe('goodies', () => {
 		);
 
 		await expectDomainError(
-			claimGoodie(s.db, actor, s.kim.id, ruler.id, null),
+			claimGoodie(s.db, actor, s.kim.id, ruler.id, null, s.edition.id),
 			'goodie.notEligible'
 		);
-		await expectDomainError(claimGoodie(s.db, actor, s.kim.id, hat.id, null), 'goodie.soldOut');
+		await expectDomainError(
+			claimGoodie(s.db, actor, s.kim.id, hat.id, null, s.edition.id),
+			'goodie.soldOut'
+		);
 		// …but the desk can still hand it out
 		await issueDirectly(s.db, actor, s.kim.id, hat.id, null, new Date());
 
@@ -263,7 +278,7 @@ describe('goodies', () => {
 				canSee: () => true
 			}
 		);
-		await claimGoodie(s.db, actor, s.kim.id, early.id, null);
+		await claimGoodie(s.db, actor, s.kim.id, early.id, null, s.edition.id);
 		expect(await pointsBalance(s.db, s.kim.id, s.edition.id)).toBe(-1);
 
 		const overview = await goodieOverview(s.db, s.kim.id, s.edition.id);
@@ -285,10 +300,19 @@ describe('goodies', () => {
 		expect(claim.status).toBe('selected');
 
 		// Mandatory goodies cannot be swapped back into points by the helper…
-		await expectDomainError(cancelClaim(s.db, actor, claim.id, s.kim.id), 'claimNotOpen');
+		await expectDomainError(
+			cancelClaim(s.db, actor, claim.id, { editionId: s.edition.id, userId: s.kim.id }, true),
+			'claimNotOpen'
+		);
 		// …but can be turned into a refund ("I already have a ticket").
-		await requestRefund(s.db, s.kim.id, claim.id);
-		await markRefunded(s.db, actor, claim.id, new Date());
+		await requestRefund(s.db, { editionId: s.edition.id, userId: s.kim.id }, claim.id);
+		await markRefunded(
+			s.db,
+			actor,
+			claim.id,
+			{ editionId: s.edition.id, userId: s.kim.id },
+			new Date()
+		);
 		expect(await pointsBalance(s.db, s.kim.id, s.edition.id)).toBe(0);
 
 		// A second shift does not redeem the ticket again.
@@ -324,7 +348,7 @@ describe('mandatory goodies come first', () => {
 		);
 		// 1 pending point – but it is reserved for the ticket.
 		await expectDomainError(
-			claimGoodie(s.db, actor, s.kim.id, shirt.id, null),
+			claimGoodie(s.db, actor, s.kim.id, shirt.id, null, s.edition.id),
 			'goodie.notEnoughPoints'
 		);
 		await expectDomainError(

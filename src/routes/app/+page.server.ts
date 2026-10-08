@@ -194,6 +194,7 @@ export const actions: Actions = {
 		const authz = await loadAuthz(db(), user, id);
 		const result = await attempt(() =>
 			takeOffer({ db: db(), now: new Date() }, user.id, parsed.data.offerId, {
+				editionId: id,
 				canSee: (shift) => shift.visibility === 'public' || authz.hasRoleCovering(shift.areaId),
 				counterAssignmentId: parsed.data.counterAssignmentId
 			})

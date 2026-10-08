@@ -1152,7 +1152,13 @@ export const en: Record<keyof typeof de, string> = {
 	'mcp.consent.title': 'Allow access',
 	'mcp.consent.lead':
 		'“{client}” wants to access Wichtel on your behalf ({user}) – with exactly your permissions.',
-	'mcp.consent.redirect': 'Afterwards you go back to {host}.',
+	'mcp.consent.redirect': 'The access code then goes to: ',
+	'mcp.consent.nameHint':
+		'The name above is given by the app itself. Only allow if you know this address and just started the connection yourself.',
+	'admin.settings.oauthHosts': 'Allowed return addresses for AI assistants',
+	'admin.settings.oauthHostsHint':
+		'One host per line, sub-domains included. For Claude: claude.ai and claude.com. Apps on the same machine (localhost, e.g. Claude Code) are always allowed. Wichtel rejects other addresses so that nobody can call an app "Claude" and send the access to themselves.',
+	'audit.mcp.token_reuse': 'AI connection ended (token used twice)',
 	'mcp.consent.access': 'What may the connection do?',
 	'mcp.consent.note':
 		'Access is valid for 90 days. You can disconnect it in your profile at any time. Every change is logged.',
