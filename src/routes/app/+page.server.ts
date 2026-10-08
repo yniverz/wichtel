@@ -1,10 +1,12 @@
-import { fail } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import { and, eq, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '#lib/server/app.ts';
-import { assignments, users } from '#lib/server/db/schema.ts';
+import { assignments, users, type User } from '#lib/server/db/schema.ts';
 import { attempt, requireUser, requireVerifiedUser } from '#lib/server/guards.ts';
-import { loadHelperShifts } from '#lib/server/helper-shifts.ts';
+import { helperShiftsView } from '#lib/server/helper-shifts.ts';
+import { shiftViewGate } from '#lib/server/gate.ts';
+import type { Authz } from '#lib/domain/permissions.ts';
 import { getCurrentEdition } from '#lib/server/services/editions.ts';
 import { bookingAccess } from '#lib/server/services/waves.ts';
 import { loadAuthz } from '#lib/server/services/roles.ts';
@@ -66,8 +68,8 @@ export const load: PageServerLoad = async (event) => {
 
 	const now = new Date();
 	const authz = await loadAuthz(database, user, edition.id);
-	const [shifts, desk, points, offers, group] = await Promise.all([
-		loadHelperShifts(database, user, authz, edition.id, now),
+	const [summary, desk, points, offers, group] = await Promise.all([
+		shiftViewGate.run(() => homeShifts(user, authz, edition.id, now)),
 		edition.deskPlaceId
 			? listPlaces(database, edition.id).then((list) =>
 					list.find((p) => p.id === edition.deskPlaceId)
@@ -77,6 +79,9 @@ export const load: PageServerLoad = async (event) => {
 		offersInvolving(database, user.id, edition.id, now),
 		settings.buddyGroupsEnabled ? getGroup(database, user.id, edition.id) : null
 	]);
+
+	if (!summary) error(503, 'error.busy');
+	const { shifts, openShifts, urgent } = summary.value;
 
 	// Places reserved by a group member: who reserved them.
 	const holds = shifts.filter((s) => s.mine?.status === 'held' && !s.past);
@@ -98,7 +103,7 @@ export const load: PageServerLoad = async (event) => {
 		points,
 		mine,
 		missingFields,
-		openShifts: shifts.filter((s) => !s.past && s.positions.some((p) => p.free > 0)).length,
+		openShifts,
 		todo: {
 			holds: holds.map((s) => ({
 				assignmentId: s.mine!.assignmentId,
@@ -140,22 +145,36 @@ export const load: PageServerLoad = async (event) => {
 				titleEn: s.titleEn,
 				startsAt: s.startsAt
 			})),
-		urgent: shifts
-			.filter((s) => !s.past && !s.mine && s.positions.some((p) => p.urgent))
-			.slice(0, 3)
-			.map((s) => ({
-				id: s.id,
-				titleDe: s.titleDe,
-				titleEn: s.titleEn,
-				startsAt: s.startsAt,
-				endsAt: s.endsAt,
-				day: s.day,
-				bonus: Math.max(...s.positions.map((p) => p.urgent?.bonus ?? 0))
-			})),
+		urgent: urgent.map((s) => ({
+			id: s.id,
+			titleDe: s.titleDe,
+			titleEn: s.titleEn,
+			startsAt: s.startsAt,
+			endsAt: s.endsAt,
+			day: s.day,
+			bonus: Math.max(...s.positions.map((p) => p.urgent?.bonus ?? 0))
+		})),
 		group: group && { name: group.name, size: group.members.length },
 		groupsEnabled: settings.buddyGroupsEnabled
 	};
 };
+
+/**
+ * The person's own shifts (fully built), the number of shifts with free places and the first
+ * urgent calls. Only the shifts that are shown get built.
+ */
+async function homeShifts(user: User, authz: Authz, editionId: string, now: Date) {
+	const view = await helperShiftsView(db(), user, authz, editionId, now);
+	const all = view.shifts.map((shift) => ({ shift, facts: view.facts(shift) }));
+	return {
+		shifts: all.filter((s) => s.facts.mine).map((s) => view.build(s.shift)),
+		openShifts: all.filter((s) => s.facts.open).length,
+		urgent: all
+			.filter((s) => s.facts.urgent && !s.facts.mine)
+			.slice(0, 3)
+			.map((s) => view.build(s.shift))
+	};
+}
 
 async function editionId() {
 	const edition = await getCurrentEdition(db());

@@ -92,6 +92,7 @@ export const en: Record<keyof typeof de, string> = {
 	'auth.reset.success': 'Your password has been changed. You can log in now.',
 	'auth.backToLogin': 'Back to login',
 
+	'error.busy': 'It is very busy right now. Please try again in a few seconds.',
 	'error.generic': 'Something went wrong. Please try again.',
 	'error.required': 'Please fill in this field.',
 	'error.invalidEmail': 'Please enter a valid email address.',

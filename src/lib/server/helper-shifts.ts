@@ -9,7 +9,7 @@ import {
 	listUserAssignments,
 	waitlistQueue
 } from './services/assignments.ts';
-import { listShifts } from './services/shifts.ts';
+import { listShifts, type ShiftWithPositions } from './services/shifts.ts';
 import { getSettings } from './services/settings.ts';
 import { pointsFor } from './services/points.ts';
 import { heldQualificationIds, listQualifications } from './services/qualifications.ts';
@@ -81,14 +81,43 @@ export interface HelperShift {
 	conflict: boolean;
 }
 
-/** Builds the volunteer's view of all shifts of an edition. */
-export async function loadHelperShifts(
+/** Cheap facts about a visible shift, for summaries over all of them (day tabs, filters). */
+export interface ShiftFacts {
+	/** Festival-local day of the start, YYYY-MM-DD */
+	day: string;
+	rootArea: { id: string; nameDe: string; nameEn: string } | null;
+	past: boolean;
+	/** The person has an assignment here that is not cancelled (`HelperShift.mine`). */
+	mine: boolean;
+	/** Not started and at least one place free. */
+	open: boolean;
+	/** Someone else offers a place here on the shift market (and the person is not on it). */
+	onMarket: boolean;
+	/** An urgent call is running on a position with free places. */
+	urgent: boolean;
+	bookingOpen: boolean;
+	bookingOpensAt: Date | null;
+}
+
+export interface HelperShiftsView {
+	/**
+	 * The shifts the person may see: public ones, internal ones of areas they have a role in, and
+	 * those they have (had) an assignment in. Ordered by start.
+	 */
+	shifts: ShiftWithPositions[];
+	facts(shift: ShiftWithPositions): ShiftFacts;
+	/** What the person sees of one shift. Only builds the shifts that are shown. */
+	build(shift: ShiftWithPositions): HelperShift;
+}
+
+/** Loads everything needed to show an edition's shifts to one volunteer. */
+export async function helperShiftsView(
 	db: DB,
 	user: Pick<User, 'id' | 'isAdmin'>,
 	authz: Authz,
 	editionId: string,
 	now: Date
-): Promise<HelperShift[]> {
+): Promise<HelperShiftsView> {
 	const [
 		settings,
 		tree,
@@ -105,7 +134,7 @@ export async function loadHelperShifts(
 	] = await Promise.all([
 		getSettings(db),
 		loadAreaTree(db, editionId),
-		listShifts(db, editionId),
+		listShifts(db, editionId, { cached: true }),
 		listUserAssignments(db, user.id, editionId),
 		listQualifications(db),
 		heldQualificationIds(db, user.id, now),
@@ -152,10 +181,45 @@ export async function loadHelperShifts(
 		visible.filter((s) => mineByShift.get(s.id)?.status === 'booked') as Shift[]
 	);
 
-	return visible.map((s) => {
-		const path = [...tree.path(s.areaId), tree.get(s.areaId)].filter((a) => a !== undefined);
+	const freeOf = (p: ShiftWithPositions['positions'][number]) => freeSpots(p.capacity, p.booked);
+	const marketOffer = (positionId: string) =>
+		settings.swapEnabled ? (marketByPosition.get(positionId) ?? null) : null;
+	// Many shifts start at the same times; converting each instant once saves noticeable time.
+	const days = new Map<number, string>();
+	const dayOf = (instant: Date) => {
+		let day = days.get(instant.getTime());
+		if (day === undefined) {
+			day = utcToZoned(instant, tz).date;
+			days.set(instant.getTime(), day);
+		}
+		return day;
+	};
+	const activeMineOf = (s: Shift) => {
 		const a = mineByShift.get(s.id);
-		const activeMine = a && a.status !== 'cancelled' ? a : null;
+		return a && a.status !== 'cancelled' ? a : null;
+	};
+
+	function facts(s: ShiftWithPositions): ShiftFacts {
+		const root = tree.path(s.areaId)[0] ?? tree.get(s.areaId);
+		const past = s.startsAt.getTime() <= now.getTime();
+		const mine = activeMineOf(s) !== null;
+		const window = access(s.areaId);
+		return {
+			day: dayOf(s.startsAt),
+			rootArea: root ? { id: root.id, nameDe: root.nameDe, nameEn: root.nameEn } : null,
+			past,
+			mine,
+			open: !past && s.positions.some((p) => freeOf(p) > 0),
+			onMarket: !past && !mine && s.positions.some((p) => marketOffer(p.id) !== null),
+			urgent: !past && s.positions.some((p) => p.urgentAt !== null && freeOf(p) > 0),
+			bookingOpen: window.open,
+			bookingOpensAt: window.opensAt
+		};
+	}
+
+	function build(s: ShiftWithPositions): HelperShift {
+		const path = [...tree.path(s.areaId), tree.get(s.areaId)].filter((a) => a !== undefined);
+		const activeMine = activeMineOf(s);
 		const hours = cancelHours.get(s.id);
 		const window = access(s.areaId);
 		const past = s.startsAt.getTime() <= now.getTime();
@@ -174,7 +238,7 @@ export async function loadHelperShifts(
 			internal: s.visibility === 'internal',
 			startsAt: s.startsAt.toISOString(),
 			endsAt: s.endsAt.toISOString(),
-			day: utcToZoned(s.startsAt, tz).date,
+			day: dayOf(s.startsAt),
 			past,
 			buddies: buddies.get(s.id) ?? [],
 			positions: s.positions.map((p) => ({
@@ -242,5 +306,7 @@ export async function loadHelperShifts(
 				(iv) => iv.shiftId !== s.id && overlaps(iv, s, settings.minBreakMinutes)
 			)
 		};
-	});
+	}
+
+	return { shifts: visible, facts, build };
 }

@@ -54,9 +54,28 @@ export function localized(entity: object, field: string, locale: Locale): string
 	return typeof de === 'string' ? de : '';
 }
 
+/**
+ * Creating an `Intl.DateTimeFormat` is expensive (long lists format thousands of times), so each
+ * combination of locale, options and time zone is created once.
+ */
+const formatters = new Map<string, Intl.DateTimeFormat>();
+function formatter(
+	locale: Locale,
+	kind: string,
+	options: Intl.DateTimeFormatOptions
+): Intl.DateTimeFormat {
+	const key = `${locale}|${kind}|${options.timeZone ?? ''}`;
+	let f = formatters.get(key);
+	if (!f) {
+		f = new Intl.DateTimeFormat(locale === 'de' ? 'de-DE' : 'en-GB', options);
+		formatters.set(key, f);
+	}
+	return f;
+}
+
 export function formatDate(value: Date | string, locale: Locale, timeZone?: string): string {
 	const date = typeof value === 'string' ? new Date(`${value}T12:00:00Z`) : value;
-	return new Intl.DateTimeFormat(locale === 'de' ? 'de-DE' : 'en-GB', {
+	return formatter(locale, 'date', {
 		dateStyle: 'medium',
 		timeZone: typeof value === 'string' ? 'UTC' : timeZone
 	}).format(date);
@@ -64,28 +83,25 @@ export function formatDate(value: Date | string, locale: Locale, timeZone?: stri
 
 /** Compact range of two ISO dates, e.g. "24.–31.05.2027". */
 export function formatDateRange(start: string, end: string, locale: Locale): string {
-	const fmt = new Intl.DateTimeFormat(locale === 'de' ? 'de-DE' : 'en-GB', {
+	return formatter(locale, 'range', {
 		day: 'numeric',
 		month: locale === 'de' ? '2-digit' : 'short',
 		year: 'numeric',
 		timeZone: 'UTC'
-	});
-	return fmt.formatRange(new Date(`${start}T12:00:00Z`), new Date(`${end}T12:00:00Z`));
+	}).formatRange(new Date(`${start}T12:00:00Z`), new Date(`${end}T12:00:00Z`));
 }
 
 export function formatDateTime(value: Date, locale: Locale, timeZone?: string): string {
-	return new Intl.DateTimeFormat(locale === 'de' ? 'de-DE' : 'en-GB', {
+	return formatter(locale, 'dateTime', {
 		dateStyle: 'medium',
 		timeStyle: 'short',
 		timeZone
 	}).format(value);
 }
 
-const intlLocale = (locale: Locale) => (locale === 'de' ? 'de-DE' : 'en-GB');
-
 /** "18:00" in the festival time zone. */
 export function formatTime(value: Date | string, locale: Locale, timeZone: string): string {
-	return new Intl.DateTimeFormat(intlLocale(locale), {
+	return formatter(locale, 'time', {
 		hour: '2-digit',
 		minute: '2-digit',
 		timeZone
@@ -94,7 +110,7 @@ export function formatTime(value: Date | string, locale: Locale, timeZone: strin
 
 /** Short day label for an ISO date, e.g. "Fr 12.06." / "Fri 12 Jun". */
 export function formatDayShort(date: string, locale: Locale): string {
-	return new Intl.DateTimeFormat(intlLocale(locale), {
+	return formatter(locale, 'dayShort', {
 		weekday: 'short',
 		day: 'numeric',
 		month: locale === 'de' ? '2-digit' : 'short',
@@ -106,7 +122,7 @@ export function formatDayShort(date: string, locale: Locale): string {
 
 /** Long day label, e.g. "Freitag, 12. Juni". */
 export function formatDayLong(date: string, locale: Locale): string {
-	return new Intl.DateTimeFormat(intlLocale(locale), {
+	return formatter(locale, 'dayLong', {
 		weekday: 'long',
 		day: 'numeric',
 		month: 'long',

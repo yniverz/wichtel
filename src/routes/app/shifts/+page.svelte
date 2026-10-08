@@ -10,6 +10,7 @@
 	import PlaceLink from '#lib/components/places/PlaceLink.svelte';
 	import Toast from '#lib/components/Toast.svelte';
 	import { groupBy } from '#lib/grouping.ts';
+	import { ALL_DAYS } from '#lib/domain/shift-days.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
 	import {
 		formatDateTime,
@@ -26,8 +27,10 @@
 	const i18n = getI18n();
 	const tz = $derived(data.timezone);
 
-	// Filters (client-side: instant, no reloads)
-	let day = $state<string | null>(null);
+	// The day comes from the server (`?day=`); the other filters work in the browser.
+	const allDays = $derived(data.day === ALL_DAYS);
+	// Forms land on the page they were sent from (like a native form), so they keep the day.
+	const act = (name: string) => `?day=${data.day}&/${name}`;
 	let area = $state<string>('');
 	let onlyFree = $state(false);
 	let onlyMine = $state(false);
@@ -39,20 +42,16 @@
 		if (target) document.getElementById(`row-${target}`)?.scrollIntoView({ block: 'center' });
 	});
 
-	const days = $derived([...new Set(data.shifts.map((s) => s.day))].sort());
 	const rootAreas = $derived(
-		groupBy(
-			data.shifts.filter((s) => s.areaPath[0]),
-			(s) => s.areaRootId
-		)
-			.map(([id, list]) => ({ id, label: localized(list[0].areaPath[0], 'name', i18n.locale) }))
+		data.areas
+			.map((a) => ({ id: a.id, label: localized(a, 'name', i18n.locale) }))
 			.sort((a, b) => a.label.localeCompare(b.label))
 	);
 
 	const hasFree = (s: (typeof data.shifts)[number]) => s.positions.some((p) => p.free > 0);
 	const onMarket = (s: (typeof data.shifts)[number]) =>
 		!s.past && !s.mine && s.positions.some((p) => p.marketOfferId);
-	const anyMarket = $derived(data.shifts.some(onMarket));
+	const anyMarket = $derived(data.anyMarket);
 	const chips = $derived<{ key: 'free' | 'mine' | 'market'; label: MessageKey }[]>([
 		{ key: 'free', label: 'shifts.filter.free' },
 		{ key: 'mine', label: 'shifts.filter.mine' },
@@ -61,7 +60,6 @@
 	const filtered = $derived(
 		data.shifts.filter(
 			(s) =>
-				(!day || s.day === day) &&
 				(!area || s.areaRootId === area) &&
 				(!onlyFree || (hasFree(s) && !s.past)) &&
 				(!onlyMine || s.mine) &&
@@ -69,7 +67,6 @@
 		)
 	);
 	const grouped = $derived(groupBy(filtered, (s) => s.day));
-	const countFor = (d: string) => data.shifts.filter((s) => s.day === d).length;
 	const hours = (s: { startsAt: string; endsAt: string }) =>
 		Math.round(((Date.parse(s.endsAt) - Date.parse(s.startsAt)) / 3_600_000) * 10) / 10;
 
@@ -94,22 +91,19 @@
 				: i18n.t('shifts.cancel');
 
 	// If booking is closed for every shift, say so once at the top.
-	const closedBanner = $derived.by(() => {
-		const upcoming = data.shifts.filter((s) => !s.past);
-		if (upcoming.length === 0 || upcoming.some((s) => s.bookingOpen)) return null;
-		const next = upcoming
-			.map((s) => s.bookingOpensAt)
-			.filter((d): d is string => d !== null)
-			.sort()[0];
-		return next
-			? i18n.t('shifts.banner.opens', { date: formatDateTime(new Date(next), i18n.locale, tz) })
-			: i18n.t('shifts.banner.closed');
-	});
+	const closedBanner = $derived(
+		!data.bookingClosed
+			? null
+			: data.bookingOpensAt
+				? i18n.t('shifts.banner.opens', {
+						date: formatDateTime(new Date(data.bookingOpensAt), i18n.locale, tz)
+					})
+				: i18n.t('shifts.banner.closed')
+	);
 
 	const invited = $derived(page.url.searchParams.get('invited'));
 
 	function resetFilters() {
-		day = null;
 		area = '';
 		onlyFree = false;
 		onlyMine = false;
@@ -157,7 +151,7 @@
 	<p class="mt-2 text-ink-muted">{i18n.t('shifts.lead')}</p>
 </header>
 
-{#if data.shifts.length === 0}
+{#if data.days.length === 0}
 	<p class="mt-8 text-lg text-ink-muted">{i18n.t('shifts.emptyAll')}</p>
 {:else}
 	{#if closedBanner}
@@ -170,25 +164,27 @@
 			role="tablist"
 			aria-label={i18n.t('admin.shifts.date')}
 		>
-			<button
+			<a
+				href="?day={ALL_DAYS}"
 				role="tab"
-				aria-selected={day === null}
-				class="shrink-0 rounded-md px-3 py-2 text-sm font-semibold {day === null
+				aria-selected={allDays}
+				data-sveltekit-noscroll
+				class="shrink-0 rounded-md px-3 py-2 text-sm font-semibold {allDays
 					? 'bg-ink text-surface'
-					: 'text-ink-muted hover:text-ink'}"
-				onclick={() => (day = null)}>{i18n.t('shifts.filter.allDays')}</button
+					: 'text-ink-muted hover:text-ink'}">{i18n.t('shifts.filter.allDays')}</a
 			>
-			{#each days as d (d)}
-				<button
+			{#each data.days as d (d.day)}
+				<a
+					href="?day={d.day}"
 					role="tab"
-					aria-selected={day === d}
-					class="shrink-0 rounded-md px-3 py-2 text-sm font-semibold whitespace-nowrap tabular-nums {day ===
-					d
+					aria-selected={data.day === d.day}
+					data-sveltekit-noscroll
+					class="shrink-0 rounded-md px-3 py-2 text-sm font-semibold whitespace-nowrap tabular-nums {data.day ===
+					d.day
 						? 'bg-ink text-surface'
 						: 'text-ink-muted hover:text-ink'}"
-					onclick={() => (day = d)}
-					>{formatDayShort(d, i18n.locale)}
-					<span class="ml-0.5 text-xs font-normal opacity-60">{countFor(d)}</span></button
+					>{formatDayShort(d.day, i18n.locale)}
+					<span class="ml-0.5 text-xs font-normal opacity-60">{d.count}</span></a
 				>
 			{/each}
 		</div>
@@ -408,7 +404,7 @@
 											{#if isMine && shift.mine && shift.mine.status === 'held'}
 												<div class="flex flex-col items-end gap-1">
 													<div class="flex gap-2">
-														<form method="POST" action="?/cancel" use:enhance>
+														<form method="POST" action={act('cancel')} use:enhance>
 															<input
 																type="hidden"
 																name="assignmentId"
@@ -418,7 +414,7 @@
 																>{i18n.t('shifts.hold.decline')}</Button
 															>
 														</form>
-														<form method="POST" action="?/acceptHold" use:enhance>
+														<form method="POST" action={act('acceptHold')} use:enhance>
 															<input
 																type="hidden"
 																name="assignmentId"
@@ -443,7 +439,7 @@
 												<div class="flex flex-col items-end gap-1">
 													{#if shift.mine.canCancel}
 														<ConfirmForm
-															action="?/cancel"
+															action={act('cancel')}
 															hidden={{ assignmentId: shift.mine.assignmentId }}
 															variant="secondary"
 															message={i18n.t('shifts.cancelConfirm')}
@@ -475,7 +471,7 @@
 															<p class="text-right text-xs font-semibold">
 																{offerLabel(shift.mine.offer)}
 															</p>
-															<form method="POST" action="?/withdrawOffer" use:enhance>
+															<form method="POST" action={act('withdrawOffer')} use:enhance>
 																<input type="hidden" name="offerId" value={shift.mine.offer.id} />
 																<button
 																	type="submit"
@@ -519,7 +515,7 @@
 												{:else if position.marketOfferId && !position.required.some((q) => !q.held)}
 													<form
 														method="POST"
-														action="?/take"
+														action={act('take')}
 														use:enhance
 														class="flex flex-col items-end gap-1"
 													>
@@ -533,7 +529,7 @@
 													<div class="flex flex-col items-end gap-1">
 														<form
 															method="POST"
-															action="?/book"
+															action={act('book')}
 															use:enhance={() => {
 																pendingPosition = position.id;
 																return async ({ update }) => {
@@ -563,7 +559,7 @@
 												{:else if shift.waitlistEnabled && !position.required.some((q) => !q.held)}
 													<form
 														method="POST"
-														action="?/waitlist"
+														action={act('waitlist')}
 														use:enhance
 														class="flex flex-col items-end gap-1"
 													>
@@ -584,7 +580,7 @@
 											{#if groupFor === position.id}
 												<form
 													method="POST"
-													action="?/bookGroup"
+													action={act('bookGroup')}
 													use:enhance={() =>
 														async ({ update, result: r }) => {
 															await update({ reset: false });
@@ -656,7 +652,12 @@
 			<h2 id="give-away-title" class="text-lg font-bold">{i18n.t('shifts.giveAway.title')}</h2>
 			<p class="mt-1 text-sm text-ink-muted">{i18n.t('shifts.giveAway.lead')}</p>
 		</div>
-		<form method="POST" action="?/offer" use:enhance class="space-y-2 border-t border-line pt-4">
+		<form
+			method="POST"
+			action={act('offer')}
+			use:enhance
+			class="space-y-2 border-t border-line pt-4"
+		>
 			<input type="hidden" name="assignmentId" value={giveAwayId ?? ''} />
 			<p class="font-semibold">{i18n.t('shifts.giveAway.market')}</p>
 			<p class="text-sm text-ink-muted">{i18n.t('shifts.giveAway.marketHint')}</p>
@@ -664,7 +665,7 @@
 		</form>
 		<form
 			method="POST"
-			action="?/offer"
+			action={act('offer')}
 			use:enhance={() =>
 				async ({ update }) =>
 					update({ reset: false })}

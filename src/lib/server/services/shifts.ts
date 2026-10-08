@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray, sql } from 'drizzle-orm';
+import { and, asc, eq, inArray, sql, type SQL } from 'drizzle-orm';
 import {
 	MAX_SERIES_SHIFTS,
 	expandSeries,
@@ -93,10 +93,66 @@ function assertPositions(positions: PositionInput[]) {
 }
 
 /** Loads shifts with their positions and booking counts. */
+/**
+ * Shifts and positions of whole editions, shared by all volunteers' requests: the same few
+ * thousand rows would otherwise be loaded and converted for every page view. Every change to
+ * shifts or positions clears it (`afterShiftChange`); the age limit only catches a change that
+ * forgets to.
+ */
+const CACHE_MS = 30_000;
+let cacheGeneration = 0;
+const planCache = new Map<string, { at: number; shifts: Shift[]; positions: ShiftPosition[] }>();
+
+/** Clears the cached shifts once a change is committed (or failed). */
+export async function afterShiftChange<T>(change: Promise<T>): Promise<T> {
+	try {
+		return await change;
+	} finally {
+		cacheGeneration++;
+		planCache.clear();
+	}
+}
+
+async function loadPlan(db: Tx, editionId: string, conditions: SQL[], cached: boolean) {
+	const hit = cached ? planCache.get(editionId) : undefined;
+	if (hit && Date.now() - hit.at < CACHE_MS) return hit;
+	const generation = cacheGeneration;
+	const shiftRows = await db
+		.select()
+		.from(shifts)
+		.where(and(...conditions))
+		.orderBy(asc(shifts.startsAt), asc(shifts.titleDe));
+	// The same selection as a subquery: a list of thousands of ids as parameters is slow to send.
+	const positionRows = shiftRows.length
+		? await db
+				.select()
+				.from(shiftPositions)
+				.where(
+					inArray(
+						shiftPositions.shiftId,
+						db
+							.select({ id: shifts.id })
+							.from(shifts)
+							.where(and(...conditions))
+					)
+				)
+				.orderBy(asc(shiftPositions.sortOrder))
+		: [];
+	const plan = { at: Date.now(), shifts: shiftRows, positions: positionRows };
+	// Only keep it if nothing changed while loading (the rows could be from before the change).
+	if (cached && generation === cacheGeneration) planCache.set(editionId, plan);
+	return plan;
+}
+
+/**
+ * The shifts of an edition with their positions and current counts. `cached` reuses the shared
+ * copy of the shifts and positions (counts are always fresh); only for reading outside a
+ * transaction.
+ */
 export async function listShifts(
 	db: Tx,
 	editionId: string,
-	opts: { areaIds?: string[]; shiftIds?: string[] } = {}
+	opts: { areaIds?: string[]; shiftIds?: string[]; cached?: boolean } = {}
 ): Promise<ShiftWithPositions[]> {
 	const conditions = [eq(shifts.editionId, editionId)];
 	if (opts.areaIds) {
@@ -107,20 +163,9 @@ export async function listShifts(
 		if (opts.shiftIds.length === 0) return [];
 		conditions.push(inArray(shifts.id, opts.shiftIds));
 	}
-	const shiftRows = await db
-		.select()
-		.from(shifts)
-		.where(and(...conditions))
-		.orderBy(asc(shifts.startsAt), asc(shifts.titleDe));
-	if (shiftRows.length === 0) return [];
-
-	const ids = shiftRows.map((s) => s.id);
-	const [positionRows, counts] = await Promise.all([
-		db
-			.select()
-			.from(shiftPositions)
-			.where(inArray(shiftPositions.shiftId, ids))
-			.orderBy(asc(shiftPositions.sortOrder)),
+	const cached = Boolean(opts.cached) && !opts.areaIds && !opts.shiftIds;
+	const [{ shifts: shiftRows, positions: positionRows }, counts] = await Promise.all([
+		loadPlan(db, editionId, conditions, cached),
 		db
 			.select({
 				positionId: assignments.positionId,
@@ -130,12 +175,19 @@ export async function listShifts(
 			.from(assignments)
 			.where(
 				and(
-					inArray(assignments.shiftId, ids),
+					inArray(
+						assignments.shiftId,
+						db
+							.select({ id: shifts.id })
+							.from(shifts)
+							.where(and(...conditions))
+					),
 					inArray(assignments.status, [...ACTIVE, 'waitlisted'])
 				)
 			)
 			.groupBy(assignments.positionId, assignments.status)
 	]);
+	if (shiftRows.length === 0) return [];
 
 	type Counts = { booked: number; requested: number; waitlisted: number };
 	const countMap = new Map<string, Counts>();
@@ -191,26 +243,28 @@ export async function createShift(
 ): Promise<Shift> {
 	assertInterval(input);
 	assertPositions(input.positions);
-	return db.transaction(async (tx) => {
-		await assertArea(tx, editionId, input.areaId);
-		await assertPlaces(tx, editionId, input);
-		const { positions, ...details } = input;
-		const [shift] = await tx
-			.insert(shifts)
-			.values({ ...details, editionId })
-			.returning();
-		await tx
-			.insert(shiftPositions)
-			.values(positions.map((p, i) => ({ ...positionValues(p, i), shiftId: shift.id })));
-		await audit(tx, actor, {
-			action: 'shift.create',
-			entityType: 'shift',
-			entityId: shift.id,
-			editionId,
-			data: { after: { titleDe: input.titleDe, startsAt: input.startsAt, endsAt: input.endsAt } }
-		});
-		return shift;
-	});
+	return afterShiftChange(
+		db.transaction(async (tx) => {
+			await assertArea(tx, editionId, input.areaId);
+			await assertPlaces(tx, editionId, input);
+			const { positions, ...details } = input;
+			const [shift] = await tx
+				.insert(shifts)
+				.values({ ...details, editionId })
+				.returning();
+			await tx
+				.insert(shiftPositions)
+				.values(positions.map((p, i) => ({ ...positionValues(p, i), shiftId: shift.id })));
+			await audit(tx, actor, {
+				action: 'shift.create',
+				entityType: 'shift',
+				entityId: shift.id,
+				editionId,
+				data: { after: { titleDe: input.titleDe, startsAt: input.startsAt, endsAt: input.endsAt } }
+			});
+			return shift;
+		})
+	);
 }
 
 /**
@@ -229,30 +283,32 @@ export async function createSeries(
 	const intervals = expandSeries(series);
 	if (intervals.length === 0) throw new DomainError('seriesEmpty');
 	if (intervals.length > MAX_SERIES_SHIFTS) throw new DomainError('seriesTooLarge');
-	return db.transaction(async (tx) => {
-		await assertArea(tx, editionId, details.areaId);
-		await assertPlaces(tx, editionId, details);
-		const seriesId = crypto.randomUUID();
-		const created = await tx
-			.insert(shifts)
-			.values(intervals.map((iv) => ({ ...details, ...iv, editionId, seriesId })))
-			.returning({ id: shifts.id });
-		await tx
-			.insert(shiftPositions)
-			.values(
-				created.flatMap((s) =>
-					positions.map((p, i) => ({ ...positionValues(p, i), shiftId: s.id }))
-				)
-			);
-		await audit(tx, actor, {
-			action: 'shift.series_create',
-			entityType: 'shift_series',
-			entityId: seriesId,
-			editionId,
-			data: { titleDe: details.titleDe, count: created.length, from: series.from, to: series.to }
-		});
-		return created.length;
-	});
+	return afterShiftChange(
+		db.transaction(async (tx) => {
+			await assertArea(tx, editionId, details.areaId);
+			await assertPlaces(tx, editionId, details);
+			const seriesId = crypto.randomUUID();
+			const created = await tx
+				.insert(shifts)
+				.values(intervals.map((iv) => ({ ...details, ...iv, editionId, seriesId })))
+				.returning({ id: shifts.id });
+			await tx
+				.insert(shiftPositions)
+				.values(
+					created.flatMap((s) =>
+						positions.map((p, i) => ({ ...positionValues(p, i), shiftId: s.id }))
+					)
+				);
+			await audit(tx, actor, {
+				action: 'shift.series_create',
+				entityType: 'shift_series',
+				entityId: seriesId,
+				editionId,
+				data: { titleDe: details.titleDe, count: created.length, from: series.from, to: series.to }
+			});
+			return created.length;
+		})
+	);
 }
 
 export async function updateShift(
@@ -263,108 +319,113 @@ export async function updateShift(
 ): Promise<void> {
 	assertInterval(input);
 	assertPositions(input.positions);
-	await db.transaction(async (tx) => {
-		const before = await getShift(tx, id);
-		if (!before) throw new DomainError('notFound');
-		await assertArea(tx, before.editionId, input.areaId);
-		await assertPlaces(tx, before.editionId, input);
+	await afterShiftChange(
+		db.transaction(async (tx) => {
+			const before = await getShift(tx, id);
+			if (!before) throw new DomainError('notFound');
+			await assertArea(tx, before.editionId, input.areaId);
+			await assertPlaces(tx, before.editionId, input);
 
-		const { positions, ...details } = input;
-		await tx.update(shifts).set(details).where(eq(shifts.id, id));
+			const { positions, ...details } = input;
+			await tx.update(shifts).set(details).where(eq(shifts.id, id));
 
-		const existing = new Map(before.positions.map((p) => [p.id, p]));
-		const keep = new Set(positions.filter((p) => p.id && existing.has(p.id)).map((p) => p.id!));
+			const existing = new Map(before.positions.map((p) => [p.id, p]));
+			const keep = new Set(positions.filter((p) => p.id && existing.has(p.id)).map((p) => p.id!));
 
-		// Positions removed from the form must not have active bookings.
-		for (const p of before.positions) {
-			if (keep.has(p.id)) continue;
-			if (p.booked + p.requested > 0) throw new DomainError('positionHasBookings', 'positions');
-			await tx.delete(shiftPositions).where(eq(shiftPositions.id, p.id));
-		}
-
-		for (const [index, p] of positions.entries()) {
-			const current = p.id ? existing.get(p.id) : undefined;
-			if (current) {
-				if (p.capacity < current.booked) throw new DomainError('capacityBelowBooked', 'positions');
-				await tx
-					.update(shiftPositions)
-					.set(positionValues(p, index))
-					.where(eq(shiftPositions.id, current.id));
-			} else {
-				await tx.insert(shiftPositions).values({ ...positionValues(p, index), shiftId: id });
+			// Positions removed from the form must not have active bookings.
+			for (const p of before.positions) {
+				if (keep.has(p.id)) continue;
+				if (p.booked + p.requested > 0) throw new DomainError('positionHasBookings', 'positions');
+				await tx.delete(shiftPositions).where(eq(shiftPositions.id, p.id));
 			}
-		}
 
-		// More places (or a later start) may let people move up from the waiting list.
-		for (const p of positions) {
-			if (p.id && existing.has(p.id)) await promoteWaitlist(tx, actor, p.id, new Date());
-		}
-
-		const changes = diff(before as unknown as Record<string, unknown>, details);
-
-		// People who are on the shift hear about changes that affect them.
-		const relevant =
-			before.startsAt.getTime() !== input.startsAt.getTime() ||
-			before.endsAt.getTime() !== input.endsAt.getTime() ||
-			before.location !== input.location ||
-			before.meetingPoint !== input.meetingPoint;
-		if (relevant) {
-			const people = await tx
-				.select({ userId: assignments.userId })
-				.from(assignments)
-				.where(and(eq(assignments.shiftId, id), inArray(assignments.status, [...ACTIVE])));
-			await notifyShiftPeople(
-				tx,
-				'shift_changed',
-				{ ...before, ...details, startsAt: input.startsAt, endsAt: input.endsAt },
-				people.map((p) => p.userId)
-			);
-		}
-		await audit(tx, actor, {
-			action: 'shift.update',
-			entityType: 'shift',
-			entityId: id,
-			editionId: before.editionId,
-			data: {
-				...(changes ?? {}),
-				positions: positions.map((p) => ({
-					name: p.nameDe,
-					capacity: p.capacity,
-					mode: p.bookingMode
-				}))
+			for (const [index, p] of positions.entries()) {
+				const current = p.id ? existing.get(p.id) : undefined;
+				if (current) {
+					if (p.capacity < current.booked)
+						throw new DomainError('capacityBelowBooked', 'positions');
+					await tx
+						.update(shiftPositions)
+						.set(positionValues(p, index))
+						.where(eq(shiftPositions.id, current.id));
+				} else {
+					await tx.insert(shiftPositions).values({ ...positionValues(p, index), shiftId: id });
+				}
 			}
-		});
-	});
+
+			// More places (or a later start) may let people move up from the waiting list.
+			for (const p of positions) {
+				if (p.id && existing.has(p.id)) await promoteWaitlist(tx, actor, p.id, new Date());
+			}
+
+			const changes = diff(before as unknown as Record<string, unknown>, details);
+
+			// People who are on the shift hear about changes that affect them.
+			const relevant =
+				before.startsAt.getTime() !== input.startsAt.getTime() ||
+				before.endsAt.getTime() !== input.endsAt.getTime() ||
+				before.location !== input.location ||
+				before.meetingPoint !== input.meetingPoint;
+			if (relevant) {
+				const people = await tx
+					.select({ userId: assignments.userId })
+					.from(assignments)
+					.where(and(eq(assignments.shiftId, id), inArray(assignments.status, [...ACTIVE])));
+				await notifyShiftPeople(
+					tx,
+					'shift_changed',
+					{ ...before, ...details, startsAt: input.startsAt, endsAt: input.endsAt },
+					people.map((p) => p.userId)
+				);
+			}
+			await audit(tx, actor, {
+				action: 'shift.update',
+				entityType: 'shift',
+				entityId: id,
+				editionId: before.editionId,
+				data: {
+					...(changes ?? {}),
+					positions: positions.map((p) => ({
+						name: p.nameDe,
+						capacity: p.capacity,
+						mode: p.bookingMode
+					}))
+				}
+			});
+		})
+	);
 }
 
 /** Deletes a shift including all bookings. Returns the user ids of people who were booked. */
 export async function deleteShift(db: DB, actor: Actor, id: string): Promise<string[]> {
-	return db.transaction(async (tx) => {
-		const [shift] = await tx.select().from(shifts).where(eq(shifts.id, id));
-		if (!shift) throw new DomainError('notFound');
-		const affected = await tx
-			.select({ userId: assignments.userId })
-			.from(assignments)
-			.where(
-				and(eq(assignments.shiftId, id), inArray(assignments.status, [...ACTIVE, 'waitlisted']))
+	return afterShiftChange(
+		db.transaction(async (tx) => {
+			const [shift] = await tx.select().from(shifts).where(eq(shifts.id, id));
+			if (!shift) throw new DomainError('notFound');
+			const affected = await tx
+				.select({ userId: assignments.userId })
+				.from(assignments)
+				.where(
+					and(eq(assignments.shiftId, id), inArray(assignments.status, [...ACTIVE, 'waitlisted']))
+				);
+			await notifyShiftPeople(
+				tx,
+				'shift_cancelled',
+				shift,
+				affected.map((a) => a.userId)
 			);
-		await notifyShiftPeople(
-			tx,
-			'shift_cancelled',
-			shift,
-			affected.map((a) => a.userId)
-		);
-		await tx.delete(shifts).where(eq(shifts.id, id));
-		await audit(tx, actor, {
-			action: 'shift.delete',
-			entityType: 'shift',
-			entityId: id,
-			editionId: shift.editionId,
-			data: {
-				before: { titleDe: shift.titleDe, startsAt: shift.startsAt, endsAt: shift.endsAt },
-				affectedBookings: affected.length
-			}
-		});
-		return affected.map((a) => a.userId);
-	});
+			await tx.delete(shifts).where(eq(shifts.id, id));
+			await audit(tx, actor, {
+				action: 'shift.delete',
+				entityType: 'shift',
+				entityId: id,
+				editionId: shift.editionId,
+				data: {
+					before: { titleDe: shift.titleDe, startsAt: shift.startsAt, endsAt: shift.endsAt },
+					affectedBookings: affected.length
+				}
+			});
+			return affected.map((a) => a.userId);
+		})
+	);
 }

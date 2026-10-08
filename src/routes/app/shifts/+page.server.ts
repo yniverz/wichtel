@@ -1,8 +1,12 @@
-import { fail } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import { z } from 'zod';
 import { db } from '#lib/server/app.ts';
 import { attempt, requireVerifiedUser } from '#lib/server/guards.ts';
-import { loadHelperShifts } from '#lib/server/helper-shifts.ts';
+import { helperShiftsView } from '#lib/server/helper-shifts.ts';
+import { shiftViewGate } from '#lib/server/gate.ts';
+import { ALL_DAYS, pickDay, summariseDays } from '#lib/domain/shift-days.ts';
+import type { Authz } from '#lib/domain/permissions.ts';
+import type { User } from '#lib/server/db/schema.ts';
 import {
 	acceptHold,
 	bookPosition,
@@ -32,6 +36,12 @@ export const load: PageServerLoad = async (event) => {
 	if (!edition)
 		return {
 			shifts: [],
+			day: ALL_DAYS,
+			days: [],
+			areas: [],
+			anyMarket: false,
+			bookingOpensAt: null,
+			bookingClosed: false,
 			timezone: settings.timezone,
 			sitePlanAssetId: null,
 			buddies: [],
@@ -39,9 +49,11 @@ export const load: PageServerLoad = async (event) => {
 		};
 	const authz = await loadAuthz(database, user, edition.id);
 	const group = settings.buddyGroupsEnabled ? await getGroup(database, user.id, edition.id) : null;
+	const list = await shiftViewGate.run(() => shiftList(event.url, user, authz, edition.id));
+	if (!list) error(503, 'error.busy');
 	return {
+		...list.value,
 		sitePlanAssetId: edition.sitePlanAssetId,
-		shifts: await loadHelperShifts(database, user, authz, edition.id, new Date()),
 		timezone: settings.timezone,
 		/** The other group members, for booking together. */
 		buddies: (group?.members ?? [])
@@ -50,6 +62,45 @@ export const load: PageServerLoad = async (event) => {
 		features
 	};
 };
+
+/**
+ * The shifts of one day (`?day=`, see `pickDay`), plus what the filters need to know about all
+ * visible shifts: the days, the areas, whether anything is on the market, when booking opens.
+ */
+async function shiftList(url: URL, user: User, authz: Authz, editionId: string) {
+	const view = await helperShiftsView(db(), user, authz, editionId, new Date());
+	const all = view.shifts.map((shift) => ({ shift, facts: view.facts(shift) }));
+	const days = summariseDays(all.map((s) => s.facts));
+	const focus = url.searchParams.get('shift');
+	const day = pickDay(
+		days,
+		url.searchParams.get('day'),
+		all.find((s) => s.shift.id === focus)?.facts.day ?? null
+	);
+
+	const areas = new Map<string, { id: string; nameDe: string; nameEn: string }>();
+	for (const { facts } of all) if (facts.rootArea) areas.set(facts.rootArea.id, facts.rootArea);
+
+	// Booking closed for every upcoming shift: say once when it opens.
+	const upcoming = all.filter((s) => !s.facts.past);
+	const bookingClosed = upcoming.length > 0 && !upcoming.some((s) => s.facts.bookingOpen);
+	const opensAt = upcoming
+		.map((s) => s.facts.bookingOpensAt?.getTime())
+		.filter((t) => t !== undefined)
+		.sort((a, b) => a - b)[0];
+
+	return {
+		day,
+		days: days.map(({ day, count }) => ({ day, count })),
+		shifts: all
+			.filter((s) => day === ALL_DAYS || s.facts.day === day)
+			.map((s) => view.build(s.shift)),
+		areas: [...areas.values()],
+		anyMarket: all.some((s) => s.facts.onMarket),
+		bookingClosed,
+		bookingOpensAt: bookingClosed && opensAt !== undefined ? new Date(opensAt).toISOString() : null
+	};
+}
 
 export const actions: Actions = {
 	book: async (event) => {

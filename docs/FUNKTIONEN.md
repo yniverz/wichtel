@@ -6,8 +6,9 @@ Alles, was Wichtel kann – nach Rolle sortiert. Die Kurzfassung steht im [READM
 
 - **Registrierung** mit E-Mail-Bestätigung (ohne Mailserver entfällt sie), Login, Passwort
   vergessen, Profil. Zusätzliche Angaben werden erst abgefragt, wenn sie gebraucht werden.
-- **Schichten buchen auf dem Handy**: Programm nach Tagen, Filter (Tag, Bereich, freie Plätze,
-  meine, abzugeben), Eintragen mit einem Tipp. Überschneidungen und Mindestpausen werden verhindert.
+- **Schichten buchen auf dem Handy**: Programm nach Tagen (geöffnet wird der nächste Tag mit
+  freien Plätzen), Filter (Bereich, freie Plätze, meine, abzugeben), Eintragen mit einem Tipp.
+  Überschneidungen und Mindestpausen werden verhindert.
 - **Austragen** bis zu einer Frist; danach über die Schichtbörse oder die Leitung.
 - **Warteliste** für volle Positionen mit automatischem Nachrücken.
 - **Schichtbörse und Tausch**: eigene Schicht für alle anbieten oder einer Person per E-Mail; die

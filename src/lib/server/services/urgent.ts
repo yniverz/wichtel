@@ -21,6 +21,7 @@ import { appUrl, placesOf, sendTemplate, shiftParams } from '../notifications.ts
 import { countActive, lockPosition } from './assignments.ts';
 import { loadAuthz } from './roles.ts';
 import { getSettings } from './settings.ts';
+import { afterShiftChange } from './shifts.ts';
 
 const MINUTE = 60_000;
 
@@ -108,61 +109,65 @@ export async function callUrgent(
 	input: { bonus: number; note: string },
 	now: Date
 ): Promise<number> {
-	return db.transaction(async (tx) => {
-		const { position, shift } = await requireUrgentRights(tx, authz, positionId);
-		if (shift.startsAt.getTime() <= now.getTime()) throw new DomainError('shiftStarted');
-		const { booked } = await countActive(tx, position.id);
-		const free = freeSpots(position.capacity, booked);
-		if (free === 0) throw new DomainError('positionFull');
-		if (!canCallUrgent(position.urgentAt, now)) throw new DomainError('urgentTooSoon');
+	return afterShiftChange(
+		db.transaction(async (tx) => {
+			const { position, shift } = await requireUrgentRights(tx, authz, positionId);
+			if (shift.startsAt.getTime() <= now.getTime()) throw new DomainError('shiftStarted');
+			const { booked } = await countActive(tx, position.id);
+			const free = freeSpots(position.capacity, booked);
+			if (free === 0) throw new DomainError('positionFull');
+			if (!canCallUrgent(position.urgentAt, now)) throw new DomainError('urgentTooSoon');
 
-		await tx
-			.update(shiftPositions)
-			.set({ urgentAt: now, urgentBonus: input.bonus, urgentNote: input.note })
-			.where(eq(shiftPositions.id, position.id));
+			await tx
+				.update(shiftPositions)
+				.set({ urgentAt: now, urgentBonus: input.bonus, urgentNote: input.note })
+				.where(eq(shiftPositions.id, position.id));
 
-		const settings = await getSettings(tx);
-		const shiftPlaces = await placesOf(tx, shift);
-		const people = await urgentCandidates(tx, shift, position, now);
-		for (const person of people) {
-			await sendTemplate(tx, 'urgent_call', person, {
-				...shiftParams(shift, person.locale, settings.timezone, shiftPlaces),
-				position: localized(position, 'name', person.locale),
-				free: String(free),
-				bonus:
-					input.bonus > 0
-						? `\n${translator(person.locale)('shifts.urgentBonus', { bonus: input.bonus })}`
-						: '',
-				note: input.note ? `\n\n${input.note}` : '',
-				link: appUrl(`/app/shifts?shift=${shift.id}`)
+			const settings = await getSettings(tx);
+			const shiftPlaces = await placesOf(tx, shift);
+			const people = await urgentCandidates(tx, shift, position, now);
+			for (const person of people) {
+				await sendTemplate(tx, 'urgent_call', person, {
+					...shiftParams(shift, person.locale, settings.timezone, shiftPlaces),
+					position: localized(position, 'name', person.locale),
+					free: String(free),
+					bonus:
+						input.bonus > 0
+							? `\n${translator(person.locale)('shifts.urgentBonus', { bonus: input.bonus })}`
+							: '',
+					note: input.note ? `\n\n${input.note}` : '',
+					link: appUrl(`/app/shifts?shift=${shift.id}`)
+				});
+			}
+			await audit(tx, actor, {
+				action: 'shift.urgent_call',
+				entityType: 'shift',
+				entityId: shift.id,
+				editionId: shift.editionId,
+				data: { positionId, bonus: input.bonus, recipients: people.length }
 			});
-		}
-		await audit(tx, actor, {
-			action: 'shift.urgent_call',
-			entityType: 'shift',
-			entityId: shift.id,
-			editionId: shift.editionId,
-			data: { positionId, bonus: input.bonus, recipients: people.length }
-		});
-		return people.length;
-	});
+			return people.length;
+		})
+	);
 }
 
 /** Ends an urgent call; later bookings no longer earn the bonus. */
 export async function endUrgent(db: DB, actor: Actor, authz: Authz, positionId: string) {
-	await db.transaction(async (tx) => {
-		const { position, shift } = await requireUrgentRights(tx, authz, positionId);
-		if (!position.urgentAt) return;
-		await tx
-			.update(shiftPositions)
-			.set({ urgentAt: null, urgentBonus: 0, urgentNote: '' })
-			.where(eq(shiftPositions.id, position.id));
-		await audit(tx, actor, {
-			action: 'shift.urgent_end',
-			entityType: 'shift',
-			entityId: shift.id,
-			editionId: shift.editionId,
-			data: { positionId }
-		});
-	});
+	await afterShiftChange(
+		db.transaction(async (tx) => {
+			const { position, shift } = await requireUrgentRights(tx, authz, positionId);
+			if (!position.urgentAt) return;
+			await tx
+				.update(shiftPositions)
+				.set({ urgentAt: null, urgentBonus: 0, urgentNote: '' })
+				.where(eq(shiftPositions.id, position.id));
+			await audit(tx, actor, {
+				action: 'shift.urgent_end',
+				entityType: 'shift',
+				entityId: shift.id,
+				editionId: shift.editionId,
+				data: { positionId }
+			});
+		})
+	);
 }

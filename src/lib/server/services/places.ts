@@ -3,6 +3,7 @@ import type { DB, Tx } from '../db/client.ts';
 import { editions, places, type Place } from '../db/schema.ts';
 import { audit, diff, type Actor } from '../audit.ts';
 import { DomainError } from '../errors.ts';
+import { afterShiftChange } from './shifts.ts';
 
 export type PlaceInput = Omit<Place, 'id' | 'editionId' | 'createdAt' | 'updatedAt'>;
 
@@ -62,21 +63,23 @@ export async function updatePlace(
 
 /** Shifts referring to the place keep their free-text details; the link is removed. */
 export async function deletePlace(db: DB, actor: Actor, editionId: string, id: string) {
-	await db.transaction(async (tx) => {
-		const [place] = await tx
-			.delete(places)
-			.where(and(eq(places.id, id), eq(places.editionId, editionId)))
-			.returning();
-		if (!place) throw new DomainError('notFound');
-		await tx.update(editions).set({ deskPlaceId: null }).where(eq(editions.deskPlaceId, id));
-		await audit(tx, actor, {
-			action: 'place.delete',
-			entityType: 'place',
-			entityId: id,
-			editionId: place.editionId,
-			data: { before: { nameDe: place.nameDe } }
-		});
-	});
+	await afterShiftChange(
+		db.transaction(async (tx) => {
+			const [place] = await tx
+				.delete(places)
+				.where(and(eq(places.id, id), eq(places.editionId, editionId)))
+				.returning();
+			if (!place) throw new DomainError('notFound');
+			await tx.update(editions).set({ deskPlaceId: null }).where(eq(editions.deskPlaceId, id));
+			await audit(tx, actor, {
+				action: 'place.delete',
+				entityType: 'place',
+				entityId: id,
+				editionId: place.editionId,
+				data: { before: { nameDe: place.nameDe } }
+			});
+		})
+	);
 }
 
 export async function setSitePlan(db: DB, actor: Actor, editionId: string, assetId: string | null) {

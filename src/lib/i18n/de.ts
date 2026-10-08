@@ -94,6 +94,7 @@ export const de = {
 	'auth.reset.success': 'Dein Passwort wurde geändert. Du kannst dich jetzt anmelden.',
 	'auth.backToLogin': 'Zurück zur Anmeldung',
 
+	'error.busy': 'Gerade ist sehr viel los. Bitte versuche es in ein paar Sekunden noch einmal.',
 	'error.generic': 'Etwas ist schiefgelaufen. Bitte versuche es noch einmal.',
 	'error.required': 'Bitte ausfüllen.',
 	'error.invalidEmail': 'Bitte gib eine gültige E-Mail-Adresse ein.',
