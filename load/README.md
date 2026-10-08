@@ -57,3 +57,23 @@ npx tsx load/db.ts stats   # teuerste Datenbankabfragen (stats reset setzt zurü
 
 Mit `K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=load/out/report.html` erzeugt k6 zusätzlich
 einen HTML-Bericht.
+
+## Ergebnisse (Oktober 2026)
+
+VM mit 2 vCPU (generische QEMU-CPU) und 2 GB RAM ohne Swap, 3000
+Helfende, 1500 Schichten mit 2090 Positionen an fünf Tagen. Vorher = Stand vor den
+Optimierungen der Schichtansichten.
+
+| Messung                       | vorher                     | nachher                                                                                                         |
+| ----------------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Schichtliste, eine Person     | 0,9 s, 2,5 MB              | 0,12 s, 440 KB (ein Tag)                                                                                        |
+| Schichtliste, Grenze          | ~1 Aufruf/s                | ~20 Aufrufe/s                                                                                                   |
+| Alltag (`mixed.js`, Stufen)   | Abbruch bei ~4 Besuchen/s  | Abbruch bei ~15–20 Besuchen/s, ohne Fehler                                                                      |
+| Dauerlast 30 min, 8 Besuche/s | –                          | p95 93 ms, Speicher konstant ~105 MB                                                                            |
+| Logins                        | 40/s, p95 83 ms            | unverändert                                                                                                     |
+| Buchungswelle, 300 Personen   | Absturz (Speicher, 1,5 GB) | –                                                                                                               |
+| Buchungswelle, 1500 Personen  | –                          | kein Absturz, alle Buchungen korrekt; in den ersten Minuten Median 8 s, 13 % der Seitenaufrufe abgewiesen (503) |
+
+Engpass ist danach der eine Node-Prozess (CPU), nicht die Datenbank (alle Abfragen im Mittel
+unter 2 ms). Die Buchungslogik blieb in allen Läufen korrekt: keine Überbuchung, keine Doppel-
+oder Überschneidungsbuchung.
