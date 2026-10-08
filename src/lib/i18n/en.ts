@@ -1330,5 +1330,13 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.outbox.attempts': '{count} attempts',
 	'admin.outbox.nothingSelected': 'Please select at least one e-mail.',
 	'admin.outbox.retried': 'The e-mails will be sent again shortly.',
-	'admin.outbox.discarded': 'The e-mails were discarded.'
+	'admin.outbox.discarded': 'The e-mails were discarded.',
+	'admin.people.resetTitle': 'Reset password',
+	'admin.people.resetLead':
+		'Creates a link with which the person sets a new password. Hand it over personally (not in group chats). An older link stops working; this is logged.',
+	'admin.people.resetCreate': 'Create reset link',
+	'admin.people.resetValid': 'Valid until {time}, can be used once.',
+	'audit.user.reset_link': 'Password reset link created',
+	'admin.dash.noMailServer':
+		'No mail server is set up (SMTP_HOST). E-mails are not sent, addresses are not confirmed and nobody can reset their password themselves. You create reset links on the person’s page.'
 };

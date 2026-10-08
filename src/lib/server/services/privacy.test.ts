@@ -5,7 +5,7 @@ import { assignments, auditLog, emailOutbox, pointsLedger, users } from '../db/s
 import { DomainError } from '../errors.ts';
 import { createMemoryMailer } from '../mail.ts';
 import { createTestDatabase } from '../testing/db.ts';
-import { authenticate, register } from './accounts.ts';
+import { authenticate, createResetLink, register, resetPassword } from './accounts.ts';
 import { createArea } from './areas.ts';
 import { bookPosition, joinWaitlist, listUserAssignments } from './assignments.ts';
 import { createEdition } from './editions.ts';
@@ -243,5 +243,33 @@ describe('retention', () => {
 			noticed: 0,
 			deleted: 0
 		});
+	});
+});
+
+describe('reset link by an admin', () => {
+	it('works once, replaces older links and is logged', async () => {
+		const s = await seed();
+		const ctx = { db: s.db, baseUrl: 'http://test' };
+		const first = await createResetLink(ctx, { userId: s.admin.id }, s.a.id);
+		const second = await createResetLink(ctx, { userId: s.admin.id }, s.a.id);
+		const token = (link: string) => new URL(link).searchParams.get('token')!;
+		await expectDomainError(
+			resetPassword(s.db, token(first.link), 'new password 123'),
+			'invalidToken'
+		);
+		await resetPassword(s.db, token(second.link), 'new password 123');
+		await expectDomainError(
+			resetPassword(s.db, token(second.link), 'other password 1'),
+			'invalidToken'
+		);
+		expect((await authenticate(s.db, 'a@x.org', 'new password 123')).id).toBe(s.a.id);
+		const entries = await s.db
+			.select()
+			.from(auditLog)
+			.where(eq(auditLog.action, 'user.reset_link'));
+		expect(entries).toHaveLength(2);
+
+		await deleteAccount(s.ctxAt(new Date()), actor, s.b.id, 'admin');
+		await expectDomainError(createResetLink(ctx, { userId: s.admin.id }, s.b.id), 'notFound');
 	});
 });

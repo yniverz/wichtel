@@ -74,6 +74,9 @@
 />
 
 <div class="space-y-12">
+	{#if data.noMailServer}
+		<Alert tone="error">{i18n.t('admin.dash.noMailServer')}</Alert>
+	{/if}
 	{#if data.failedMails}
 		<Alert tone="error">
 			<a href="/admin/mail/outbox" class="font-semibold underline"

@@ -201,3 +201,45 @@ test('volunteer downloads their data and deletes their account', async ({ page }
 	await page.getByRole('button', { name: 'Anmelden' }).click();
 	await expect(page).toHaveURL(/\/login/);
 });
+
+test('pages work under the content security policy', async ({ page }) => {
+	const violations: string[] = [];
+	page.on('console', (msg) => {
+		if (/Content Security Policy|Refused to/i.test(msg.text())) violations.push(msg.text());
+	});
+	page.on('pageerror', (err) => violations.push(err.message));
+
+	await page.goto('/login');
+	await page.getByLabel('E-Mail-Adresse').fill(ADMIN.email);
+	await page.getByLabel('Passwort').fill(ADMIN.password);
+	await page.getByRole('button', { name: 'Anmelden' }).click();
+	await expect(page).toHaveURL(/\/app$/);
+
+	const response = await page.goto('/app');
+	const headers = response!.headers();
+	expect(headers['content-security-policy']).toContain("script-src 'self'");
+	expect(headers['content-security-policy']).toContain('img-src');
+	expect(headers['content-security-policy']).toContain('https://*.claude.ai');
+	expect(headers['permissions-policy']).toContain('camera=()');
+
+	for (const path of [
+		'/app/shifts',
+		'/app/goodies',
+		'/app/profile',
+		'/admin',
+		'/admin/shifts',
+		'/admin/places',
+		'/admin/settings',
+		'/admin/legal',
+		'/print/plan',
+		'/legal/privacy'
+	]) {
+		await page.goto(path);
+		await page.waitForLoadState('networkidle');
+	}
+	// Client-side navigation and a form submission (hydrated app).
+	await page.goto('/app');
+	await page.getByRole('link', { name: 'Schichten' }).first().click();
+	await expect(page).toHaveURL(/\/app\/shifts/);
+	expect(violations).toEqual([]);
+});

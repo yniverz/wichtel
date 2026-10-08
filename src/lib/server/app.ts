@@ -2,6 +2,7 @@ import {
 	DATABASE_URL,
 	LOG_FORMAT,
 	LOG_LEVEL,
+	LOG_MAIL_BODIES,
 	PUBLIC_URL,
 	SETUP_TOKEN,
 	SMTP_FROM,
@@ -15,6 +16,7 @@ import {
 import { building, dev } from '$app/env';
 import { connect, type Database, type DB } from './db/client.ts';
 import { setPublicUrl } from './notifications.ts';
+import { setHttpsOnly } from './cookies.ts';
 import { processOutbox, pruneOutbox, queueReminders } from './outbox.ts';
 import { expireHolds } from './services/assignments.ts';
 import { cleanupOAuth } from './services/oauth.ts';
@@ -64,7 +66,12 @@ export async function initApp(): Promise<void> {
 				password: SMTP_PASSWORD,
 				from: SMTP_FROM
 			})
-		: createConsoleMailer();
+		: createConsoleMailer(LOG_MAIL_BODIES ?? dev);
+	if (!SMTP_HOST && !dev) {
+		log.warn(
+			'No mail server (SMTP_HOST): e-mails are not sent, addresses are not confirmed and people cannot reset their password themselves.'
+		);
+	}
 
 	const token = await prepareSetup(database.db, SETUP_TOKEN);
 	if (token) {
@@ -74,6 +81,7 @@ export async function initApp(): Promise<void> {
 	}
 	await cleanupExpiredTokens(database.db);
 	setPublicUrl(PUBLIC_URL);
+	setHttpsOnly(PUBLIC_URL.startsWith('https://'));
 	startWorkers(database.db, state.mailer);
 }
 

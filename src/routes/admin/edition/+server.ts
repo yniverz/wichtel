@@ -1,5 +1,5 @@
 import { redirect } from '@sveltejs/kit';
-import { ADMIN_EDITION_COOKIE, safeRedirectTarget } from '#lib/server/cookies.ts';
+import { ADMIN_EDITION_COOKIE, safeRedirectTarget, secureCookie } from '#lib/server/cookies.ts';
 import { requireVerifiedUser } from '#lib/server/guards.ts';
 import type { RequestHandler } from './$types';
 
@@ -13,7 +13,7 @@ export const POST: RequestHandler = async (event) => {
 			path: '/',
 			httpOnly: true,
 			sameSite: 'lax',
-			secure: event.url.protocol === 'https:',
+			secure: secureCookie(event),
 			maxAge: 60 * 60 * 24 * 180
 		});
 	}

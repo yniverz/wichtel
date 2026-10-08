@@ -6,6 +6,7 @@ import type { Actor } from './audit.ts';
 import { ADMIN_EDITION_COOKIE } from './cookies.ts';
 import type { Area, Edition, User } from './db/schema.ts';
 import { isDomainError } from './errors.ts';
+import { log } from './log.ts';
 import { loadAreaTree } from './services/areas.ts';
 import { getCurrentEdition, getEdition, listEditions } from './services/editions.ts';
 import { loadAuthz } from './services/roles.ts';
@@ -25,12 +26,20 @@ export function requireVerifiedUser(event: RequestEvent): User {
 	return user;
 }
 
+let warnedAboutAddress = false;
+
 export function actorOf(event: RequestEvent): Actor {
 	let ip: string | null = null;
 	try {
 		ip = event.getClientAddress();
 	} catch {
-		// not available in every environment
+		// Behind a proxy with ADDRESS_HEADER set, the header is missing: a configuration error.
+		if (!warnedAboutAddress) {
+			warnedAboutAddress = true;
+			log.warn('client address unknown – does the reverse proxy send X-Forwarded-For?', {
+				path: event.url.pathname
+			});
+		}
 	}
 	return { userId: event.locals.user?.id ?? null, ip };
 }

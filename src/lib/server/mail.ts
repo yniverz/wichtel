@@ -37,15 +37,17 @@ export function createSmtpMailer(config: SmtpConfig): Mailer {
 	};
 }
 
-/** Development fallback: prints e-mails to the log instead of sending them. */
-export function createConsoleMailer(): Mailer {
+/**
+ * Fallback without a mail server: logs e-mails instead of sending them. Their text contains
+ * secret links (password reset), so it is only logged when `withBodies` is set (development).
+ */
+export function createConsoleMailer(withBodies: boolean): Mailer {
 	return {
 		async send(message) {
-			// Development only: the text contains links (e.g. password reset) to click locally.
 			log.info('e-mail not sent (SMTP_HOST unset)', {
 				to: message.to,
 				subject: message.subject,
-				text: message.text
+				text: withBodies ? message.text : '(not logged; set LOG_MAIL_BODIES=true to see it)'
 			});
 		}
 	};

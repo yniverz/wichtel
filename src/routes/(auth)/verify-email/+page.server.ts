@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { accountContext, db } from '#lib/server/app.ts';
 import { actorOf, requireUser } from '#lib/server/guards.ts';
-import { mailLimiter } from '#lib/server/limits.ts';
+import { mailLimiter, mailPerAddressLimiter } from '#lib/server/limits.ts';
 import { sendVerificationEmail, verifyEmail } from '#lib/server/services/accounts.ts';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -19,7 +19,11 @@ export const load: PageServerLoad = async ({ url }) => {
 export const actions: Actions = {
 	resend: async (event) => {
 		const user = requireUser(event);
-		if (!mailLimiter.attempt(`${actorOf(event).ip}:${user.email}`)) {
+		const ip = actorOf(event).ip;
+		if (
+			(ip && !mailLimiter.attempt(`${ip}:${user.email}`)) ||
+			!mailPerAddressLimiter.attempt(user.email)
+		) {
 			return fail(429, { error: 'error.rateLimited' });
 		}
 		await sendVerificationEmail(accountContext(), user);

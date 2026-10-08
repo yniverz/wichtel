@@ -1,12 +1,14 @@
 import { db } from '#lib/server/app.ts';
-import { registerLimiter } from '#lib/server/limits.ts';
+import { actorOf } from '#lib/server/guards.ts';
+import { oauthRegisterLimiter } from '#lib/server/limits.ts';
 import { corsPreflight, jsonResponse, oauthErrorResponse } from '#lib/server/oauth-http.ts';
 import { OAuthError, registerClient } from '#lib/server/services/oauth.ts';
 import type { RequestHandler } from './$types';
 
 /** RFC 7591 dynamic client registration (used by Claude when a connector is added). */
 export const POST: RequestHandler = async (event) => {
-	if (!registerLimiter.attempt(`oauth:${event.getClientAddress()}`)) {
+	const ip = actorOf(event).ip;
+	if (ip && !oauthRegisterLimiter.attempt(ip)) {
 		return jsonResponse({ error: 'too_many_requests' }, 429);
 	}
 	let body: { client_name?: unknown; redirect_uris?: unknown };

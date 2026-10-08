@@ -14,7 +14,25 @@ export default defineConfig({
 			},
 			adapter: adapter(),
 			// Checked in hooks.server.ts instead, so OAuth/MCP endpoints can be exempted.
-			csrf: { trustedOrigins: ['*'] }
+			csrf: { trustedOrigins: ['*'] },
+			// Map tiles (img-src) and OAuth redirect targets (form-action) depend on the settings and
+			// are added per request in hooks.server.ts.
+			csp: {
+				mode: 'auto',
+				directives: {
+					'default-src': ['self'],
+					'script-src': ['self'],
+					// Svelte and the theme colours use inline styles; no scripts can run from them.
+					'style-src': ['self', 'unsafe-inline'],
+					'img-src': ['self', 'data:', 'blob:'],
+					'font-src': ['self'],
+					'connect-src': ['self'],
+					'object-src': ['none'],
+					'base-uri': ['self'],
+					'form-action': ['self'],
+					'frame-ancestors': ['none']
+				}
+			}
 		})
 	],
 	test: {

@@ -11,6 +11,7 @@
 	import { getI18n } from '#lib/i18n/context.ts';
 	import {
 		formatDate,
+		formatDateTime,
 		formatDayShort,
 		formatTime,
 		localized,
@@ -26,6 +27,10 @@
 	const result = $derived(form as Result | null);
 	const name = $derived(`${data.person.firstName} ${data.person.lastName}`);
 	const edition = $derived(page.data.edition);
+	const resetLink = $derived(
+		result?.action === 'resetLink' ? (form as { link?: string; expiresAt?: string }) : null
+	) as { link: string; expiresAt: string } | null;
+	let resetCopied = $state(false);
 </script>
 
 <svelte:head><title>{name} · {page.data.settings.festivalName}</title></svelte:head>
@@ -269,6 +274,39 @@
 						? i18n.t('admin.people.revokeAdmin')
 						: i18n.t('admin.people.grantAdmin')}
 				</ConfirmForm>
+			</Card>
+
+			<Card
+				title={i18n.t('admin.people.resetTitle')}
+				description={i18n.t('admin.people.resetLead')}
+			>
+				{#if result?.action === 'resetLink' && resetLink}
+					<div class="space-y-2">
+						<code class="block rounded-sm bg-ink/5 p-2 text-sm break-all">{resetLink.link}</code>
+						<div class="flex flex-wrap items-center gap-3">
+							<Button
+								variant="secondary"
+								size="sm"
+								onclick={async () => {
+									await navigator.clipboard.writeText(resetLink.link);
+									resetCopied = true;
+								}}>{resetCopied ? i18n.t('calendar.copied') : i18n.t('calendar.copy')}</Button
+							>
+							<span class="text-sm text-ink-muted"
+								>{i18n.t('admin.people.resetValid', {
+									time: formatDateTime(new Date(resetLink.expiresAt), i18n.locale)
+								})}</span
+							>
+						</div>
+					</div>
+				{:else}
+					{#if result?.action === 'resetLink'}<FormMessage error={result.error} />{/if}
+					<form method="POST" action="?/resetLink" use:enhance>
+						<Button type="submit" variant="secondary" size="sm"
+							>{i18n.t('admin.people.resetCreate')}</Button
+						>
+					</form>
+				{/if}
 			</Card>
 
 			<Card title={i18n.t('privacy.adminTitle')} description={i18n.t('privacy.adminLead')}>

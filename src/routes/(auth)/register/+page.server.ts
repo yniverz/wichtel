@@ -48,7 +48,8 @@ export const actions: Actions = {
 			});
 		}
 
-		if (!registerLimiter.attempt(actorOf(event).ip ?? 'unknown')) {
+		const ip = actorOf(event).ip;
+		if (ip && !registerLimiter.attempt(ip)) {
 			return fail(429, { error: 'error.rateLimited', values: parsed.values, fieldValues });
 		}
 

@@ -196,6 +196,27 @@ export async function requestPasswordReset(ctx: AccountContext, email: string): 
 	);
 }
 
+/**
+ * An admin creates a password-reset link for someone (no mail server, or the mail did not arrive)
+ * and hands it over personally. Valid for one hour, logged; an older link stops working.
+ */
+export async function createResetLink(
+	ctx: Pick<AccountContext, 'db' | 'baseUrl'>,
+	actor: Actor,
+	userId: string
+): Promise<{ link: string; expiresAt: Date }> {
+	const [user] = await ctx.db.select().from(users).where(eq(users.id, userId));
+	if (!user || user.deletedAt) throw new DomainError('notFound');
+	const token = await issueToken(ctx.db, user.id, 'reset_password', RESET_TTL);
+	await ctx.db.transaction((tx) =>
+		audit(tx, actor, { action: 'user.reset_link', entityType: 'user', entityId: user.id })
+	);
+	return {
+		link: `${ctx.baseUrl}/reset-password?token=${encodeURIComponent(token)}`,
+		expiresAt: new Date(Date.now() + RESET_TTL)
+	};
+}
+
 export async function resetPassword(db: DB, token: string, newPassword: string): Promise<User> {
 	const userId = await consumeToken(db, token, 'reset_password');
 	if (!userId) throw new DomainError('invalidToken');

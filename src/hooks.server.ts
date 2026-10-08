@@ -1,6 +1,6 @@
 import type { Handle, HandleServerError, ServerInit } from '@sveltejs/kit/hooks';
 import { dev } from '$app/env';
-import { db, initApp, maybeDb } from '#lib/server/app.ts';
+import { config, db, initApp, maybeDb } from '#lib/server/app.ts';
 import { newErrorId, reportError } from '#lib/server/alerts.ts';
 import { log } from '#lib/server/log.ts';
 import { touchLastSeen } from '#lib/server/services/privacy.ts';
@@ -9,6 +9,14 @@ import { getSettings } from '#lib/server/services/settings.ts';
 import { isLocale, negotiateLocale } from '#lib/i18n/index.ts';
 import { LOCALE_COOKIE, setSessionCookie } from '#lib/server/cookies.ts';
 import { isCrossSiteForm } from '#lib/server/csrf.ts';
+import { bodyTooLarge } from '#lib/server/body-limit.ts';
+import {
+	extendCsp,
+	HSTS,
+	PERMISSIONS_POLICY,
+	redirectSources,
+	tileSource
+} from '#lib/server/security-headers.ts';
 
 export const init: ServerInit = async () => {
 	await initApp();
@@ -20,6 +28,9 @@ const quiet = (path: string) =>
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const started = performance.now();
+	if (bodyTooLarge(event.request, event.route.id)) {
+		return new Response('Payload too large', { status: 413 });
+	}
 	if (!dev && isCrossSiteForm(event.request, event.url)) {
 		return new Response(`Cross-site ${event.request.method} form submissions are forbidden`, {
 			status: 403
@@ -56,6 +67,20 @@ export const handle: Handle = async ({ event, resolve }) => {
 	response.headers.set('x-content-type-options', 'nosniff');
 	response.headers.set('referrer-policy', 'strict-origin-when-cross-origin');
 	response.headers.set('x-frame-options', 'DENY');
+	response.headers.set('permissions-policy', PERMISSIONS_POLICY);
+	if (config.publicUrl.startsWith('https://'))
+		response.headers.set('strict-transport-security', HSTS);
+	const csp = response.headers.get('content-security-policy');
+	if (csp) {
+		const tiles = tileSource(settings.mapTileUrl);
+		response.headers.set(
+			'content-security-policy',
+			extendCsp(csp, {
+				'img-src': tiles ? [tiles] : [],
+				'form-action': redirectSources(settings.oauthRedirectHosts)
+			})
+		);
+	}
 	if (!quiet(event.url.pathname)) {
 		// Path only: query strings can carry tokens.
 		log.info('request', {

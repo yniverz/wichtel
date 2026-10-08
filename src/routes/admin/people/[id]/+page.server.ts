@@ -15,7 +15,7 @@ import {
 	requireAdmin,
 	requireEdition
 } from '#lib/server/guards.ts';
-import { setAdmin } from '#lib/server/services/accounts.ts';
+import { createResetLink, setAdmin } from '#lib/server/services/accounts.ts';
 import { getSettings } from '#lib/server/services/settings.ts';
 import { getPerson } from '#lib/server/services/people.ts';
 import {
@@ -199,6 +199,20 @@ export const actions: Actions = {
 		);
 		if (!result.ok) return result.failure;
 		return { action: 'admin', success: 'common.saved' };
+	},
+	resetLink: async (event) => {
+		requireAdmin(await getAdminContext(event));
+		const result = await attempt(
+			() =>
+				createResetLink({ db: db(), baseUrl: config.publicUrl }, actorOf(event), event.params.id),
+			{ action: 'resetLink' }
+		);
+		if (!result.ok) return result.failure;
+		return {
+			action: 'resetLink',
+			link: result.value.link,
+			expiresAt: result.value.expiresAt.toISOString()
+		};
 	},
 	deleteAccount: async (event) => {
 		const ctx = await getAdminContext(event);

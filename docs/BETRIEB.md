@@ -43,6 +43,7 @@ stellen.
 | `SETUP_TOKEN`       | Fester Einrichtungs-Token statt eines zufälligen                                                   |
 | `LOG_LEVEL`         | `debug`, `info` (Standard), `warn` oder `error`                                                    |
 | `LOG_FORMAT`        | `json` (Standard im Container) oder `text`                                                         |
+| `LOG_MAIL_BODIES`   | Ohne SMTP auch Mailtexte loggen (enthalten Reset-Links); Standard nur in der Entwicklung           |
 
 Alle Variablen mit Erklärung stehen in [.env.example](../.env.example).
 
@@ -53,12 +54,25 @@ Wichtel gehört hinter einen Reverse Proxy mit TLS (Caddy, Traefik, nginx …). 
 
 ```
 helfen.example.de {
+	request_body {
+		max_size 16MB
+	}
 	reverse_proxy 127.0.0.1:3006
 }
 ```
 
-Läuft der Proxy selbst in Docker, `WICHTEL_BIND=0.0.0.0` setzen oder beide Container in ein
-gemeinsames Netzwerk hängen.
+Läuft der Proxy selbst in Docker, beide Container in ein gemeinsames Netzwerk hängen. Den
+App-Port **nie direkt** ins Internet freigeben (`WICHTEL_BIND=0.0.0.0` nur, wenn eine Firewall
+den Port von außen sperrt): Wichtel vertraut `X-Forwarded-For` und `X-Forwarded-Proto`. Ohne Proxy
+davor könnte jede:r die eigene IP-Adresse vortäuschen und die Login-Begrenzung umgehen. Steht mehr
+als ein Proxy davor (z. B. Cloudflare und Caddy), `XFF_DEPTH` auf die Zahl der Proxys setzen.
+
+Kommt beim Start oder Login die Warnung `client address unknown`, schickt der Proxy kein
+`X-Forwarded-For` mit. Die Login-Begrenzung gilt dann nur noch pro Konto.
+
+Wichtel setzt selbst eine Content-Security-Policy, `Permissions-Policy` und bei https-`PUBLIC_URL`
+auch HSTS und `Secure`-Cookies. Wer über http testet, braucht deshalb eine http-`PUBLIC_URL`.
+Anfragen über 1 MB werden außer bei Datei-Uploads abgelehnt.
 
 ## E-Mail
 
@@ -66,6 +80,12 @@ Für echten Versand `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_
 `SMTP_FROM` setzen. Damit Mails nicht im Spam landen, sollten SPF, DKIM und DMARC für die
 Absender-Domain eingerichtet sein. Mails gehen über eine Warteschlange und werden bei Fehlern
 mehrfach wiederholt.
+
+**Ohne Mailserver** werden keine Mails verschickt, Adressen gelten ohne Bestätigung, und niemand
+kann sein Passwort selbst zurücksetzen. Die Verwaltung zeigt dann einen Hinweis. Admins erzeugen
+auf der Seite einer Person einen Link zum Zurücksetzen (eine Stunde gültig, protokolliert) und
+geben ihn persönlich weiter. Mailtexte stehen nur in der Entwicklung im Log, weil sie geheime
+Links enthalten (`LOG_MAIL_BODIES=true` erzwingt es; in Produktion nicht empfohlen).
 
 ## Logs und Fehlermeldungen
 

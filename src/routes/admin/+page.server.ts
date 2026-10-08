@@ -1,5 +1,5 @@
 import { count, eq } from 'drizzle-orm';
-import { db } from '#lib/server/app.ts';
+import { config, db } from '#lib/server/app.ts';
 import { DEFAULT_PRIMARY, roleAssignments } from '#lib/server/db/schema.ts';
 import { getAdminContext } from '#lib/server/guards.ts';
 import { outboxStatus } from '#lib/server/outbox.ts';
@@ -54,6 +54,7 @@ export const load: PageServerLoad = async (event) => {
 			qualifications: qualifications.length
 		},
 		numbers,
-		failedMails: mail?.failed ?? 0
+		failedMails: mail?.failed ?? 0,
+		noMailServer: authz.isAdmin && !config.mailServer
 	};
 };

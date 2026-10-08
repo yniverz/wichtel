@@ -1354,5 +1354,13 @@ export const de = {
 	'admin.outbox.attempts': '{count} Versuche',
 	'admin.outbox.nothingSelected': 'Bitte wähle mindestens eine E-Mail aus.',
 	'admin.outbox.retried': 'Die E-Mails werden gleich erneut gesendet.',
-	'admin.outbox.discarded': 'Die E-Mails wurden verworfen.'
+	'admin.outbox.discarded': 'Die E-Mails wurden verworfen.',
+	'admin.people.resetTitle': 'Passwort zurücksetzen',
+	'admin.people.resetLead':
+		'Erzeugt einen Link, mit dem die Person ein neues Passwort festlegt. Gib ihn persönlich weiter (nicht über Gruppen-Chats). Ein älterer Link wird ungültig, der Vorgang wird protokolliert.',
+	'admin.people.resetCreate': 'Link zum Zurücksetzen erzeugen',
+	'admin.people.resetValid': 'Gültig bis {time}, nur einmal verwendbar.',
+	'audit.user.reset_link': 'Link zum Zurücksetzen des Passworts erzeugt',
+	'admin.dash.noMailServer':
+		'Es ist kein E-Mail-Server eingerichtet (SMTP_HOST). E-Mails werden nicht verschickt, Adressen nicht bestätigt, und niemand kann sein Passwort selbst zurücksetzen. Reset-Links erzeugst du auf der Seite der Person.'
 } as const;

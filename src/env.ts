@@ -57,6 +57,12 @@ export const variables = defineEnvVars({
 			return format;
 		}
 	},
+	LOG_MAIL_BODIES: {
+		description:
+			'Without SMTP_HOST: also log the text of e-mails (contains password-reset links). Default: only in development.',
+		schema: (value) =>
+			optional(value) === undefined ? undefined : value === 'true' || value === '1'
+	},
 	SMTP_FROM: {
 		description: 'Sender address, e.g. "Wichtel <helfen@example.de>"',
 		schema: (value) => optional(value) ?? 'Wichtel <wichtel@localhost>'
