@@ -27,10 +27,6 @@ export function configureLog(update: Partial<LogConfig>) {
 	Object.assign(config, update);
 }
 
-export function isLogLevel(value: unknown): value is LogLevel {
-	return typeof value === 'string' && value in ORDER;
-}
-
 /** Errors become plain objects with name, message and stack. */
 function serialise(value: unknown): unknown {
 	if (value instanceof Error) {

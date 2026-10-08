@@ -108,7 +108,7 @@ export async function loadAuthz(
 ): Promise<Authz> {
 	if (!editionId) return new Authz(user.isAdmin, [], () => []);
 	const [grants, tree] = await Promise.all([
-		// Roles of an archived edition no longer give any rights (former leads keep nothing).
+		// Roles of an archived edition give no rights, so former leads keep nothing.
 		db
 			.select({
 				areaId: roleAssignments.areaId,
@@ -207,7 +207,11 @@ export async function assignRole(
 			const tree = await loadAreaTree(tx, input.editionId);
 			if (!tree.has(input.areaId)) throw new DomainError('notFound', 'areaId');
 		}
-		const [user] = await tx.select({ id: users.id }).from(users).where(eq(users.id, input.userId));
+		// Deleted accounts are only placeholders behind old bookings.
+		const [user] = await tx
+			.select({ id: users.id })
+			.from(users)
+			.where(and(eq(users.id, input.userId), isNull(users.deletedAt)));
 		if (!user) throw new DomainError('notFound');
 		if (!actorAuthz.canAssignRole(role.permissions, input.areaId)) {
 			throw new DomainError('cannotAssignRole');

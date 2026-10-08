@@ -4,7 +4,6 @@ import { Authz } from '#lib/domain/permissions.ts';
 import type { Database } from '../db/client.ts';
 import { emailOutbox, swapOffers, users } from '../db/schema.ts';
 import { DomainError } from '../errors.ts';
-import { createMemoryMailer } from '../mail.ts';
 import { createTestDatabase } from '../testing/db.ts';
 import { register } from './accounts.ts';
 import { createArea } from './areas.ts';
@@ -58,7 +57,7 @@ async function seed() {
 		pointsPerShift: null,
 		pointsPerHour: null
 	});
-	const ctx = { db, mailer: createMemoryMailer(), baseUrl: 'http://test' };
+	const ctx = { db, baseUrl: 'http://test' };
 	const person = async (email: string, firstName: string) => {
 		const user = await register(ctx, {
 			email,

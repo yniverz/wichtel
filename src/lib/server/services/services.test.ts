@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { asc, eq } from 'drizzle-orm';
 import type { Database } from '../db/client.ts';
 import { auditLog, emailOutbox, users } from '../db/schema.ts';
-import { createMemoryMailer } from '../mail.ts';
 import { createSession, invalidateUserSessions, validateSession } from '../sessions.ts';
 import { createTestDatabase } from '../testing/db.ts';
 import { DomainError } from '../errors.ts';
@@ -24,13 +23,11 @@ import { checkSetupToken, completeSetup, isSetupComplete, prepareSetup } from '.
 import { updateSettings } from './settings.ts';
 
 let database: Database;
-let mailer: ReturnType<typeof createMemoryMailer>;
 let ctx: AccountContext;
 
 beforeEach(async () => {
 	database = await createTestDatabase();
-	mailer = createMemoryMailer();
-	ctx = { db: database.db, mailer, baseUrl: 'http://test' };
+	ctx = { db: database.db, baseUrl: 'http://test' };
 });
 afterEach(async () => {
 	await database.close();

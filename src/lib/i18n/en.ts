@@ -15,10 +15,7 @@ export const en: Record<keyof typeof de, string> = {
 	'common.optional': 'optional',
 	'common.search': 'Search',
 	'common.comingSoon': 'Coming soon',
-	'common.yes': 'Yes',
-	'common.no': 'No',
 	'common.confirm': 'Are you sure?',
-	'common.language': 'Language',
 	'common.menu': 'Menu',
 	'common.skipToContent': 'Skip to content',
 
@@ -65,13 +62,15 @@ export const en: Record<keyof typeof de, string> = {
 	'auth.login.forgot': 'Forgot your password?',
 	'auth.login.noAccount': 'No account yet?',
 	'auth.register.title': 'Create account',
-	'auth.register.lead': 'Create your volunteer account and get started right away.',
+	'auth.register.lead': 'Create your volunteer account. It only takes a minute.',
 	'auth.register.submit': 'Create account',
 	'auth.register.haveAccount': 'Already registered?',
 	'auth.register.closed': 'Registration is currently closed. Check back soon!',
 	'auth.register.passwordHint': 'At least 10 characters.',
 	'auth.register.privacy': 'How we handle your data is explained in the',
 	'auth.register.privacyLink': 'privacy policy',
+	'auth.register.sentHint':
+		'No e-mail? Check your spam folder. If there already was an account with this address, you will find a link to set a new password there.',
 	'auth.checkMail.title': 'Almost there!',
 	'auth.checkMail.text':
 		'We sent an email to {email}. Click the link inside to confirm your address.',
@@ -123,6 +122,7 @@ export const en: Record<keyof typeof de, string> = {
 	'error.setupDone': 'Setup has already been completed.',
 	'error.page.title': 'Oops',
 	'error.page.home': 'Go to start page',
+	'error.page.reference': 'Error ID for support:',
 
 	'app.home.greeting': 'Hi {name}!',
 	'app.home.noEdition': 'There is no volunteer season running right now. Check back soon!',
@@ -170,9 +170,6 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.noEditionLink': 'Create one now',
 
 	'admin.overview.lead': 'Set up {festival} and keep track of everything here.',
-	'admin.overview.users': 'Accounts',
-	'admin.overview.areas': 'Areas',
-	'admin.overview.assignments': 'Role assignments',
 	'admin.overview.nextSteps': 'Getting started',
 	'admin.overview.step.branding': 'Set logo, colors and background',
 	'admin.overview.step.areas': 'Create areas, e.g. setup, awareness, catering',
@@ -192,7 +189,6 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.editions.archive': 'Archive',
 	'admin.editions.unarchive': 'Restore',
 	'admin.editions.empty': 'No edition created yet.',
-	'admin.editions.manage': 'Manage',
 
 	'admin.areas.title': 'Areas',
 	'admin.areas.lead':
@@ -217,7 +213,6 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.roles.lead':
 		'A role bundles permissions. When someone gets a role for an area, the permissions apply there and in all sub-areas.',
 	'admin.roles.new': 'New role',
-	'admin.roles.edit': 'Edit role',
 	'admin.roles.nameDe': 'Name (German)',
 	'admin.roles.nameEn': 'Name (English)',
 	'admin.roles.descriptionDe': 'Description (German)',
@@ -251,9 +246,6 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.people.title': 'People',
 	'admin.people.lead': 'All accounts of this instance. Roles always apply to one edition.',
 	'admin.people.search': 'Name or email',
-	'admin.people.name': 'Name',
-	'admin.people.email': 'Email',
-	'admin.people.roles': 'Roles',
 	'admin.people.empty': 'Nobody found.',
 	'admin.people.unverified': 'unconfirmed',
 	'admin.people.adminBadge': 'Admin',
@@ -299,9 +291,6 @@ export const en: Record<keyof typeof de, string> = {
 
 	'admin.audit.title': 'Audit log',
 	'admin.audit.lead': 'All changes made by leads and admins – stored immutably.',
-	'admin.audit.when': 'When',
-	'admin.audit.who': 'Who',
-	'admin.audit.what': 'What',
 	'admin.audit.details': 'Details',
 	'admin.audit.system': 'System',
 	'admin.audit.empty': 'No entries yet.',
@@ -326,6 +315,9 @@ export const en: Record<keyof typeof de, string> = {
 	'audit.user.admin_grant': 'Admin rights granted',
 	'audit.user.admin_revoke': 'Admin rights revoked',
 	'audit.user.password_reset': 'Password reset',
+	'audit.user.delete': 'Account deleted',
+	'audit.user.export': 'Data export downloaded',
+	'audit.user.reset_link': 'Password reset link created',
 
 	'error.invalidTime': 'Please enter a time.',
 	'error.invalidNumber': 'Please enter a whole number.',
@@ -381,7 +373,6 @@ export const en: Record<keyof typeof de, string> = {
 	'shifts.conflict': 'Overlaps with one of your shifts',
 	'shifts.internal': 'internal',
 	'shifts.duration': '{hours} h',
-	'shifts.close': 'Close',
 	'app.home.shifts.none': 'You have no shifts yet.',
 	'app.home.shifts.browse': 'Browse shifts',
 	'app.home.shifts.more': 'All shifts',
@@ -460,8 +451,6 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.shifts.deleteConfirm':
 		'Delete shift “{name}”? All bookings of this shift will be removed.',
 	'admin.shifts.duplicate': 'Duplicate',
-	'admin.shifts.noAreas': 'Create an area first.',
-	'admin.shifts.people': '{count} people',
 	'admin.settings.booking': 'Booking',
 	'admin.settings.cancelDeadlineHours': 'Cancellation deadline (hours before start)',
 	'admin.settings.minBreakMinutes': 'Minimum break between two shifts (minutes)',
@@ -581,7 +570,6 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.desk.title': 'Desk & check-in',
 	'admin.desk.lead': 'Scan the personal code with your phone camera – or search for the person.',
 	'admin.desk.search': 'Find person',
-	'admin.desk.open': 'Open',
 	'admin.desk.today': 'Shifts today',
 	'admin.desk.todayEmpty': 'No shifts today.',
 	'admin.desk.checkIn': 'Check in',
@@ -754,7 +742,6 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.fields.context.registration': 'at sign-up',
 	'admin.fields.context.profile': 'only in the profile',
 	'admin.fields.context.goodie': 'when choosing certain goodies',
-	'admin.fields.goodies': 'For these goodies',
 	'admin.fields.showToLeads': 'Leads see the value in shift rosters',
 	'admin.fields.active': 'Active',
 	'admin.fields.empty': 'No fields yet. Name, email and phone are always asked.',
@@ -857,6 +844,8 @@ export const en: Record<keyof typeof de, string> = {
 	'audit.mail.broadcast': 'Group email sent',
 	'audit.mail.template_update': 'Email template changed',
 	'audit.mail.template_reset': 'Email template reset',
+	'audit.mail.retry': 'E-mails resent',
+	'audit.mail.discard': 'E-mails discarded',
 
 	'places.mapConsent': 'The map is loaded from {host}. Your IP address is sent to this service.',
 	'places.loadMap': 'Load map',
@@ -889,7 +878,6 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.places.deskNone': '— none —',
 	'admin.places.deleteConfirm': 'Delete place “{name}”? Shifts keep their free-text details.',
 	'admin.places.empty': 'No places yet.',
-	'admin.places.pins': 'Pins',
 	'admin.places.onPlan': 'plan',
 	'admin.places.onMap': 'map',
 	'admin.shifts.locationPlace': 'Place (with pin)',
@@ -907,7 +895,7 @@ export const en: Record<keyof typeof de, string> = {
 	'audit.edition.site_plan': 'Site plan changed',
 	'audit.edition.desk_place': 'Volunteer desk place changed',
 
-	// Milestone 5: shift market, swaps, buddy groups, urgent calls
+	// Shift market, swaps, buddy groups, urgent calls
 	'error.holdExpired': 'The reservation has expired.',
 	'error.swapAlreadyOffered': 'You are already offering this shift.',
 	'error.swapUnknownPerson': 'There is no confirmed account with this e-mail address.',
@@ -971,7 +959,6 @@ export const en: Record<keyof typeof de, string> = {
 	'app.home.todo.take': 'Take over',
 	'app.home.todo.swapWith': 'In exchange for …',
 	'app.home.todo.swapNone': 'Take over without swapping',
-	'app.home.todo.swapPropose': 'Suggest swap',
 	'app.home.todo.decline': 'Decline',
 	'app.home.todo.proposal': '{person} would like to swap',
 	'app.home.todo.proposalGive': 'You give',
@@ -980,7 +967,6 @@ export const en: Record<keyof typeof de, string> = {
 	'app.home.todo.pending': 'Waiting for a lead',
 	'app.home.todo.done': 'Done.',
 	'app.home.urgent.title': 'Urgently needed',
-	'app.home.urgent.more': 'All urgent shifts',
 	'app.home.group.title': 'Your group',
 	'app.home.group.members': '{count} people',
 	'app.home.group.none':
@@ -1016,6 +1002,8 @@ export const en: Record<keyof typeof de, string> = {
 	'group.disabled': 'Groups are currently not enabled.',
 
 	'admin.nav.requests': 'Requests',
+	'admin.nav.legal': 'Privacy & legal notice',
+	'admin.nav.outbox': 'Delivery',
 	'admin.requests.title': 'Open requests',
 	'admin.requests.lead':
 		'Requests for positions that need confirmation, and shift handovers a lead has to approve.',
@@ -1070,6 +1058,7 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.templates.key.swap_completed': 'Shift taken over',
 	'admin.templates.key.swap_declined': 'Handover declined',
 	'admin.templates.key.urgent_call': 'Urgent call',
+	'admin.templates.key.account_retention': 'Account deleted for inactivity',
 	'mailtpl.group_hold.subject': 'Place reserved for you: {shift}',
 	'mailtpl.group_hold.body':
 		'Hi {name},\n\n{person} planned you in for this shift:\n\n{shift}\n{date}, {time}{location}\n\nYour place is reserved until {until}. Accept it or release it: {link}\n\nYour {festival} team',
@@ -1094,9 +1083,12 @@ export const en: Record<keyof typeof de, string> = {
 	'mailtpl.urgent_call.subject': 'Urgently needed: {shift}, {date}',
 	'mailtpl.urgent_call.body':
 		'Hi {name},\n\nwe still need help at short notice for this shift ({position}, {free} free):\n\n{shift}\n{date}, {time}{location}{note}{bonus}\n\nSign up directly here: {link}\n\nThanks!\n\nYour {festival} team',
+	'mailtpl.account_retention.subject': 'Your {festival} account will be deleted soon',
+	'mailtpl.account_retention.body':
+		'Hi {name},\n\nyou have not been active at {festival} for {months} months. So that we do not keep data longer than needed, we will delete your account on {date}.\n\nIf you want to stay, just sign in once before then: {link}\n\nIf not, you do not need to do anything. Your shifts and points then stay in our statistics without your name.\n\nYour {festival} team',
 
 	'admin.templates.extra': 'Also available in this template: {list}',
-	// Milestone 6: dashboard, print views, copying editions
+	// Lead dashboard, print views, copying editions
 	'admin.dash.filled': 'Filled',
 	'admin.dash.places': '{booked} of {capacity} places',
 	'admin.dash.people': 'Helpers signed up',
@@ -1118,6 +1110,9 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.dash.newThisWeek': 'new in 7 days',
 	'admin.dash.goodiesIssued': 'Goodies handed out',
 	'admin.dash.goodiesWaiting': '{count} selected goodies waiting to be handed out',
+	'admin.dash.failedMails': '{count} e-mails could not be delivered →',
+	'admin.dash.noMailServer':
+		'No mail server is set up (SMTP_HOST). E-mails are not sent, addresses are not confirmed and nobody can reset their password themselves. You create reset links on the person’s page.',
 	'print.print': 'Print',
 	'print.plan': 'Print shift plan',
 	'print.crew': 'Print crew list',
@@ -1145,6 +1140,11 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.editions.copied': 'Edition created. Check it, then make it the current one.',
 	'audit.edition.copy': 'Edition copied',
 	'admin.people.shifts': 'Shifts',
+	'admin.people.resetTitle': 'Reset password',
+	'admin.people.resetLead':
+		'Creates a link with which the person sets a new password. Hand it over personally (not in group chats). An older link stops working; this is logged.',
+	'admin.people.resetCreate': 'Create reset link',
+	'admin.people.resetValid': 'Valid until {time}, can be used once.',
 	'print.planTitle': 'Shift plan',
 	'print.crewTitle': 'Crew list',
 	// AI assistants (MCP)
@@ -1153,12 +1153,6 @@ export const en: Record<keyof typeof de, string> = {
 	'mcp.consent.lead':
 		'“{client}” wants to access Wichtel on your behalf ({user}) – with exactly your permissions.',
 	'mcp.consent.redirect': 'The access code then goes to: ',
-	'mcp.consent.nameHint':
-		'The name above is given by the app itself. Only allow if you know this address and just started the connection yourself.',
-	'admin.settings.oauthHosts': 'Allowed return addresses for AI assistants',
-	'admin.settings.oauthHostsHint':
-		'One host per line, sub-domains included. For Claude: claude.ai and claude.com. Apps on the same machine (localhost, e.g. Claude Code) are always allowed. Wichtel rejects other addresses so that nobody can call an app "Claude" and send the access to themselves.',
-	'audit.mcp.token_reuse': 'AI connection ended (token used twice)',
 	'mcp.consent.access': 'What may the connection do?',
 	'mcp.consent.note':
 		'Access is valid for 90 days. You can disconnect it in your profile at any time. Every change is logged.',
@@ -1166,6 +1160,8 @@ export const en: Record<keyof typeof de, string> = {
 	'mcp.consent.deny': 'Deny',
 	'mcp.consent.invalid': 'This request is invalid.',
 	'mcp.consent.notAllowed': 'Your role does not allow AI access. Ask the admins if you need it.',
+	'mcp.consent.nameHint':
+		'The name above is given by the app itself. Only allow if you know this address and just started the connection yourself.',
 	'mcp.scope.write': 'Read and change',
 	'mcp.scope.writeHint': 'E.g. create shifts or sign people up – as far as your role allows.',
 	'mcp.scope.read': 'Read only',
@@ -1209,8 +1205,18 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.settings.mcpPersonalData.pseudonymous': 'Pseudonyms instead of names (“Person 4F2A9C”)',
 	'admin.settings.mcpPersonalDataHint':
 		'What an assistant sees is processed by its provider (e.g. Anthropic). Signing people up also works with pseudonyms.',
+	'admin.settings.oauthHosts': 'Allowed return addresses for AI assistants',
+	'admin.settings.oauthHostsHint':
+		'One host per line, sub-domains included. For Claude: claude.ai and claude.com. Apps on the same machine (localhost, e.g. Claude Code) are always allowed. Wichtel rejects other addresses so that nobody can call an app "Claude" and send the access to themselves.',
+	'admin.settings.legalMoved': 'Legal notice and privacy policy',
+	'admin.settings.operations': 'Operations',
+	'admin.settings.operationsLead': 'So you notice when something goes wrong.',
+	'admin.settings.errorAlerts': 'Report errors to all admins by e-mail',
+	'admin.settings.errorAlertsHint':
+		'For unexpected server errors, with error ID and technical details. The same error at most once an hour.',
 	'audit.mcp.connect': 'AI assistant connected',
 	'audit.mcp.disconnect': 'AI assistant disconnected',
+	'audit.mcp.token_reuse': 'AI connection ended (token used twice)',
 	'mail.greeting': 'Hi {name},',
 	'mail.signature': 'Your {festival} team',
 	'mail.ignore': 'If this was not you, you can simply ignore this email.',
@@ -1221,18 +1227,12 @@ export const en: Record<keyof typeof de, string> = {
 	'mail.reset.subject': 'Reset your password',
 	'mail.reset.body': 'you can set a new password for {festival} using this link:',
 	'mail.reset.expiry': 'The link is valid for one hour.',
-	// Privacy, legal pages and operations
+	'mail.exists.subject': 'You already have an account',
+	'mail.exists.body':
+		'someone (hopefully you) tried to sign up again for {festival} with this address. You already have an account. If you forgot your password, you can set a new one with this link:',
+	// Data protection, legal pages, e-mail delivery
 	'account.deleted.name': 'Deleted account',
-	'error.page.reference': 'Error ID for support:',
 	'legal.privacyTitle': 'Privacy policy',
-	'audit.user.delete': 'Account deleted',
-	'audit.user.export': 'Data export downloaded',
-	'audit.mail.retry': 'E-mails resent',
-	'audit.mail.discard': 'E-mails discarded',
-	'mailtpl.account_retention.subject': 'Your {festival} account will be deleted soon',
-	'mailtpl.account_retention.body':
-		'Hi {name},\n\nyou have not been active at {festival} for {months} months. So that we do not keep data longer than needed, we will delete your account on {date}.\n\nIf you want to stay, just sign in once before then: {link}\n\nIf not, you do not need to do anything. Your shifts and points then stay in our statistics without your name.\n\nYour {festival} team',
-	'admin.templates.key.account_retention': 'Account deleted for inactivity',
 	'privacy.title': 'My data',
 	'privacy.lead':
 		'What we store about you is described in the privacy policy. Here you can download it or delete your account.',
@@ -1257,8 +1257,6 @@ export const en: Record<keyof typeof de, string> = {
 	'privacy.adminDeleteConfirm':
 		'Delete the account of {name}? Personal data is removed and upcoming shifts are cancelled. This cannot be undone.',
 	'privacy.adminDeleted': 'The account has been deleted.',
-	'admin.nav.legal': 'Privacy & legal notice',
-	'admin.nav.outbox': 'Delivery',
 	'admin.legal.title': 'Privacy & legal notice',
 	'admin.legal.lead':
 		'Operator details, legal notice, privacy policy and retention periods. Everything is stored here, not in the code.',
@@ -1306,13 +1304,6 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.legal.external': 'External pages',
 	'admin.legal.externalLead':
 		'Link to existing pages instead, e.g. on your festival website. Only used while nothing is entered above.',
-	'admin.settings.legalMoved': 'Legal notice and privacy policy',
-	'admin.settings.operations': 'Operations',
-	'admin.settings.operationsLead': 'So you notice when something goes wrong.',
-	'admin.settings.errorAlerts': 'Report errors to all admins by e-mail',
-	'admin.settings.errorAlertsHint':
-		'For unexpected server errors, with error ID and technical details. The same error at most once an hour.',
-	'admin.dash.failedMails': '{count} e-mails could not be delivered →',
 	'admin.outbox.title': 'E-mail delivery',
 	'admin.outbox.lead':
 		'E-mails that are currently stuck or failed for good. Wichtel tries six times with growing gaps.',
@@ -1330,20 +1321,5 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.outbox.attempts': '{count} attempts',
 	'admin.outbox.nothingSelected': 'Please select at least one e-mail.',
 	'admin.outbox.retried': 'The e-mails will be sent again shortly.',
-	'admin.outbox.discarded': 'The e-mails were discarded.',
-	'admin.people.resetTitle': 'Reset password',
-	'admin.people.resetLead':
-		'Creates a link with which the person sets a new password. Hand it over personally (not in group chats). An older link stops working; this is logged.',
-	'admin.people.resetCreate': 'Create reset link',
-	'admin.people.resetValid': 'Valid until {time}, can be used once.',
-	'audit.user.reset_link': 'Password reset link created',
-	'admin.dash.noMailServer':
-		'No mail server is set up (SMTP_HOST). E-mails are not sent, addresses are not confirmed and nobody can reset their password themselves. You create reset links on the person’s page.',
-	'auth.register.sent':
-		'Almost done! We sent an e-mail to {email}. Confirm your address there and then sign in.',
-	'auth.register.sentHint':
-		'No e-mail? Check your spam folder. If there already was an account with this address, you will find a link to set a new password there.',
-	'mail.exists.subject': 'You already have an account',
-	'mail.exists.body':
-		'someone (hopefully you) tried to sign up again for {festival} with this address. You already have an account. If you forgot your password, you can set a new one with this link:'
+	'admin.outbox.discarded': 'The e-mails were discarded.'
 };

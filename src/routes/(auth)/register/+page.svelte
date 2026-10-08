@@ -24,7 +24,10 @@
 
 {#if form && 'sent' in form && form.sent}
 	<div class="mt-6 space-y-3">
-		<Alert tone="success">{i18n.t('auth.register.sent', { email: form.email })}</Alert>
+		<Alert tone="success">
+			<span class="block font-semibold">{i18n.t('auth.checkMail.title')}</span>
+			{i18n.t('auth.checkMail.text', { email: form.email })}
+		</Alert>
 		<p class="text-sm text-ink-muted">{i18n.t('auth.register.sentHint')}</p>
 	</div>
 {:else if !settings.registrationOpen}

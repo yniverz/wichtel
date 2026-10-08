@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Authz } from '#lib/domain/permissions.ts';
 import type { Database } from '../db/client.ts';
 import { DomainError } from '../errors.ts';
-import { createMemoryMailer } from '../mail.ts';
 import { createTestDatabase } from '../testing/db.ts';
 import { register } from './accounts.ts';
 import { createArea } from './areas.ts';
@@ -78,7 +77,7 @@ async function seed() {
 	});
 	const bar = await createArea(db, actor, edition.id, areaInput('Bar'));
 	const abbau = await createArea(db, actor, edition.id, areaInput('Abbau', 3));
-	const ctx = { db, mailer: createMemoryMailer(), baseUrl: 'http://test' };
+	const ctx = { db, baseUrl: 'http://test' };
 	const kim = await register(ctx, {
 		email: 'kim@example.org',
 		password: 'password 1234',

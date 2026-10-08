@@ -4,7 +4,7 @@ Wichtel ist ein Helfer- und Schichtsystem für ehrenamtliche Festivals (Zielgrö
 mehrwöchige Aufbau-/Festival-/Abbauphase). Helfende melden sich an, buchen Schichten, sammeln Punkte und
 tauschen diese gegen Goodies.
 
-Stand: 2026-10-07 · Status: Meilensteine 1–6 umgesetzt
+Stand: 2026-10-08 · Status: Meilensteine 1–7 umgesetzt
 
 ---
 
@@ -57,9 +57,11 @@ Abgeleitet aus der Kritik am bisherigen System (Engelsystem):
 ## 3. Rechte & Hierarchie
 
 - **Berechtigungen** sind feingranulare, im Code definierte Fähigkeiten, z. B.
-  `shift.manage`, `assignment.manage`, `assignment.override`, `attendance.confirm`, `qualification.review`,
-  `qualification.documents.view`, `helper.contact.view`, `goodie.manage`, `goodie.issue`, `points.adjust`,
-  `mail.send`, `dashboard.view`, `edition.manage`, `settings.manage`, `audit.view`.
+  `area.manage`, `role.assign`, `shift.manage`, `assignment.manage`, `assignment.override`,
+  `attendance.confirm`, `qualification.review`, `qualification.documents.view`, `helper.contact.view`,
+  `goodie.manage`, `goodie.issue`, `points.adjust`, `mail.send`, `dashboard.view`, `audit.view`,
+  `mcp.use`. Instanzweite Verwaltung (Einstellungen, Jahrgänge, Rollen-Definitionen, Admins) ist kein
+  Recht, sondern Admins vorbehalten.
 - **Rollen** sind frei konfigurierbare Sets davon (mit sinnvollen Vorlagen bei Erstinstallation).
 - **Zuweisung mit Geltungsbereich:** Eine Rolle gilt global oder für einen/mehrere Bereichsknoten inkl.
   aller Unterknoten. Damit sind auch Querschnittsrollen abbildbar (z. B. _Helferanmeldung_ = Rolle mit
@@ -69,14 +71,19 @@ Abgeleitet aus der Kritik am bisherigen System (Engelsystem):
   Bereich“ verbieten).
 - **Override:** Wer `assignment.override` hat, darf trotz Konflikt eintragen (Überschneidung, fehlende
   Qualifikation, Frist, voll). Es erscheint eine Warnung, der Grund wird im Audit-Log gespeichert.
+- **Rollen gelten pro Jahrgang:** Eine Rolle wirkt nur auf Bereiche und Objekte ihres Jahrgangs, auch
+  wenn sie für den ganzen Jahrgang vergeben ist. Rollen archivierter Jahrgänge geben keine Rechte mehr.
 - **Datensichtbarkeit:** Helfende sehen andere Helfende nicht – außer Mitglieder der eigenen Buddy-Gruppe.
-  Kontaktdaten (Name, Telefon) sehen nur Rollen mit `helper.contact.view` im passenden Geltungsbereich.
+  Kontaktdaten (Name, Telefon) sehen nur Rollen mit `helper.contact.view` im passenden Geltungsbereich,
+  und nur im aktuellen Jahrgang (Personen sind instanzweit, alte Rollen öffnen keine aktuellen Daten).
 
 ---
 
 ## 4. Konten & Registrierung
 
-- Registrierung mit E-Mail + Passwort, E-Mail-Bestätigung, Passwort vergessen.
+- Registrierung mit E-Mail + Passwort, E-Mail-Bestätigung, Passwort vergessen. Mit Mailserver meldet man
+  sich nach der Bestätigung an; die Registrierung verrät nicht, ob es eine Adresse schon gibt. Ohne
+  Mailserver gelten Konten sofort als bestätigt, Admins erzeugen bei Bedarf Reset-Links.
 - **Kurze Registrierung**: Name, E-Mail, Passwort, Telefon, Sprache + als Pflicht konfigurierte Felder.
   Alles Weitere wird _erst dann_ abgefragt, wenn es gebraucht wird (Goodie-Auswahl, Position, Qualifikation).
 - **Jahrgangsteilnahme**: Bei Login in einem neuen Jahrgang einmal „Ich bin dieses Jahr dabei“ + ggf.
@@ -84,9 +91,10 @@ Abgeleitet aus der Kritik am bisherigen System (Engelsystem):
 - **Präferenzen**: Lieblingsbereiche und Verfügbarkeitszeiträume → Sortierung/Hervorhebung „passt zu dir“.
 - **Geburtsdatum** optional konfigurierbar als Feld; Altersbedingungen nutzbar (Minderjährige).
 - **SSO**: vorerst nicht. Architektur sieht verknüpfbare externe Identitäten (OIDC/SAML) pro Konto vor.
-- **Datenschutz-Vorbereitung**: Datenmodell trennt personenbezogene Daten sauber, sodass spätere
-  Löschfristen/Anonymisierung (z. B. „X Monate nach Jahrgangsende“) als Job ergänzt werden können.
-  Selbstlöschung des Kontos ist vorgesehen.
+- **Datenschutz**: Helfende laden ihre Daten selbst herunter (JSON) und löschen ihr Konto. Beim Löschen
+  verschwinden alle persönlichen Daten; Schichten und Punkte bleiben anonym für Statistik und
+  Abrechnung. Konten ohne Aktivität werden nach einer einstellbaren Frist (Standard 24 Monate)
+  automatisch anonymisiert, mit Vorwarnung per Mail. Admins sind davon ausgenommen.
 
 ---
 
@@ -280,7 +288,11 @@ Zeitverschiebung (Ankerdatum alt → neu). Buchungen, Punkte und Goodie-Vorgäng
 - Je Verbindung „nur lesen“ oder „lesen und ändern“. Admin schaltet Gruppen frei (Schichten,
   Besetzung, Bereiche/Orte, Rundmails, Punkte; letzte zwei standardmäßig aus). Rollen,
   Einstellungen und Konten sind nie über MCP änderbar.
-- Personenbezogene Daten: voll / nur Namen (Standard) / Pseudonyme.
+- Personenbezogene Daten: voll / nur Namen (Standard) / Pseudonyme. Im Pseudonym-Modus sucht der
+  Assistent nur nach Pseudonymen, nicht nach Namen.
+- Nur Apps mit Rücksprung auf erlaubte Hosts (Admin-Einstellung, Standard `claude.ai`/`claude.com`,
+  `localhost` immer) können sich verbinden. Passwortwechsel und mehrfach benutzte Refresh-Tokens
+  trennen Verbindungen.
 - Folgenreiche Aktionen (Serien, Löschen, Dringend-Aufruf, Rundmail) liefern zuerst eine
   Vorschau; Änderungen stehen im Protokoll mit „via MCP: <App>“.
 
@@ -288,17 +300,20 @@ Zeitverschiebung (Ankerdatum alt → neu). Buchungen, Punkte und Goodie-Vorgäng
 
 ## 13. Audit-Log
 
-Unveränderliches Protokoll aller schreibenden Aktionen von Leitungen/Admins und aller sicherheits- und
+Protokoll aller schreibenden Aktionen von Leitungen/Admins und aller sicherheits- und
 punkterelevanten Aktionen von Helfenden: wer, wann, was, vorher/nachher, Grund. Filterbar nach Person,
-Entität, Bereich.
+Entität, Bereich. Einträge werden nicht bearbeitet; aus Datenschutzgründen werden IP-Adressen nach einer
+Frist (Standard 90 Tage) entfernt, und beim Löschen eines Kontos verlieren Einträge über die Person
+ihre Details.
 
 ---
 
 ## 14. Branding & Sprache
 
 - Instanz-Einstellungen im Admin-UI: Festivalname, Logo, Favicon, Primär-/Akzentfarben, Hintergrundbilder,
-  Impressum/Datenschutz-Links, Kontaktadresse. Live-Vorschau beim Bearbeiten; Farbkontraste werden auf
-  Lesbarkeit geprüft.
+  Kontaktadresse. Live-Vorschau beim Bearbeiten; Farbkontraste werden auf Lesbarkeit geprüft.
+- Impressum (aus den Betreiberangaben) und Datenschutzerklärung (mit Vorlage, die zur Konfiguration
+  passt) werden in der Verwaltung gepflegt; alternativ Links auf externe Seiten.
 - UI-Sprache DE/EN, pro Person wählbar; Inhalte mit Rückfall auf DE.
 - Hell/Dunkel-Modus.
 
@@ -347,7 +362,9 @@ Design-Richtlinien: [DESIGN.md](DESIGN.md).
    E-Mail-Vorlagen & Rundmails, Erinnerungen, iCal.
 5. **Zusammenarbeit**: Buddy-Gruppen, Schichtbörse, Tausch, Dringend-Aufruf.
 6. **Überblick**: Dashboards, Druckansichten, Jahrgang kopieren.
-7. **Später**: SSO (OIDC/SAML), Löschfristen, Exporte, Ehrenamtsbescheinigung.
+7. **Datenschutz & Betrieb**: Auskunft, Kontolöschung, Löschfristen, Impressum/Datenschutzerklärung,
+   strukturierte Logs, Fehlermeldungen an Admins, Zustellungsübersicht; Sicherheitsprüfung.
+8. **Später**: SSO (OIDC/SAML), weitere Exporte (z. B. CSV), Ehrenamtsbescheinigung.
 
 ---
 
@@ -355,4 +372,5 @@ Design-Richtlinien: [DESIGN.md](DESIGN.md).
 
 - Detaillierte Bildschirmentwürfe (Helfer-Flow mobil, Leitungs-Planungsansicht).
 - SSO-Protokoll von AStA/Uni klären.
-- Datenschutzerklärung und Löschfristen mit dem Veranstalter klären.
+- Datenschutzerklärung: Vorlage mit dem Veranstalter vervollständigen (Hosting- und Mail-Anbieter,
+  Aufsichtsbehörde, Aufbewahrung der Webserver-Logs und Backups).

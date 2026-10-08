@@ -3,7 +3,6 @@ import { eq } from 'drizzle-orm';
 import type { Database } from '../db/client.ts';
 import { assignments, auditLog, emailOutbox, pointsLedger, users } from '../db/schema.ts';
 import { DomainError } from '../errors.ts';
-import { createMemoryMailer } from '../mail.ts';
 import { createTestDatabase } from '../testing/db.ts';
 import { authenticate, createResetLink, register, resetPassword } from './accounts.ts';
 import { createArea } from './areas.ts';
@@ -47,7 +46,7 @@ async function seed() {
 		pointsPerShift: null,
 		pointsPerHour: null
 	});
-	const ctx = { db, mailer: createMemoryMailer(), baseUrl: 'http://test' };
+	const ctx = { db, baseUrl: 'http://test' };
 	const person = async (email: string, firstName: string) => {
 		const user = await register(ctx, {
 			email,

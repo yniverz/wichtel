@@ -16,10 +16,7 @@ import { createShift, getShift } from './shifts.ts';
 import { callUrgent } from './urgent.ts';
 import { createWave, deleteWave } from './waves.ts';
 
-/**
- * Regression tests for the security audit (H1, H2, M2): rights only apply to the edition they
- * were given for, and a former lead keeps nothing in the current year.
- */
+/** Rights only apply to the edition they were given for; a former lead keeps nothing. */
 
 let database: Database;
 const actor = { userId: null };

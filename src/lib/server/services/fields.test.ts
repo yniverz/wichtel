@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Database } from '../db/client.ts';
-import { createMemoryMailer } from '../mail.ts';
 import { createTestDatabase } from '../testing/db.ts';
 import { register } from './accounts.ts';
 import {
@@ -38,7 +37,7 @@ describe('profile fields', () => {
 	it('asks fields in the right context and stores answers', async () => {
 		const db = database.db;
 		const kim = await register(
-			{ db, mailer: createMemoryMailer(), baseUrl: 'http://test' },
+			{ db, baseUrl: 'http://test' },
 			{
 				email: 'kim@example.org',
 				password: 'password 1234',

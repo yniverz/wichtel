@@ -14,7 +14,8 @@ den Rechten der angemeldeten Person** – nie mit mehr.
      Punkte. Rundmails und Punkte sind anfangs aus. Lesen geht immer; Rollen, Einstellungen und
      Konten können Assistenten grundsätzlich nicht ändern.
    - _Personenbezogene Daten_: Namen und Kontaktdaten, nur Namen (Standard) oder Pseudonyme
-     („Person 4F2A9C“). Was ein Assistent sieht, verarbeitet dessen Anbieter.
+     („Person 4F2A9C“). Was ein Assistent sieht, verarbeitet dessen Anbieter. Mit Pseudonymen
+     sucht der Assistent Personen nur über ihr Pseudonym, nicht über den Namen.
    - _Erlaubte Rücksprung-Adressen_: Nur Apps, die auf diese Hosts zurückleiten, können sich
      verbinden (Standard: `claude.ai`, `claude.com`; `localhost` für Claude Code geht immer).
      Andere Assistenten hier ergänzen.

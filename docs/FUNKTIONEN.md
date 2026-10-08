@@ -22,6 +22,7 @@ Alles, was Wichtel kann – nach Rolle sortiert. Die Kurzfassung steht im [READM
   Zustimmung geladen) und als Link zu Google Maps/Apple Karten.
 - **Kalender-Abo** (iCal) mit allen eigenen Schichten.
 - **E-Mails** bei Buchung, Änderung, Absage, Nachrücken und als Erinnerung vor der Schicht.
+- **Meine Daten**: alles Gespeicherte herunterladen, Konto selbst löschen.
 - Deutsch/Englisch, Hell-/Dunkelmodus.
 
 ## Für Leitungen

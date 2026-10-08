@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Database } from '../db/client.ts';
 import { emailOutbox } from '../db/schema.ts';
 import { DomainError } from '../errors.ts';
-import { createMemoryMailer } from '../mail.ts';
 import { createTestDatabase } from '../testing/db.ts';
 import { register } from './accounts.ts';
 import { createArea } from './areas.ts';
@@ -98,7 +97,7 @@ describe('places', () => {
 		const shift = (await getShift(db, (await createShift(db, actor, edition.id, input)).id))!;
 
 		const kim = await register(
-			{ db, mailer: createMemoryMailer(), baseUrl: 'http://test' },
+			{ db, baseUrl: 'http://test' },
 			{
 				email: 'kim@x.org',
 				password: 'password 1234',

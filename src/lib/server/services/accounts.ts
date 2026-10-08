@@ -4,7 +4,7 @@ import type { DB } from '../db/client.ts';
 import { emailTokens, users, type User } from '../db/schema.ts';
 import { getDummyHash, hashPassword, randomToken, sha256, verifyPassword } from '../crypto.ts';
 import { DomainError } from '../errors.ts';
-import { linkMail, type Mailer } from '../mail.ts';
+import { linkMail } from '../mail.ts';
 import { enqueueMail } from '../notifications.ts';
 import { invalidateUserSessions } from '../sessions.ts';
 import { audit, type Actor } from '../audit.ts';
@@ -17,7 +17,6 @@ const RESET_TTL = 1 * HOUR;
 
 export interface AccountContext {
 	db: DB;
-	mailer: Mailer;
 	/** Public base URL for links in e-mails, without trailing slash. */
 	baseUrl: string;
 	/**

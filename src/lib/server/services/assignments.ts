@@ -5,6 +5,7 @@ import {
 	gt,
 	inArray,
 	isNotNull,
+	isNull,
 	lt,
 	lte,
 	ne,
@@ -418,7 +419,11 @@ export async function leadAssign(
 		await lockUser(tx, input.userId);
 		const { position, shift } = await lockPosition(tx, input.positionId);
 		requireLead(authz, 'assignment.manage', shift);
-		const [user] = await tx.select({ id: users.id }).from(users).where(eq(users.id, input.userId));
+		// Deleted accounts are only placeholders behind old bookings.
+		const [user] = await tx
+			.select({ id: users.id })
+			.from(users)
+			.where(and(eq(users.id, input.userId), isNull(users.deletedAt)));
 		if (!user) throw new DomainError('notFound');
 		if (await hasActiveInShift(tx, input.userId, shift.id)) throw new DomainError('alreadyBooked');
 

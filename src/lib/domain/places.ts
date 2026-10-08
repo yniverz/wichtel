@@ -60,8 +60,3 @@ export function mapLinks(place: PlaceLike): MapLinks | null {
 	}
 	return null;
 }
-
-/** Clamp a site-plan position to the image. */
-export function clampPlan(v: number): number {
-	return Math.min(1, Math.max(0, v));
-}

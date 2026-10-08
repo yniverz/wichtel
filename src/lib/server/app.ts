@@ -133,6 +133,5 @@ export function db(): DB {
 }
 
 export function accountContext(): AccountContext {
-	if (!state.mailer) throw new Error('Mailer not initialised');
-	return { db: db(), mailer: state.mailer, baseUrl: PUBLIC_URL, skipEmailVerification: !SMTP_HOST };
+	return { db: db(), baseUrl: PUBLIC_URL, skipEmailVerification: !SMTP_HOST };
 }

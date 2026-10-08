@@ -189,7 +189,11 @@ export async function grantQualification(
 			.select()
 			.from(qualifications)
 			.where(eq(qualifications.id, input.qualificationId));
-		const [user] = await tx.select({ id: users.id }).from(users).where(eq(users.id, input.userId));
+		// Deleted accounts are only placeholders behind old bookings.
+		const [user] = await tx
+			.select({ id: users.id })
+			.from(users)
+			.where(and(eq(users.id, input.userId), isNull(users.deletedAt)));
 		if (!q || !user) throw new DomainError('notFound');
 		const values = {
 			status: 'approved' as const,

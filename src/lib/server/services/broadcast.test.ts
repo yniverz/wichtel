@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Database } from '../db/client.ts';
 import { emailOutbox } from '../db/schema.ts';
-import { createMemoryMailer } from '../mail.ts';
 import { createTestDatabase } from '../testing/db.ts';
 import { register } from './accounts.ts';
 import { createArea } from './areas.ts';
@@ -42,7 +41,7 @@ describe('group emails', () => {
 		const infra = await area('Infrastruktur', null);
 		const aufbau = await area('Aufbau', infra.id);
 		const bar = await area('Bar', null);
-		const ctx = { db, mailer: createMemoryMailer(), baseUrl: 'http://test' };
+		const ctx = { db, baseUrl: 'http://test' };
 		const person = (email: string, locale: 'de' | 'en') =>
 			register(ctx, {
 				email,
