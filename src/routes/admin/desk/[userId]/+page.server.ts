@@ -2,7 +2,7 @@ import { error, fail } from '@sveltejs/kit';
 import { z } from 'zod';
 import { checkInOpen } from '#lib/domain/booking.ts';
 import { db } from '#lib/server/app.ts';
-import { deskAccess, shiftsForCheckIn } from '#lib/server/desk.ts';
+import { deskAccess, involvedInEdition, shiftsForCheckIn } from '#lib/server/desk.ts';
 import { actorOf, attempt, getAdminContext, requireEdition } from '#lib/server/guards.ts';
 import { setAttendance } from '#lib/server/services/assignments.ts';
 import {
@@ -25,7 +25,12 @@ async function context(event: RequestEvent) {
 	const access = deskAccess(ctx);
 	const { edition } = requireEdition(ctx);
 	const person = await getPerson(db(), event.params.userId);
-	if (!person) error(404, 'error.notFound');
+	if (!person || person.deletedAt) error(404, 'error.notFound');
+	if (
+		!ctx.authz.isAdmin &&
+		!(await involvedInEdition(db(), [person.id], edition.id)).has(person.id)
+	)
+		error(404, 'error.notFound');
 	return { ctx, access, edition, person };
 }
 

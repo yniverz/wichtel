@@ -1,6 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
+import { isNull } from 'drizzle-orm';
 import type { AreaTree } from '#lib/domain/area-tree.ts';
 import { expandSeries, MAX_SERIES_SHIFTS } from '#lib/domain/booking.ts';
 import type { Authz } from '#lib/domain/permissions.ts';
@@ -8,7 +9,14 @@ import { isIsoDate, isWallTime, shiftInterval, utcToZoned } from '#lib/domain/ti
 import { isMessageKey, translator } from '#lib/i18n/index.ts';
 import { sha256 } from '../crypto.ts';
 import type { DB } from '../db/client.ts';
-import type { Area, Edition, InstanceSettings, OAuthGrant, User } from '../db/schema.ts';
+import {
+	users,
+	type Area,
+	type Edition,
+	type InstanceSettings,
+	type OAuthGrant,
+	type User
+} from '../db/schema.ts';
 import type { Actor } from '../audit.ts';
 import { isDomainError } from '../errors.ts';
 import { canSeeShiftArea, planningScope } from '../shift-access.ts';
@@ -524,6 +532,21 @@ export function buildMcpServer(ctx: McpContext): McpServer {
 					s.authz.canSomewhere('role.assign')
 			);
 			const contact = s.authz.isAdmin || s.authz.can('helper.contact.view');
+			if (ctx.settings.mcpPersonalData === 'pseudonymous') {
+				// Searching by name would reveal whose pseudonym is whose; only pseudonyms are matched.
+				const wanted = query
+					.toUpperCase()
+					.replace(/^PERSON\s*/, '')
+					.trim();
+				const everyone = await ctx.db
+					.select({ id: users.id, firstName: users.firstName, lastName: users.lastName })
+					.from(users)
+					.where(isNull(users.deletedAt));
+				return everyone
+					.filter((p) => pseudonym(p.id).endsWith(wanted))
+					.slice(0, 15)
+					.map((p) => person(p, contact));
+			}
 			const { people } = await searchPeople(ctx.db, query);
 			return people.slice(0, 15).map((p) => person(p, contact));
 		}

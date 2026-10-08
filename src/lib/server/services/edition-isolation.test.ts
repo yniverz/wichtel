@@ -5,7 +5,8 @@ import { auditLog, roleAssignments, roles, users } from '../db/schema.ts';
 import { DomainError } from '../errors.ts';
 import { createTestDatabase } from '../testing/db.ts';
 import { createArea } from './areas.ts';
-import { leadAssign } from './assignments.ts';
+import { bookPosition, leadAssign } from './assignments.ts';
+import { involvedInEdition } from '../desk.ts';
 import { createEdition, makeCurrentEdition, setEditionArchived } from './editions.ts';
 import { createPlace, deletePlace } from './places.ts';
 import { exportPersonalData } from './privacy.ts';
@@ -179,6 +180,25 @@ describe('edition isolation', () => {
 		const s = await seed();
 		await setEditionArchived(s.db, actor, s.past.id, true);
 		expect((await loadAuthz(s.db, s.ex, s.past.id)).hasAnyGrant).toBe(false);
+	});
+});
+
+describe('desk', () => {
+	it('only knows people who take part in the edition', async () => {
+		const s = await seed();
+		const ids = [s.helper.id, s.ex.id];
+		expect(await involvedInEdition(s.db, ids, s.current.id)).toEqual(new Set());
+		await bookPosition(
+			{ db: s.db, now: new Date('2026-06-01T00:00:00Z') },
+			s.helper.id,
+			s.shift.positions[0].id,
+			{
+				editionId: s.current.id,
+				canSee: () => true
+			}
+		);
+		expect(await involvedInEdition(s.db, ids, s.current.id)).toEqual(new Set([s.helper.id]));
+		expect(await involvedInEdition(s.db, ids, s.past.id)).toEqual(new Set());
 	});
 });
 

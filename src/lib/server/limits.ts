@@ -75,5 +75,9 @@ export const registerLimiter = new RateLimiter(10, 60 * MINUTE);
 export const mailLimiter = new RateLimiter(5, 60 * MINUTE);
 /** The same e-mails per address, from anywhere (prevents mail bombing via many IPs). */
 export const mailPerAddressLimiter = new RateLimiter(10, 60 * MINUTE);
+/** Direct handovers by e-mail per person (each one looks up an address and sends a mail). */
+export const directOfferLimiter = new RateLimiter(10, 60 * MINUTE);
+/** Failed attempts to join a buddy group per person. */
+export const groupJoinLimiter = new RateLimiter(10, 60 * MINUTE);
 /** OAuth client registrations per IP. */
 export const oauthRegisterLimiter = new RateLimiter(10, 60 * MINUTE);

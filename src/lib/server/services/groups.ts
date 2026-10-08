@@ -38,8 +38,9 @@ export interface GroupView {
 	members: { userId: string; firstName: string; lastName: string }[];
 }
 
+/** 12 characters from a 31-letter alphabet: about 59 bits, too many to guess. */
 function newCode() {
-	return inviteCodeFrom(randomBytes(8));
+	return inviteCodeFrom(randomBytes(12));
 }
 
 async function membershipOf(db: Tx, userId: string, editionId: string) {

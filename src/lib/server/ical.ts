@@ -19,7 +19,11 @@ const stamp = (d: Date) =>
 		.replace(/\.\d{3}/, '');
 
 const escapeText = (s: string) =>
-	s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+	s
+		.replace(/\\/g, '\\\\')
+		.replace(/;/g, '\\;')
+		.replace(/,/g, '\\,')
+		.replace(/\r\n|\r|\n/g, '\\n');
 
 /** Lines longer than 75 octets are folded as required by the spec. */
 function fold(line: string): string {

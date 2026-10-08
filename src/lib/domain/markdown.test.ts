@@ -32,6 +32,8 @@ describe('renderMarkdown', () => {
 			'<p>&lt;script&gt;alert(1)&lt;/script&gt;</p>'
 		);
 		expect(renderMarkdown('[x](javascript:alert(1))')).not.toContain('href');
+		expect(renderMarkdown('[x](/\\evil.example)')).not.toContain('href');
+		expect(renderMarkdown('[x](//evil.example)')).not.toContain('href');
 		expect(renderMarkdown('[x](https://a.de/"onmouseover=")')).not.toContain('" onmouseover');
 	});
 

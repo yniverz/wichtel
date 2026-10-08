@@ -242,6 +242,8 @@ export async function takeOffer(
 		/** The edition the taker is booking in (the current one). */
 		editionId: string | null;
 		canSee: (shift: Shift) => boolean;
+		/** Booking waves: taking from the market is booking, direct handovers were agreed. */
+		isOpen?: (shift: Shift) => boolean;
 		counterAssignmentId?: string | null;
 	}
 ): Promise<TakeResult> {
@@ -255,6 +257,8 @@ export async function takeOffer(
 
 		const given = await loadBooking(tx, offer.assignmentId);
 		assertTransferable(given, ctx.now);
+		if (!offer.toUserId && opts.isOpen && !given.position.urgentAt && !opts.isOpen(given.shift))
+			throw new DomainError('bookingClosed');
 		await lockPosition(tx, given.position.id);
 		const giver = await userById(tx, offer.fromUserId);
 		const taker = await userById(tx, takerId);

@@ -1,5 +1,5 @@
 /** Test-only credentials for the throwaway in-memory database used by the e2e suite. */
-export const SETUP_TOKEN = 'e2e-setup-token';
+export const SETUP_TOKEN = 'e2e-setup-token-0123456789';
 export const ADMIN = {
 	email: 'admin@wichtel.test',
 	password: 'wichtel-e2e-admin',

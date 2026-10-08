@@ -17,6 +17,7 @@ import { getCurrentEdition } from '#lib/server/services/editions.ts';
 import { loadAuthz } from '#lib/server/services/roles.ts';
 import { getSettings } from '#lib/server/services/settings.ts';
 import { optionalEmail, parseForm, uuid } from '#lib/server/validation.ts';
+import { directOfferLimiter } from '#lib/server/limits.ts';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
@@ -117,6 +118,9 @@ export const actions: Actions = {
 		);
 		if (!parsed.ok)
 			return fail(400, { action: 'offer', errors: parsed.errors, values: parsed.values });
+		if (parsed.data.email && !directOfferLimiter.attempt(user.id)) {
+			return fail(429, { action: 'offer', error: 'error.rateLimited', values: parsed.values });
+		}
 		const result = await attempt(
 			() =>
 				createOffer({ db: db(), now: new Date() }, user.id, {

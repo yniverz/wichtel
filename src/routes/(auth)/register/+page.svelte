@@ -22,7 +22,12 @@
 
 <h1 class="font-display text-5xl uppercase">{i18n.t('auth.register.title')}</h1>
 
-{#if !settings.registrationOpen}
+{#if form && 'sent' in form && form.sent}
+	<div class="mt-6 space-y-3">
+		<Alert tone="success">{i18n.t('auth.register.sent', { email: form.email })}</Alert>
+		<p class="text-sm text-ink-muted">{i18n.t('auth.register.sentHint')}</p>
+	</div>
+{:else if !settings.registrationOpen}
 	<div class="mt-6"><Alert tone="info">{i18n.t('auth.register.closed')}</Alert></div>
 {:else}
 	<p class="mt-3 text-ink-muted">{i18n.t('auth.register.lead')}</p>

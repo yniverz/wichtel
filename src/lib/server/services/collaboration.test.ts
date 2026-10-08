@@ -167,6 +167,39 @@ describe('shift market', () => {
 	});
 });
 
+describe('handovers and booking waves', () => {
+	it('taking from the market needs an open booking window, a direct handover does not', async () => {
+		const s = await seed();
+		const shift = await s.shiftOf(s.input('2027-06-12T10:00:00Z', '2027-06-12T14:00:00Z'));
+		const other = await s.shiftOf(s.input('2027-06-13T10:00:00Z', '2027-06-13T14:00:00Z'));
+		const market = await createOffer(s.ctxAt(), s.a.id, {
+			assignmentId: (await bookPosition(s.ctxAt(), s.a.id, shift.positions[0].id, s.opts)).id,
+			toEmail: null
+		});
+		const closed = { ...s.opts, isOpen: () => false };
+		await expectDomainError(takeOffer(s.ctxAt(), s.b.id, market.id, closed), 'bookingClosed');
+
+		const direct = await createOffer(s.ctxAt(), s.a.id, {
+			assignmentId: (await bookPosition(s.ctxAt(), s.a.id, other.positions[0].id, s.opts)).id,
+			toEmail: 'b@x.org'
+		});
+		expect(await takeOffer(s.ctxAt(), s.b.id, direct.id, closed)).toBe('completed');
+	});
+
+	it('offers of another edition cannot be taken', async () => {
+		const s = await seed();
+		const shift = await s.shiftOf(s.input('2027-06-12T10:00:00Z', '2027-06-12T14:00:00Z'));
+		const offer = await createOffer(s.ctxAt(), s.a.id, {
+			assignmentId: (await bookPosition(s.ctxAt(), s.a.id, shift.positions[0].id, s.opts)).id,
+			toEmail: null
+		});
+		await expectDomainError(
+			takeOffer(s.ctxAt(), s.b.id, offer.id, { ...s.opts, editionId: crypto.randomUUID() }),
+			'notFound'
+		);
+	});
+});
+
 describe('direct swap', () => {
 	it('exchanges two bookings once both agree', async () => {
 		const s = await seed();

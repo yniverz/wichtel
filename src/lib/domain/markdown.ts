@@ -12,6 +12,9 @@ const escapeHtml = (s: string) =>
 	);
 
 const SAFE_URL = /^(https?:\/\/|mailto:|tel:|\/(?!\/))/i;
+/** Browsers read `\` as `/` and drop control characters, which could turn `/\x` into `//x`. */
+// eslint-disable-next-line no-control-regex
+const isSafeUrl = (url: string) => SAFE_URL.test(url) && !/[\\\u0000-\u001f\u007f]/.test(url);
 
 function inline(text: string): string {
 	// Links first, on the raw text, so that their URLs are escaped exactly once.
@@ -22,7 +25,7 @@ function inline(text: string): string {
 		parts.push(emphasis(escapeHtml(text.slice(last, m.index))));
 		const [whole, label, href, bare] = m;
 		const url = href ?? bare;
-		if (SAFE_URL.test(url)) {
+		if (isSafeUrl(url)) {
 			const external = /^https?:/i.test(url) ? ' rel="noopener noreferrer"' : '';
 			parts.push(
 				`<a href="${escapeHtml(url)}"${external}>${label ? emphasis(escapeHtml(label)) : escapeHtml(url)}</a>`

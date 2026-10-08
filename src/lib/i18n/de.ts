@@ -1362,5 +1362,12 @@ export const de = {
 	'admin.people.resetValid': 'Gültig bis {time}, nur einmal verwendbar.',
 	'audit.user.reset_link': 'Link zum Zurücksetzen des Passworts erzeugt',
 	'admin.dash.noMailServer':
-		'Es ist kein E-Mail-Server eingerichtet (SMTP_HOST). E-Mails werden nicht verschickt, Adressen nicht bestätigt, und niemand kann sein Passwort selbst zurücksetzen. Reset-Links erzeugst du auf der Seite der Person.'
+		'Es ist kein E-Mail-Server eingerichtet (SMTP_HOST). E-Mails werden nicht verschickt, Adressen nicht bestätigt, und niemand kann sein Passwort selbst zurücksetzen. Reset-Links erzeugst du auf der Seite der Person.',
+	'auth.register.sent':
+		'Fast geschafft! Wir haben eine E-Mail an {email} geschickt. Bestätige darin deine Adresse und melde dich dann an.',
+	'auth.register.sentHint':
+		'Keine E-Mail da? Schau im Spam-Ordner nach. Gab es schon ein Konto mit dieser Adresse, findest du dort einen Link, um dein Passwort neu zu setzen.',
+	'mail.exists.subject': 'Du hast schon ein Konto',
+	'mail.exists.body':
+		'jemand (hoffentlich du) wollte sich mit dieser Adresse neu bei {festival} registrieren. Du hast aber schon ein Konto. Falls du dein Passwort vergessen hast, kannst du es über diesen Link neu setzen:'
 } as const;

@@ -158,7 +158,7 @@ export const isDeletedAddress = (address: string) => address.endsWith('@deleted.
 
 export async function enqueueMail(
 	tx: Tx,
-	mail: { to: string; subject: string; text: string },
+	mail: { to: string; subject: string; text: string; html?: string },
 	sendAfter?: Date
 ) {
 	// Deleted accounts keep a placeholder address that must never receive mail.
@@ -168,7 +168,7 @@ export async function enqueueMail(
 		to: mail.to,
 		subject: mail.subject,
 		text: mail.text,
-		html: textToHtml(mail.text, settings.primaryColor),
+		html: mail.html ?? textToHtml(mail.text, settings.primaryColor),
 		...(sendAfter ? { sendAfter } : {})
 	});
 }

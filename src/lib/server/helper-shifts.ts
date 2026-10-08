@@ -221,7 +221,7 @@ export async function loadHelperShifts(
 							? {
 									id: offer.id,
 									status: offer.status,
-									toName: offer.to ? `${offer.to.firstName} ${offer.to.lastName}` : null
+									toName: offer.to ? offer.to.firstName : null
 								}
 							: null,
 						cancelUntil:

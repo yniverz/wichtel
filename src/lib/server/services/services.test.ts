@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { eq } from 'drizzle-orm';
+import { asc, eq } from 'drizzle-orm';
 import type { Database } from '../db/client.ts';
-import { auditLog, users } from '../db/schema.ts';
+import { auditLog, emailOutbox, users } from '../db/schema.ts';
 import { createMemoryMailer } from '../mail.ts';
 import { createSession, invalidateUserSessions, validateSession } from '../sessions.ts';
 import { createTestDatabase } from '../testing/db.ts';
@@ -10,6 +10,7 @@ import {
 	authenticate,
 	changePassword,
 	register,
+	registerOrNotify,
 	requestPasswordReset,
 	resetPassword,
 	setAdmin,
@@ -44,8 +45,13 @@ const helper = {
 	locale: 'de' as const
 };
 
-function tokenFromMail(index = -1): string {
-	const text = mailer.sent.at(index)!.text;
+/** Account mails go through the outbox. */
+async function outbox() {
+	return database.db.select().from(emailOutbox).orderBy(asc(emailOutbox.createdAt));
+}
+
+async function tokenFromMail(index = -1): Promise<string> {
+	const text = (await outbox()).at(index)!.text;
 	return new URL(text.match(/http:\/\/test\S+/)![0]).searchParams.get('token')!;
 }
 
@@ -57,19 +63,19 @@ describe('accounts', () => {
 	it('needs no confirmation when no mail server is configured', async () => {
 		const user = await register({ ...ctx, skipEmailVerification: true }, helper);
 		expect(user.emailVerifiedAt).toBeInstanceOf(Date);
-		expect(mailer.sent).toHaveLength(0);
+		expect(await outbox()).toHaveLength(0);
 	});
 
 	it('registers, verifies and logs in', async () => {
 		const user = await register(ctx, helper);
 		expect(user.email).toBe('kim@example.org');
 		expect(user.emailVerifiedAt).toBeNull();
-		expect(mailer.sent).toHaveLength(1);
+		expect(await outbox()).toHaveLength(1);
 
-		const verified = await verifyEmail(database.db, tokenFromMail());
+		const verified = await verifyEmail(database.db, await tokenFromMail());
 		expect(verified?.emailVerifiedAt).toBeInstanceOf(Date);
 		// The link keeps working (mail scanners may open it first).
-		expect(await verifyEmail(database.db, tokenFromMail())).not.toBeNull();
+		expect(await verifyEmail(database.db, await tokenFromMail())).not.toBeNull();
 		expect(await verifyEmail(database.db, 'wrong')).toBeNull();
 
 		const loggedIn = await authenticate(database.db, 'KIM@example.org', helper.password);
@@ -87,6 +93,20 @@ describe('accounts', () => {
 	it('rejects duplicate e-mails and closed registration', async () => {
 		await register(ctx, helper);
 		await expectDomainError(register(ctx, { ...helper, email: 'kim@example.org' }), 'emailTaken');
+		// Without revealing it: the owner gets a mail, the caller sees the same as for a new account.
+		expect(await registerOrNotify(ctx, { ...helper, email: 'kim@example.org' })).toBeNull();
+		const notice = (await outbox()).at(-1)!;
+		expect(notice.to).toBe('kim@example.org');
+		expect(notice.subject).toContain('Du hast schon ein Konto');
+		await resetPassword(database.db, await tokenFromMail(), 'taken over by owner');
+		expect(await registerOrNotify(ctx, { ...helper, email: 'new@example.org' })).not.toBeNull();
+		await expectDomainError(
+			registerOrNotify(
+				{ ...ctx, skipEmailVerification: true },
+				{ ...helper, email: 'kim@example.org' }
+			),
+			'emailTaken'
+		);
 		await updateSettings(database.db, { userId: null }, { registrationOpen: false });
 		await expectDomainError(
 			register(ctx, { ...helper, email: 'other@example.org' }),
@@ -98,7 +118,7 @@ describe('accounts', () => {
 		const user = await register(ctx, helper);
 		const session = await createSession(database.db, user.id);
 		await requestPasswordReset(ctx, helper.email);
-		const token = tokenFromMail();
+		const token = await tokenFromMail();
 
 		await resetPassword(database.db, token, 'a brand new password');
 		await expectDomainError(resetPassword(database.db, token, 'again and again'), 'invalidToken');
@@ -106,9 +126,9 @@ describe('accounts', () => {
 		await authenticate(database.db, helper.email, 'a brand new password');
 
 		// Unknown addresses do not send anything and do not throw.
-		const before = mailer.sent.length;
+		const before = (await outbox()).length;
 		await requestPasswordReset(ctx, 'unknown@example.org');
-		expect(mailer.sent).toHaveLength(before);
+		expect(await outbox()).toHaveLength(before);
 	});
 
 	it('changes passwords only with the current password', async () => {

@@ -1,4 +1,5 @@
 import { fail } from '@sveltejs/kit';
+import { groupJoinLimiter } from '#lib/server/limits.ts';
 import { z } from 'zod';
 import { db } from '#lib/server/app.ts';
 import { attempt, requireVerifiedUser } from '#lib/server/guards.ts';
@@ -85,6 +86,8 @@ export const actions: Actions = {
 		const parsed = parseForm(z.object({ code: requiredText(40) }), await event.request.formData());
 		if (!parsed.ok)
 			return fail(400, { action: 'join', errors: parsed.errors, values: parsed.values });
+		if (!groupJoinLimiter.attempt(ctx.user.id))
+			return fail(429, { action: 'join', error: 'error.rateLimited', values: parsed.values });
 		const result = await attempt(
 			() => joinGroup(db(), ctx.user.id, ctx.editionId, parsed.data.code),
 			{ action: 'join', values: parsed.values }

@@ -6,6 +6,7 @@ import { assignments, users } from '#lib/server/db/schema.ts';
 import { attempt, requireUser, requireVerifiedUser } from '#lib/server/guards.ts';
 import { loadHelperShifts } from '#lib/server/helper-shifts.ts';
 import { getCurrentEdition } from '#lib/server/services/editions.ts';
+import { bookingAccess } from '#lib/server/services/waves.ts';
 import { loadAuthz } from '#lib/server/services/roles.ts';
 import { getSettings } from '#lib/server/services/settings.ts';
 import { fieldsFor, listFields, missingRequired, valuesOf } from '#lib/server/services/fields.ts';
@@ -192,9 +193,11 @@ export const actions: Actions = {
 		if (!parsed.ok) return fail(400, { error: 'error.notFound' });
 		const id = await editionId();
 		const authz = await loadAuthz(db(), user, id);
+		const access = id ? await bookingAccess(db(), user, id, new Date()) : null;
 		const result = await attempt(() =>
 			takeOffer({ db: db(), now: new Date() }, user.id, parsed.data.offerId, {
 				editionId: id,
+				isOpen: (shift) => access?.(shift.areaId).open ?? false,
 				canSee: (shift) => shift.visibility === 'public' || authz.hasRoleCovering(shift.areaId),
 				counterAssignmentId: parsed.data.counterAssignmentId
 			})

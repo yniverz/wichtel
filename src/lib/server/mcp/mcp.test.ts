@@ -202,5 +202,12 @@ describe('MCP endpoint', () => {
 		expect(shift.data.people[0].name).toMatch(/^Person [0-9A-F]{6}$/);
 		expect(shift.text).not.toContain('Lea');
 		expect(shift.text).not.toContain('lead@x.org');
+
+		// Searching by name must not map names to pseudonyms; the pseudonym itself is found.
+		const byName = await call(s.db, token, 'find_people', { query: 'Lea' });
+		expect(byName.data).toEqual([]);
+		const pseudonym = shift.data.people[0].name as string;
+		const byPseudonym = await call(s.db, token, 'find_people', { query: pseudonym });
+		expect(byPseudonym.data.map((p: { userId: string }) => p.userId)).toEqual([s.lead.id]);
 	});
 });

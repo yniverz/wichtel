@@ -1,5 +1,17 @@
 import { defineEnvVars } from '@sveltejs/kit/env';
 
+export const MIN_SETUP_TOKEN = 24;
+
+/** Whoever knows the setup token can become admin before setup is done; refuse guessable ones. */
+export function setupToken(value: string | undefined): string | undefined {
+	const token = value === '' ? undefined : value;
+	if (token && token.length < MIN_SETUP_TOKEN && process.env.NODE_ENV === 'production')
+		throw new Error(
+			`SETUP_TOKEN must be at least ${MIN_SETUP_TOKEN} characters (or leave it empty for a random one)`
+		);
+	return token;
+}
+
 const optional = (value: string | undefined) => (value === '' ? undefined : value);
 
 export const variables = defineEnvVars({
@@ -18,8 +30,8 @@ export const variables = defineEnvVars({
 	},
 	SETUP_TOKEN: {
 		description:
-			'Optional fixed token for the first-run setup page. If unset, a random token is printed to the log.',
-		schema: optional
+			'Optional fixed token for the first-run setup page (at least 24 characters). If unset, a random token is printed to the log.',
+		schema: setupToken
 	},
 	SMTP_HOST: {
 		description:

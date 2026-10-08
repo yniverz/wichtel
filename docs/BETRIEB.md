@@ -33,17 +33,17 @@ stellen.
 
 ## Umgebungsvariablen
 
-| Variable            | Zweck                                                                                              |
-| ------------------- | -------------------------------------------------------------------------------------------------- |
-| `PUBLIC_URL`        | Öffentliche Adresse, z. B. `https://helfen.example.de` – für Links in E-Mails und die KI-Anmeldung |
-| `POSTGRES_PASSWORD` | Passwort der mitgelieferten Datenbank                                                              |
-| `WICHTEL_PORT`      | Port auf dem Host (Standard `3006`)                                                                |
-| `WICHTEL_BIND`      | Adresse auf dem Host (Standard `127.0.0.1`; `0.0.0.0` für das Netz)                                |
-| `SMTP_HOST` …       | Mailserver; ohne ihn landen E-Mails im Log und Konten brauchen keine Bestätigung                   |
-| `SETUP_TOKEN`       | Fester Einrichtungs-Token statt eines zufälligen                                                   |
-| `LOG_LEVEL`         | `debug`, `info` (Standard), `warn` oder `error`                                                    |
-| `LOG_FORMAT`        | `json` (Standard im Container) oder `text`                                                         |
-| `LOG_MAIL_BODIES`   | Ohne SMTP auch Mailtexte loggen (enthalten Reset-Links); Standard nur in der Entwicklung           |
+| Variable            | Zweck                                                                                                             |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `PUBLIC_URL`        | Öffentliche Adresse, z. B. `https://helfen.example.de` – für Links in E-Mails und die KI-Anmeldung                |
+| `POSTGRES_PASSWORD` | Passwort der mitgelieferten Datenbank                                                                             |
+| `WICHTEL_PORT`      | Port auf dem Host (Standard `3006`)                                                                               |
+| `WICHTEL_BIND`      | Adresse auf dem Host (Standard `127.0.0.1`; `0.0.0.0` für das Netz)                                               |
+| `SMTP_HOST` …       | Mailserver; ohne ihn landen E-Mails im Log und Konten brauchen keine Bestätigung                                  |
+| `SETUP_TOKEN`       | Fester Einrichtungs-Token (mindestens 24 Zeichen); leer = zufälliger Token im Log. Nach der Einrichtung entfernen |
+| `LOG_LEVEL`         | `debug`, `info` (Standard), `warn` oder `error`                                                                   |
+| `LOG_FORMAT`        | `json` (Standard im Container) oder `text`                                                                        |
+| `LOG_MAIL_BODIES`   | Ohne SMTP auch Mailtexte loggen (enthalten Reset-Links); Standard nur in der Entwicklung                          |
 
 Alle Variablen mit Erklärung stehen in [.env.example](../.env.example).
 
@@ -75,6 +75,11 @@ auch HSTS und `Secure`-Cookies. Wer über http testet, braucht deshalb eine http
 Anfragen über 1 MB werden außer bei Datei-Uploads abgelehnt.
 
 ## E-Mail
+
+Mit Mailserver meldet man sich nach der Registrierung erst an, wenn die Adresse bestätigt ist.
+Ist eine Adresse schon registriert, zeigt Wichtel dieselbe Meldung wie bei einem neuen Konto und
+schickt der Inhaberin stattdessen einen Link zum Zurücksetzen. So lässt sich nicht ausprobieren,
+wer ein Konto hat.
 
 Für echten Versand `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD` und
 `SMTP_FROM` setzen. Damit Mails nicht im Spam landen, sollten SPF, DKIM und DMARC für die

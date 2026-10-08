@@ -74,6 +74,10 @@ export async function initApp(): Promise<void> {
 	}
 
 	const token = await prepareSetup(database.db, SETUP_TOKEN);
+	if (SETUP_TOKEN && SETUP_TOKEN.length < 24)
+		log.warn('SETUP_TOKEN is short; in production at least 24 characters are required.');
+	if (!token && SETUP_TOKEN)
+		log.info('Setup is complete: SETUP_TOKEN is no longer needed and can be removed.');
 	if (token) {
 		log.info('Wichtel is not set up yet. Open this link to create the first admin account.', {
 			url: `${PUBLIC_URL}/setup?token=${encodeURIComponent(token)}`

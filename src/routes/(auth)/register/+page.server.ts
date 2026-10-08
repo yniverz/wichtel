@@ -6,7 +6,7 @@ import { fieldView } from '#lib/server/field-views.ts';
 import { actorOf, attempt } from '#lib/server/guards.ts';
 import { registerLimiter } from '#lib/server/limits.ts';
 import { createSession } from '#lib/server/sessions.ts';
-import { register } from '#lib/server/services/accounts.ts';
+import { registerOrNotify } from '#lib/server/services/accounts.ts';
 import {
 	fieldsFor,
 	listFields,
@@ -56,15 +56,20 @@ export const actions: Actions = {
 		const input = { ...parsed.data, locale: event.locals.locale };
 		const { password: _password, ...values } = parsed.data;
 		void _password;
-		const result = await attempt(() => register(accountContext(), input), { values });
+		const ctx = accountContext();
+		const result = await attempt(() => registerOrNotify(ctx, input), { values });
 		if (!result.ok)
 			return {
 				...result.failure,
 				data: { ...result.failure.data, fieldValues }
 			} as typeof result.failure;
-		await saveValues(db(), result.value.id, checked.values);
+		if (result.value) await saveValues(db(), result.value.id, checked.values);
 
-		const session = await createSession(db(), result.value.id);
+		// With a mail server, a new and an already registered address look the same from outside:
+		// "check your inbox". The person signs in after confirming.
+		if (!ctx.skipEmailVerification) return { sent: true, email: parsed.data.email };
+
+		const session = await createSession(db(), result.value!.id);
 		setSessionCookie(event, session.token, session.expiresAt);
 		redirect(303, '/app');
 	}

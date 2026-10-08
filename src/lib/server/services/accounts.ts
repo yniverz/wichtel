@@ -5,6 +5,7 @@ import { emailTokens, users, type User } from '../db/schema.ts';
 import { getDummyHash, hashPassword, randomToken, sha256, verifyPassword } from '../crypto.ts';
 import { DomainError } from '../errors.ts';
 import { linkMail, type Mailer } from '../mail.ts';
+import { enqueueMail } from '../notifications.ts';
 import { invalidateUserSessions } from '../sessions.ts';
 import { audit, type Actor } from '../audit.ts';
 import { getSettings } from './settings.ts';
@@ -33,6 +34,43 @@ export interface RegisterInput {
 	lastName: string;
 	phone: string;
 	locale: Locale;
+}
+
+/**
+ * Registration that does not reveal whether an address already has an account: if it has, the
+ * owner gets an e-mail with a link to reset their password instead, and the caller shows the
+ * same "check your inbox" message. Returns the new user, or null for an existing address.
+ * Without a mail server this is impossible, so the address is reported as taken.
+ */
+export async function registerOrNotify(
+	ctx: AccountContext,
+	input: RegisterInput
+): Promise<User | null> {
+	try {
+		return await register(ctx, input);
+	} catch (e) {
+		if (ctx.skipEmailVerification || !(e instanceof DomainError) || e.code !== 'emailTaken')
+			throw e;
+		const user = await findUserByEmail(ctx.db, input.email);
+		if (!user || user.deletedAt) return null;
+		const settings = await getSettings(ctx.db);
+		const token = await issueToken(ctx.db, user.id, 'reset_password', RESET_TTL);
+		await enqueueMail(
+			ctx.db,
+			linkMail({
+				locale: user.locale,
+				to: user.email,
+				name: user.firstName,
+				festival: settings.festivalName,
+				primaryColor: settings.primaryColor,
+				subject: 'mail.exists.subject',
+				body: 'mail.exists.body',
+				expiry: 'mail.reset.expiry',
+				link: `${ctx.baseUrl}/reset-password?token=${encodeURIComponent(token)}`
+			})
+		);
+		return null;
+	}
 }
 
 export async function findUserByEmail(db: DB, email: string): Promise<User | undefined> {
@@ -107,7 +145,9 @@ export async function sendVerificationEmail(ctx: AccountContext, user: User): Pr
 	if (user.emailVerifiedAt) return;
 	const settings = await getSettings(ctx.db);
 	const token = await issueToken(ctx.db, user.id, 'verify_email', VERIFY_TTL);
-	await ctx.mailer.send(
+	// Through the outbox like all mails: same response time, retries on failure.
+	await enqueueMail(
+		ctx.db,
 		linkMail({
 			locale: user.locale,
 			to: user.email,
@@ -181,7 +221,8 @@ export async function requestPasswordReset(ctx: AccountContext, email: string): 
 	if (!user) return;
 	const settings = await getSettings(ctx.db);
 	const token = await issueToken(ctx.db, user.id, 'reset_password', RESET_TTL);
-	await ctx.mailer.send(
+	await enqueueMail(
+		ctx.db,
 		linkMail({
 			locale: user.locale,
 			to: user.email,

@@ -42,7 +42,7 @@ async function seed(bookingMode: 'open' | 'request' = 'open') {
 		pointsPerHour: null
 	});
 	const kim = await register(
-		{ db, mailer: createMemoryMailer(), baseUrl: 'http://test' },
+		{ db, mailer: createMemoryMailer(), baseUrl: 'http://test', skipEmailVerification: true },
 		{
 			email: 'kim@example.org',
 			password: 'password 1234',

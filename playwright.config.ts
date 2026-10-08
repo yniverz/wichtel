@@ -16,7 +16,7 @@ export default defineConfig({
 		reuseExistingServer: false,
 		env: {
 			DATABASE_URL: 'pglite://memory',
-			SETUP_TOKEN: 'e2e-setup-token',
+			SETUP_TOKEN: 'e2e-setup-token-0123456789',
 			PUBLIC_URL: 'http://localhost:4173'
 		}
 	}

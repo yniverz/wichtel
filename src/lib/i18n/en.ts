@@ -1338,5 +1338,12 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.people.resetValid': 'Valid until {time}, can be used once.',
 	'audit.user.reset_link': 'Password reset link created',
 	'admin.dash.noMailServer':
-		'No mail server is set up (SMTP_HOST). E-mails are not sent, addresses are not confirmed and nobody can reset their password themselves. You create reset links on the person’s page.'
+		'No mail server is set up (SMTP_HOST). E-mails are not sent, addresses are not confirmed and nobody can reset their password themselves. You create reset links on the person’s page.',
+	'auth.register.sent':
+		'Almost done! We sent an e-mail to {email}. Confirm your address there and then sign in.',
+	'auth.register.sentHint':
+		'No e-mail? Check your spam folder. If there already was an account with this address, you will find a link to set a new password there.',
+	'mail.exists.subject': 'You already have an account',
+	'mail.exists.body':
+		'someone (hopefully you) tried to sign up again for {festival} with this address. You already have an account. If you forgot your password, you can set a new one with this link:'
 };
