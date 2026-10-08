@@ -451,7 +451,14 @@ export async function runRetention(ctx: DeletionContext) {
 		const candidates = await ctx.db
 			.select({ user: users, activity })
 			.from(users)
-			.where(and(isNull(users.deletedAt), eq(users.isAdmin, false), lt(activity, noticeCutoff)));
+			// As a string: postgres-js cannot bind a Date to an expression of unknown type.
+			.where(
+				and(
+					isNull(users.deletedAt),
+					eq(users.isAdmin, false),
+					lt(activity, noticeCutoff.toISOString())
+				)
+			);
 		for (const { user, activity: last } of candidates) {
 			const lastAt = new Date(last);
 			if (!user.retentionNoticeAt) {
