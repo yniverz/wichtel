@@ -261,6 +261,8 @@ export const goodieSchema = z.object({
 			].slice(0, 30)
 		),
 	'requiredAreaIds[]': z.array(z.uuid()).default([]),
+	pickupPlaceId: optionalUuid,
+	pickupInfo: optionalText(300),
 	mandatory: checkbox,
 	mandatoryPriority: z.coerce.number().int().min(0).max(1000).default(0),
 	refundable: checkbox,

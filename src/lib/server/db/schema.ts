@@ -725,6 +725,11 @@ export const goodies = pgTable(
 		refundable: boolean('refundable').notNull().default(false),
 		/** May be selected against points of booked (not yet worked) shifts. */
 		advance: boolean('advance').notNull().default(false),
+		/** Where the goodie is picked up (if empty: the volunteer desk), plus details like times. */
+		pickupPlaceId: uuid('pickup_place_id').references((): AnyPgColumn => places.id, {
+			onDelete: 'set null'
+		}),
+		pickupInfo: text('pickup_info').notNull().default(''),
 		active: boolean('active').notNull().default(true),
 		sortOrder: integer('sort_order').notNull().default(0),
 		...timestamps

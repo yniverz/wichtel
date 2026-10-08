@@ -46,6 +46,11 @@
 			date: formatDate(new Date(data.person.createdAt), i18n.locale)
 		})}</span
 	>
+	{#if page.data.access.isAdmin}
+		<Button href="/admin/people/{data.person.id}/edit" variant="secondary" size="sm"
+			>{i18n.t('admin.people.edit')}</Button
+		>
+	{/if}
 </div>
 
 <div class="grid gap-6 lg:grid-cols-3">

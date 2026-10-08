@@ -32,5 +32,7 @@ export const emptyGoodie = {
 	refundable: false,
 	advance: false,
 	active: true,
-	sortOrder: 0
+	sortOrder: 0,
+	pickupPlaceId: null as string | null,
+	pickupInfo: ''
 };

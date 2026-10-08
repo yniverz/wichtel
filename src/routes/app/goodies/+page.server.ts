@@ -4,6 +4,7 @@ import { db } from '#lib/server/app.ts';
 import { actorOf, attempt, requireVerifiedUser } from '#lib/server/guards.ts';
 import { personalQrUrl, qrSvg } from '#lib/server/qr.ts';
 import { loadAreaTree } from '#lib/server/services/areas.ts';
+import { listPlaces, placeView } from '#lib/server/services/places.ts';
 import { getCurrentEdition } from '#lib/server/services/editions.ts';
 import {
 	cancelClaim,
@@ -33,23 +34,32 @@ export const load: PageServerLoad = async (event) => {
 		return {
 			qr,
 			overview: null,
+			sitePlanAssetId: null,
 			history: [],
 			areaNames: {} as Record<string, { nameDe: string; nameEn: string }>
 		};
 	}
-	const [overview, history, tree, allFields, fieldValues] = await Promise.all([
+	const [overview, history, tree, allFields, fieldValues, placeList] = await Promise.all([
 		goodieOverview(database, user.id, edition.id),
 		pointsHistory(database, user.id, edition.id),
 		loadAreaTree(database, edition.id),
 		listFields(database),
-		valuesOf(database, user.id)
+		valuesOf(database, user.id),
+		listPlaces(database, edition.id)
 	]);
+	// Where to pick a goodie up: its own place, else the volunteer desk.
+	const placesById = new Map(placeList.map((p) => [p.id, placeView(p)]));
+	const pickup = (g: { pickupPlaceId: string | null; pickupInfo: string }) => ({
+		place: placesById.get(g.pickupPlaceId ?? edition.deskPlaceId ?? '') ?? null,
+		info: g.pickupInfo
+	});
 	const areaNames: Record<string, { nameDe: string; nameEn: string }> = {};
 	for (const { area } of tree.flat())
 		areaNames[area.id] = { nameDe: area.nameDe, nameEn: area.nameEn };
 	return {
 		qr,
 		areaNames,
+		sitePlanAssetId: edition.sitePlanAssetId,
 		fieldValues,
 		history: history.map((h) => ({
 			...h,
@@ -69,7 +79,8 @@ export const load: PageServerLoad = async (event) => {
 					nameDe: goodie.nameDe,
 					nameEn: goodie.nameEn,
 					mandatory: goodie.mandatory,
-					refundable: goodie.refundable
+					refundable: goodie.refundable,
+					pickup: pickup(goodie)
 				}
 			})),
 			goodies: overview.goodies
@@ -85,6 +96,7 @@ export const load: PageServerLoad = async (event) => {
 					mandatory: g.mandatory,
 					advance: g.advance,
 					requiredAreaIds: g.requiredAreaIds,
+					pickup: pickup(g),
 					remaining: g.remaining,
 					availability: g.availability,
 					fields: fieldsFor(allFields, { goodieId: g.id }).map(fieldView)

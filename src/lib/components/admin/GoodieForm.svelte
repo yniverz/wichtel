@@ -5,7 +5,7 @@
 	import FormMessage from '#lib/components/FormMessage.svelte';
 	import { pendingForm } from '#lib/forms.svelte.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
-	import { localized } from '#lib/i18n/index.ts';
+	import { isMessageKey, localized } from '#lib/i18n/index.ts';
 
 	type Values = {
 		nameDe: string;
@@ -24,18 +24,22 @@
 		advance: boolean;
 		active: boolean;
 		sortOrder: number;
+		pickupPlaceId: string | null;
+		pickupInfo: string;
 	};
 
 	let {
 		action,
 		values,
 		areas,
+		places,
 		result,
 		submitLabel
 	}: {
 		action: string;
 		values: Values;
 		areas: { id: string; nameDe: string; nameEn: string; depth: number }[];
+		places: { id: string; nameDe: string; nameEn: string }[];
 		result?: { error?: string; success?: string; errors?: Record<string, string> } | null;
 		submitLabel: string;
 	} = $props();
@@ -112,6 +116,45 @@
 			value={values.variants.join(', ')}
 			error={e.variants}
 		/>
+	</fieldset>
+
+	<fieldset class="space-y-4">
+		<legend class="mb-1 w-full border-b border-ink pb-1 text-sm font-bold"
+			>{i18n.t('goodies.pickup')}</legend
+		>
+		<div class="grid gap-4 sm:grid-cols-2">
+			{#if places.length}
+				<div class="space-y-1.5">
+					<label for="pickupPlaceId" class="text-sm font-medium"
+						>{i18n.t('admin.goodies.pickupPlace')}</label
+					>
+					<select
+						id="pickupPlaceId"
+						name="pickupPlaceId"
+						class="block h-11 w-full"
+						value={values.pickupPlaceId ?? ''}
+						aria-invalid={e.pickupPlaceId ? 'true' : undefined}
+					>
+						<option value="">{i18n.t('admin.goodies.pickupDesk')}</option>
+						{#each places as pl (pl.id)}<option value={pl.id}
+								>{localized(pl, 'name', i18n.locale)}</option
+							>{/each}
+					</select>
+					{#if e.pickupPlaceId}<p class="text-sm text-red-600 dark:text-red-400">
+							{isMessageKey(e.pickupPlaceId) ? i18n.t(e.pickupPlaceId) : e.pickupPlaceId}
+						</p>{/if}
+				</div>
+			{/if}
+			<Field
+				label={i18n.t('admin.goodies.pickupInfo')}
+				name="pickupInfo"
+				optional
+				placeholder={i18n.t('admin.goodies.pickupInfoPlaceholder')}
+				value={values.pickupInfo}
+				error={e.pickupInfo}
+			/>
+		</div>
+		<p class="-mt-2 text-sm text-ink-muted">{i18n.t('admin.goodies.pickupHint')}</p>
 	</fieldset>
 
 	<fieldset class="space-y-4">

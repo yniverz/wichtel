@@ -16,6 +16,7 @@
 	action=""
 	values={data.values}
 	areas={data.areas}
+	places={data.places}
 	result={form}
 	submitLabel={i18n.t('common.create')}
 />

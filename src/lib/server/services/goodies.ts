@@ -5,6 +5,7 @@ import {
 	assignments,
 	goodieClaims,
 	goodies,
+	places,
 	pointsLedger,
 	shifts,
 	users,
@@ -36,6 +37,18 @@ export interface GoodieInput {
 	advance: boolean;
 	active: boolean;
 	sortOrder: number;
+	pickupPlaceId: string | null;
+	pickupInfo: string;
+}
+
+/** The pickup place must be one of the edition's places. */
+async function assertPickupPlace(tx: Tx, editionId: string, placeId: string | null) {
+	if (!placeId) return;
+	const [place] = await tx
+		.select({ id: places.id })
+		.from(places)
+		.where(and(eq(places.id, placeId), eq(places.editionId, editionId)));
+	if (!place) throw new DomainError('notFound', 'pickupPlaceId');
 }
 
 export function listGoodies(db: Tx, editionId: string): Promise<Goodie[]> {
@@ -58,6 +71,7 @@ export async function createGoodie(
 	input: GoodieInput
 ): Promise<Goodie> {
 	return db.transaction(async (tx) => {
+		await assertPickupPlace(tx, editionId, input.pickupPlaceId);
 		const [goodie] = await tx
 			.insert(goodies)
 			.values({ ...input, editionId })
@@ -82,6 +96,7 @@ export async function updateGoodie(
 	await db.transaction(async (tx) => {
 		const before = await getGoodie(tx, id);
 		if (!before) throw new DomainError('notFound');
+		await assertPickupPlace(tx, before.editionId, input.pickupPlaceId);
 		await tx.update(goodies).set(input).where(eq(goodies.id, id));
 		const changes = diff(
 			before as unknown as Record<string, unknown>,

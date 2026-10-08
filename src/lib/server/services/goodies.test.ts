@@ -7,6 +7,7 @@ import { register } from './accounts.ts';
 import { createArea } from './areas.ts';
 import { bookPosition, leadRemove, setAttendance } from './assignments.ts';
 import { createEdition } from './editions.ts';
+import { createPlace } from './places.ts';
 import {
 	cancelClaim,
 	claimGoodie,
@@ -16,6 +17,7 @@ import {
 	issueDirectly,
 	markRefunded,
 	requestRefund,
+	updateGoodie,
 	type GoodieInput
 } from './goodies.ts';
 import { adjustPoints, pendingPoints, pointsBalance, pointsHistory } from './points.ts';
@@ -54,6 +56,8 @@ const goodie = (input: Partial<GoodieInput>): GoodieInput => ({
 	advance: false,
 	active: true,
 	sortOrder: 0,
+	pickupPlaceId: null,
+	pickupInfo: '',
 	...input
 });
 
@@ -353,6 +357,47 @@ describe('mandatory goodies come first', () => {
 		await expectDomainError(
 			issueDirectly(s.db, actor, s.kim.id, shirt.id, null, new Date()),
 			'goodie.notEnoughPoints'
+		);
+	});
+});
+
+describe('goodie pickup place', () => {
+	it('only accepts a place of the same edition', async () => {
+		const db = database.db;
+		const edition = await createEdition(db, actor, {
+			name: 'Fest',
+			startsOn: '2027-06-01',
+			endsOn: '2027-06-30'
+		});
+		const other = await createEdition(db, actor, {
+			name: 'Alt',
+			startsOn: '2026-06-01',
+			endsOn: '2026-06-30'
+		});
+		const place = (editionId: string) =>
+			createPlace(db, actor, editionId, {
+				nameDe: 'Infostand',
+				nameEn: '',
+				descriptionDe: '',
+				descriptionEn: '',
+				address: '',
+				lat: null,
+				lng: null,
+				planX: null,
+				planY: null,
+				sortOrder: 0
+			});
+		const own = await place(edition.id);
+		const foreign = await place(other.id);
+		await expectDomainError(
+			createGoodie(db, actor, edition.id, goodie({ pickupPlaceId: foreign.id })),
+			'notFound'
+		);
+		const shirt = await createGoodie(db, actor, edition.id, goodie({ pickupPlaceId: own.id }));
+		expect(shirt.pickupPlaceId).toBe(own.id);
+		await expectDomainError(
+			updateGoodie(db, actor, shirt.id, goodie({ pickupPlaceId: foreign.id })),
+			'notFound'
 		);
 	});
 });

@@ -15,6 +15,15 @@ export function listPlaces(db: Tx, editionId: string): Promise<Place[]> {
 		.orderBy(asc(places.sortOrder), asc(places.nameDe));
 }
 
+/** Places for a select field. */
+export async function placeOptions(db: Tx, editionId: string) {
+	return (await listPlaces(db, editionId)).map((p) => ({
+		id: p.id,
+		nameDe: p.nameDe,
+		nameEn: p.nameEn
+	}));
+}
+
 export async function createPlace(db: DB, actor: Actor, editionId: string, input: PlaceInput) {
 	return db.transaction(async (tx) => {
 		const [place] = await tx

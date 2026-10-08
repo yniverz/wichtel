@@ -251,6 +251,11 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.people.unverified': 'unconfirmed',
 	'admin.people.adminBadge': 'Admin',
 	'admin.people.registered': 'Registered on {date}',
+	'admin.people.edit': 'Edit details',
+	'admin.people.emailHint':
+		'The new address counts as confirmed. The old address is told, and links already sent to it stop working.',
+	'admin.people.passwordHint':
+		'The person sets their password themselves – with a reset link you can create on their page.',
 	'admin.people.contact': 'Contact',
 	'admin.people.rolesIn': 'Roles in edition {edition}',
 	'admin.people.noRoles': 'No roles in this edition.',
@@ -314,6 +319,7 @@ export const en: Record<keyof typeof de, string> = {
 	'audit.role_assignment.create': 'Role assigned',
 	'audit.role_assignment.delete': 'Role removed',
 	'audit.user.admin_grant': 'Admin rights granted',
+	'audit.user.update': 'Account details changed',
 	'audit.user.admin_revoke': 'Admin rights revoked',
 	'audit.user.password_reset': 'Password reset',
 	'audit.user.delete': 'Account deleted',
@@ -511,6 +517,7 @@ export const en: Record<keyof typeof de, string> = {
 	'goodies.reason.soldOut': 'Currently gone – ask at the counter.',
 	'goodies.reason.inactive': 'Not available.',
 	'goodies.advance': 'also with pending points',
+	'goodies.pickup': 'Pickup',
 	'goodies.history': 'Points history',
 	'goodies.history.empty': 'No points yet.',
 	'goodies.history.adjustment': 'Correction',
@@ -549,6 +556,12 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.goodies.requiredAreas': 'Only for volunteers of these areas',
 	'admin.goodies.requiredAreasHint':
 		'At least one confirmed shift in the area or a sub-area. No selection = everyone.',
+	'admin.goodies.pickupPlace': 'Pickup place',
+	'admin.goodies.pickupDesk': 'Volunteer desk (default)',
+	'admin.goodies.pickupInfo': 'Pickup details',
+	'admin.goodies.pickupInfoPlaceholder': 'e.g. Fri–Sun 10am–6pm',
+	'admin.goodies.pickupHint':
+		'Volunteers see the place and details with the goodie. Without a place, the volunteer desk applies if it is set under Places.',
 	'admin.goodies.rules': 'Rules',
 	'admin.goodies.mandatory': 'Mandatory: redeemed automatically',
 	'admin.goodies.mandatoryPriority': 'Order of mandatory goodies',
@@ -1060,6 +1073,8 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.templates.key.swap_declined': 'Handover declined',
 	'admin.templates.key.urgent_call': 'Urgent call',
 	'admin.templates.key.account_retention': 'Account deleted for inactivity',
+	'admin.templates.key.account_email_changed':
+		'E-mail address changed by the organisers (to the old address)',
 	'mailtpl.group_hold.subject': 'Place reserved for you: {shift}',
 	'mailtpl.group_hold.body':
 		'Hi {name},\n\n{person} planned you in for this shift:\n\n{shift}\n{date}, {time}{location}\n\nYour place is reserved until {until}. Accept it or release it: {link}\n\nYour {festival} team',
@@ -1088,6 +1103,9 @@ export const en: Record<keyof typeof de, string> = {
 	'mailtpl.account_retention.body':
 		'Hi {name},\n\nyou have not been active at {festival} for {months} months. So that we do not keep data longer than needed, we will delete your account on {date}.\n\nIf you want to stay, just sign in once before then: {link}\n\nIf not, you do not need to do anything. Your shifts and points then stay in our statistics without your name.\n\nYour {festival} team',
 
+	'mailtpl.account_email_changed.subject': 'Your e-mail address at {festival} was changed',
+	'mailtpl.account_email_changed.body':
+		'Hi {name},\n\nthe organisers changed the e-mail address of your {festival} account. Messages and sign-in now use the new address; we will not write to this address any more.\n\nIf you did not want this, please get in touch with us.\n\nYour {festival} team',
 	'admin.templates.extra': 'Also available in this template: {list}',
 	// Lead dashboard, print views, copying editions
 	'admin.dash.filled': 'Filled',

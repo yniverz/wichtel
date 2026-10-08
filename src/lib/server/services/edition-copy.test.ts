@@ -94,9 +94,12 @@ describe('copyEdition', () => {
 				}
 			]
 		});
-		await db
-			.insert(goodies)
-			.values({ editionId: source.id, nameDe: 'Shirt', requiredAreaIds: [bar.id] });
+		await db.insert(goodies).values({
+			editionId: source.id,
+			nameDe: 'Shirt',
+			requiredAreaIds: [bar.id],
+			pickupPlaceId: place.id
+		});
 		const [role] = await db.insert(roles).values({ nameDe: 'Leitung' }).returning();
 		const [user] = await db
 			.insert(users)
@@ -147,6 +150,7 @@ describe('copyEdition', () => {
 
 		const [goodie] = await db.select().from(goodies).where(eq(goodies.editionId, copy.id));
 		expect(goodie.requiredAreaIds).toEqual([newBar.id]);
+		expect(goodie.pickupPlaceId).toBe(shift.meetingPlaceId);
 		const [grant] = await db
 			.select()
 			.from(roleAssignments)
@@ -158,5 +162,44 @@ describe('copyEdition', () => {
 
 		const [sourceAfter] = await db.select().from(editions).where(eq(editions.id, source.id));
 		expect(sourceAfter.isCurrent).toBe(true);
+	});
+
+	it('drops the pickup place of goodies when places are not copied', async () => {
+		const db = database.db;
+		const source = await createEdition(db, actor, {
+			name: '2026',
+			startsOn: '2026-03-25',
+			endsOn: '2026-03-27'
+		});
+		const place = await createPlace(db, actor, source.id, {
+			nameDe: 'Infostand',
+			nameEn: '',
+			descriptionDe: '',
+			descriptionEn: '',
+			address: '',
+			lat: null,
+			lng: null,
+			planX: null,
+			planY: null,
+			sortOrder: 0
+		});
+		await db.insert(goodies).values({
+			editionId: source.id,
+			nameDe: 'Shirt',
+			pickupPlaceId: place.id,
+			pickupInfo: 'ab 10 Uhr'
+		});
+		const copy = await copyEdition(db, actor, source.id, {
+			name: '2027',
+			startsOn: '2027-03-25',
+			places: false,
+			shifts: false,
+			goodies: true,
+			roles: false,
+			waves: false
+		});
+		const [goodie] = await db.select().from(goodies).where(eq(goodies.editionId, copy.id));
+		expect(goodie.pickupPlaceId).toBeNull();
+		expect(goodie.pickupInfo).toBe('ab 10 Uhr');
 	});
 });

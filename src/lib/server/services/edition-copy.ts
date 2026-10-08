@@ -183,6 +183,8 @@ export async function copyEdition(
 							id: undefined,
 							editionId: edition.id,
 							requiredAreaIds: mapAreas(g.requiredAreaIds),
+							// Without copied places the link would point into the old edition.
+							pickupPlaceId: g.pickupPlaceId ? (placeMap.get(g.pickupPlaceId) ?? null) : null,
 							createdAt: undefined,
 							updatedAt: undefined
 						}))

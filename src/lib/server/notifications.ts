@@ -41,7 +41,8 @@ export const MAIL_TEMPLATES = [
 	'swap_completed',
 	'swap_declined',
 	'urgent_call',
-	'account_retention'
+	'account_retention',
+	'account_email_changed'
 ] as const;
 export type MailTemplate = (typeof MAIL_TEMPLATES)[number];
 

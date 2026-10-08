@@ -4,9 +4,11 @@
 	import Button from '#lib/components/Button.svelte';
 	import ConfirmForm from '#lib/components/ConfirmForm.svelte';
 	import FieldInputs from '#lib/components/FieldInputs.svelte';
+	import PlaceLink from '#lib/components/places/PlaceLink.svelte';
 	import Toast from '#lib/components/Toast.svelte';
 	import { getI18n } from '#lib/i18n/context.ts';
 	import { formatDate, formatPoints, localized, type MessageKey } from '#lib/i18n/index.ts';
+	import type { PlaceInfo } from '#lib/components/places/PlaceDetails.svelte';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -56,6 +58,19 @@
 	}
 </script>
 
+{#snippet pickupLine(pickup: { place: PlaceInfo | null; info: string })}
+	{#if pickup.place || pickup.info}
+		<p class="mt-1 flex flex-wrap items-center gap-x-1.5 text-sm">
+			<span class="text-ink-muted">{i18n.t('goodies.pickup')}:</span>
+			{#if pickup.place}<PlaceLink
+					place={pickup.place}
+					sitePlanAssetId={data.sitePlanAssetId}
+				/>{/if}
+			{#if pickup.info}<span class={pickup.place ? 'text-ink-muted' : ''}>{pickup.info}</span>{/if}
+		</p>
+	{/if}
+{/snippet}
+
 <svelte:head
 	><title>{i18n.t('goodies.title')} · {page.data.settings.festivalName}</title></svelte:head
 >
@@ -102,6 +117,7 @@
 												· {claim.variant}</span
 											>{/if}
 									</p>
+									{#if claim.status === 'selected'}{@render pickupLine(claim.goodie.pickup)}{/if}
 									<span
 										class="mt-1 inline-block rounded-sm px-1.5 py-px text-xs font-semibold {statusTone[
 											claim.status
@@ -161,6 +177,7 @@
 									{#if localized(g, 'description', i18n.locale)}
 										<p class="text-sm text-ink-muted">{localized(g, 'description', i18n.locale)}</p>
 									{/if}
+									{@render pickupLine(g.pickup)}
 									<p class="mt-1 text-sm">
 										{#if g.mandatory}{i18n.t('goodies.mandatory')}
 										{:else if g.availability !== 'available'}<span class="text-ink-muted"

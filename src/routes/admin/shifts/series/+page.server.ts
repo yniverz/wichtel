@@ -1,6 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import { db } from '#lib/server/app.ts';
-import { listPlaces } from '#lib/server/services/places.ts';
+import { placeOptions } from '#lib/server/services/places.ts';
 import { qualificationOptions } from '#lib/server/services/qualifications.ts';
 import {
 	actorOf,
@@ -23,11 +23,7 @@ export const load: PageServerLoad = async (event) => {
 	const { edition } = requireEdition(ctx);
 	const areas = shiftAreaOptions(ctx);
 	const qualifications = await qualificationOptions(db());
-	const places = (await listPlaces(db(), edition.id)).map((pl) => ({
-		id: pl.id,
-		nameDe: pl.nameDe,
-		nameEn: pl.nameEn
-	}));
+	const places = await placeOptions(db(), edition.id);
 	if (areas.length === 0) error(403, 'error.forbidden');
 	return {
 		areas,

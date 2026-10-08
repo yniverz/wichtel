@@ -26,6 +26,7 @@
 			action="?/update"
 			values={data.goodie}
 			areas={data.areas}
+			places={data.places}
 			result={result?.errors || result?.success ? result : null}
 			submitLabel={i18n.t('common.save')}
 		/>

@@ -255,6 +255,11 @@ export const de = {
 	'admin.people.unverified': 'nicht bestätigt',
 	'admin.people.adminBadge': 'Admin',
 	'admin.people.registered': 'Registriert am {date}',
+	'admin.people.edit': 'Daten bearbeiten',
+	'admin.people.emailHint':
+		'Die neue Adresse gilt als bestätigt. Die alte Adresse bekommt einen Hinweis, offene Links an sie werden ungültig.',
+	'admin.people.passwordHint':
+		'Das Passwort setzt die Person selbst – über einen Link zum Zurücksetzen, den du auf ihrer Seite erzeugen kannst.',
 	'admin.people.contact': 'Kontakt',
 	'admin.people.rolesIn': 'Rollen im Jahrgang {edition}',
 	'admin.people.noRoles': 'Keine Rollen in diesem Jahrgang.',
@@ -318,6 +323,7 @@ export const de = {
 	'audit.role_assignment.create': 'Rolle vergeben',
 	'audit.role_assignment.delete': 'Rolle entzogen',
 	'audit.user.admin_grant': 'Adminrechte vergeben',
+	'audit.user.update': 'Kontodaten geändert',
 	'audit.user.admin_revoke': 'Adminrechte entzogen',
 	'audit.user.password_reset': 'Passwort zurückgesetzt',
 	'audit.user.delete': 'Konto gelöscht',
@@ -517,6 +523,7 @@ export const de = {
 	'goodies.reason.soldOut': 'Gerade vergriffen – frag an der Ausgabe nach.',
 	'goodies.reason.inactive': 'Nicht verfügbar.',
 	'goodies.advance': 'auch mit vorgemerkten Punkten',
+	'goodies.pickup': 'Abholung',
 	'goodies.history': 'Punkteverlauf',
 	'goodies.history.empty': 'Noch keine Punkte.',
 	'goodies.history.adjustment': 'Korrektur',
@@ -558,6 +565,12 @@ export const de = {
 	'admin.goodies.requiredAreas': 'Nur für Helfende aus diesen Bereichen',
 	'admin.goodies.requiredAreasHint':
 		'Mindestens eine bestätigte Schicht im Bereich oder einem Unterbereich. Keine Auswahl = für alle.',
+	'admin.goodies.pickupPlace': 'Abholort',
+	'admin.goodies.pickupDesk': 'Helferanmeldung (Standard)',
+	'admin.goodies.pickupInfo': 'Hinweis zur Abholung',
+	'admin.goodies.pickupInfoPlaceholder': 'z. B. Fr–So 10–18 Uhr',
+	'admin.goodies.pickupHint':
+		'Helfende sehen Ort und Hinweis beim Goodie. Ohne Ort gilt die Helferanmeldung, sofern sie unter Orte festgelegt ist.',
 	'admin.goodies.rules': 'Regeln',
 	'admin.goodies.mandatory': 'Pflicht-Goodie: wird automatisch eingelöst',
 	'admin.goodies.mandatoryPriority': 'Reihenfolge der Pflicht-Goodies',
@@ -1079,6 +1092,8 @@ export const de = {
 	'admin.templates.key.swap_declined': 'Übergabe abgelehnt',
 	'admin.templates.key.urgent_call': 'Dringend-Aufruf',
 	'admin.templates.key.account_retention': 'Konto wird wegen Inaktivität gelöscht',
+	'admin.templates.key.account_email_changed':
+		'E-Mail-Adresse von der Leitung geändert (an die alte Adresse)',
 	'mailtpl.group_hold.subject': 'Platz für dich reserviert: {shift}',
 	'mailtpl.group_hold.body':
 		'Hallo {name},\n\n{person} hat dich für diese Schicht mit eingeplant:\n\n{shift}\n{date}, {time}{location}\n\nDein Platz ist bis {until} reserviert. Nimm ihn an oder gib ihn frei: {link}\n\nDein {festival}-Team',
@@ -1107,6 +1122,9 @@ export const de = {
 	'mailtpl.account_retention.body':
 		'Hallo {name},\n\ndu warst seit {months} Monaten nicht mehr bei {festival} aktiv. Damit wir keine Daten länger als nötig aufbewahren, löschen wir dein Konto am {date}.\n\nWenn du weiter dabei sein möchtest, melde dich einfach vorher einmal an: {link}\n\nWillst du nichts tun, musst du nichts tun. Deine Schichten und Punkte bleiben dann ohne deinen Namen in unserer Statistik.\n\nDein {festival}-Team',
 
+	'mailtpl.account_email_changed.subject': 'Deine E-Mail-Adresse bei {festival} wurde geändert',
+	'mailtpl.account_email_changed.body':
+		'Hallo {name},\n\ndie Festivalleitung hat die E-Mail-Adresse deines Kontos bei {festival} geändert. Nachrichten und Anmeldung laufen ab jetzt über die neue Adresse; an diese Adresse schicken wir nichts mehr.\n\nWenn du das nicht wolltest, melde dich bitte bei uns.\n\nDein {festival}-Team',
 	'admin.templates.extra': 'Zusätzlich in dieser Vorlage: {list}',
 	// Lead dashboard, print views, copying editions
 	'admin.dash.filled': 'Besetzt',

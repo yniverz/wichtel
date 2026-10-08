@@ -49,11 +49,14 @@ Alles, was Wichtel kann – nach Rolle sortiert. Die Kurzfassung steht im [READM
   mehr Rechte vergeben, als er selbst hat.
 - **Punkte-Regeln** pro Schicht und/oder Stunde, vererbt Instanz → Bereich → Position, Nacht- und
   Kurzfrist-Bonus, manuelle Korrekturen mit Begründung.
-- **Goodies** mit Preis, Varianten, Bereichs-Beschränkung, Höchstzahl, Kontingent und Bestand.
+- **Goodies** mit Preis, Varianten, Bereichs-Beschränkung, Höchstzahl, Kontingent, Bestand und
+  Abholort (Ort mit Karte/Geländeplan plus Hinweis wie Ausgabezeiten; sonst die Helferanmeldung).
 - **Buchungswellen**: Crew zuerst, dann Wiederkehrende, Einladungslinks, dann alle.
 - **Profilfelder** frei konfigurierbar (bei Registrierung, im Profil oder bei der Goodie-Auswahl).
 - **Erscheinungsbild**: Name, Untertitel, Farben mit Kontrastprüfung, Logo, Hintergrund, Favicon.
 - **E-Mail-Vorlagen** pro Sprache anpassbar.
+- **Konten bearbeiten**: Admins korrigieren Name, E-Mail, Telefon, Sprache und Profilfelder; bei
+  einer neuen Adresse bekommt die alte einen Hinweis. Passwörter setzen die Personen selbst.
 - **Protokoll** aller Verwaltungsaktionen.
 - **Datenschutz**: Helfende laden ihre Daten selbst herunter und löschen ihr Konto; Admins können
   beides für Anfragen per Post erledigen. Gelöschte Konten verlieren alle persönlichen Daten,

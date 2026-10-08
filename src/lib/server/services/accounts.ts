@@ -5,7 +5,7 @@ import { emailTokens, users, type User } from '../db/schema.ts';
 import { getDummyHash, hashPassword, randomToken, sha256, verifyPassword } from '../crypto.ts';
 import { DomainError } from '../errors.ts';
 import { linkMail } from '../mail.ts';
-import { enqueueMail } from '../notifications.ts';
+import { enqueueMail, isDeletedAddress, sendTemplate } from '../notifications.ts';
 import { invalidateUserSessions } from '../sessions.ts';
 import { audit, type Actor } from '../audit.ts';
 import { getSettings } from './settings.ts';
@@ -301,6 +301,64 @@ export interface ProfileUpdate {
 export async function updateProfile(db: DB, userId: string, update: ProfileUpdate): Promise<User> {
 	const [user] = await db.update(users).set(update).where(eq(users.id, userId)).returning();
 	return user;
+}
+
+export interface AccountUpdate extends ProfileUpdate {
+	email: string;
+}
+
+/**
+ * An administrator corrects a person's account. A new e-mail address counts as confirmed (the
+ * administrator enters it); links already sent to the old address stop working, and the old
+ * address is told about the change. The audit log names the changed fields, not their values.
+ */
+export async function updateAccount(
+	db: DB,
+	actor: Actor,
+	userId: string,
+	input: AccountUpdate
+): Promise<void> {
+	const email = input.email.trim().toLowerCase();
+	if (isDeletedAddress(email)) throw new DomainError('invalidEmail', 'email');
+	await db.transaction(async (tx) => {
+		const [before] = await tx.select().from(users).where(eq(users.id, userId)).for('update');
+		if (!before || before.deletedAt) throw new DomainError('notFound');
+		const emailChanged = email !== before.email;
+		if (emailChanged) {
+			const [other] = await tx.select({ id: users.id }).from(users).where(eq(users.email, email));
+			if (other) throw new DomainError('emailTaken', 'email');
+		}
+		const next = {
+			firstName: input.firstName,
+			lastName: input.lastName,
+			phone: input.phone,
+			locale: input.locale,
+			email
+		};
+		const changed = (Object.keys(next) as (keyof typeof next)[]).filter(
+			(key) => next[key] !== before[key]
+		);
+		if (changed.length === 0) return;
+		await tx
+			.update(users)
+			.set({ ...next, ...(emailChanged ? { emailVerifiedAt: new Date() } : {}) })
+			.where(eq(users.id, userId));
+		if (emailChanged) {
+			await tx.delete(emailTokens).where(eq(emailTokens.userId, userId));
+			await sendTemplate(
+				tx,
+				'account_email_changed',
+				{ email: before.email, firstName: before.firstName, locale: before.locale },
+				{}
+			);
+		}
+		await audit(tx, actor, {
+			action: 'user.update',
+			entityType: 'user',
+			entityId: userId,
+			data: { fields: changed }
+		});
+	});
 }
 
 export async function setLocale(db: DB, userId: string, locale: Locale): Promise<void> {
