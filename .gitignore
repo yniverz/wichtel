@@ -19,3 +19,6 @@ vite.config.ts.timestamp-*
 
 # Local tooling
 /.claude
+
+# Load test output (fixture with sessions, results)
+/load/out

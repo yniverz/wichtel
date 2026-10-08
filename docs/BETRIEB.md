@@ -57,9 +57,14 @@ helfen.example.de {
 	request_body {
 		max_size 16MB
 	}
+	encode zstd gzip
 	reverse_proxy 127.0.0.1:3006
 }
 ```
+
+`encode` komprimiert die Seiten. Wichtel selbst komprimiert nur Skripte und Stylesheets; die
+Schichtliste wird ohne Kompression schnell mehrere hundert Kilobyte groß, was auf dem
+Festivalgelände im Mobilfunknetz spürbar ist.
 
 Läuft der Proxy selbst in Docker, beide Container in ein gemeinsames Netzwerk hängen. Den
 App-Port **nie direkt** ins Internet freigeben (`WICHTEL_BIND=0.0.0.0` nur, wenn eine Firewall
@@ -109,6 +114,25 @@ und in der E-Mail, die alle Admins bekommen (abschaltbar unter Einstellungen →
 derselbe Fehler höchstens einmal pro Stunde, insgesamt höchstens zehn Mails pro Stunde).
 Mails, die endgültig nicht zugestellt werden konnten, zeigt die Übersicht der Verwaltung an;
 unter Kommunikation → Zustellung lassen sie sich erneut senden.
+
+## Kapazität
+
+Gemessen auf einer VM mit 2 vCPU und 2 GB RAM (Wichtel und PostgreSQL zusammen), 3000 Helfende,
+1500 Schichten an fünf Tagen; Werkzeuge und Ablauf in [load/README.md](../load/README.md):
+
+- Alltag (Schichten ansehen, buchen, Kalender-Abos, Leitungen im Adminbereich): mindestens
+  10 Besuche pro Sekunde mit Antwortzeiten unter 0,2 s – weit mehr als ein Festival dieser Größe
+  braucht.
+- Logins: 40 pro Sekunde ohne Verzögerung.
+- Buchungswelle, bei der 1500 Personen innerhalb weniger Sekunden gleichzeitig buchen: alle
+  Buchungen kommen korrekt an (keine Überbuchung), in den ersten Minuten warten Seiten und
+  Buchungen aber mehrere Sekunden.
+
+Wichtel nutzt einen Prozessorkern; mehr Kerne helfen vor allem der Datenbank. Bei sehr großem
+Andrang lässt Wichtel Aufrufe der Schichtliste kurz warten und weist sie nach 20 Sekunden mit
+„Gerade ist sehr viel los“ ab, statt den Speicher zu überlasten. Im Log steht dann
+`server busy: requests turned away`. Wer große Wellen erwartet, verteilt sie (mehrere Wellen für
+verschiedene Bereiche oder Personengruppen) oder gibt dem Server einen schnelleren Prozessor.
 
 ## Datenschutz im Betrieb
 

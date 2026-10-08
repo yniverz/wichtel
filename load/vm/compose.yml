@@ -1,0 +1,57 @@
+# Wichtel as deployed (see docker-compose.yml in the repository root), plus what the load test
+# needs: query statistics in PostgreSQL, the database reachable through an SSH tunnel for seeding,
+# and Mailpit as a mail server that accepts everything (so sending mails costs what it costs).
+#
+#   PUBLIC_URL=http://<vm>:3006 POSTGRES_PASSWORD=... docker compose -f load/vm/compose.yml up -d --build
+services:
+  app:
+    build: ../..
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://wichtel:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@db:5432/wichtel
+      PUBLIC_URL: ${PUBLIC_URL:?set PUBLIC_URL}
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      SMTP_FROM: wichtel@load.test
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      LOG_FORMAT: json
+      # k6 sends the headers a reverse proxy would send, one client address per simulated person.
+      PROTOCOL_HEADER: x-forwarded-proto
+      HOST_HEADER: x-forwarded-host
+      ADDRESS_HEADER: x-forwarded-for
+      XFF_DEPTH: 1
+    ports:
+      - '3006:3000'
+    volumes:
+      - uploads:/data
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all
+    environment:
+      POSTGRES_USER: wichtel
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: wichtel
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U wichtel']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    restart: unless-stopped
+    ports:
+      - '8025:8025'
+
+volumes:
+  uploads:
+  postgres:
