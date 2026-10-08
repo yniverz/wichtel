@@ -72,7 +72,7 @@ export const de = {
 	'auth.register.haveAccount': 'Schon registriert?',
 	'auth.register.closed': 'Die Registrierung ist gerade geschlossen. Schau bald wieder vorbei!',
 	'auth.register.passwordHint': 'Mindestens 10 Zeichen.',
-	'auth.register.privacy': 'Mit der Registrierung akzeptierst du die',
+	'auth.register.privacy': 'Wie wir mit deinen Daten umgehen, erklärt die',
 	'auth.register.privacyLink': 'Datenschutzerklärung',
 	'auth.checkMail.title': 'Fast geschafft!',
 	'auth.checkMail.text':
@@ -1237,5 +1237,116 @@ export const de = {
 	'mail.verify.expiry': 'Der Link ist 48 Stunden gültig.',
 	'mail.reset.subject': 'Passwort zurücksetzen',
 	'mail.reset.body': 'du kannst über diesen Link ein neues Passwort für {festival} festlegen:',
-	'mail.reset.expiry': 'Der Link ist eine Stunde gültig.'
+	'mail.reset.expiry': 'Der Link ist eine Stunde gültig.',
+	// Privacy, legal pages and operations
+	'account.deleted.name': 'Gelöschtes Konto',
+	'error.page.reference': 'Fehler-ID für Rückfragen:',
+	'legal.privacyTitle': 'Datenschutzerklärung',
+	'audit.user.delete': 'Konto gelöscht',
+	'audit.user.export': 'Datenauskunft heruntergeladen',
+	'audit.mail.retry': 'E-Mails erneut versendet',
+	'audit.mail.discard': 'E-Mails verworfen',
+	'mailtpl.account_retention.subject': 'Dein Konto bei {festival} wird bald gelöscht',
+	'mailtpl.account_retention.body':
+		'Hallo {name},\n\ndu warst seit {months} Monaten nicht mehr bei {festival} aktiv. Damit wir keine Daten länger als nötig aufbewahren, löschen wir dein Konto am {date}.\n\nWenn du weiter dabei sein möchtest, melde dich einfach vorher einmal an: {link}\n\nWillst du nichts tun, musst du nichts tun. Deine Schichten und Punkte bleiben dann ohne deinen Namen in unserer Statistik.\n\nDein {festival}-Team',
+	'admin.templates.key.account_retention': 'Konto wird wegen Inaktivität gelöscht',
+	'privacy.title': 'Meine Daten',
+	'privacy.lead':
+		'Was wir über dich speichern, steht in der Datenschutzerklärung. Hier kannst du es herunterladen oder dein Konto löschen.',
+	'privacy.exportTitle': 'Daten herunterladen',
+	'privacy.exportHint':
+		'Eine Datei mit allem, was wir über dich gespeichert haben: Profil, Schichten, Punkte, Goodies, Qualifikationen und Anmeldungen.',
+	'privacy.export': 'Meine Daten herunterladen',
+	'privacy.deleteTitle': 'Konto löschen',
+	'privacy.deleteHint':
+		'Deine persönlichen Daten werden sofort gelöscht und kommende Schichten ausgetragen. Vergangene Schichten und Punkte bleiben ohne deinen Namen für die Statistik erhalten. Das lässt sich nicht rückgängig machen.',
+	'privacy.delete': 'Konto löschen …',
+	'privacy.deleteConfirm': 'Bitte bestätige mit deinem Passwort.',
+	'privacy.deletePassword': 'Passwort',
+	'privacy.deleteFinal': 'Konto endgültig löschen',
+	'privacy.deleted': 'Dein Konto wurde gelöscht. Danke für deine Hilfe!',
+	'privacy.deleteSelfHere': 'Dein eigenes Konto löschst du in deinem Profil.',
+	'privacy.adminTitle': 'Datenschutz',
+	'privacy.adminLead':
+		'Für Anfragen per E-Mail oder Brief. Personen können beides auch selbst in ihrem Profil tun.',
+	'privacy.adminExport': 'Datenauskunft herunterladen',
+	'privacy.adminDelete': 'Konto löschen',
+	'privacy.adminDeleteConfirm':
+		'Konto von {name} löschen? Persönliche Daten werden entfernt, kommende Schichten ausgetragen. Das lässt sich nicht rückgängig machen.',
+	'privacy.adminDeleted': 'Das Konto wurde gelöscht.',
+	'admin.nav.legal': 'Datenschutz & Impressum',
+	'admin.nav.outbox': 'Zustellung',
+	'admin.legal.title': 'Datenschutz & Impressum',
+	'admin.legal.lead':
+		'Angaben zum Betreiber, Impressum, Datenschutzerklärung und Löschfristen. Alles wird hier gespeichert, nicht im Code.',
+	'admin.legal.operator': 'Betreiber und Impressum',
+	'admin.legal.operatorLead':
+		'Daraus entsteht das Impressum (§ 5 DDG). Es erscheint, sobald Name und Anschrift ausgefüllt sind.',
+	'admin.legal.name': 'Name und Rechtsform',
+	'admin.legal.nameHint':
+		'So, wie im Vereins- oder Handelsregister eingetragen, z. B. „Kulturverein Beispiel e. V.“.',
+	'admin.legal.address': 'Anschrift (kein Postfach)',
+	'admin.legal.representative': 'Vertreten durch',
+	'admin.legal.representativeHint':
+		'Bei Vereinen der vertretungsberechtigte Vorstand (§ 26 BGB) mit Funktion.',
+	'admin.legal.email': 'E-Mail-Adresse',
+	'admin.legal.phone': 'Telefon',
+	'admin.legal.phoneHint': 'Neben der E-Mail ist ein zweiter schneller Kontaktweg nötig.',
+	'admin.legal.register': 'Registereintrag',
+	'admin.legal.vatId': 'Umsatzsteuer-ID',
+	'admin.legal.extraDe': 'Weitere Angaben (Deutsch)',
+	'admin.legal.extraEn': 'Weitere Angaben (Englisch)',
+	'admin.legal.markdownHint':
+		'Texte unterstützen einfache Formatierung: ## Überschrift, - Liste, **fett**, [Link](https://…).',
+	'admin.legal.privacy': 'Datenschutzerklärung',
+	'admin.legal.privacyLead':
+		'Eine Vorlage, die zu dieser Installation passt: Sie kennt eure Profilfelder, Löschfristen, Karten und KI-Einstellungen.',
+	'admin.legal.templateWarning':
+		'Die Vorlage ist sorgfältig erstellt, ersetzt aber keine Rechtsberatung. Ergänze alle Stellen in [eckigen Klammern] und lass den Text im Zweifel prüfen.',
+	'admin.legal.officer': 'Datenschutzbeauftragte Person',
+	'admin.legal.officerHint':
+		'Nur falls benannt (Pflicht u. a. ab 20 Personen, die ständig mit Daten arbeiten). Name und Kontakt.',
+	'admin.legal.privacyDe': 'Text (Deutsch)',
+	'admin.legal.privacyEn': 'Text (Englisch)',
+	'admin.legal.insertTemplate': 'Vorlage einfügen',
+	'admin.legal.replaceConfirm': 'Den bisherigen Text durch die Vorlage ersetzen?',
+	'admin.legal.todos': 'Noch {count} Stellen in [eckigen Klammern] zu ergänzen.',
+	'admin.legal.templateHint':
+		'Die Vorlage übernimmt die gespeicherten Angaben. Ändert sich etwas (z. B. die Löschfrist), speichere zuerst und füge sie dann neu ein, oder passe den Text von Hand an.',
+	'admin.legal.retention': 'Löschfristen',
+	'admin.legal.retentionLead':
+		'Wichtel räumt automatisch auf. Admins werden nie automatisch gelöscht.',
+	'admin.legal.retentionMonths': 'Inaktive Konten löschen nach (Monaten)',
+	'admin.legal.retentionMonthsHint':
+		'Ohne Anmeldung und ohne Schicht. Zwei Wochen vorher kommt eine E-Mail. 0 = nie.',
+	'admin.legal.auditIpDays': 'IP-Adressen im Protokoll löschen nach (Tagen)',
+	'admin.legal.auditIpDaysHint': 'Das Protokoll selbst bleibt erhalten.',
+	'admin.legal.external': 'Externe Seiten',
+	'admin.legal.externalLead':
+		'Stattdessen auf bestehende Seiten verlinken, z. B. auf eurer Festival-Website. Gilt nur, solange oben nichts eingetragen ist.',
+	'admin.settings.legalMoved': 'Impressum und Datenschutzerklärung',
+	'admin.settings.operations': 'Betrieb',
+	'admin.settings.operationsLead': 'Damit ihr merkt, wenn etwas schiefgeht.',
+	'admin.settings.errorAlerts': 'Fehler per E-Mail an alle Admins melden',
+	'admin.settings.errorAlertsHint':
+		'Bei unerwarteten Serverfehlern, mit Fehler-ID und technischen Details. Gleiche Fehler höchstens einmal pro Stunde.',
+	'admin.dash.failedMails': '{count} E-Mails konnten nicht zugestellt werden →',
+	'admin.outbox.title': 'E-Mail-Zustellung',
+	'admin.outbox.lead':
+		'E-Mails, bei denen der Versand gerade hakt oder endgültig gescheitert ist. Wichtel versucht es sechsmal mit wachsendem Abstand.',
+	'admin.outbox.noServer':
+		'Es ist kein E-Mail-Server eingerichtet (SMTP_HOST). E-Mails erscheinen nur im Server-Log.',
+	'admin.outbox.pending': 'In der Warteschlange',
+	'admin.outbox.retrying': 'Neuer Versuch geplant',
+	'admin.outbox.failed': 'Gescheitert',
+	'admin.outbox.none': 'Keine Probleme bei der Zustellung.',
+	'admin.outbox.selectAll': 'Alle auswählen',
+	'admin.outbox.retry': 'Erneut senden',
+	'admin.outbox.discard': 'Verwerfen',
+	'admin.outbox.nextTry': 'nächster Versuch {time}',
+	'admin.outbox.gaveUp': 'aufgegeben',
+	'admin.outbox.attempts': '{count} Versuche',
+	'admin.outbox.nothingSelected': 'Bitte wähle mindestens eine E-Mail aus.',
+	'admin.outbox.retried': 'Die E-Mails werden gleich erneut gesendet.',
+	'admin.outbox.discarded': 'Die E-Mails wurden verworfen.'
 } as const;

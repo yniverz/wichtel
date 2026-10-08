@@ -1,4 +1,4 @@
-import { asc, count, eq, ilike, or, sql } from 'drizzle-orm';
+import { and, asc, count, eq, ilike, isNull, or, sql } from 'drizzle-orm';
 import type { Tx } from '../db/client.ts';
 import { users, type User } from '../db/schema.ts';
 
@@ -16,12 +16,16 @@ export async function searchPeople(
 ): Promise<{ people: PersonSummary[]; total: number }> {
 	const q = query.trim();
 	const pattern = `%${q.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
-	const where = q
-		? or(
-				ilike(users.email, pattern),
-				ilike(sql`${users.firstName} || ' ' || ${users.lastName}`, pattern)
-			)
-		: undefined;
+	// Deleted accounts only remain as placeholders behind old bookings.
+	const where = and(
+		isNull(users.deletedAt),
+		q
+			? or(
+					ilike(users.email, pattern),
+					ilike(sql`${users.firstName} || ' ' || ${users.lastName}`, pattern)
+				)
+			: undefined
+	);
 	const [people, [{ total }]] = await Promise.all([
 		db
 			.select({

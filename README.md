@@ -58,8 +58,9 @@ Portainer, Reverse Proxy, E-Mail und Sicherung: [docs/BETRIEB.md](docs/BETRIEB.m
 
 ## Status
 
-Alle geplanten Funktionen sind umgesetzt. Vor dem ersten echten Einsatz fehlen noch
-Datenschutz-Funktionen (Auskunft und Löschung von Konten) und ein Testlauf unter Last.
+Alle geplanten Funktionen sind umgesetzt, einschließlich Datenauskunft, Kontolöschung,
+Löschfristen und einer Vorlage für die Datenschutzerklärung. Vor dem ersten echten Einsatz fehlt
+noch ein Testlauf unter Last.
 
 ## Lizenz
 

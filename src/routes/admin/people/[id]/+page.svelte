@@ -270,6 +270,28 @@
 						: i18n.t('admin.people.grantAdmin')}
 				</ConfirmForm>
 			</Card>
+
+			<Card title={i18n.t('privacy.adminTitle')} description={i18n.t('privacy.adminLead')}>
+				<div class="space-y-4">
+					<Button
+						href="/admin/people/{data.person.id}/export"
+						variant="secondary"
+						size="sm"
+						download>{i18n.t('privacy.adminExport')}</Button
+					>
+					{#if result?.action === 'delete'}<FormMessage error={result.error} />{/if}
+					<ConfirmForm
+						action="?/deleteAccount"
+						variant="danger"
+						message={i18n.t('privacy.adminDeleteConfirm', {
+							name: `${data.person.firstName} ${data.person.lastName}`
+						})}
+						confirmLabel={i18n.t('privacy.adminDelete')}
+					>
+						{i18n.t('privacy.adminDelete')}
+					</ConfirmForm>
+				</div>
+			</Card>
 		{/if}
 	</div>
 </div>

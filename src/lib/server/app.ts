@@ -1,5 +1,7 @@
 import {
 	DATABASE_URL,
+	LOG_FORMAT,
+	LOG_LEVEL,
 	PUBLIC_URL,
 	SETUP_TOKEN,
 	SMTP_FROM,
@@ -10,12 +12,15 @@ import {
 	SMTP_USER,
 	UPLOAD_DIR
 } from '$app/env/private';
-import { building } from '$app/env';
+import { building, dev } from '$app/env';
 import { connect, type Database, type DB } from './db/client.ts';
 import { setPublicUrl } from './notifications.ts';
-import { processOutbox, queueReminders } from './outbox.ts';
+import { processOutbox, pruneOutbox, queueReminders } from './outbox.ts';
 import { expireHolds } from './services/assignments.ts';
 import { cleanupOAuth } from './services/oauth.ts';
+import { runRetention } from './services/privacy.ts';
+import { configureLog, log } from './log.ts';
+import { reportError } from './alerts.ts';
 import { createConsoleMailer, createSmtpMailer, type Mailer } from './mail.ts';
 import { prepareSetup } from './services/setup.ts';
 import { cleanupExpiredTokens } from './services/accounts.ts';
@@ -38,11 +43,14 @@ const state = ((
 
 export const config = {
 	publicUrl: PUBLIC_URL,
-	uploadDir: UPLOAD_DIR
+	uploadDir: UPLOAD_DIR,
+	/** Whether e-mails are really sent (otherwise they are only logged). */
+	mailServer: Boolean(SMTP_HOST)
 };
 
 export async function initApp(): Promise<void> {
 	if (state.database) return;
+	configureLog({ level: LOG_LEVEL, format: LOG_FORMAT ?? (dev ? 'text' : 'json') });
 	const database = await connect(DATABASE_URL);
 	await database.migrate();
 	state.database = database;
@@ -60,40 +68,51 @@ export async function initApp(): Promise<void> {
 
 	const token = await prepareSetup(database.db, SETUP_TOKEN);
 	if (token) {
-		console.info(
-			`\n  Wichtel is not set up yet. Open this link to create the first admin account:\n  ${PUBLIC_URL}/setup?token=${encodeURIComponent(token)}\n`
-		);
+		log.info('Wichtel is not set up yet. Open this link to create the first admin account.', {
+			url: `${PUBLIC_URL}/setup?token=${encodeURIComponent(token)}`
+		});
 	}
 	await cleanupExpiredTokens(database.db);
 	setPublicUrl(PUBLIC_URL);
 	startWorkers(database.db, state.mailer);
 }
 
-/** Background jobs: sending queued e-mails and scheduling reminders. */
+/** Background jobs: e-mails, reminders, expiring holds and data protection housekeeping. */
 function startWorkers(database: DB, mailer: Mailer) {
 	if (building || state.timers) return;
-	const safely = (job: () => Promise<unknown>) => () => {
-		job().catch((e) => console.error('[worker]', e));
+	const safely = (job: () => Promise<unknown>, name: string) => () => {
+		job().catch((e) => reportError(database, e, { worker: name }));
+	};
+	const housekeeping = async () => {
+		await runRetention({ db: database, uploadDir: UPLOAD_DIR });
+		await pruneOutbox(database);
 	};
 	state.timers = [
 		setInterval(
-			safely(() => processOutbox(database, mailer)),
+			safely(() => processOutbox(database, mailer), 'outbox'),
 			10_000
 		),
 		setInterval(
-			safely(() => queueReminders(database)),
+			safely(() => queueReminders(database), 'reminders'),
 			5 * 60_000
 		),
 		setInterval(
-			safely(() => expireHolds(database)),
+			safely(() => expireHolds(database), 'holds'),
 			60_000
 		),
 		setInterval(
-			safely(() => cleanupOAuth(database)),
+			safely(() => cleanupOAuth(database), 'oauth'),
 			60 * 60_000
-		)
+		),
+		setInterval(safely(housekeeping, 'retention'), 6 * 60 * 60_000)
 	];
-	safely(() => queueReminders(database))();
+	safely(() => queueReminders(database), 'reminders')();
+	safely(housekeeping, 'retention')();
+}
+
+/** The database if it is ready (for error reporting, which must work at any time). */
+export function maybeDb(): DB | null {
+	return state.database?.db ?? null;
 }
 
 export function db(): DB {

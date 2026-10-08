@@ -1,4 +1,4 @@
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray, isNull } from 'drizzle-orm';
 import type { DB, Tx } from '../db/client.ts';
 import {
 	assignments,
@@ -27,7 +27,7 @@ const ACTIVE = ['booked', 'requested'] as const;
 export async function recipients(db: Tx, editionId: string, audience: Audience): Promise<User[]> {
 	let ids: string[];
 	if (audience.kind === 'everyone') {
-		return db.select().from(users);
+		return db.select().from(users).where(isNull(users.deletedAt));
 	}
 	if (audience.kind === 'crew') {
 		ids = (
@@ -54,7 +54,10 @@ export async function recipients(db: Tx, editionId: string, audience: Audience):
 	}
 	const unique = [...new Set(ids)];
 	if (unique.length === 0) return [];
-	return db.select().from(users).where(inArray(users.id, unique));
+	return db
+		.select()
+		.from(users)
+		.where(and(inArray(users.id, unique), isNull(users.deletedAt)));
 }
 
 /** Sends a message to everyone in the audience, in their language where a translation exists. */

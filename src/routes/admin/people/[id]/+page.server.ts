@@ -1,6 +1,7 @@
-import { error, fail } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import { z } from 'zod';
-import { db } from '#lib/server/app.ts';
+import { config, db } from '#lib/server/app.ts';
+import { deleteAccount } from '#lib/server/services/privacy.ts';
 import {
 	grantQualification,
 	listUserQualifications,
@@ -54,7 +55,7 @@ export const load: PageServerLoad = async (event) => {
 		error(403, 'error.forbidden');
 	}
 	const person = await getPerson(db(), event.params.id);
-	if (!person) error(404, 'error.notFound');
+	if (!person || person.deletedAt) error(404, 'error.notFound');
 	const canReviewQualifications = authz.canSomewhere('qualification.review');
 
 	const edition = ctx.edition;
@@ -197,6 +198,24 @@ export const actions: Actions = {
 		);
 		if (!result.ok) return result.failure;
 		return { action: 'admin', success: 'common.saved' };
+	},
+	deleteAccount: async (event) => {
+		const ctx = await getAdminContext(event);
+		requireAdmin(ctx);
+		if (event.params.id === ctx.user.id)
+			return fail(400, { action: 'delete', error: 'privacy.deleteSelfHere' });
+		const result = await attempt(
+			() =>
+				deleteAccount(
+					{ db: db(), uploadDir: config.uploadDir },
+					actorOf(event),
+					event.params.id,
+					'admin'
+				),
+			{ action: 'delete' }
+		);
+		if (!result.ok) return result.failure;
+		redirect(303, '/admin/people?deleted=1');
 	},
 	grantQualification: async (event) => {
 		const ctx = await getAdminContext(event);

@@ -22,7 +22,8 @@
 		swap_pending: '{person}',
 		swap_completed: '{person}',
 		swap_declined: '{person}',
-		urgent_call: '{position}, {free}, {bonus}, {note}'
+		urgent_call: '{position}, {free}, {bonus}, {note}',
+		account_retention: '{months}'
 	};
 </script>
 

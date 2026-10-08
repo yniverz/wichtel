@@ -151,3 +151,53 @@ test('admin connects an AI assistant via OAuth and plans with it', async ({ page
 	await page.goto('/admin/audit');
 	await expect(page.getByText('KI-Assistent verbunden')).toBeVisible();
 });
+
+test('admin publishes legal notice and privacy policy from the template', async ({ page }) => {
+	await page.goto('/login');
+	await page.getByLabel('E-Mail-Adresse').fill(ADMIN.email);
+	await page.getByLabel('Passwort').fill(ADMIN.password);
+	await page.getByRole('button', { name: 'Anmelden' }).click();
+	await expect(page).toHaveURL(/\/app$/);
+
+	await page.goto('/admin/legal');
+	await page.getByLabel('Name und Rechtsform').fill('E2E-Kulturverein e. V.');
+	await page.getByLabel('Anschrift (kein Postfach)').fill('Teststraße 1\n12345 Teststadt');
+	await page.getByLabel('E-Mail-Adresse').fill('verein@example.org');
+	await page.getByRole('button', { name: 'Speichern' }).click();
+	await expect(page.getByText('Gespeichert.', { exact: true })).toBeVisible();
+
+	page.once('dialog', (dialog) => dialog.accept());
+	await page.getByRole('button', { name: 'Vorlage einfügen' }).first().click();
+	await expect(page.getByLabel('Text (Deutsch)')).toHaveValue(/E2E-Kulturverein e\. V\./);
+	await page.getByRole('button', { name: 'Speichern' }).click();
+	await expect(page.getByText('Gespeichert.', { exact: true })).toBeVisible();
+
+	await page.goto('/legal/imprint');
+	await expect(page.getByText('Teststraße 1')).toBeVisible();
+	await page.getByRole('link', { name: 'Datenschutz' }).click();
+	await expect(page.getByRole('heading', { name: 'Datenschutzerklärung' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: /Widerspruchsrecht/ })).toBeVisible();
+});
+
+test('volunteer downloads their data and deletes their account', async ({ page }) => {
+	await page.goto('/login');
+	await page.getByLabel('E-Mail-Adresse').fill(HELPER.email);
+	await page.getByLabel('Passwort').fill(HELPER.password);
+	await page.getByRole('button', { name: 'Anmelden' }).click();
+	await expect(page).toHaveURL(/\/app$/);
+
+	const exported = await (await page.request.get('/app/profile/export')).json();
+	expect(exported.account.email).toBe(HELPER.email);
+
+	await page.goto('/app/profile');
+	await page.getByRole('button', { name: 'Konto löschen …' }).click();
+	await page.getByLabel('Passwort', { exact: true }).fill(HELPER.password);
+	await page.getByRole('button', { name: 'Konto endgültig löschen' }).click();
+	await expect(page).toHaveURL(/\/login\?notice=deleted$/);
+	await expect(page.getByText('Dein Konto wurde gelöscht.')).toBeVisible();
+
+	await page.getByLabel('E-Mail-Adresse').fill(HELPER.email);
+	await page.getByLabel('Passwort').fill(HELPER.password);
+	await page.getByRole('button', { name: 'Anmelden' }).click();
+	await expect(page).toHaveURL(/\/login/);
+});

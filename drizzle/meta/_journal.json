@@ -71,6 +71,13 @@
 			"when": 1791410763737,
 			"tag": "0009_mcp",
 			"breakpoints": true
+		},
+		{
+			"idx": 10,
+			"version": "7",
+			"when": 1791447299702,
+			"tag": "0010_privacy",
+			"breakpoints": true
 		}
 	]
 }

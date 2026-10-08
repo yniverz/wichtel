@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
+	import Alert from '#lib/components/Alert.svelte';
 	import Badge from '#lib/components/Badge.svelte';
 	import Card from '#lib/components/Card.svelte';
 	import PageHeader from '#lib/components/PageHeader.svelte';
@@ -73,6 +74,13 @@
 />
 
 <div class="space-y-12">
+	{#if data.failedMails}
+		<Alert tone="error">
+			<a href="/admin/mail/outbox" class="font-semibold underline"
+				>{i18n.t('admin.dash.failedMails', { count: data.failedMails })}</a
+			>
+		</Alert>
+	{/if}
 	{#if !setupDone && steps.length}
 		<Card title={i18n.t('admin.overview.nextSteps')}>
 			<ul class="divide-y divide-line">

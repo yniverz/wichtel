@@ -74,8 +74,6 @@ export const settingsSchema = z.object({
 	primaryColor: hexColor,
 	accentColor: hexColor,
 	contactEmail: optionalEmail,
-	imprintUrl: optionalUrl,
-	privacyUrl: optionalUrl,
 	defaultLocale: z.enum(LOCALES),
 	timezone: requiredText(64).refine((tz) => {
 		try {
@@ -125,7 +123,31 @@ export const settingsSchema = z.object({
 		.number('error.invalidNumber')
 		.int('error.invalidNumber')
 		.min(0)
-		.max(24 * 60)
+		.max(24 * 60),
+	errorAlerts: checkbox
+});
+
+export const legalSchema = z.object({
+	legalName: optionalText(200),
+	legalAddress: optionalText(500),
+	legalRepresentative: optionalText(500),
+	legalEmail: optionalEmail,
+	legalPhone: optionalText(50),
+	legalRegister: optionalText(300),
+	legalVatId: optionalText(50),
+	imprintExtraDe: optionalText(5000),
+	imprintExtraEn: optionalText(5000),
+	privacyOfficer: optionalText(500),
+	privacyDe: optionalText(60_000),
+	privacyEn: optionalText(60_000),
+	imprintUrl: optionalUrl,
+	privacyUrl: optionalUrl,
+	retentionMonths: z.coerce
+		.number('error.invalidNumber')
+		.int('error.invalidNumber')
+		.min(0)
+		.max(240),
+	auditIpDays: z.coerce.number('error.invalidNumber').int('error.invalidNumber').min(1).max(3650)
 });
 
 const wallTime = z.string().refine(isWallTime, 'error.invalidTime');

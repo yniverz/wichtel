@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm';
 import type { DB, Tx } from '../db/client.ts';
 import { instanceSettings, type InstanceSettings } from '../db/schema.ts';
 import { audit, diff, type Actor } from '../audit.ts';
+import { hasImprint } from '../legal.ts';
 
 export type SettingsUpdate = Partial<
 	Omit<InstanceSettings, 'id' | 'updatedAt' | 'setupTokenHash' | 'pseudonymSalt'>
@@ -51,11 +52,34 @@ async function getSettingsUncached(tx: Tx): Promise<InstanceSettings> {
 	return getSettings(tx);
 }
 
-/** Settings without secrets, safe to send to the browser. */
-export type PublicSettings = Omit<InstanceSettings, 'setupTokenHash' | 'pseudonymSalt'>;
+/** Long texts that are only needed on their own pages. */
+type LegalTexts = 'privacyDe' | 'privacyEn' | 'imprintExtraDe' | 'imprintExtraEn';
+
+/** Settings without secrets (and without the long legal texts), safe to send to the browser. */
+export type PublicSettings = Omit<
+	InstanceSettings,
+	'setupTokenHash' | 'pseudonymSalt' | LegalTexts
+> & {
+	/** Whether /legal/imprint and /legal/privacy have content. */
+	hasImprint: boolean;
+	hasPrivacy: boolean;
+};
 
 export function publicSettings(settings: InstanceSettings): PublicSettings {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { setupTokenHash, pseudonymSalt, ...rest } = settings;
-	return rest;
+	/* eslint-disable @typescript-eslint/no-unused-vars */
+	const {
+		setupTokenHash,
+		pseudonymSalt,
+		privacyDe,
+		privacyEn,
+		imprintExtraDe,
+		imprintExtraEn,
+		...rest
+	} = settings;
+	/* eslint-enable @typescript-eslint/no-unused-vars */
+	return {
+		...rest,
+		hasImprint: hasImprint(settings),
+		hasPrivacy: (privacyDe + privacyEn).trim() !== ''
+	};
 }

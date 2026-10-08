@@ -59,6 +59,12 @@ export const users = pgTable('users', {
 		.notNull()
 		.unique()
 		.default(sql`replace(gen_random_uuid()::text, '-', '')`),
+	/** Last time the person used Wichtel (updated at most once a day); drives the retention job. */
+	lastSeenAt: timestamp('last_seen_at', { withTimezone: true }),
+	/** When the person was told that their inactive account will be anonymised. */
+	retentionNoticeAt: timestamp('retention_notice_at', { withTimezone: true }),
+	/** Set when the account was deleted: personal data is gone, bookings and points stay. */
+	deletedAt: timestamp('deleted_at', { withTimezone: true }),
 	...timestamps
 });
 
@@ -169,6 +175,28 @@ export const instanceSettings = pgTable(
 			.default(sql`'{shifts,staffing,structure}'::text[]`),
 		/** How people appear to AI assistants: `full`, `names` (no contact data) or `pseudonymous`. */
 		mcpPersonalData: text('mcp_personal_data').notNull().default('names'),
+		// Legal notice (Impressum) and privacy policy, see /legal/*
+		legalName: text('legal_name').notNull().default(''),
+		legalAddress: text('legal_address').notNull().default(''),
+		legalRepresentative: text('legal_representative').notNull().default(''),
+		legalEmail: text('legal_email').notNull().default(''),
+		legalPhone: text('legal_phone').notNull().default(''),
+		legalRegister: text('legal_register').notNull().default(''),
+		legalVatId: text('legal_vat_id').notNull().default(''),
+		/** Further text for the legal notice (e.g. editorial responsibility), Markdown. */
+		imprintExtraDe: text('imprint_extra_de').notNull().default(''),
+		imprintExtraEn: text('imprint_extra_en').notNull().default(''),
+		/** Data protection officer, if one is appointed (name and contact). */
+		privacyOfficer: text('privacy_officer').notNull().default(''),
+		/** Privacy policy, Markdown. Empty = no page (or the external `privacyUrl`). */
+		privacyDe: text('privacy_de').notNull().default(''),
+		privacyEn: text('privacy_en').notNull().default(''),
+		/** Accounts without activity are anonymised after this many months (0 = never). */
+		retentionMonths: integer('retention_months').notNull().default(24),
+		/** IP addresses in the audit log are removed after this many days. */
+		auditIpDays: integer('audit_ip_days').notNull().default(90),
+		/** Unexpected server errors are mailed to the admins (throttled). */
+		errorAlerts: boolean('error_alerts').notNull().default(true),
 		/** Secret salt for stable pseudonyms. */
 		pseudonymSalt: text('pseudonym_salt')
 			.notNull()

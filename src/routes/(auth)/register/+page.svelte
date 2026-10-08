@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { legalLinks } from '#lib/legal-links.ts';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import Alert from '#lib/components/Alert.svelte';
@@ -14,6 +15,7 @@
 	const i18n = getI18n();
 	const submitter = pendingForm({ reset: false });
 	const settings = $derived(page.data.settings);
+	const privacyLink = $derived(legalLinks(settings).privacy);
 </script>
 
 <svelte:head><title>{i18n.t('auth.register.title')} · {settings.festivalName}</title></svelte:head>
@@ -76,14 +78,11 @@
 				errors={form?.errors ?? {}}
 			/>
 		{/if}
-		{#if settings.privacyUrl}
+		{#if privacyLink}
 			<p class="text-sm text-ink-muted">
 				{i18n.t('auth.register.privacy')}
-				<a
-					href={settings.privacyUrl}
-					target="_blank"
-					rel="noopener"
-					class="text-brand-text underline">{i18n.t('auth.register.privacyLink')}</a
+				<a href={privacyLink} target="_blank" rel="noopener" class="text-brand-text underline"
+					>{i18n.t('auth.register.privacyLink')}</a
 				>.
 			</p>
 		{/if}

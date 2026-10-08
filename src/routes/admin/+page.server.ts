@@ -2,6 +2,7 @@ import { count, eq } from 'drizzle-orm';
 import { db } from '#lib/server/app.ts';
 import { DEFAULT_PRIMARY, roleAssignments } from '#lib/server/db/schema.ts';
 import { getAdminContext } from '#lib/server/guards.ts';
+import { outboxStatus } from '#lib/server/outbox.ts';
 import { hasShiftAccess, shiftAreaScope } from '#lib/server/shift-access.ts';
 import { pendingRequests } from '#lib/server/services/assignments.ts';
 import { adminNumbers, loadDashboard } from '#lib/server/services/dashboard.ts';
@@ -31,7 +32,7 @@ export const load: PageServerLoad = async (event) => {
 	};
 
 	const shiftAccess = hasShiftAccess(ctx) && edition && tree;
-	const [dashboard, requests, swaps, qualifications, numbers] = await Promise.all([
+	const [dashboard, requests, swaps, qualifications, numbers, mail] = await Promise.all([
 		shiftAccess
 			? loadDashboard(database, edition.id, tree, shiftAreaScope(ctx), settings.timezone, now)
 			: null,
@@ -40,7 +41,8 @@ export const load: PageServerLoad = async (event) => {
 		authz.isAdmin || authz.canSomewhere('qualification.review')
 			? pendingQualifications(database)
 			: [],
-		authz.isAdmin && edition ? adminNumbers(database, edition.id, now) : null
+		authz.isAdmin && edition ? adminNumbers(database, edition.id, now) : null,
+		authz.isAdmin ? outboxStatus(database) : null
 	]);
 
 	return {
@@ -51,6 +53,7 @@ export const load: PageServerLoad = async (event) => {
 			requests: requests.length + swaps.length,
 			qualifications: qualifications.length
 		},
-		numbers
+		numbers,
+		failedMails: mail?.failed ?? 0
 	};
 };

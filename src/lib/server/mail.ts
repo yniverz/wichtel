@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { log } from './log.ts';
 import { readableTextColor } from '#lib/domain/color.ts';
 import { translator, type Locale, type MessageKey } from '#lib/i18n/index.ts';
 
@@ -40,9 +41,12 @@ export function createSmtpMailer(config: SmtpConfig): Mailer {
 export function createConsoleMailer(): Mailer {
 	return {
 		async send(message) {
-			console.info(
-				`\n──── E-Mail (not sent, SMTP_HOST unset) ────\nTo: ${message.to}\nSubject: ${message.subject}\n\n${message.text}\n────────────────────────────────────────────\n`
-			);
+			// Development only: the text contains links (e.g. password reset) to click locally.
+			log.info('e-mail not sent (SMTP_HOST unset)', {
+				to: message.to,
+				subject: message.subject,
+				text: message.text
+			});
 		}
 	};
 }

@@ -24,6 +24,8 @@
 <form method="POST" class="mt-6 space-y-4" use:enhance={submitter.submit}>
 	{#if notice === 'reset'}
 		<Alert tone="success">{i18n.t('auth.reset.success')}</Alert>
+	{:else if notice === 'deleted'}
+		<Alert tone="success">{i18n.t('privacy.deleted')}</Alert>
 	{/if}
 	<FormMessage error={form?.error} />
 	<Field

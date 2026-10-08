@@ -1,9 +1,10 @@
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { z } from 'zod';
 import { eq, sql } from 'drizzle-orm';
 import { config, db } from '#lib/server/app.ts';
 import { users } from '#lib/server/db/schema.ts';
-import { setSessionCookie } from '#lib/server/cookies.ts';
+import { clearSessionCookie, setSessionCookie } from '#lib/server/cookies.ts';
+import { deleteOwnAccount } from '#lib/server/services/privacy.ts';
 import { attempt, requireUser } from '#lib/server/guards.ts';
 import { createSession } from '#lib/server/sessions.ts';
 import { changePassword, updateProfile } from '#lib/server/services/accounts.ts';
@@ -101,6 +102,21 @@ export const actions: Actions = {
 			.set({ calendarToken: sql`replace(gen_random_uuid()::text, '-', '')` })
 			.where(eq(users.id, user.id));
 		return { action: 'calendar', success: 'common.saved' };
+	},
+	deleteAccount: async (event) => {
+		const user = requireUser(event);
+		const parsed = parseForm(
+			z.object({ password: z.string().min(1, 'error.required') }),
+			await event.request.formData()
+		);
+		if (!parsed.ok) return fail(400, { action: 'delete', errors: parsed.errors });
+		const result = await attempt(
+			() => deleteOwnAccount({ db: db(), uploadDir: config.uploadDir }, user, parsed.data.password),
+			{ action: 'delete' }
+		);
+		if (!result.ok) return result.failure;
+		clearSessionCookie(event);
+		redirect(303, '/login?notice=deleted');
 	},
 	fields: async (event) => {
 		const user = requireUser(event);

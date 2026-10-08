@@ -70,7 +70,7 @@ export const en: Record<keyof typeof de, string> = {
 	'auth.register.haveAccount': 'Already registered?',
 	'auth.register.closed': 'Registration is currently closed. Check back soon!',
 	'auth.register.passwordHint': 'At least 10 characters.',
-	'auth.register.privacy': 'By signing up you accept the',
+	'auth.register.privacy': 'How we handle your data is explained in the',
 	'auth.register.privacyLink': 'privacy policy',
 	'auth.checkMail.title': 'Almost there!',
 	'auth.checkMail.text':
@@ -1214,5 +1214,115 @@ export const en: Record<keyof typeof de, string> = {
 	'mail.verify.expiry': 'The link is valid for 48 hours.',
 	'mail.reset.subject': 'Reset your password',
 	'mail.reset.body': 'you can set a new password for {festival} using this link:',
-	'mail.reset.expiry': 'The link is valid for one hour.'
+	'mail.reset.expiry': 'The link is valid for one hour.',
+	// Privacy, legal pages and operations
+	'account.deleted.name': 'Deleted account',
+	'error.page.reference': 'Error ID for support:',
+	'legal.privacyTitle': 'Privacy policy',
+	'audit.user.delete': 'Account deleted',
+	'audit.user.export': 'Data export downloaded',
+	'audit.mail.retry': 'E-mails resent',
+	'audit.mail.discard': 'E-mails discarded',
+	'mailtpl.account_retention.subject': 'Your {festival} account will be deleted soon',
+	'mailtpl.account_retention.body':
+		'Hi {name},\n\nyou have not been active at {festival} for {months} months. So that we do not keep data longer than needed, we will delete your account on {date}.\n\nIf you want to stay, just sign in once before then: {link}\n\nIf not, you do not need to do anything. Your shifts and points then stay in our statistics without your name.\n\nYour {festival} team',
+	'admin.templates.key.account_retention': 'Account deleted for inactivity',
+	'privacy.title': 'My data',
+	'privacy.lead':
+		'What we store about you is described in the privacy policy. Here you can download it or delete your account.',
+	'privacy.exportTitle': 'Download data',
+	'privacy.exportHint':
+		'A file with everything we store about you: profile, shifts, points, goodies, qualifications and sign-ins.',
+	'privacy.export': 'Download my data',
+	'privacy.deleteTitle': 'Delete account',
+	'privacy.deleteHint':
+		'Your personal data is deleted right away and upcoming shifts are cancelled. Past shifts and points remain for statistics without your name. This cannot be undone.',
+	'privacy.delete': 'Delete account …',
+	'privacy.deleteConfirm': 'Please confirm with your password.',
+	'privacy.deletePassword': 'Password',
+	'privacy.deleteFinal': 'Delete account for good',
+	'privacy.deleted': 'Your account has been deleted. Thanks for your help!',
+	'privacy.deleteSelfHere': 'You delete your own account in your profile.',
+	'privacy.adminTitle': 'Data protection',
+	'privacy.adminLead':
+		'For requests by e-mail or letter. People can also do both themselves in their profile.',
+	'privacy.adminExport': 'Download data export',
+	'privacy.adminDelete': 'Delete account',
+	'privacy.adminDeleteConfirm':
+		'Delete the account of {name}? Personal data is removed and upcoming shifts are cancelled. This cannot be undone.',
+	'privacy.adminDeleted': 'The account has been deleted.',
+	'admin.nav.legal': 'Privacy & legal notice',
+	'admin.nav.outbox': 'Delivery',
+	'admin.legal.title': 'Privacy & legal notice',
+	'admin.legal.lead':
+		'Operator details, legal notice, privacy policy and retention periods. Everything is stored here, not in the code.',
+	'admin.legal.operator': 'Operator and legal notice',
+	'admin.legal.operatorLead':
+		'This becomes the legal notice (Impressum, § 5 DDG). It appears once name and address are filled in.',
+	'admin.legal.name': 'Name and legal form',
+	'admin.legal.nameHint': 'As registered, e.g. "Kulturverein Beispiel e. V.".',
+	'admin.legal.address': 'Postal address (no P.O. box)',
+	'admin.legal.representative': 'Represented by',
+	'admin.legal.representativeHint':
+		'For associations, the board members authorised to represent it (§ 26 BGB), with their role.',
+	'admin.legal.email': 'E-mail address',
+	'admin.legal.phone': 'Phone',
+	'admin.legal.phoneHint': 'Besides e-mail, a second fast way to get in touch is required.',
+	'admin.legal.register': 'Register entry',
+	'admin.legal.vatId': 'VAT ID',
+	'admin.legal.extraDe': 'Further details (German)',
+	'admin.legal.extraEn': 'Further details (English)',
+	'admin.legal.markdownHint':
+		'Texts support simple formatting: ## heading, - list, **bold**, [link](https://…).',
+	'admin.legal.privacy': 'Privacy policy',
+	'admin.legal.privacyLead':
+		'A template that fits this installation: it knows your profile fields, retention periods, maps and AI settings.',
+	'admin.legal.templateWarning':
+		'The template is carefully written but is not legal advice. Complete every part in [square brackets] and have the text checked if in doubt.',
+	'admin.legal.officer': 'Data protection officer',
+	'admin.legal.officerHint':
+		'Only if appointed (required e.g. with 20 or more people regularly handling data). Name and contact.',
+	'admin.legal.privacyDe': 'Text (German)',
+	'admin.legal.privacyEn': 'Text (English)',
+	'admin.legal.insertTemplate': 'Insert template',
+	'admin.legal.replaceConfirm': 'Replace the current text with the template?',
+	'admin.legal.todos': '{count} parts in [square brackets] still to complete.',
+	'admin.legal.templateHint':
+		'The template uses the saved details. If something changes (e.g. the retention period), save first and insert it again, or adjust the text by hand.',
+	'admin.legal.retention': 'Retention',
+	'admin.legal.retentionLead':
+		'Wichtel cleans up automatically. Admins are never deleted automatically.',
+	'admin.legal.retentionMonths': 'Delete inactive accounts after (months)',
+	'admin.legal.retentionMonthsHint':
+		'No sign-in and no shift. An e-mail goes out two weeks before. 0 = never.',
+	'admin.legal.auditIpDays': 'Remove IP addresses from the log after (days)',
+	'admin.legal.auditIpDaysHint': 'The log itself is kept.',
+	'admin.legal.external': 'External pages',
+	'admin.legal.externalLead':
+		'Link to existing pages instead, e.g. on your festival website. Only used while nothing is entered above.',
+	'admin.settings.legalMoved': 'Legal notice and privacy policy',
+	'admin.settings.operations': 'Operations',
+	'admin.settings.operationsLead': 'So you notice when something goes wrong.',
+	'admin.settings.errorAlerts': 'Report errors to all admins by e-mail',
+	'admin.settings.errorAlertsHint':
+		'For unexpected server errors, with error ID and technical details. The same error at most once an hour.',
+	'admin.dash.failedMails': '{count} e-mails could not be delivered →',
+	'admin.outbox.title': 'E-mail delivery',
+	'admin.outbox.lead':
+		'E-mails that are currently stuck or failed for good. Wichtel tries six times with growing gaps.',
+	'admin.outbox.noServer':
+		'No mail server is set up (SMTP_HOST). E-mails only appear in the server log.',
+	'admin.outbox.pending': 'Queued',
+	'admin.outbox.retrying': 'Retry scheduled',
+	'admin.outbox.failed': 'Failed',
+	'admin.outbox.none': 'No delivery problems.',
+	'admin.outbox.selectAll': 'Select all',
+	'admin.outbox.retry': 'Send again',
+	'admin.outbox.discard': 'Discard',
+	'admin.outbox.nextTry': 'next try {time}',
+	'admin.outbox.gaveUp': 'gave up',
+	'admin.outbox.attempts': '{count} attempts',
+	'admin.outbox.nothingSelected': 'Please select at least one e-mail.',
+	'admin.outbox.retried': 'The e-mails will be sent again shortly.',
+	'admin.outbox.discarded': 'The e-mails were discarded.'
 };

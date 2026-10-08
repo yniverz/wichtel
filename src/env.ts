@@ -39,6 +39,24 @@ export const variables = defineEnvVars({
 	},
 	SMTP_USER: { schema: optional },
 	SMTP_PASSWORD: { schema: optional },
+	LOG_LEVEL: {
+		description: 'debug, info (default), warn or error.',
+		schema: (value) => {
+			const level = optional(value) ?? 'info';
+			if (!['debug', 'info', 'warn', 'error'].includes(level))
+				throw new Error('LOG_LEVEL must be debug, info, warn or error');
+			return level as 'debug' | 'info' | 'warn' | 'error';
+		}
+	},
+	LOG_FORMAT: {
+		description: '`json` (one JSON object per line) or `text`. Default: json in production.',
+		schema: (value) => {
+			const format = optional(value);
+			if (format !== undefined && format !== 'json' && format !== 'text')
+				throw new Error('LOG_FORMAT must be json or text');
+			return format;
+		}
+	},
 	SMTP_FROM: {
 		description: 'Sender address, e.g. "Wichtel <helfen@example.de>"',
 		schema: (value) => optional(value) ?? 'Wichtel <wichtel@localhost>'

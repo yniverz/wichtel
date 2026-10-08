@@ -20,5 +20,11 @@
 	</p>
 	<h1 class="mt-2 text-2xl font-bold">{i18n.t('error.page.title')}</h1>
 	<p class="mt-2 max-w-prose text-lg text-ink-muted">{message}</p>
+	{#if page.error?.errorId}
+		<p class="mt-2 text-sm text-ink-muted">
+			{i18n.t('error.page.reference')}
+			<code class="font-mono">{page.error.errorId}</code>
+		</p>
+	{/if}
 	<div class="mt-8"><Button href="/">{i18n.t('error.page.home')}</Button></div>
 </main>

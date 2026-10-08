@@ -31,6 +31,9 @@
 	const profileResult = $derived(result?.action === 'profile' ? result : null);
 	const passwordResult = $derived(result?.action === 'password' ? result : null);
 	const fieldsResult = $derived(result?.action === 'fields' ? result : null);
+	const deleteResult = $derived(result?.action === 'delete' ? result : null);
+	let deleting = $state(false);
+	const deleteForm = pendingForm();
 	const values = $derived({ ...data.profile, ...(profileResult?.values ?? {}) });
 </script>
 
@@ -232,6 +235,52 @@
 			</div>
 		</Card>
 	{/if}
+
+	<Card title={i18n.t('privacy.title')} description={i18n.t('privacy.lead')}>
+		<div class="space-y-6">
+			<div class="space-y-2">
+				<p class="text-sm font-semibold">{i18n.t('privacy.exportTitle')}</p>
+				<p class="text-sm text-ink-muted">{i18n.t('privacy.exportHint')}</p>
+				<Button href="/app/profile/export" variant="secondary" size="sm" download
+					>{i18n.t('privacy.export')}</Button
+				>
+			</div>
+			<div class="space-y-2 border-t border-line pt-5" id="delete">
+				<p class="text-sm font-semibold">{i18n.t('privacy.deleteTitle')}</p>
+				<p class="text-sm text-ink-muted">{i18n.t('privacy.deleteHint')}</p>
+				{#if !deleting && !deleteResult}
+					<Button variant="secondary" size="sm" onclick={() => (deleting = true)}
+						>{i18n.t('privacy.delete')}</Button
+					>
+				{:else}
+					<form
+						method="POST"
+						action="?/deleteAccount"
+						class="space-y-3 rounded-md border-2 border-brand p-4"
+						use:enhance={deleteForm.submit}
+					>
+						<p class="text-sm font-semibold">{i18n.t('privacy.deleteConfirm')}</p>
+						<FormMessage error={deleteResult?.error} />
+						<Field
+							label={i18n.t('privacy.deletePassword')}
+							name="password"
+							type="password"
+							autocomplete="current-password"
+							error={deleteResult?.errors?.password}
+						/>
+						<div class="flex flex-wrap gap-2">
+							<Button type="submit" loading={deleteForm.pending}
+								>{i18n.t('privacy.deleteFinal')}</Button
+							>
+							<Button type="button" variant="secondary" onclick={() => (deleting = false)}
+								>{i18n.t('common.cancel')}</Button
+							>
+						</div>
+					</form>
+				{/if}
+			</div>
+		</div>
+	</Card>
 
 	<form method="POST" action="/logout" class="md:hidden">
 		<Button type="submit" variant="secondary" block>{i18n.t('nav.logout')}</Button>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import Alert from '#lib/components/Alert.svelte';
 	import Badge from '#lib/components/Badge.svelte';
 	import Button from '#lib/components/Button.svelte';
 	import PageHeader from '#lib/components/PageHeader.svelte';
@@ -18,6 +19,9 @@
 >
 
 <PageHeader title={i18n.t('admin.people.title')} lead={i18n.t('admin.people.lead')} />
+{#if page.url.searchParams.get('deleted')}
+	<div class="mb-4"><Alert tone="success">{i18n.t('privacy.adminDeleted')}</Alert></div>
+{/if}
 
 <form method="GET" class="mb-4 flex gap-2" role="search" data-sveltekit-keepfocus>
 	<label for="q" class="sr-only">{i18n.t('common.search')}</label>

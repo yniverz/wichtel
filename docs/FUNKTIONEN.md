@@ -53,6 +53,17 @@ Alles, was Wichtel kann – nach Rolle sortiert. Die Kurzfassung steht im [READM
 - **Erscheinungsbild**: Name, Untertitel, Farben mit Kontrastprüfung, Logo, Hintergrund, Favicon.
 - **E-Mail-Vorlagen** pro Sprache anpassbar.
 - **Protokoll** aller Verwaltungsaktionen.
+- **Datenschutz**: Helfende laden ihre Daten selbst herunter und löschen ihr Konto; Admins können
+  beides für Anfragen per Post erledigen. Gelöschte Konten verlieren alle persönlichen Daten,
+  Schichten und Punkte bleiben anonym für die Statistik. Inaktive Konten werden nach einer
+  einstellbaren Frist automatisch anonymisiert (mit Vorwarnung per Mail), IP-Adressen im Protokoll
+  nach einer weiteren Frist entfernt.
+- **Impressum und Datenschutzerklärung** werden in der Verwaltung gepflegt, nicht im Code. Für die
+  Datenschutzerklärung gibt es eine Vorlage, die zur Installation passt (Profilfelder, Löschfristen,
+  Karten, KI-Zugang). Sie ersetzt keine Rechtsberatung: Stellen in [eckigen Klammern] sind zu
+  ergänzen.
+- **Zustellung**: Mails, die nicht rausgehen, sind in der Verwaltung sichtbar und lassen sich
+  erneut senden oder verwerfen.
 - **KI-Assistenten** (z. B. Claude) mit den Rechten der jeweiligen Person – siehe
   [KI-ASSISTENTEN.md](KI-ASSISTENTEN.md).
 

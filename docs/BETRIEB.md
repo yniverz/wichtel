@@ -41,6 +41,8 @@ stellen.
 | `WICHTEL_BIND`      | Adresse auf dem Host (Standard `127.0.0.1`; `0.0.0.0` für das Netz)                                |
 | `SMTP_HOST` …       | Mailserver; ohne ihn landen E-Mails im Log und Konten brauchen keine Bestätigung                   |
 | `SETUP_TOKEN`       | Fester Einrichtungs-Token statt eines zufälligen                                                   |
+| `LOG_LEVEL`         | `debug`, `info` (Standard), `warn` oder `error`                                                    |
+| `LOG_FORMAT`        | `json` (Standard im Container) oder `text`                                                         |
 
 Alle Variablen mit Erklärung stehen in [.env.example](../.env.example).
 
@@ -64,6 +66,37 @@ Für echten Versand `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_
 `SMTP_FROM` setzen. Damit Mails nicht im Spam landen, sollten SPF, DKIM und DMARC für die
 Absender-Domain eingerichtet sein. Mails gehen über eine Warteschlange und werden bei Fehlern
 mehrfach wiederholt.
+
+## Logs und Fehlermeldungen
+
+Wichtel schreibt eine Zeile pro Ereignis nach stdout/stderr, im Container als JSON:
+
+```
+{"time":"2027-06-01T10:00:00.000Z","level":"info","msg":"request","method":"GET","path":"/app/shifts","status":200,"ms":12}
+```
+
+Anfragen werden ohne IP-Adresse und ohne Suchparameter protokolliert. Fehlgeschlagene E-Mails
+erscheinen als `mail failed …` mit der ID der Mail. Ansehen und filtern zum Beispiel mit
+`docker compose logs -f app | jq 'select(.level != "info")'`.
+
+Bei unerwarteten Fehlern sehen Nutzer:innen eine kurze **Fehler-ID**. Dieselbe ID steht im Log
+und in der E-Mail, die alle Admins bekommen (abschaltbar unter Einstellungen → Betrieb;
+derselbe Fehler höchstens einmal pro Stunde, insgesamt höchstens zehn Mails pro Stunde).
+Mails, die endgültig nicht zugestellt werden konnten, zeigt die Übersicht der Verwaltung an;
+unter Kommunikation → Zustellung lassen sie sich erneut senden.
+
+## Datenschutz im Betrieb
+
+- **Impressum und Datenschutzerklärung** pflegt ihr unter Verwaltung → Datenschutz & Impressum.
+  Die Vorlage nennt die Stellen, die vom Betrieb abhängen (Webserver-Logs, Hosting- und
+  Mail-Anbieter, zuständige Aufsichtsbehörde).
+- **Aufräumen** läuft automatisch alle sechs Stunden: Konten ohne Aktivität werden nach der
+  eingestellten Frist (Standard 24 Monate) anonymisiert, zwei Wochen vorher gibt es eine Mail.
+  IP-Adressen im Protokoll werden nach 90 Tagen entfernt, Kopien verschickter Mails nach 30 Tagen.
+- **Logs des Reverse Proxys** enthalten IP-Adressen. Deren Aufbewahrung legt ihr dort fest
+  (z. B. bei Caddy über `log { output file … { roll_keep_for 14d } }`).
+- **Backups** enthalten auch gelöschte Daten, bis sie rotiert sind; nennt die Aufbewahrungsdauer
+  der Sicherungen in der Datenschutzerklärung.
 
 ## Sichern und aktualisieren
 

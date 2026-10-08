@@ -40,7 +40,8 @@ export const MAIL_TEMPLATES = [
 	'swap_pending',
 	'swap_completed',
 	'swap_declined',
-	'urgent_call'
+	'urgent_call',
+	'account_retention'
 ] as const;
 export type MailTemplate = (typeof MAIL_TEMPLATES)[number];
 
@@ -151,11 +152,17 @@ export function shiftParams(
 	};
 }
 
+/** Placeholder address of a deleted account (the reserved `.invalid` top-level domain). */
+export const deletedAddress = (userId: string) => `deleted-${userId}@deleted.invalid`;
+export const isDeletedAddress = (address: string) => address.endsWith('@deleted.invalid');
+
 export async function enqueueMail(
 	tx: Tx,
 	mail: { to: string; subject: string; text: string },
 	sendAfter?: Date
 ) {
+	// Deleted accounts keep a placeholder address that must never receive mail.
+	if (isDeletedAddress(mail.to)) return;
 	const settings = await getSettings(tx);
 	await tx.insert(emailOutbox).values({
 		to: mail.to,

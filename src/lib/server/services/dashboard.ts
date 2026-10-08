@@ -1,4 +1,4 @@
-import { and, count, eq, gte, inArray, isNotNull, sql } from 'drizzle-orm';
+import { and, count, eq, gte, inArray, isNotNull, isNull, sql } from 'drizzle-orm';
 import type { AreaTree } from '#lib/domain/area-tree.ts';
 import { freeSpots } from '#lib/domain/booking.ts';
 import { utcToZoned } from '#lib/domain/time.ts';
@@ -160,7 +160,7 @@ export async function loadDashboard(
 /** Instance-wide numbers for admins: accounts and goodie pickups. */
 export async function adminNumbers(db: Tx, editionId: string, now: Date) {
 	const [[accounts], [verified], [recent], claims] = await Promise.all([
-		db.select({ n: count() }).from(users),
+		db.select({ n: count() }).from(users).where(isNull(users.deletedAt)),
 		db.select({ n: count() }).from(users).where(isNotNull(users.emailVerifiedAt)),
 		db
 			.select({ n: count() })

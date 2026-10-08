@@ -473,26 +473,38 @@
 				value={v.contactEmail}
 				error={result?.errors?.contactEmail}
 			/>
-			<div class="grid gap-4 sm:grid-cols-2">
-				<Field
-					label={i18n.t('admin.settings.imprintUrl')}
-					name="imprintUrl"
-					type="url"
-					optional
-					placeholder="https://"
-					value={v.imprintUrl}
-					error={result?.errors?.imprintUrl}
+			<p class="text-sm">
+				<a href="/admin/legal" class="text-brand-text underline"
+					>{i18n.t('admin.settings.legalMoved')} →</a
+				>
+			</p>
+		</div>
+	</Card>
+
+	<Card
+		title={i18n.t('admin.settings.operations')}
+		description={i18n.t('admin.settings.operationsLead')}
+	>
+		<div class="space-y-3">
+			<label class="flex items-start gap-3">
+				<input
+					type="checkbox"
+					name="errorAlerts"
+					checked={on(v.errorAlerts)}
+					class="mt-0.5 size-5"
 				/>
-				<Field
-					label={i18n.t('admin.settings.privacyUrl')}
-					name="privacyUrl"
-					type="url"
-					optional
-					placeholder="https://"
-					value={v.privacyUrl}
-					error={result?.errors?.privacyUrl}
-				/>
-			</div>
+				<span>
+					<span class="block font-medium">{i18n.t('admin.settings.errorAlerts')}</span>
+					<span class="block text-sm text-ink-muted"
+						>{i18n.t('admin.settings.errorAlertsHint')}</span
+					>
+				</span>
+			</label>
+			<p class="text-sm">
+				<a href="/admin/mail/outbox" class="text-brand-text underline"
+					>{i18n.t('admin.outbox.title')} →</a
+				>
+			</p>
 		</div>
 	</Card>
 
