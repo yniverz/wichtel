@@ -1399,6 +1399,17 @@ export const de = {
 	'admin.outbox.testLogged':
 		'Kein Mailserver eingerichtet (SMTP_HOST): Die Testmail steht nur im Log.',
 	'admin.outbox.testFailed': 'Der Mailserver hat abgelehnt oder ist nicht erreichbar:',
+	'admin.outbox.logTitle': 'Verlauf',
+	'admin.outbox.logLead':
+		'Alle E-Mails der letzten 30 Tage mit Empfänger, Betreff und Stand. Die Texte selbst werden nicht angezeigt, weil sie geheime Links enthalten können.',
+	'admin.outbox.logSearch': 'Empfänger oder Betreff',
+	'admin.outbox.logCount': '{count} E-Mails',
+	'admin.outbox.state.sent': 'verschickt',
+	'admin.outbox.state.queued': 'wartet',
+	'admin.outbox.state.retrying': 'neuer Versuch geplant',
+	'admin.outbox.state.failed': 'gescheitert',
+	'admin.outbox.newer': 'Neuere',
+	'admin.outbox.older': 'Ältere',
 	'admin.outbox.title': 'E-Mail-Zustellung',
 	'admin.outbox.lead':
 		'E-Mails, bei denen der Versand gerade hakt oder endgültig gescheitert ist. Wichtel versucht es sechsmal mit wachsendem Abstand.',

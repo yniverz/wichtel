@@ -1372,6 +1372,17 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.outbox.testLogged':
 		'No mail server set up (SMTP_HOST): the test e-mail is only in the log.',
 	'admin.outbox.testFailed': 'The mail server refused or cannot be reached:',
+	'admin.outbox.logTitle': 'History',
+	'admin.outbox.logLead':
+		'All e-mails of the last 30 days with recipient, subject and state. The texts are not shown because they can contain secret links.',
+	'admin.outbox.logSearch': 'Recipient or subject',
+	'admin.outbox.logCount': '{count} e-mails',
+	'admin.outbox.state.sent': 'sent',
+	'admin.outbox.state.queued': 'waiting',
+	'admin.outbox.state.retrying': 'retry planned',
+	'admin.outbox.state.failed': 'failed',
+	'admin.outbox.newer': 'Newer',
+	'admin.outbox.older': 'Older',
 	'admin.outbox.title': 'E-mail delivery',
 	'admin.outbox.lead':
 		'E-mails that are currently stuck or failed for good. Wichtel tries six times with growing gaps.',

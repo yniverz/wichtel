@@ -1,4 +1,19 @@
-import { and, asc, desc, eq, gt, gte, inArray, isNotNull, isNull, lt, lte, sql } from 'drizzle-orm';
+import {
+	and,
+	asc,
+	desc,
+	eq,
+	gt,
+	gte,
+	ilike,
+	inArray,
+	isNotNull,
+	isNull,
+	lt,
+	lte,
+	or,
+	sql
+} from 'drizzle-orm';
 import type { DB } from './db/client.ts';
 import { assignments, emailOutbox, shifts, users } from './db/schema.ts';
 import type { Mailer } from './mail.ts';
@@ -172,6 +187,54 @@ export async function pruneOutbox(db: DB, now = new Date()) {
 				lt(emailOutbox.createdAt, new Date(now.getTime() - 90 * DAY))
 			)
 		);
+}
+
+export type MailState = 'sent' | 'queued' | 'retrying' | 'failed';
+
+/**
+ * All mails still kept (sent ones for 30 days), newest first, searchable by recipient or subject.
+ * Only the envelope: the texts contain secret links (password reset, confirmation).
+ */
+export async function outboxLog(db: DB, query: string, page = 0, pageSize = 50) {
+	const q = query.trim();
+	const pattern = `%${q.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+	const where = q
+		? or(ilike(emailOutbox.to, pattern), ilike(emailOutbox.subject, pattern))
+		: undefined;
+	const [rows, [{ total }]] = await Promise.all([
+		db
+			.select({
+				id: emailOutbox.id,
+				to: emailOutbox.to,
+				subject: emailOutbox.subject,
+				createdAt: emailOutbox.createdAt,
+				sentAt: emailOutbox.sentAt,
+				attempts: emailOutbox.attempts,
+				lastError: emailOutbox.lastError
+			})
+			.from(emailOutbox)
+			.where(where)
+			.orderBy(desc(emailOutbox.createdAt))
+			.limit(pageSize)
+			.offset(page * pageSize),
+		db
+			.select({ total: sql<number>`count(*)::int` })
+			.from(emailOutbox)
+			.where(where)
+	]);
+	return {
+		total,
+		mails: rows.map((m) => ({
+			...m,
+			state: (m.sentAt
+				? 'sent'
+				: m.attempts >= MAX_ATTEMPTS
+					? 'failed'
+					: m.attempts > 0
+						? 'retrying'
+						: 'queued') as MailState
+		}))
+	};
 }
 
 /** Small health summary for the admin overview. */

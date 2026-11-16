@@ -10,6 +10,7 @@ import {
 	MAX_ATTEMPTS,
 	outboxProblems,
 	outboxStatus,
+	outboxLog,
 	retryMails
 } from '#lib/server/outbox.ts';
 import { parseForm, uuid } from '#lib/server/validation.ts';
@@ -17,9 +18,29 @@ import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
 	requireAdmin(await getAdminContext(event));
-	const [status, problems] = await Promise.all([outboxStatus(db()), outboxProblems(db())]);
+	const q = event.url.searchParams.get('q') ?? '';
+	const pageNo = Math.max(0, Number(event.url.searchParams.get('page') ?? 0) || 0);
+	const [status, problems, history] = await Promise.all([
+		outboxStatus(db()),
+		outboxProblems(db()),
+		outboxLog(db(), q, pageNo, LOG_PAGE)
+	]);
 	return {
 		status,
+		log: {
+			q,
+			pageNo,
+			pages: Math.max(1, Math.ceil(history.total / LOG_PAGE)),
+			total: history.total,
+			mails: history.mails.map((m) => ({
+				id: m.id,
+				to: m.to,
+				subject: m.subject,
+				state: m.state,
+				at: (m.sentAt ?? m.createdAt).toISOString(),
+				lastError: m.state === 'sent' ? '' : (m.lastError ?? '')
+			}))
+		},
 		mailServer: config.mailServer,
 		mails: problems.map((m) => ({
 			id: m.id,
@@ -32,6 +53,8 @@ export const load: PageServerLoad = async (event) => {
 		}))
 	};
 };
+
+const LOG_PAGE = 50;
 
 const selection = z.object({ 'ids[]': z.array(uuid).min(1, 'error.required') });
 

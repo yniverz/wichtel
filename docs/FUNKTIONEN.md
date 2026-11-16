@@ -60,6 +60,8 @@ Alles, was Wichtel kann – nach Rolle sortiert. Die Kurzfassung steht im [READM
 - **Profilfelder** frei konfigurierbar (bei Registrierung, im Profil oder bei der Goodie-Auswahl).
 - **Erscheinungsbild**: Name, Untertitel, Farben mit Kontrastprüfung, Logo, Hintergrund, Favicon.
 - **E-Mail-Vorlagen** pro Sprache anpassbar.
+- **E-Mail-Zustellung**: Testmail an sich selbst, hängende oder gescheiterte Mails erneut senden,
+  Verlauf aller Mails der letzten 30 Tage (Empfänger, Betreff, Stand).
 - **Konten bearbeiten**: Admins korrigieren Name, E-Mail, Telefon, Sprache und Profilfelder; bei
   einer neuen Adresse bekommt die alte einen Hinweis. Passwörter setzen die Personen selbst.
 - **Protokoll** aller Verwaltungsaktionen.

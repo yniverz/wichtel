@@ -24,6 +24,14 @@
 	);
 	let selected: string[] = $state([]);
 	const testForm = pendingForm({ reset: false });
+	const stateTone = {
+		sent: 'success',
+		queued: 'neutral',
+		retrying: 'warning',
+		failed: 'urgent'
+	} as const;
+	const logLink = (p: number) =>
+		`?${new URLSearchParams({ ...(data.log.q ? { q: data.log.q } : {}), page: String(p) })}#log`;
 	const allSelected = $derived(data.mails.length > 0 && selected.length === data.mails.length);
 	const tz = $derived(page.data.settings.timezone);
 </script>
@@ -150,4 +158,62 @@
 			</ul>
 		</form>
 	{/if}
+
+	<section aria-labelledby="log" class="space-y-4">
+		<h2 id="log" class="border-b-2 border-ink pb-1 text-sm font-bold">
+			{i18n.t('admin.outbox.logTitle')}
+		</h2>
+		<p class="text-sm text-ink-muted">{i18n.t('admin.outbox.logLead')}</p>
+		<form method="GET" class="flex gap-2" role="search" data-sveltekit-keepfocus>
+			<label for="q" class="sr-only">{i18n.t('common.search')}</label>
+			<input
+				id="q"
+				type="search"
+				name="q"
+				value={data.log.q}
+				placeholder={i18n.t('admin.outbox.logSearch')}
+				class="h-11 flex-1"
+			/>
+			<Button type="submit" variant="secondary">{i18n.t('common.search')}</Button>
+		</form>
+		<p class="text-sm text-ink-muted">
+			{i18n.t('admin.outbox.logCount', { count: data.log.total })}
+		</p>
+		{#if data.log.mails.length}
+			<ul class="divide-y divide-line border-y border-line">
+				{#each data.log.mails as mail (mail.id)}
+					<li class="grid gap-x-4 gap-y-1 py-3 sm:grid-cols-[9.5rem_1fr_auto]">
+						<time datetime={mail.at} class="text-sm text-ink-muted tabular-nums"
+							>{formatDateTime(new Date(mail.at), i18n.locale, tz)}</time
+						>
+						<div class="min-w-0">
+							<p class="font-semibold">{mail.subject}</p>
+							<p class="text-sm break-all text-ink-muted">{mail.to}</p>
+							{#if mail.lastError}<p class="font-mono text-xs break-all text-ink-muted">
+									{mail.lastError}
+								</p>{/if}
+						</div>
+						<span
+							><Badge tone={stateTone[mail.state]}
+								>{i18n.t(`admin.outbox.state.${mail.state}`)}</Badge
+							></span
+						>
+					</li>
+				{/each}
+			</ul>
+			{#if data.log.pages > 1}
+				<nav class="flex items-center justify-center gap-4 text-sm" aria-label="Pagination">
+					{#if data.log.pageNo > 0}<a
+							class="font-semibold hover:underline"
+							href={logLink(data.log.pageNo - 1)}>← {i18n.t('admin.outbox.newer')}</a
+						>{/if}
+					<span class="text-ink-muted tabular-nums">{data.log.pageNo + 1} / {data.log.pages}</span>
+					{#if data.log.pageNo + 1 < data.log.pages}<a
+							class="font-semibold hover:underline"
+							href={logLink(data.log.pageNo + 1)}>{i18n.t('admin.outbox.older')} →</a
+						>{/if}
+				</nav>
+			{/if}
+		{/if}
+	</section>
 </div>

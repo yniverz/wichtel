@@ -5,7 +5,7 @@ import type { Database } from './db/client.ts';
 import { emailOutbox, mailTemplates } from './db/schema.ts';
 import { buildCalendar } from './ical.ts';
 import { createMemoryMailer, type Mailer } from './mail.ts';
-import { processOutbox, queueReminders } from './outbox.ts';
+import { MAX_ATTEMPTS, outboxLog, processOutbox, queueReminders } from './outbox.ts';
 import { createTestDatabase } from './testing/db.ts';
 import { register } from './services/accounts.ts';
 import { createArea } from './services/areas.ts';
@@ -164,6 +164,31 @@ describe('outbox', () => {
 		expect(await processOutbox(s.db, flaky, new Date(now.getTime() + 2 * 60_000))).toBe(1);
 		expect(memory.sent).toHaveLength(1);
 		expect(await s.db.select().from(emailOutbox).where(isNull(emailOutbox.sentAt))).toHaveLength(0);
+	});
+
+	it('lists every kept mail with its state and finds them by recipient or subject', async () => {
+		const db = database.db;
+		const mail = (to: string, subject: string, extra: Partial<typeof emailOutbox.$inferInsert>) =>
+			db.insert(emailOutbox).values({ to, subject, text: 'geheim', html: '', ...extra });
+		await mail('a@x.org', 'Willkommen', { sentAt: new Date() });
+		await mail('b@x.org', 'Erinnerung', {});
+		await mail('c@x.org', 'Rabatt 100%', { attempts: 2, lastError: 'busy' });
+		await mail('d@x.org', 'Absage', { attempts: MAX_ATTEMPTS });
+
+		const all = await outboxLog(db, '');
+		expect(all.total).toBe(4);
+		expect(Object.fromEntries(all.mails.map((m) => [m.to, m.state]))).toEqual({
+			'a@x.org': 'sent',
+			'b@x.org': 'queued',
+			'c@x.org': 'retrying',
+			'd@x.org': 'failed'
+		});
+		expect(JSON.stringify(all)).not.toContain('geheim');
+		expect((await outboxLog(db, 'B@X')).mails.map((m) => m.to)).toEqual(['b@x.org']);
+		expect((await outboxLog(db, 'erinner')).mails.map((m) => m.to)).toEqual(['b@x.org']);
+		// "%" is a literal character, not a wildcard.
+		expect((await outboxLog(db, '0%')).mails.map((m) => m.to)).toEqual(['c@x.org']);
+		expect((await outboxLog(db, '', 1, 3)).mails).toHaveLength(1);
 	});
 
 	it('queues each reminder once', async () => {

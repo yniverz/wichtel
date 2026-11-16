@@ -89,9 +89,11 @@ wer ein Konto hat.
 Für echten Versand `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD` und
 `SMTP_FROM` setzen. Damit Mails nicht im Spam landen, sollten SPF, DKIM und DMARC für die
 Absender-Domain eingerichtet sein. Mails gehen über eine Warteschlange und werden bei Fehlern
-mehrfach wiederholt. Unter _Kommunikation → Ausgang_ schickt „Testmail an mich senden“ sofort eine
+mehrfach wiederholt. Unter _Kommunikation → Zustellung_ schickt „Testmail an mich senden“ sofort eine
 Mail an die eigene Adresse und zeigt die Antwort des Mailservers – so fallen falsche Zugangsdaten
-oder ein abgelehnter Absender direkt auf.
+oder ein abgelehnter Absender direkt auf. Darunter steht der Verlauf aller Mails der letzten 30 Tage mit
+Empfänger, Betreff und Stand (ohne Mailtexte, weil sie geheime Links enthalten können), durchsuchbar
+nach Empfänger oder Betreff.
 
 **Ohne Mailserver** werden keine Mails verschickt, Adressen gelten ohne Bestätigung, und niemand
 kann sein Passwort selbst zurücksetzen. Die Verwaltung zeigt dann einen Hinweis. Admins erzeugen
