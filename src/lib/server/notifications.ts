@@ -46,13 +46,16 @@ export const MAIL_TEMPLATES = [
 ] as const;
 export type MailTemplate = (typeof MAIL_TEMPLATES)[number];
 
-/** Public base URL for links in e-mails; set once at startup. */
-let publicUrl = 'http://localhost:5173';
+/**
+ * Public base URL for links in e-mails; set once at startup. Kept on `globalThis` like the other
+ * process-wide values, so a module reload in development does not fall back to the default.
+ */
+const urlState = globalThis as { __wichtelPublicUrl?: string };
 export function setPublicUrl(url: string) {
-	publicUrl = url.replace(/\/+$/, '');
+	urlState.__wichtelPublicUrl = url.replace(/\/+$/, '');
 }
 export function appUrl(path: string) {
-	return `${publicUrl}${path}`;
+	return `${urlState.__wichtelPublicUrl ?? 'http://localhost:5173'}${path}`;
 }
 
 const escapeHtml = (s: string) =>

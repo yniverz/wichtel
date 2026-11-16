@@ -51,7 +51,7 @@
 				{
 					label: 'admin.navGroup.communication',
 					items: [
-						{ href: '/admin/mail', label: 'admin.nav.mail', show: data.access.mail },
+						{ href: '/admin/news', label: 'admin.nav.news', show: data.access.news },
 						{
 							href: '/admin/mail/templates',
 							label: 'admin.nav.templates',

@@ -10,8 +10,8 @@ den Rechten der angemeldeten Person** – nie mit mehr.
 1. **Recht vergeben**: In _Rollen_ das Recht „KI-Assistent verbinden“ den Rollen geben, die es
    nutzen sollen (z. B. Gesamt- und Bereichsleitungen). Admins haben es immer.
 2. **Einstellungen → KI-Assistenten**:
-   - _Was Assistenten ändern dürfen_: Schichten planen, Besetzung, Bereiche und Orte, Rundmails,
-     Punkte. Rundmails und Punkte sind anfangs aus. Lesen geht immer; Rollen, Einstellungen und
+   - _Was Assistenten ändern dürfen_: Schichten planen, Besetzung, Bereiche und Orte, Neuigkeiten
+     (auch per E-Mail), Punkte. Neuigkeiten und Punkte sind anfangs aus. Lesen geht immer; Rollen, Einstellungen und
      Konten können Assistenten grundsätzlich nicht ändern.
    - _Personenbezogene Daten_: Namen und Kontaktdaten, nur Namen (Standard) oder Pseudonyme
      („Person 4F2A9C“). Was ein Assistent sieht, verarbeitet dessen Anbieter. Mit Pseudonymen
@@ -42,10 +42,10 @@ Eine Verbindung gilt 90 Tage und lässt sich im Profil jederzeit trennen.
 | Schichten planen  | Schicht anlegen, Serie anlegen, ändern, löschen                                                                                  |
 | Besetzung         | Person eintragen/austragen, Anfragen und Übergaben entscheiden, Dringend-Aufruf starten/beenden                                  |
 | Bereiche und Orte | Bereich anlegen, Ort anlegen                                                                                                     |
-| Rundmails         | Rundmail an Bereich, Schicht, Helfende oder Crew                                                                                 |
+| Neuigkeiten       | Beitrag veröffentlichen (Bereich, Schicht, Rolle, Helfende, Crew; Admins auch alle und öffentlich), standardmäßig auch per Mail  |
 | Punkte            | Punkte gutschreiben oder abziehen                                                                                                |
 
-Folgenreiche Aktionen (Serien, Löschen, Dringend-Aufrufe, Rundmails) liefern zuerst eine Vorschau
+Folgenreiche Aktionen (Serien, Löschen, Dringend-Aufrufe, Neuigkeiten) liefern zuerst eine Vorschau
 und laufen erst nach Bestätigung. Jede Änderung steht im Protokoll mit dem Vermerk „über MCP“.
 
 ## Technik

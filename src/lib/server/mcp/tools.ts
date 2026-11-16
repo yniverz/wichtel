@@ -28,7 +28,8 @@ import {
 	pendingRequests,
 	shiftRoster
 } from '../services/assignments.ts';
-import { recipients, sendBroadcast, type Audience } from '../services/broadcast.ts';
+import { publishNews, recipients } from '../services/news.ts';
+import { mayPublish, NEWS_AUDIENCES } from '#lib/domain/news.ts';
 import { loadDashboard } from '../services/dashboard.ts';
 import { getCurrentEdition, getEdition, listEditions } from '../services/editions.ts';
 import { searchPeople } from '../services/people.ts';
@@ -947,60 +948,65 @@ export function buildMcpServer(ctx: McpContext): McpServer {
 		);
 	}
 
-	// -- e-mail (off by default) --------------------------------------------------
+	// -- news and e-mail (off by default) ----------------------------------------------
 
 	if (enabled('mail')) {
 		tool(
-			'send_group_email',
+			'publish_news',
 			{
-				title: 'Send group e-mail',
+				title: 'Publish news',
 				description:
-					'E-mails the people of an area or shift (or all helpers/crew with edition-wide rights). Placeholders: {name}, {festival}. Without confirm: true it only reports the number of recipients.',
+					"Publishes a post in the volunteers' news feed for an audience (public, everyone, helpers, crew, a role, an area incl. sub-areas, or a shift) and by default also e-mails it to everyone it concerns. The body is Markdown (paragraphs, # headings, - lists, **bold**, [links](https://…)). Without confirm: true it only reports how many people it reaches.",
 				input: {
 					...editionParam,
-					audience: z.enum(['area', 'shift', 'helpers', 'crew']),
+					audience: z.enum(NEWS_AUDIENCES),
 					areaId: z.string().uuid().optional(),
 					shiftId: z.string().uuid().optional(),
-					subject: z.string().min(1).max(200),
-					body: z.string().min(1).max(10_000),
-					subjectEn: z.string().max(200).optional(),
-					bodyEn: z.string().max(10_000).optional(),
+					roleId: z.string().uuid().optional(),
+					title: z.string().min(1).max(200),
+					body: z.string().min(1).max(20_000),
+					titleEn: z.string().max(200).optional(),
+					bodyEn: z.string().max(20_000).optional(),
+					pinned: z.boolean().optional(),
+					sendMail: z.boolean().optional().describe('Also e-mail it (default true).'),
 					confirm: z.boolean().optional()
 				}
 			},
 			async (a) => {
 				const s = await scope(a.editionId);
-				let audience: Audience;
-				if (a.audience === 'area') {
-					if (!a.areaId) throw new ToolError('areaId is required.');
-					require(s.authz.can('mail.send', a.areaId));
-					audience = { kind: 'area', areaId: a.areaId };
-				} else if (a.audience === 'shift') {
-					if (!a.shiftId) throw new ToolError('shiftId is required.');
-					const shift = await shiftFor(s, a.shiftId);
-					require(s.authz.can('mail.send', shift.areaId));
-					audience = { kind: 'shift', shiftId: shift.id };
-				} else {
-					require(s.authz.can('mail.send'));
-					audience = { kind: a.audience };
-				}
+				const input = {
+					audience: a.audience,
+					areaId: a.areaId ?? null,
+					shiftId: a.shiftId ?? null,
+					roleId: a.roleId ?? null,
+					titleDe: a.title,
+					titleEn: a.titleEn ?? '',
+					bodyDe: a.body,
+					bodyEn: a.bodyEn ?? '',
+					pinned: a.pinned ?? false,
+					pinnedUntil: null
+				};
+				const sendMail = a.sendMail ?? true;
 				if (!a.confirm) {
-					const people = await recipients(ctx.db, s.edition.id, audience);
+					const shiftArea = input.shiftId ? (await shiftFor(s, input.shiftId)).areaId : null;
+					require(mayPublish(s.authz, input, shiftArea));
+					const people = await recipients(ctx.db, s.edition.id, input);
 					return {
 						preview: true,
-						recipients: people.length,
-						note: 'Repeat with confirm: true to send.'
+						reaches: people.length,
+						sendMail,
+						note: 'Repeat with confirm: true to publish.'
 					};
 				}
-				const sent = await sendBroadcast(ctx.db, ctx.actor, {
-					editionId: s.edition.id,
-					audience,
-					subjectDe: a.subject,
-					bodyDe: a.body,
-					subjectEn: a.subjectEn ?? '',
-					bodyEn: a.bodyEn ?? ''
-				});
-				return { sent };
+				const { post, mailed } = await publishNews(
+					ctx.db,
+					ctx.actor,
+					s.authz,
+					s.edition.id,
+					input,
+					sendMail
+				);
+				return { id: post.id, mailed };
 			}
 		);
 	}

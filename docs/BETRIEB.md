@@ -89,12 +89,14 @@ wer ein Konto hat.
 Für echten Versand `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD` und
 `SMTP_FROM` setzen. Damit Mails nicht im Spam landen, sollten SPF, DKIM und DMARC für die
 Absender-Domain eingerichtet sein. Mails gehen über eine Warteschlange und werden bei Fehlern
-mehrfach wiederholt.
+mehrfach wiederholt. Unter _Kommunikation → Ausgang_ schickt „Testmail an mich senden“ sofort eine
+Mail an die eigene Adresse und zeigt die Antwort des Mailservers – so fallen falsche Zugangsdaten
+oder ein abgelehnter Absender direkt auf.
 
 **Ohne Mailserver** werden keine Mails verschickt, Adressen gelten ohne Bestätigung, und niemand
 kann sein Passwort selbst zurücksetzen. Die Verwaltung zeigt dann einen Hinweis. Admins erzeugen
 auf der Seite einer Person einen Link zum Zurücksetzen (eine Stunde gültig, protokolliert) und
-geben ihn persönlich weiter. Mailtexte stehen nur in der Entwicklung im Log, weil sie geheime
+geben ihn persönlich weiter; mit Mailserver lässt er sich dort auch direkt an die Person mailen. Mailtexte stehen nur in der Entwicklung im Log, weil sie geheime
 Links enthalten (`LOG_MAIL_BODIES=true` erzwingt es; in Produktion nicht empfohlen).
 
 ## Logs und Fehlermeldungen

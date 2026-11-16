@@ -3,6 +3,7 @@
 	import Button from '#lib/components/Button.svelte';
 	import Footer from '#lib/components/Footer.svelte';
 	import LocaleSwitch from '#lib/components/LocaleSwitch.svelte';
+	import NewsList from '#lib/components/news/NewsList.svelte';
 	import { assetUrl } from '#lib/assets.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
 	import { formatDateRange, localized } from '#lib/i18n/index.ts';
@@ -87,6 +88,23 @@
 			</ol>
 		</section>
 	</main>
+
+	{#if data.news.length}
+		<section aria-labelledby="news" class="mx-auto w-full max-w-6xl px-4 pb-12 sm:px-6">
+			<h2
+				id="news"
+				class="flex items-baseline justify-between border-b-2 border-ink pb-2 text-sm font-bold"
+			>
+				{i18n.t('news.title')}
+				<a href="/news" class="font-semibold text-brand-text hover:underline"
+					>{i18n.t('news.all')} →</a
+				>
+			</h2>
+			<div class="max-w-3xl">
+				<NewsList posts={data.news} base="/news" timezone={data.settings.timezone} compact />
+			</div>
+		</section>
+	{/if}
 
 	<Footer />
 </div>

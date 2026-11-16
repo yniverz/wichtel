@@ -1,6 +1,6 @@
 import { and, eq, gt, lt } from 'drizzle-orm';
 import type { Locale } from '#lib/i18n/index.ts';
-import type { DB } from '../db/client.ts';
+import type { DB, Tx } from '../db/client.ts';
 import { emailTokens, users, type User } from '../db/schema.ts';
 import { getDummyHash, hashPassword, randomToken, sha256, verifyPassword } from '../crypto.ts';
 import { DomainError } from '../errors.ts';
@@ -218,10 +218,14 @@ export async function authenticate(db: DB, email: string, password: string): Pro
 export async function requestPasswordReset(ctx: AccountContext, email: string): Promise<void> {
 	const user = await findUserByEmail(ctx.db, email);
 	if (!user) return;
-	const settings = await getSettings(ctx.db);
 	const token = await issueToken(ctx.db, user.id, 'reset_password', RESET_TTL);
+	await enqueueResetMail(ctx.db, ctx.baseUrl, user, token);
+}
+
+async function enqueueResetMail(tx: Tx, baseUrl: string, user: User, token: string) {
+	const settings = await getSettings(tx);
 	await enqueueMail(
-		ctx.db,
+		tx,
 		linkMail({
 			locale: user.locale,
 			to: user.email,
@@ -231,7 +235,7 @@ export async function requestPasswordReset(ctx: AccountContext, email: string): 
 			subject: 'mail.reset.subject',
 			body: 'mail.reset.body',
 			expiry: 'mail.reset.expiry',
-			link: `${ctx.baseUrl}/reset-password?token=${encodeURIComponent(token)}`
+			link: `${baseUrl}/reset-password?token=${encodeURIComponent(token)}`
 		})
 	);
 }
@@ -255,6 +259,41 @@ export async function createResetLink(
 		link: `${ctx.baseUrl}/reset-password?token=${encodeURIComponent(token)}`,
 		expiresAt: new Date(Date.now() + RESET_TTL)
 	};
+}
+
+/**
+ * E-mails a reset link an admin created to the person it belongs to. Only a link that is still
+ * valid for exactly this person is sent, and only to their own address. Returns that address.
+ */
+export async function mailResetLink(
+	ctx: Pick<AccountContext, 'db' | 'baseUrl'>,
+	actor: Actor,
+	userId: string,
+	token: string
+): Promise<string> {
+	return ctx.db.transaction(async (tx) => {
+		const [user] = await tx.select().from(users).where(eq(users.id, userId));
+		if (!user || user.deletedAt) throw new DomainError('notFound');
+		const [valid] = await tx
+			.select({ id: emailTokens.id })
+			.from(emailTokens)
+			.where(
+				and(
+					eq(emailTokens.id, sha256(token)),
+					eq(emailTokens.userId, user.id),
+					eq(emailTokens.purpose, 'reset_password'),
+					gt(emailTokens.expiresAt, new Date())
+				)
+			);
+		if (!valid) throw new DomainError('invalidToken');
+		await enqueueResetMail(tx, ctx.baseUrl, user, token);
+		await audit(tx, actor, {
+			action: 'user.reset_link_mailed',
+			entityType: 'user',
+			entityId: user.id
+		});
+		return user.email;
+	});
 }
 
 export async function resetPassword(db: DB, token: string, newPassword: string): Promise<User> {

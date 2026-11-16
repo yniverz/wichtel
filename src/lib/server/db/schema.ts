@@ -63,6 +63,8 @@ export const users = pgTable('users', {
 	lastSeenAt: timestamp('last_seen_at', { withTimezone: true }),
 	/** When the person was told that their inactive account will be anonymised. */
 	retentionNoticeAt: timestamp('retention_notice_at', { withTimezone: true }),
+	/** Newest news the person has seen (for the unread count). */
+	newsSeenAt: timestamp('news_seen_at', { withTimezone: true }),
 	/** Set when the account was deleted: personal data is gone, bookings and points stay. */
 	deletedAt: timestamp('deleted_at', { withTimezone: true }),
 	...timestamps
@@ -920,6 +922,50 @@ export const profileValues = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// News
+// ---------------------------------------------------------------------------
+
+export const newsAudienceEnum = pgEnum('news_audience', [
+	'public',
+	'everyone',
+	'helpers',
+	'crew',
+	'role',
+	'area',
+	'shift'
+]);
+
+export const news = pgTable(
+	'news',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		editionId: uuid('edition_id')
+			.notNull()
+			.references(() => editions.id, { onDelete: 'cascade' }),
+		/** Who the post is for; see `#lib/domain/news.ts`. */
+		audience: newsAudienceEnum('audience').notNull(),
+		// If the target is deleted, the post reaches nobody (not everybody).
+		areaId: uuid('area_id').references(() => areas.id, { onDelete: 'set null' }),
+		shiftId: uuid('shift_id').references(() => shifts.id, { onDelete: 'set null' }),
+		roleId: uuid('role_id').references(() => roles.id, { onDelete: 'set null' }),
+		titleDe: text('title_de').notNull(),
+		titleEn: text('title_en').notNull().default(''),
+		/** Markdown (the safe subset of `#lib/domain/markdown.ts`). */
+		bodyDe: text('body_de').notNull(),
+		bodyEn: text('body_en').notNull().default(''),
+		pinned: boolean('pinned').notNull().default(false),
+		/** Pinned until then; null = until unpinned. */
+		pinnedUntil: timestamp('pinned_until', { withTimezone: true }),
+		authorId: uuid('author_id').references(() => users.id, { onDelete: 'set null' }),
+		/** Number of people e-mailed when it was published; null = not sent by e-mail. */
+		mailed: integer('mailed'),
+		publishedAt: timestamp('published_at', { withTimezone: true }).notNull().defaultNow(),
+		...timestamps
+	},
+	(t) => [index('news_edition_idx').on(t.editionId, t.publishedAt)]
+);
+
+// ---------------------------------------------------------------------------
 // E-mail
 // ---------------------------------------------------------------------------
 
@@ -990,6 +1036,7 @@ export type AuditEntry = typeof auditLog.$inferSelect;
 export type Shift = typeof shifts.$inferSelect;
 export type ShiftPosition = typeof shiftPositions.$inferSelect;
 export type Assignment = typeof assignments.$inferSelect;
+export type News = typeof news.$inferSelect;
 export type Goodie = typeof goodies.$inferSelect;
 export type GoodieClaim = typeof goodieClaims.$inferSelect;
 export type PointsEntry = typeof pointsLedger.$inferSelect;

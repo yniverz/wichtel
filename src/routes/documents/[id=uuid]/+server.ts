@@ -10,7 +10,6 @@ import type { RequestHandler } from './$types';
 /** A qualification proof. Visible to its owner and to people allowed to view documents. */
 export const GET: RequestHandler = async (event) => {
 	const user = requireUser(event);
-	if (!/^[0-9a-f-]{36}$/i.test(event.params.id)) error(404, 'error.notFound');
 	const doc = await documentOf(db(), event.params.id);
 	if (!doc?.documentId) error(404, 'error.notFound');
 	if (doc.userId !== user.id) {

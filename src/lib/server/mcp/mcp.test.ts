@@ -162,7 +162,7 @@ describe('MCP endpoint', () => {
 		const names = await toolNames(s.db, token);
 		expect(names).toEqual(expect.arrayContaining(['list_shifts', 'create_shift', 'assign_person']));
 		// Mail and points are off by default.
-		expect(names).not.toContain('send_group_email');
+		expect(names).not.toContain('publish_news');
 		expect(names).not.toContain('adjust_points');
 
 		const created = await call(s.db, token, 'create_shift', shiftArgs(s.bar.id));

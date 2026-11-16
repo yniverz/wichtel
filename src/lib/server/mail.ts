@@ -28,7 +28,11 @@ export function createSmtpMailer(config: SmtpConfig): Mailer {
 		host: config.host,
 		port: config.port,
 		secure: config.secure,
-		auth: config.user ? { user: config.user, pass: config.password } : undefined
+		auth: config.user ? { user: config.user, pass: config.password } : undefined,
+		// An unreachable server fails within seconds instead of holding up the outbox.
+		connectionTimeout: 15_000,
+		greetingTimeout: 15_000,
+		socketTimeout: 30_000
 	});
 	return {
 		async send(message) {
@@ -69,6 +73,22 @@ const escapeHtml = (s: string) =>
 		/[&<>"']/g,
 		(c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!
 	);
+
+/** A short mail that only shows the mail server works (sent from the outbox page). */
+export function testMail(opts: { locale: Locale; to: string; name: string; festival: string }) {
+	const t = translator(opts.locale);
+	const lines = [
+		t('mail.greeting', { name: opts.name }),
+		t('mail.test.body', { festival: opts.festival }),
+		t('mail.signature', { festival: opts.festival })
+	];
+	return {
+		to: opts.to,
+		subject: `${t('mail.test.subject')} · ${opts.festival}`,
+		text: lines.join('\n\n'),
+		html: `<!doctype html><html><body style="font-family:system-ui,sans-serif;line-height:1.5;color:#1d1b17;max-width:560px;margin:0 auto;padding:24px">${lines.map((l) => `<p>${escapeHtml(l)}</p>`).join('')}</body></html>`
+	};
+}
 
 /** Builds a simple transactional mail with greeting, text, a link button and signature. */
 export function linkMail(opts: {

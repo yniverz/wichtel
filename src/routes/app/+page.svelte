@@ -15,6 +15,7 @@
 		localized
 	} from '#lib/i18n/index.ts';
 	import { utcToZoned } from '#lib/domain/time.ts';
+	import NewsList from '#lib/components/news/NewsList.svelte';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -52,6 +53,21 @@
 		<Alert tone="warning">
 			<a href="/app/profile" class="font-semibold underline">{i18n.t('app.home.missingFields')}</a>
 		</Alert>
+	{/if}
+
+	{#if data.news.length}
+		<section aria-labelledby="news" class="max-w-2xl">
+			<h2
+				id="news"
+				class="flex items-baseline justify-between border-b-2 border-ink pb-1 text-sm font-bold"
+			>
+				{i18n.t('news.title')}
+				<a href="/app/news" class="font-semibold text-brand-text hover:underline"
+					>{i18n.t('news.all')} →</a
+				>
+			</h2>
+			<NewsList posts={data.news} base="/app/news" timezone={data.timezone} compact />
+		</section>
 	{/if}
 
 	{#if todoCount > 0}

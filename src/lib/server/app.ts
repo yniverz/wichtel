@@ -127,6 +127,12 @@ export function maybeDb(): DB | null {
 	return state.database?.db ?? null;
 }
 
+/** Sends e-mails right away (normally they go through the outbox); for the test e-mail. */
+export function mailer(): Mailer {
+	if (!state.mailer) throw new Error('Mailer not initialised');
+	return state.mailer;
+}
+
 export function db(): DB {
 	if (!state.database) throw new Error('Database not initialised');
 	return state.database.db;

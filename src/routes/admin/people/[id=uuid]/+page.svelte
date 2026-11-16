@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
+	import Alert from '#lib/components/Alert.svelte';
 	import Badge from '#lib/components/Badge.svelte';
 	import Button from '#lib/components/Button.svelte';
 	import Card from '#lib/components/Card.svelte';
@@ -28,8 +29,10 @@
 	const name = $derived(`${data.person.firstName} ${data.person.lastName}`);
 	const edition = $derived(page.data.edition);
 	const resetLink = $derived(
-		result?.action === 'resetLink' ? (form as { link?: string; expiresAt?: string }) : null
-	) as { link: string; expiresAt: string } | null;
+		result?.action === 'resetLink' && (form as { link?: string }).link
+			? (form as { link: string; expiresAt: string; mailedTo?: string })
+			: null
+	);
 	let resetCopied = $state(false);
 </script>
 
@@ -297,12 +300,24 @@
 									resetCopied = true;
 								}}>{resetCopied ? i18n.t('calendar.copied') : i18n.t('calendar.copy')}</Button
 							>
+							{#if data.mailServer && !resetLink.mailedTo}
+								<form method="POST" action="?/mailResetLink" use:enhance>
+									<input type="hidden" name="link" value={resetLink.link} />
+									<input type="hidden" name="expiresAt" value={resetLink.expiresAt} />
+									<Button type="submit" variant="secondary" size="sm"
+										>{i18n.t('admin.people.resetMail')}</Button
+									>
+								</form>
+							{/if}
 							<span class="text-sm text-ink-muted"
 								>{i18n.t('admin.people.resetValid', {
 									time: formatDateTime(new Date(resetLink.expiresAt), i18n.locale)
 								})}</span
 							>
 						</div>
+						{#if resetLink.mailedTo}<Alert tone="success"
+								>{i18n.t('admin.people.resetMailed', { email: resetLink.mailedTo })}</Alert
+							>{/if}
 					</div>
 				{:else}
 					{#if result?.action === 'resetLink'}<FormMessage error={result.error} />{/if}

@@ -17,11 +17,19 @@
 	type NavItem = {
 		href: string;
 		label: MessageKey;
-		icon: 'home' | 'shifts' | 'goodies' | 'profile' | 'admin';
+		icon: 'home' | 'news' | 'shifts' | 'goodies' | 'profile' | 'admin';
 		soon?: boolean;
+		/** Number shown next to the item (unread news). */
+		count?: number;
 	};
 	const nav = $derived<NavItem[]>([
 		{ href: '/app', label: 'nav.home', icon: 'home' },
+		{
+			href: '/app/news',
+			label: 'nav.news',
+			icon: 'news',
+			count: page.url.pathname.startsWith('/app/news') ? 0 : data.unreadNews
+		},
 		{ href: '/app/shifts', label: 'nav.shifts', icon: 'shifts' },
 		{ href: '/app/goodies', label: 'nav.goodies', icon: 'goodies' },
 		{ href: '/app/profile', label: 'nav.profile', icon: 'profile' },
@@ -55,7 +63,12 @@
 							class="px-3 py-2 text-sm font-semibold transition-colors {isActive(item.href)
 								? 'text-ink underline decoration-brand decoration-2 underline-offset-[6px]'
 								: 'text-ink-muted hover:text-ink'}"
-							aria-current={isActive(item.href) ? 'page' : undefined}>{i18n.t(item.label)}</a
+							aria-current={isActive(item.href) ? 'page' : undefined}
+							>{i18n.t(item.label)}{#if item.count}<span
+									class="ml-1.5 rounded-full bg-brand px-1.5 py-px text-xs text-brand-fg tabular-nums"
+									>{item.count}</span
+								><span class="sr-only">, {i18n.t('news.unread', { count: item.count })}</span
+								>{/if}</a
 						>
 					{/if}
 				{/each}
@@ -124,8 +137,16 @@
 								: 'text-ink-muted'}"
 							aria-current={isActive(item.href) ? 'page' : undefined}
 						>
-							<NavIcon name={item.icon} />
-							{i18n.t(item.label)}
+							<span class="relative">
+								<NavIcon name={item.icon} />
+								{#if item.count}<span
+										class="absolute -top-1.5 -right-2.5 min-w-4 rounded-full bg-brand px-1 text-center text-[10px] leading-4 text-brand-fg tabular-nums"
+										>{item.count}</span
+									>{/if}
+							</span>
+							{i18n.t(item.label)}{#if item.count}<span class="sr-only"
+									>, {i18n.t('news.unread', { count: item.count })}</span
+								>{/if}
 						</a>
 					{/if}
 				</li>

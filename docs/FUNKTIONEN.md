@@ -17,6 +17,8 @@ Alles, was Wichtel kann – nach Rolle sortiert. Die Kurzfassung steht im [READM
   die anderen bekommen einen reservierten Platz mit Ablaufzeit.
 - **Punkte und Goodies**: Punkte für jede geleistete Schicht, Goodies selbst auswählen;
   Pflicht-Goodies (z. B. das Freiticket) werden automatisch zuerst eingelöst oder erstattet.
+- **Neuigkeiten**: Meldungen der Leitung, die einen betreffen, mit Zähler für Ungelesenes; die
+  neuesten auch auf der Startseite.
 - **Persönlicher QR-Code** für Check-in und Goodie-Ausgabe.
 - **Qualifikationen** nachweisen (Ankreuzen oder Dokument hochladen).
 - **Orte mit Plan und Karte**: Treffpunkte auf dem eigenen Geländeplan, auf OpenStreetMap (erst nach
@@ -37,7 +39,10 @@ Alles, was Wichtel kann – nach Rolle sortiert. Die Kurzfassung steht im [READM
   Übergaben in einer Sammelansicht entscheiden, Anwesenheit abhaken.
 - **Dringend-Aufruf**: E-Mail mit Direktlink an alle, die passen und Zeit haben, optional mit
   Bonuspunkten.
-- **Rundmails** an Bereiche, Schichten oder alle Helfenden.
+- **Neuigkeiten** für Bereiche, Schichten, Rollen, die Crew, alle Helfenden oder öffentlich (auch
+  ohne Konto sichtbar); auf Wunsch zusätzlich per E-Mail an alle Betroffenen (ersetzt die
+  Rundmail). Wichtiges lässt sich oben anheften, auch bis zu einem Datum. Leitungen schreiben nur
+  an ihre Bereiche.
 - **Druckansichten**: Schichtplan je Bereich/Tag und Helferliste je Schicht mit Abhak-Spalte.
 - **Ausgabe & Check-in**: QR-Code scannen, Schichten von heute einchecken, Goodies ausgeben.
 

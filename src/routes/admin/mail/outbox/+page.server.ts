@@ -1,6 +1,9 @@
 import { fail } from '@sveltejs/kit';
 import { z } from 'zod';
-import { config, db } from '#lib/server/app.ts';
+import { config, db, mailer } from '#lib/server/app.ts';
+import { testMail } from '#lib/server/mail.ts';
+import { getSettings } from '#lib/server/services/settings.ts';
+import { log } from '#lib/server/log.ts';
 import { actorOf, getAdminContext, requireAdmin } from '#lib/server/guards.ts';
 import {
 	discardMails,
@@ -39,6 +42,30 @@ export const actions: Actions = {
 		if (!parsed.ok) return fail(400, { error: 'admin.outbox.nothingSelected' });
 		await retryMails(db(), actorOf(event), parsed.data['ids[]']);
 		return { success: 'admin.outbox.retried' };
+	},
+	/**
+	 * Sends a short e-mail to the signed-in admin right away (not through the outbox) and shows the
+	 * mail server's answer, so wrong settings show up immediately.
+	 */
+	testMail: async (event) => {
+		const ctx = await getAdminContext(event);
+		requireAdmin(ctx);
+		const settings = await getSettings(db());
+		try {
+			await mailer().send(
+				testMail({
+					locale: event.locals.locale,
+					to: ctx.user.email,
+					name: ctx.user.firstName,
+					festival: settings.festivalName
+				})
+			);
+		} catch (e) {
+			const message = e instanceof Error ? e.message : String(e);
+			log.warn('test e-mail failed', { err: message });
+			return fail(400, { testFailed: message.slice(0, 500) });
+		}
+		return { testSent: ctx.user.email, viaServer: config.mailServer };
 	},
 	discard: async (event) => {
 		requireAdmin(await getAdminContext(event));

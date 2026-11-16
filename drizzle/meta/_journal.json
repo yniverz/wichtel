@@ -92,6 +92,13 @@
 			"when": 1791478197966,
 			"tag": "0012_goodie_pickup",
 			"breakpoints": true
+		},
+		{
+			"idx": 13,
+			"version": "7",
+			"when": 1791479431403,
+			"tag": "0013_news",
+			"breakpoints": true
 		}
 	]
 }

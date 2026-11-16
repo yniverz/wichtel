@@ -14,6 +14,8 @@ import { getSettings } from '#lib/server/services/settings.ts';
 import { fieldsFor, listFields, missingRequired, valuesOf } from '#lib/server/services/fields.ts';
 import { listPlaces, placeView } from '#lib/server/services/places.ts';
 import { pointsBalance } from '#lib/server/services/points.ts';
+import { feed } from '#lib/server/services/news.ts';
+import { newsView } from '#lib/server/news-views.ts';
 import { getGroup } from '#lib/server/services/groups.ts';
 import { acceptHold, cancelOwnAssignment } from '#lib/server/services/assignments.ts';
 import {
@@ -62,13 +64,14 @@ export const load: PageServerLoad = async (event) => {
 		urgent: [],
 		group: null,
 		groupsEnabled: settings.buddyGroupsEnabled,
-		counterOptions: []
+		counterOptions: [],
+		news: []
 	};
 	if (!edition || !user.emailVerifiedAt) return empty;
 
 	const now = new Date();
 	const authz = await loadAuthz(database, user, edition.id);
-	const [summary, desk, points, offers, group] = await Promise.all([
+	const [summary, desk, points, offers, group, posts] = await Promise.all([
 		shiftViewGate.run(() => homeShifts(user, authz, edition.id, now)),
 		edition.deskPlaceId
 			? listPlaces(database, edition.id).then((list) =>
@@ -77,7 +80,8 @@ export const load: PageServerLoad = async (event) => {
 			: Promise.resolve(undefined),
 		pointsBalance(database, user.id, edition.id),
 		offersInvolving(database, user.id, edition.id, now),
-		settings.buddyGroupsEnabled ? getGroup(database, user.id, edition.id) : null
+		settings.buddyGroupsEnabled ? getGroup(database, user.id, edition.id) : null,
+		feed(database, user, edition.id, now)
 	]);
 
 	if (!summary) error(503, 'error.busy');
@@ -155,6 +159,8 @@ export const load: PageServerLoad = async (event) => {
 			bonus: Math.max(...s.positions.map((p) => p.urgent?.bonus ?? 0))
 		})),
 		group: group && { name: group.name, size: group.members.length },
+		/** Pinned posts and the newest ones. */
+		news: posts.slice(0, 3).map((p) => newsView(p, event.locals.locale, now)),
 		groupsEnabled: settings.buddyGroupsEnabled
 	};
 };

@@ -253,9 +253,10 @@ keine Überschneidung) mit Direktlink. Optionaler Punktebonus.
   Registrierung/Bestätigung, Passwort, Buchung, Storno, Anfrage bestätigt/abgelehnt, Warteliste nachgerückt,
   Schicht geändert/abgesagt, Erinnerung (Standard 24 h vorher), Tausch/Börse, Qualifikation geprüft,
   Dringend-Aufruf.
-- **Rundmails** an Zielgruppen (Bedingung, Bereich, Schicht, Gruppe). Wer an wen schreiben darf, ergibt sich
-  aus `mail.send` + Geltungsbereich (Standard: Leitung → eigener Teilbaum, Admin → alle). Konfigurierbar,
-  ob Leitungen überhaupt Rundmails senden dürfen.
+- **Neuigkeiten** (ersetzen Rundmails) an Zielgruppen (Bereich, Schicht, Rolle, Crew, Helfende, alle,
+  öffentlich), wahlweise zusätzlich per E-Mail. Wer an wen schreiben darf, ergibt sich aus `mail.send` +
+  Geltungsbereich (Leitung → eigener Teilbaum, Admin → alle und öffentlich). Sichtbar ist ein Beitrag für
+  alle, die gerade zur Zielgruppe gehören; die Mail geht an die beim Veröffentlichen Betroffenen.
 - **iCal-Abo** mit eigenen Schichten (geheimer, rotierbarer Link).
 - Druckansicht/PDF: Schichtplan je Bereich/Tag, Helferliste je Schicht.
 

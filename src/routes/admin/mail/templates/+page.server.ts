@@ -7,7 +7,7 @@ import {
 	listTemplateOverrides,
 	resetTemplate,
 	saveTemplate
-} from '#lib/server/services/broadcast.ts';
+} from '#lib/server/services/mail-templates.ts';
 import { LOCALES } from '#lib/i18n/index.ts';
 import { parseForm, requiredText } from '#lib/server/validation.ts';
 import type { Actions, PageServerLoad } from './$types';

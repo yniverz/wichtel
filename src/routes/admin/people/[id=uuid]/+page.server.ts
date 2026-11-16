@@ -15,7 +15,7 @@ import {
 	requireAdmin,
 	requireEdition
 } from '#lib/server/guards.ts';
-import { createResetLink, setAdmin } from '#lib/server/services/accounts.ts';
+import { createResetLink, mailResetLink, setAdmin } from '#lib/server/services/accounts.ts';
 import { getSettings } from '#lib/server/services/settings.ts';
 import { getPerson } from '#lib/server/services/people.ts';
 import {
@@ -134,6 +134,7 @@ export const load: PageServerLoad = async (event) => {
 		assignableRoles: assignableRoles.map((r) => ({ id: r.id, nameDe: r.nameDe, nameEn: r.nameEn })),
 		scopes,
 		isSelf: person.id === ctx.user.id,
+		mailServer: config.mailServer,
 		details:
 			authz.isAdmin || authz.can('helper.contact.view') ? await personDetails(person.id) : [],
 		qualifications: canReviewQualifications
@@ -212,6 +213,38 @@ export const actions: Actions = {
 			action: 'resetLink',
 			link: result.value.link,
 			expiresAt: result.value.expiresAt.toISOString()
+		};
+	},
+	/** Sends the link just created (still valid, for this person) to their own address. */
+	mailResetLink: async (event) => {
+		requireAdmin(await getAdminContext(event));
+		const parsed = parseForm(
+			z.object({ link: z.string().max(500), expiresAt: z.string().max(40) }),
+			await event.request.formData()
+		);
+		if (!parsed.ok) return fail(400, { action: 'resetLink', error: 'error.invalidToken' });
+		let token = '';
+		try {
+			token = new URL(parsed.data.link).searchParams.get('token') ?? '';
+		} catch {
+			return fail(400, { action: 'resetLink', error: 'error.invalidToken' });
+		}
+		const result = await attempt(
+			() =>
+				mailResetLink(
+					{ db: db(), baseUrl: config.publicUrl },
+					actorOf(event),
+					event.params.id,
+					token
+				),
+			{ action: 'resetLink' }
+		);
+		if (!result.ok) return result.failure;
+		return {
+			action: 'resetLink',
+			link: parsed.data.link,
+			expiresAt: parsed.data.expiresAt,
+			mailedTo: result.value
 		};
 	},
 	deleteAccount: async (event) => {

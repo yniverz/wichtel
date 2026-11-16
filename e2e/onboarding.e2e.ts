@@ -202,6 +202,34 @@ test('volunteer downloads their data and deletes their account', async ({ page }
 	await expect(page).toHaveURL(/\/login/);
 });
 
+test('admin publishes a public news post that is visible without an account', async ({ page }) => {
+	await page.goto('/login');
+	await page.getByLabel('E-Mail-Adresse').fill(ADMIN.email);
+	await page.getByLabel('Passwort').fill(ADMIN.password);
+	await page.getByRole('button', { name: 'Anmelden' }).click();
+	await expect(page).toHaveURL(/\/app$/);
+
+	await page.goto('/admin/news/new');
+	await page.getByLabel('Öffentlich (auch ohne Konto)').check();
+	await page.getByLabel('Titel (Deutsch)').fill('Helfende gesucht');
+	await page.getByLabel('Text (Deutsch)').fill('Wir suchen noch Leute für den **Aufbau**.');
+	await page.getByLabel('Oben anheften').check();
+	await page.getByRole('button', { name: 'Vorschau' }).click();
+	await expect(page.getByText(/Erreicht \d+ Personen/)).toBeVisible();
+	await page.getByRole('button', { name: 'Veröffentlichen' }).click();
+	await page.getByRole('dialog').getByRole('button', { name: 'Veröffentlichen' }).click();
+	await expect(page).toHaveURL(/\/admin\/news\?published=/);
+	await expect(page.getByRole('link', { name: /Helfende gesucht/ })).toBeVisible();
+
+	await page.context().clearCookies();
+	await page.goto('/');
+	await expect(page.getByRole('link', { name: 'Helfende gesucht' })).toBeVisible();
+	await page.getByRole('link', { name: 'Helfende gesucht' }).click();
+	await expect(page.getByRole('heading', { name: 'Helfende gesucht' })).toBeVisible();
+	await expect(page.getByText('Angeheftet')).toBeVisible();
+	await expect(page.locator('strong', { hasText: 'Aufbau' })).toBeVisible();
+});
+
 test('pages work under the content security policy', async ({ page }) => {
 	const violations: string[] = [];
 	page.on('console', (msg) => {
@@ -226,13 +254,17 @@ test('pages work under the content security policy', async ({ page }) => {
 		'/app/shifts',
 		'/app/goodies',
 		'/app/profile',
+		'/app/news',
 		'/admin',
+		'/admin/news',
+		'/admin/news/new',
 		'/admin/shifts',
 		'/admin/places',
 		'/admin/settings',
 		'/admin/legal',
 		'/print/plan',
-		'/legal/privacy'
+		'/legal/privacy',
+		'/news'
 	]) {
 		await page.goto(path);
 		await page.waitForLoadState('networkidle');

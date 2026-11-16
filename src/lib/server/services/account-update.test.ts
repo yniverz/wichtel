@@ -4,7 +4,13 @@ import type { Database } from '../db/client.ts';
 import { auditLog, emailOutbox, emailTokens, users } from '../db/schema.ts';
 import { DomainError } from '../errors.ts';
 import { createTestDatabase } from '../testing/db.ts';
-import { register, requestPasswordReset, updateAccount } from './accounts.ts';
+import {
+	createResetLink,
+	mailResetLink,
+	register,
+	requestPasswordReset,
+	updateAccount
+} from './accounts.ts';
 import { invalidateSettingsCache } from './settings.ts';
 
 let database: Database;
@@ -112,5 +118,35 @@ describe('updateAccount', () => {
 			updateAccount(s.db, admin, s.anna.id, { ...s.input, firstName: 'X' }),
 			'notFound'
 		);
+	});
+});
+
+describe('mailResetLink', () => {
+	const tokenOf = (link: string) => new URL(link).searchParams.get('token')!;
+
+	it('e-mails a link the admin created to the person it belongs to', async () => {
+		const s = await seed();
+		const { link } = await createResetLink(s.ctx, admin, s.anna.id);
+		await s.db.delete(emailOutbox);
+		expect(await mailResetLink(s.ctx, admin, s.anna.id, tokenOf(link))).toBe('anna@x.org');
+		const mails = await s.db.select().from(emailOutbox);
+		expect(mails.map((m) => m.to)).toEqual(['anna@x.org']);
+		expect(mails[0].text).toContain(link);
+	});
+
+	it('refuses a link of someone else or one that was replaced', async () => {
+		const s = await seed();
+		const first = await createResetLink(s.ctx, admin, s.anna.id);
+		const bens = await createResetLink(s.ctx, admin, s.ben.id);
+		await expectDomainError(
+			mailResetLink(s.ctx, admin, s.anna.id, tokenOf(bens.link)),
+			'invalidToken'
+		);
+		await createResetLink(s.ctx, admin, s.anna.id);
+		await expectDomainError(
+			mailResetLink(s.ctx, admin, s.anna.id, tokenOf(first.link)),
+			'invalidToken'
+		);
+		await expectDomainError(mailResetLink(s.ctx, admin, s.anna.id, 'made-up'), 'invalidToken');
 	});
 });

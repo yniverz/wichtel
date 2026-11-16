@@ -1,8 +1,9 @@
 <script lang="ts">
 	/** Small inline icon set (Lucide-style strokes) – no icon font, no external requests. */
-	let { name }: { name: 'home' | 'shifts' | 'goodies' | 'profile' | 'admin' } = $props();
+	let { name }: { name: 'home' | 'news' | 'shifts' | 'goodies' | 'profile' | 'admin' } = $props();
 	const paths = {
 		home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
+		news: 'M4 4h13v15a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2zM17 9h3v10a2 2 0 0 1-4 0M8 8h5M8 12h5M8 16h3',
 		shifts:
 			'M8 2v4M16 2v4M3 9h18M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM8 14h3v3H8z',
 		goodies:

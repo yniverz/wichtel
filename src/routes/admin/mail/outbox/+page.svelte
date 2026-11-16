@@ -6,14 +6,24 @@
 	import Button from '#lib/components/Button.svelte';
 	import FormMessage from '#lib/components/FormMessage.svelte';
 	import PageHeader from '#lib/components/PageHeader.svelte';
+	import { pendingForm } from '#lib/forms.svelte.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
 	import { formatDateTime } from '#lib/i18n/index.ts';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
 	const i18n = getI18n();
-	const result = $derived(form as { error?: string; success?: string } | null);
+	const result = $derived(
+		form as {
+			error?: string;
+			success?: string;
+			testSent?: string;
+			viaServer?: boolean;
+			testFailed?: string;
+		} | null
+	);
 	let selected: string[] = $state([]);
+	const testForm = pendingForm({ reset: false });
 	const allSelected = $derived(data.mails.length > 0 && selected.length === data.mails.length);
 	const tz = $derived(page.data.settings.timezone);
 </script>
@@ -28,6 +38,30 @@
 	{#if !data.mailServer}
 		<Alert tone="warning">{i18n.t('admin.outbox.noServer')}</Alert>
 	{/if}
+
+	<section aria-labelledby="test" class="space-y-3 border-y border-line py-4">
+		<h2 id="test" class="text-sm font-bold">{i18n.t('admin.outbox.testTitle')}</h2>
+		<p class="text-sm text-ink-muted">
+			{i18n.t('admin.outbox.testLead', { email: page.data.user?.email ?? '' })}
+		</p>
+		<form method="POST" action="?/testMail" use:enhance={testForm.submit}>
+			<Button type="submit" variant="secondary" size="sm" loading={testForm.pending}
+				>{i18n.t('admin.outbox.testSend')}</Button
+			>
+		</form>
+		{#if result?.testSent}
+			<Alert tone={result.viaServer ? 'success' : 'warning'}
+				>{result.viaServer
+					? i18n.t('admin.outbox.testSent', { email: result.testSent })
+					: i18n.t('admin.outbox.testLogged')}</Alert
+			>
+		{:else if result?.testFailed}
+			<Alert tone="error"
+				>{i18n.t('admin.outbox.testFailed')}
+				<code class="mt-1 block font-mono text-sm break-all">{result.testFailed}</code></Alert
+			>
+		{/if}
+	</section>
 
 	<dl class="flex flex-wrap gap-x-12 gap-y-4">
 		{#each [['admin.outbox.pending', data.status.pending, false], ['admin.outbox.retrying', data.status.retrying, false], ['admin.outbox.failed', data.status.failed, data.status.failed > 0]] as const as [label, value, alarm] (label)}
