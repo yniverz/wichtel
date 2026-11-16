@@ -2,6 +2,7 @@ import { fail } from '@sveltejs/kit';
 import { z } from 'zod';
 import { config, db, mailer } from '#lib/server/app.ts';
 import { testMail } from '#lib/server/mail.ts';
+import { emailOutbox } from '#lib/server/db/schema.ts';
 import { getSettings } from '#lib/server/services/settings.ts';
 import { log } from '#lib/server/log.ts';
 import { actorOf, getAdminContext, requireAdmin } from '#lib/server/guards.ts';
@@ -74,15 +75,18 @@ export const actions: Actions = {
 		const ctx = await getAdminContext(event);
 		requireAdmin(ctx);
 		const settings = await getSettings(db());
+		const mail = testMail({
+			locale: event.locals.locale,
+			to: ctx.user.email,
+			name: ctx.user.firstName,
+			festival: settings.festivalName
+		});
 		try {
-			await mailer().send(
-				testMail({
-					locale: event.locals.locale,
-					to: ctx.user.email,
-					name: ctx.user.firstName,
-					festival: settings.festivalName
-				})
-			);
+			await mailer().send(mail);
+			// Shown in the history like every other mail (a failure is only shown on the page).
+			await db()
+				.insert(emailOutbox)
+				.values({ ...mail, sentAt: new Date(), attempts: 1 });
 		} catch (e) {
 			const message = e instanceof Error ? e.message : String(e);
 			log.warn('test e-mail failed', { err: message });
