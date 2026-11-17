@@ -16,6 +16,7 @@
 	const submitter = pendingForm({ reset: false });
 	const settings = $derived(page.data.settings);
 	const privacyLink = $derived(legalLinks(settings).privacy);
+	const next = $derived(page.url.searchParams.get('next'));
 </script>
 
 <svelte:head><title>{i18n.t('auth.register.title')} · {settings.festivalName}</title></svelte:head>
@@ -102,5 +103,8 @@
 
 <p class="mt-6 text-center text-sm text-ink-muted">
 	{i18n.t('auth.register.haveAccount')}
-	<a href="/login" class="font-semibold text-brand-text hover:underline">{i18n.t('nav.login')}</a>
+	<a
+		href={next ? `/login?next=${encodeURIComponent(next)}` : '/login'}
+		class="font-semibold text-brand-text hover:underline">{i18n.t('nav.login')}</a
+	>
 </p>

@@ -81,9 +81,10 @@ async function shiftList(url: URL, user: User, authz: Authz, editionId: string) 
 	const areas = new Map<string, { id: string; nameDe: string; nameEn: string }>();
 	for (const { facts } of all) if (facts.rootArea) areas.set(facts.rootArea.id, facts.rootArea);
 
-	// Booking closed for every upcoming shift: say once when it opens.
+	// Booking closed for every upcoming shift: say once when it opens. Urgent calls are open anyway.
 	const upcoming = all.filter((s) => !s.facts.past);
-	const bookingClosed = upcoming.length > 0 && !upcoming.some((s) => s.facts.bookingOpen);
+	const bookingClosed =
+		upcoming.length > 0 && !upcoming.some((s) => s.facts.bookingOpen || s.facts.urgent);
 	const opensAt = upcoming
 		.map((s) => s.facts.bookingOpensAt?.getTime())
 		.filter((t) => t !== undefined)

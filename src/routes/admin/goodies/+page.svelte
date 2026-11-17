@@ -10,7 +10,8 @@
 	let { data }: PageProps = $props();
 	const i18n = getI18n();
 	const statuses = ['selected', 'issued', 'refund_pending', 'refunded'] as const;
-	const handedOut = (s: Partial<Record<string, number>>) => (s.issued ?? 0) + (s.refunded ?? 0);
+	const live = (s: Partial<Record<string, number>>) =>
+		statuses.reduce((sum, status) => sum + (s[status] ?? 0), 0);
 </script>
 
 <svelte:head
@@ -44,15 +45,15 @@
 							{#if g.selfServiceLimit !== null}
 								<span
 									>{i18n.t('admin.goodies.contingent', {
-										used:
-											(g.stats.selected ?? 0) + handedOut(g.stats) + (g.stats.refund_pending ?? 0),
+										used: live(g.stats),
 										limit: g.selfServiceLimit
 									})}</span
 								>
 							{/if}
 							{#if g.stock !== null}<span
 									>{i18n.t('admin.goodies.stockLeft', {
-										count: g.stock - handedOut(g.stats)
+										// Refunded ones were never handed out.
+										count: g.stock - (g.stats.issued ?? 0)
 									})}</span
 								>{/if}
 						</p>

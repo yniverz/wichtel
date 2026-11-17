@@ -20,6 +20,8 @@ export const de = {
 	'common.confirm': 'Bist du sicher?',
 	'common.menu': 'Menü',
 	'common.skipToContent': 'Zum Inhalt springen',
+	'common.help': 'Hilfe',
+	'common.helpForPage': 'Hilfe zu dieser Seite (öffnet in neuem Tab)',
 
 	'nav.home': 'Start',
 	'nav.shifts': 'Schichten',
@@ -118,6 +120,8 @@ export const de = {
 	'error.areaCycle':
 		'Ein Bereich kann nicht unter sich selbst oder seine Unterbereiche verschoben werden.',
 	'error.areaHasChildren': 'Der Bereich hat noch Unterbereiche. Verschiebe oder lösche sie zuerst.',
+	'error.areaHasShifts':
+		'Im Bereich gibt es noch Schichten. Verschiebe sie in einen anderen Bereich oder lösche sie zuerst.',
 	'error.cannotAssignRole': 'Du kannst nur Rollen vergeben, deren Rechte du dort selbst hast.',
 	'error.alreadyAssigned': 'Diese Rolle ist dort schon vergeben.',
 	'error.lastAdmin': 'Es muss mindestens eine*n Administrator*in geben.',
@@ -194,6 +198,8 @@ export const de = {
 	'admin.editions.archived': 'Archiviert',
 	'admin.editions.archive': 'Archivieren',
 	'admin.editions.unarchive': 'Wiederherstellen',
+	'admin.editions.archiveCurrent':
+		'Das ist der aktuelle Jahrgang. Nach dem Archivieren gibt es keinen aktuellen Jahrgang mehr: Helfende sehen dann nur „Gerade läuft keine Helfer-Saison“ und können nichts buchen. Geht es weiter, mach vorher einen anderen Jahrgang zum aktuellen.',
 	'admin.editions.empty': 'Noch kein Jahrgang angelegt.',
 
 	'admin.areas.title': 'Bereiche',
@@ -305,7 +311,8 @@ export const de = {
 	'admin.settings.registrationOpen': 'Registrierung für neue Helfende geöffnet',
 
 	'admin.audit.title': 'Protokoll',
-	'admin.audit.lead': 'Alle Änderungen durch Leitungen und Admins – unveränderlich gespeichert.',
+	'admin.audit.lead':
+		'Alle Änderungen durch Leitungen und Admins und auch, was Helfende selbst ändern (Tausch, Gruppen, Passwort zurücksetzen, Konto löschen) – unveränderlich gespeichert.',
 	'admin.audit.details': 'Details',
 	'admin.audit.system': 'System',
 	'admin.audit.empty': 'Noch keine Einträge.',
@@ -512,6 +519,7 @@ export const de = {
 	'goodies.claim.refund_pending': 'Erstattung ausstehend',
 	'goodies.claim.refunded': 'erstattet',
 	'goodies.claim.cancel': 'Auswahl aufheben',
+	'goodies.claim.changeVariant': 'Variante ändern',
 	'goodies.claim.cancelConfirm': 'Auswahl aufheben? Du bekommst die Punkte zurück.',
 	'goodies.claim.refund': 'Habe ich schon',
 	'goodies.claim.refundConfirm':
@@ -523,6 +531,8 @@ export const de = {
 	'goodies.variant': 'Variante',
 	'goodies.picked': 'Ausgewählt – hol es an der Ausgabe ab.',
 	'goodies.mandatory': 'Wird automatisch eingelöst, sobald du genug Punkte hast.',
+	'goodies.mandatoryVariant':
+		'Wird automatisch eingelöst, sobald du genug Punkte hast. Die Variante kannst du bis zur Abholung ändern.',
 	'goodies.remaining': 'noch {count} verfügbar',
 	'goodies.reason.notEnoughPoints': 'Dir fehlen noch {count}.',
 	'goodies.reason.notEligible': 'Nur für Helfende aus: {areas}',
@@ -550,7 +560,8 @@ export const de = {
 	'admin.settings.bonusOff': '0 = aus',
 	'admin.shifts.position.points': 'Punkte',
 	'admin.shifts.position.pointsInherit': 'auto',
-	'admin.shifts.position.pointsHint': 'Leer = Punkte nach Bereich bzw. Instanz',
+	'admin.shifts.position.pointsHint':
+		'Punkte pro Schicht für diese Position. Leer = Vorgabe des Bereichs bzw. der Instanz. Punkte pro Stunde kommen dazu.',
 	'admin.goodies.title': 'Goodies',
 	'admin.goodies.lead':
 		'Belohnungen, die Helfende gegen Punkte eintauschen. Hier siehst du auch, wer was bekommen hat.',
@@ -880,7 +891,7 @@ export const de = {
 	'admin.templates.reset': 'Standard wiederherstellen',
 	'admin.templates.resetConfirm': 'Standardtext wiederherstellen? Deine Anpassung geht verloren.',
 	'admin.templates.placeholders':
-		'Platzhalter: {name}, {festival}, {shift}, {date}, {time}, {location}, {link}',
+		'Platzhalter in geschweiften Klammern werden beim Versand ersetzt. Welche eine Vorlage kennt, steht jeweils dabei.',
 	'admin.templates.key.booking_confirmed': 'Buchung bestätigt',
 	'admin.templates.key.booking_requested': 'Anfrage eingegangen',
 	'admin.templates.key.request_approved': 'Anfrage bestätigt',
@@ -922,6 +933,9 @@ export const de = {
 		'Die Karte wird von {host} geladen. Dabei wird deine IP-Adresse an diesen Dienst übertragen.',
 	'places.loadMap': 'Karte laden',
 	'places.openIn': 'Öffnen in:',
+	'places.appleMaps': 'Apple Karten',
+	'places.zoomIn': 'Vergrößern',
+	'places.zoomOut': 'Verkleinern',
 	'app.home.desk': 'So findest du die Helferanmeldung',
 	'admin.nav.places': 'Orte & Geländeplan',
 	'admin.places.title': 'Orte & Geländeplan',
@@ -1167,7 +1181,11 @@ export const de = {
 	'mailtpl.account_email_changed.subject': 'Deine E-Mail-Adresse bei {festival} wurde geändert',
 	'mailtpl.account_email_changed.body':
 		'Hallo {name},\n\ndie Festivalleitung hat die E-Mail-Adresse deines Kontos bei {festival} geändert. Nachrichten und Anmeldung laufen ab jetzt über die neue Adresse; an diese Adresse schicken wir nichts mehr.\n\nWenn du das nicht wolltest, melde dich bitte bei uns.\n\nDein {festival}-Team',
-	'admin.templates.extra': 'Zusätzlich in dieser Vorlage: {list}',
+	'admin.templates.available': 'Platzhalter in dieser Vorlage: {list}',
+	'admin.templates.retentionDate':
+		'{placeholder} ist hier der Tag, an dem das Konto gelöscht wird.',
+	'admin.templates.unknown':
+		'Gespeichert. Diese Vorlage kennt {list} nicht – das steht dann genau so in der E-Mail.',
 	// Lead dashboard, print views, copying editions
 	'admin.dash.filled': 'Besetzt',
 	'admin.dash.places': '{booked} von {capacity} Plätzen',
@@ -1195,6 +1213,7 @@ export const de = {
 		'Es ist kein E-Mail-Server eingerichtet (SMTP_HOST). E-Mails werden nicht verschickt, Adressen nicht bestätigt, und niemand kann sein Passwort selbst zurücksetzen. Reset-Links erzeugst du auf der Seite der Person.',
 	'print.print': 'Drucken',
 	'print.plan': 'Schichtplan drucken',
+	'print.planDay': 'Schichtplan für einen Tag drucken:',
 	'print.crew': 'Helferliste drucken',
 	'print.position': 'Position',
 	'print.name': 'Name',
@@ -1301,6 +1320,13 @@ export const de = {
 	'admin.settings.errorAlerts': 'Fehler per E-Mail an alle Admins melden',
 	'admin.settings.errorAlertsHint':
 		'Bei unerwarteten Serverfehlern, mit Fehler-ID und technischen Details. Gleiche Fehler höchstens einmal pro Stunde.',
+	'admin.settings.help': 'Hilfe',
+	'admin.settings.helpLead':
+		'Jede Seite verlinkt auf die passende Seite der Wichtel-Hilfe. Für Helfende könnt ihr stattdessen eure eigene FAQ verlinken.',
+	'admin.settings.helpUrl': 'Eigene Hilfeseite',
+	'admin.settings.helpUrlHint':
+		'Adresse eurer FAQ, z. B. https://festival.example/faq. Dann führen die Hilfe-Links für Helfende, auf Anmelde-Seiten und im Footer dorthin; die Verwaltung verlinkt weiter auf die Wichtel-Hilfe. Leer = Wichtel-Hilfe.',
+	'admin.settings.helpPreview': 'Wichtel-Hilfe ansehen',
 	'audit.mcp.connect': 'KI-Assistent verbunden',
 	'audit.mcp.disconnect': 'KI-Assistent getrennt',
 	'audit.mcp.token_reuse': 'KI-Verbindung getrennt (Token mehrfach benutzt)',

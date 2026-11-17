@@ -5,7 +5,8 @@ import { setLocale } from '#lib/server/services/accounts.ts';
 import { isLocale } from '#lib/i18n/index.ts';
 import type { RequestHandler } from './$types';
 
-export const POST: RequestHandler = async ({ request, cookies, locals, url }) => {
+export const POST: RequestHandler = async (event) => {
+	const { request, cookies, locals } = event;
 	const form = await request.formData();
 	const locale = form.get('locale');
 	if (isLocale(locale)) {
@@ -14,7 +15,7 @@ export const POST: RequestHandler = async ({ request, cookies, locals, url }) =>
 			maxAge: 60 * 60 * 24 * 365,
 			sameSite: 'lax',
 			httpOnly: false,
-			secure: secureCookie({ url })
+			secure: secureCookie(event)
 		});
 		if (locals.user) await setLocale(db(), locals.user.id, locale);
 	}

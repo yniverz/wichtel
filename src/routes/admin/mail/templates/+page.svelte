@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
+	import Alert from '#lib/components/Alert.svelte';
 	import Badge from '#lib/components/Badge.svelte';
 	import Button from '#lib/components/Button.svelte';
 	import ConfirmForm from '#lib/components/ConfirmForm.svelte';
@@ -12,19 +13,14 @@
 
 	let { data, form }: PageProps = $props();
 	const i18n = getI18n();
-	type Result = { at?: string; error?: string; success?: string; errors?: Record<string, string> };
-	const result = $derived(form as Result | null);
-	/** Placeholders some templates offer in addition to the common ones. */
-	const extra: Record<string, string> = {
-		group_hold: '{person}, {until}',
-		swap_offered: '{person}',
-		swap_proposed: '{person}, {given}',
-		swap_pending: '{person}',
-		swap_completed: '{person}',
-		swap_declined: '{person}',
-		urgent_call: '{position}, {free}, {bonus}, {note}',
-		account_retention: '{months}'
+	type Result = {
+		at?: string;
+		error?: string;
+		success?: string;
+		unknown?: string;
+		errors?: Record<string, string>;
 	};
+	const result = $derived(form as Result | null);
 </script>
 
 <svelte:head
@@ -46,11 +42,14 @@
 						>{i18n.t('admin.templates.customised')}</Badge
 					>{/if}
 			</summary>
-			{#if extra[t.key]}
-				<p class="border-t border-line px-4 pt-3 text-sm text-ink-muted">
-					{i18n.t('admin.templates.extra', { list: extra[t.key] })}
-				</p>
-			{/if}
+			<p class="border-t border-line px-4 pt-3 text-sm text-ink-muted">
+				{i18n.t('admin.templates.available', {
+					list: t.placeholders.map((name) => `{${name}}`).join(', ')
+				})}
+				{#if t.key === 'account_retention'}
+					{i18n.t('admin.templates.retentionDate', { placeholder: '{date}' })}
+				{/if}
+			</p>
 			<div class="grid gap-6 border-t border-line p-4 lg:grid-cols-2">
 				{#each t.versions as v (v.locale)}
 					{@const at = `${t.key}:${v.locale}`}
@@ -61,7 +60,11 @@
 									>{i18n.t('admin.templates.customised')}</span
 								>{/if}
 						</p>
-						{#if result?.at === at}<FormMessage
+						{#if result?.at === at && result.unknown}
+							<Alert tone="warning"
+								>{i18n.t('admin.templates.unknown', { list: result.unknown })}</Alert
+							>
+						{:else if result?.at === at}<FormMessage
 								error={result.error}
 								success={result.success}
 							/>{/if}

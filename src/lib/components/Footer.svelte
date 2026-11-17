@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { getI18n } from '#lib/i18n/context.ts';
+	import { helperHelpLink } from '#lib/help.ts';
 	import { legalLinks } from '#lib/legal-links.ts';
 
 	const i18n = getI18n();
@@ -16,6 +17,12 @@
 			>{/if}
 		{#if links.privacy}<a class="hover:text-ink" href={links.privacy}>{i18n.t('footer.privacy')}</a
 			>{/if}
+		<a
+			class="hover:text-ink"
+			href={helperHelpLink(i18n.locale, settings?.helpUrl)}
+			target="_blank"
+			rel="noopener">{i18n.t('common.help')}</a
+		>
 		{#if settings?.contactEmail}<a class="hover:text-ink" href="mailto:{settings.contactEmail}"
 				>{i18n.t('footer.contact')}</a
 			>{/if}

@@ -196,6 +196,19 @@ describe('news', () => {
 		expect(byTo['sam@x.org'].text).toContain('We meet at gate 3.');
 	});
 
+	it('does not e-mail unconfirmed or deleted addresses', async () => {
+		const s = await seed();
+		await s.db.update(users).set({ emailVerifiedAt: null }).where(eq(users.id, s.sam.id));
+		await s.db.update(users).set({ deletedAt: new Date() }).where(eq(users.id, s.lou.id));
+		for (const audience of ['everyone', 'public', 'area'] as const) {
+			const target = { audience, areaId: audience === 'area' ? s.infra.id : null };
+			const ids = (await recipients(s.db, s.edition.id, s.input(target))).map((u) => u.id);
+			expect(ids, audience).toContain(s.kim.id);
+			expect(ids, audience).not.toContain(s.sam.id);
+			expect(ids, audience).not.toContain(s.lou.id);
+		}
+	});
+
 	it('shows a post to exactly the people it e-mails', async () => {
 		const s = await seed();
 		const targets: Partial<NewsTarget>[] = [

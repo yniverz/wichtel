@@ -14,6 +14,30 @@ export function setupToken(value: string | undefined): string | undefined {
 
 const optional = (value: string | undefined) => (value === '' ? undefined : value);
 
+/**
+ * Links in e-mails and the scheme of direct http access are built from it, and the app is always
+ * served at the root of its host (there is no base path), so only scheme, host and port are allowed.
+ */
+export function publicUrl(value: string | undefined): string {
+	const raw = (optional(value) ?? 'http://localhost:5173').trim().replace(/\/+$/, '');
+	const example = 'e.g. https://helfen.example.de';
+	let url: URL;
+	try {
+		url = new URL(raw);
+	} catch {
+		throw new Error(
+			`PUBLIC_URL must be an absolute URL starting with https:// or http:// (${example})`
+		);
+	}
+	if (url.protocol !== 'https:' && url.protocol !== 'http:')
+		throw new Error(`PUBLIC_URL must start with https:// or http:// (${example})`);
+	if (url.username || url.password || url.pathname !== '/' || url.search || url.hash)
+		throw new Error(
+			`PUBLIC_URL must not contain a path, query or user name – Wichtel runs at the root of its own (sub)domain (${example})`
+		);
+	return url.origin;
+}
+
 export const variables = defineEnvVars({
 	DATABASE_URL: {
 		description:
@@ -21,8 +45,14 @@ export const variables = defineEnvVars({
 		schema: (value) => optional(value) ?? 'pglite://./data/dev-db'
 	},
 	PUBLIC_URL: {
-		description: 'Public base URL used in e-mails, e.g. https://helfen.example.de',
-		schema: (value) => (optional(value) ?? 'http://localhost:5173').replace(/\/+$/, '')
+		description:
+			'Public base URL used in e-mails, e.g. https://helfen.example.de (scheme, host and optional port only).',
+		schema: publicUrl
+	},
+	PROTOCOL_HEADER: {
+		description:
+			'Read by the Node adapter (e.g. x-forwarded-proto behind a reverse proxy). Without that header in a request, the scheme of PUBLIC_URL is used.',
+		schema: (value) => optional(value?.trim())?.toLowerCase()
 	},
 	UPLOAD_DIR: {
 		description: 'Directory for uploaded files (logos, backgrounds, …).',
@@ -76,7 +106,8 @@ export const variables = defineEnvVars({
 			optional(value) === undefined ? undefined : value === 'true' || value === '1'
 	},
 	SMTP_FROM: {
-		description: 'Sender address, e.g. "Wichtel <helfen@example.de>"',
-		schema: (value) => optional(value) ?? 'Wichtel <wichtel@localhost>'
+		description:
+			'Sender address, e.g. "Wichtel <helfen@example.de>". Set it whenever SMTP_HOST is set: the fallback is rejected by most mail servers.',
+		schema: optional
 	}
 });

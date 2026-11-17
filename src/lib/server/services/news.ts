@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, inArray, isNull } from 'drizzle-orm';
+import { and, desc, eq, gt, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { feedOrder, mayPublish, reaches, type NewsTarget, type Reader } from '#lib/domain/news.ts';
 import type { Authz } from '#lib/domain/permissions.ts';
 import { localized, translator } from '#lib/i18n/index.ts';
@@ -124,9 +124,12 @@ export async function markNewsSeen(db: Tx, userId: string, at: Date) {
 	await db.update(users).set({ newsSeenAt: at }).where(eq(users.id, userId));
 }
 
-/** The people a post reaches right now, each once (for the e-mail). */
+/**
+ * The people a post reaches right now, each once (for the e-mail). Unconfirmed addresses get no
+ * mail (like urgent calls); without a mail server new addresses count as confirmed anyway.
+ */
 export async function recipients(db: Tx, editionId: string, target: NewsTarget): Promise<User[]> {
-	const active = isNull(users.deletedAt);
+	const active = and(isNull(users.deletedAt), isNotNull(users.emailVerifiedAt));
 	if (target.audience === 'public' || target.audience === 'everyone') {
 		return db.select().from(users).where(active);
 	}

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import HelpLink from './HelpLink.svelte';
 
 	let {
 		title,
@@ -21,7 +22,10 @@
 		</a>
 	{/if}
 	<div class="flex flex-wrap items-end justify-between gap-3">
-		<h1 class="font-display text-4xl uppercase sm:text-5xl">{title}</h1>
+		<div class="flex min-w-0 items-center gap-3">
+			<h1 class="font-display text-4xl uppercase sm:text-5xl">{title}</h1>
+			<HelpLink />
+		</div>
 		{#if actions}<div class="flex gap-2">{@render actions()}</div>{/if}
 	</div>
 	{#if lead}<p class="mt-3 max-w-2xl text-ink-muted">{lead}</p>{/if}

@@ -1,5 +1,6 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import { SESSION_COOKIE } from './sessions.ts';
+import { requestUrl } from './origin.ts';
 
 export const LOCALE_COOKIE = 'wichtel_locale';
 export const ADMIN_EDITION_COOKIE = 'wichtel_admin_edition';
@@ -14,8 +15,8 @@ export function setHttpsOnly(value: boolean) {
  * Whether cookies get the `Secure` flag. Not left to the proxy alone: if it forgets
  * `X-Forwarded-Proto`, the session cookie would otherwise also travel over plain http.
  */
-export function secureCookie(event: Pick<RequestEvent, 'url'>): boolean {
-	return httpsOnly || event.url.protocol === 'https:';
+export function secureCookie(event: Pick<RequestEvent, 'url' | 'request'>): boolean {
+	return httpsOnly || requestUrl(event).protocol === 'https:';
 }
 
 export function setSessionCookie(event: RequestEvent, token: string, expiresAt: Date): void {
@@ -29,7 +30,7 @@ export function setSessionCookie(event: RequestEvent, token: string, expiresAt: 
 }
 
 export function clearSessionCookie(event: RequestEvent): void {
-	event.cookies.delete(SESSION_COOKIE, { path: '/' });
+	event.cookies.delete(SESSION_COOKIE, { path: '/', secure: secureCookie(event) });
 }
 
 const PROBE = 'http://wichtel.invalid';

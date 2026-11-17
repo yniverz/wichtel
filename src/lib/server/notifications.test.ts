@@ -5,6 +5,8 @@ import type { Database } from './db/client.ts';
 import { emailOutbox, mailTemplates } from './db/schema.ts';
 import { buildCalendar } from './ical.ts';
 import { createMemoryMailer, type Mailer } from './mail.ts';
+import { MAIL_TEMPLATES, templateText, unknownPlaceholders } from './notifications.ts';
+import { LOCALES } from '#lib/i18n/index.ts';
 import { MAX_ATTEMPTS, outboxLog, processOutbox, queueReminders } from './outbox.ts';
 import { createTestDatabase } from './testing/db.ts';
 import { register } from './services/accounts.ts';
@@ -137,6 +139,26 @@ describe('notifications', () => {
 			'Geändert: Bar',
 			'Abgesagt: Bar Nord'
 		]);
+	});
+});
+
+describe('template placeholders', () => {
+	it('lists every placeholder the default texts use', async () => {
+		for (const key of MAIL_TEMPLATES) {
+			for (const locale of LOCALES) {
+				const { subject, body } = await templateText(database.db, key, locale);
+				expect(unknownPlaceholders(key, `${subject}\n${body}`), `${key}:${locale}`).toEqual([]);
+			}
+		}
+	});
+
+	it('finds placeholders a template does not fill', () => {
+		expect(
+			unknownPlaceholders('account_retention', 'Bis {date}, {shift} und {time} {shift}')
+		).toEqual(['shift', 'time']);
+		expect(
+			unknownPlaceholders('reminder', '{name}: {shift} am {date} um {time}{location}')
+		).toEqual([]);
 	});
 });
 

@@ -432,6 +432,27 @@ export async function cancelClaim(
 	});
 }
 
+/**
+ * The person picks another variant (e.g. T-shirt size) of a claim that is not handed out yet. Also
+ * for mandatory goodies, which are redeemed automatically with the first variant.
+ */
+export async function changeVariant(
+	db: DB,
+	scope: ClaimScope,
+	claimId: string,
+	variant: string | null
+): Promise<void> {
+	await db.transaction(async (tx) => {
+		const { claim, goodie } = await loadClaim(tx, claimId, scope);
+		if (claim.status !== 'selected') throw new DomainError('claimNotOpen');
+		if (goodie.variants.length === 0) throw new DomainError('notFound');
+		await tx
+			.update(goodieClaims)
+			.set({ variant: checkVariant(goodie, variant) })
+			.where(eq(goodieClaims.id, claimId));
+	});
+}
+
 /** "I already have one": the claim becomes a pending refund. Points stay used. */
 export async function requestRefund(db: DB, scope: ClaimScope, claimId: string): Promise<void> {
 	await db.transaction(async (tx) => {
@@ -495,7 +516,8 @@ export async function markRefunded(
 
 /**
  * Redeems mandatory goodies (e.g. the free ticket) in priority order as soon as the person has
- * enough confirmed points. Called after every points change from attendance.
+ * enough confirmed points. Called after points were added (attendance, manual corrections). The
+ * first variant is preset; the person can change it until pickup (`changeVariant`).
  */
 export async function applyMandatoryGoodies(
 	tx: Tx,

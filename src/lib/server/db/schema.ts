@@ -133,6 +133,8 @@ export const instanceSettings = pgTable(
 		}),
 		faviconAssetId: uuid('favicon_asset_id').references(() => assets.id, { onDelete: 'set null' }),
 		contactEmail: text('contact_email').notNull().default(''),
+		/** The festival's own help page (FAQ). Empty = the Wichtel help site, see `$lib/help.ts`. */
+		helpUrl: text('help_url').notNull().default(''),
 		imprintUrl: text('imprint_url').notNull().default(''),
 		privacyUrl: text('privacy_url').notNull().default(''),
 		defaultLocale: localeEnum('default_locale').notNull().default('de'),
@@ -388,6 +390,8 @@ export const shiftPositions = pgTable(
 			.default(sql`'{}'::uuid[]`),
 		/** Set while a lead is calling for urgent help; bookings then earn `urgentBonus`. */
 		urgentAt: timestamp('urgent_at', { withTimezone: true }),
+		/** When the last urgent call went out; stays after the call ends (cooldown). */
+		urgentSentAt: timestamp('urgent_sent_at', { withTimezone: true }),
 		urgentBonus: integer('urgent_bonus').notNull().default(0),
 		urgentNote: text('urgent_note').notNull().default('')
 	},
@@ -420,6 +424,8 @@ export const assignments = pgTable(
 		holdUntil: timestamp('hold_until', { withTimezone: true }),
 		/** Extra points fixed at booking time (e.g. answering an urgent call). */
 		bonusPoints: integer('bonus_points').notNull().default(0),
+		/** When the person moved up from the waiting list; their place counts from then. */
+		promotedAt: timestamp('promoted_at', { withTimezone: true }),
 		createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
 		...timestamps
 	},

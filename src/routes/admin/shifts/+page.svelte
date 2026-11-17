@@ -8,13 +8,20 @@
 	import SpotMeter from '#lib/components/SpotMeter.svelte';
 	import { groupBy } from '#lib/grouping.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
-	import { formatDayLong, formatTime, localized } from '#lib/i18n/index.ts';
+	import { formatDayLong, formatDayShort, formatTime, localized } from '#lib/i18n/index.ts';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 	const i18n = getI18n();
 	const tz = $derived(data.timezone);
 	const grouped = $derived(groupBy(data.shifts, (s) => s.day));
+	/** The printable shift plan, optionally for one day, with the current area filter. */
+	const printPlan = (day?: string) => {
+		const query = [data.filterArea && `area=${data.filterArea}`, day && `day=${day}`]
+			.filter(Boolean)
+			.join('&');
+		return `/print/plan${query ? `?${query}` : ''}`;
+	};
 	const totals = (s: (typeof data.shifts)[number]) => ({
 		booked: s.positions.reduce((n, p) => n + p.booked, 0),
 		capacity: s.positions.reduce((n, p) => n + p.capacity, 0)
@@ -27,10 +34,7 @@
 
 <PageHeader title={i18n.t('admin.shifts.title')} lead={i18n.t('admin.shifts.lead')}>
 	{#snippet actions()}
-		<Button
-			href="/print/plan{data.filterArea ? `?area=${data.filterArea}` : ''}"
-			variant="secondary">{i18n.t('print.plan')}</Button
-		>
+		<Button href={printPlan()} variant="secondary">{i18n.t('print.plan')}</Button>
 		{#if data.canCreate}
 			<Button href="/admin/shifts/series" variant="secondary"
 				>{i18n.t('admin.shifts.series')}</Button
@@ -66,6 +70,17 @@
 			{/each}
 		</select>
 	</div>
+{/if}
+
+{#if grouped.length > 1}
+	<p class="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm">
+		<span class="text-ink-muted">{i18n.t('print.planDay')}</span>
+		{#each grouped as [day] (day)}
+			<a href={printPlan(day)} class="font-semibold text-brand-text hover:underline"
+				>{formatDayShort(day, i18n.locale)}</a
+			>
+		{/each}
+	</p>
 {/if}
 
 {#if data.shifts.length === 0}

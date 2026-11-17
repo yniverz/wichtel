@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import BrandMark from '#lib/components/BrandMark.svelte';
 	import Footer from '#lib/components/Footer.svelte';
+	import HelpLink from '#lib/components/HelpLink.svelte';
 	import LocaleSwitch from '#lib/components/LocaleSwitch.svelte';
 	import { assetUrl } from '#lib/assets.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
@@ -40,7 +41,10 @@
 	<div class="flex min-h-dvh flex-col">
 		<header class="flex items-center justify-between gap-4 px-4 py-4 sm:px-8">
 			<span class="lg:invisible"><BrandMark /></span>
-			<LocaleSwitch />
+			<div class="flex items-center gap-2">
+				<HelpLink />
+				<LocaleSwitch />
+			</div>
 		</header>
 		<main class="flex flex-1 justify-center px-4 py-8 sm:px-8 lg:items-center">
 			<div class="w-full max-w-md">

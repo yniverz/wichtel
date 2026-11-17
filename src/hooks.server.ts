@@ -7,7 +7,8 @@ import { touchLastSeen } from '#lib/server/services/privacy.ts';
 import { SESSION_COOKIE, validateSession } from '#lib/server/sessions.ts';
 import { getSettings } from '#lib/server/services/settings.ts';
 import { isLocale, negotiateLocale } from '#lib/i18n/index.ts';
-import { LOCALE_COOKIE, setSessionCookie } from '#lib/server/cookies.ts';
+import { clearSessionCookie, LOCALE_COOKIE, setSessionCookie } from '#lib/server/cookies.ts';
+import { requestUrl } from '#lib/server/origin.ts';
 import { isCrossSiteForm } from '#lib/server/csrf.ts';
 import { bodyTooLarge } from '#lib/server/body-limit.ts';
 import {
@@ -31,7 +32,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (bodyTooLarge(event.request, event.route.id)) {
 		return new Response('Payload too large', { status: 413 });
 	}
-	if (!dev && isCrossSiteForm(event.request, event.url)) {
+	if (!dev && isCrossSiteForm(event.request, requestUrl(event))) {
 		return new Response(`Cross-site ${event.request.method} form submissions are forbidden`, {
 			status: 403
 		});
@@ -48,7 +49,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 			setSessionCookie(event, token, result.session.expiresAt);
 			await touchLastSeen(db(), result.user);
 		} else {
-			event.cookies.delete(SESSION_COOKIE, { path: '/' });
+			clearSessionCookie(event);
 		}
 	}
 

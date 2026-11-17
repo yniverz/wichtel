@@ -3,7 +3,12 @@ import { config, db } from '#lib/server/app.ts';
 import { DEFAULT_PRIMARY, roleAssignments } from '#lib/server/db/schema.ts';
 import { getAdminContext } from '#lib/server/guards.ts';
 import { outboxStatus } from '#lib/server/outbox.ts';
-import { hasShiftAccess, shiftAreaScope } from '#lib/server/shift-access.ts';
+import {
+	canSeeShiftArea,
+	dashboardScope,
+	hasDashboardAccess,
+	hasShiftAccess
+} from '#lib/server/shift-access.ts';
 import { pendingRequests } from '#lib/server/services/assignments.ts';
 import { adminNumbers, loadDashboard } from '#lib/server/services/dashboard.ts';
 import { pendingRequests as pendingQualifications } from '#lib/server/services/qualifications.ts';
@@ -32,9 +37,18 @@ export const load: PageServerLoad = async (event) => {
 	};
 
 	const shiftAccess = hasShiftAccess(ctx) && edition && tree;
-	const [dashboard, requests, swaps, qualifications, numbers, mail] = await Promise.all([
-		shiftAccess
-			? loadDashboard(database, edition.id, tree, shiftAreaScope(ctx), settings.timezone, now)
+	// Staffing figures: with shift permissions or `dashboard.view` (read-only) for those areas.
+	const dashboardAccess = hasDashboardAccess(ctx) && edition && tree;
+	const [staffing, requests, swaps, qualifications, numbers, mail] = await Promise.all([
+		dashboardAccess
+			? loadDashboard(
+					database,
+					edition.id,
+					tree,
+					dashboardScope(authz, tree),
+					settings.timezone,
+					now
+				)
 			: null,
 		shiftAccess ? pendingRequests(database, authz, edition.id) : [],
 		shiftAccess ? pendingSwaps(database, authz, edition.id) : [],
@@ -44,6 +58,17 @@ export const load: PageServerLoad = async (event) => {
 		authz.isAdmin && edition ? adminNumbers(database, edition.id, now) : null,
 		authz.isAdmin ? outboxStatus(database) : null
 	]);
+	// Shifts are only linked where the viewer may open them; `dashboard.view` alone is read-only.
+	const link = (areaId: string) => canSeeShiftArea(ctx, areaId);
+	const dashboard = staffing && {
+		...staffing,
+		heatmap: {
+			...staffing.heatmap,
+			rows: staffing.heatmap.rows.map((r) => ({ ...r, link: link(r.areaId) }))
+		},
+		understaffed: staffing.understaffed.map((s) => ({ ...s, link: link(s.areaId) })),
+		today: staffing.today.map((s) => ({ ...s, link: link(s.areaId) }))
+	};
 
 	return {
 		timezone: settings.timezone,

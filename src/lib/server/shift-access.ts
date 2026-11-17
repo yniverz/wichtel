@@ -22,8 +22,31 @@ export function shiftAreaScope(ctx: AdminContext): 'all' | Set<string> {
 
 /** Like `shiftAreaScope`, for callers without an admin page context (e.g. the MCP endpoint). */
 export function planningScope(authz: Authz, tree: AreaTree<Area>): 'all' | Set<string> {
+	return scopeOf(authz, tree, SHIFT_PERMISSIONS);
+}
+
+/**
+ * Permissions that show the staffing figures on the overview: `dashboard.view` (read-only) and
+ * everything that gives access to shift planning anyway.
+ */
+export const DASHBOARD_PERMISSIONS: Permission[] = [...SHIFT_PERMISSIONS, 'dashboard.view'];
+
+export function hasDashboardAccess(ctx: AdminContext | { authz: Authz }): boolean {
+	return DASHBOARD_PERMISSIONS.some((p) => ctx.authz.canSomewhere(p));
+}
+
+/** Area ids whose staffing figures the user may see, or 'all'. */
+export function dashboardScope(authz: Authz, tree: AreaTree<Area>): 'all' | Set<string> {
+	return scopeOf(authz, tree, DASHBOARD_PERMISSIONS);
+}
+
+function scopeOf(
+	authz: Authz,
+	tree: AreaTree<Area>,
+	permissions: readonly Permission[]
+): 'all' | Set<string> {
 	const roots: string[] = [];
-	for (const p of SHIFT_PERMISSIONS) {
+	for (const p of permissions) {
 		const scope = authz.scopesFor(p);
 		if (scope === 'all') return 'all';
 		roots.push(...scope);

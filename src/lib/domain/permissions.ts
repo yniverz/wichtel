@@ -138,3 +138,21 @@ export class Authz {
 		return this.isAdmin || this.grants.length > 0;
 	}
 }
+
+/**
+ * Whether the user may open the people pages (list and person details). Pages that merely show
+ * names (rosters, requests, qualifications) only link to a person when this holds.
+ */
+export function canViewPeople(authz: Authz): boolean {
+	return (
+		authz.isAdmin || authz.canSomewhere('role.assign') || authz.canSomewhere('helper.contact.view')
+	);
+}
+
+/**
+ * Whether e-mail addresses are visible in people lists and pickers. Searching by e-mail is only
+ * allowed then – otherwise a hit would reveal whether an address has an account.
+ */
+export function canSeeEmails(authz: Authz): boolean {
+	return authz.isAdmin || authz.can('helper.contact.view');
+}

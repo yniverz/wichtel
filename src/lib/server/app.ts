@@ -3,6 +3,7 @@ import {
 	LOG_FORMAT,
 	LOG_LEVEL,
 	LOG_MAIL_BODIES,
+	PROTOCOL_HEADER,
 	PUBLIC_URL,
 	SETUP_TOKEN,
 	SMTP_FROM,
@@ -17,6 +18,7 @@ import { building, dev } from '$app/env';
 import { connect, type Database, type DB } from './db/client.ts';
 import { setPublicUrl } from './notifications.ts';
 import { setHttpsOnly } from './cookies.ts';
+import { configureOrigin } from './origin.ts';
 import { processOutbox, pruneOutbox, queueReminders } from './outbox.ts';
 import { expireHolds } from './services/assignments.ts';
 import { cleanupOAuth } from './services/oauth.ts';
@@ -64,9 +66,14 @@ export async function initApp(): Promise<void> {
 				secure: SMTP_SECURE,
 				user: SMTP_USER,
 				password: SMTP_PASSWORD,
-				from: SMTP_FROM
+				from: SMTP_FROM ?? 'Wichtel <wichtel@localhost>'
 			})
 		: createConsoleMailer(LOG_MAIL_BODIES ?? dev);
+	if (SMTP_HOST && !SMTP_FROM) {
+		log.warn(
+			'SMTP_FROM is not set: e-mails are sent from wichtel@localhost, which most mail servers reject. Set SMTP_FROM to an address your mail server may send from.'
+		);
+	}
 	if (!SMTP_HOST && !dev) {
 		log.warn(
 			'No mail server (SMTP_HOST): e-mails are not sent, addresses are not confirmed and people cannot reset their password themselves.'
@@ -86,6 +93,7 @@ export async function initApp(): Promise<void> {
 	await cleanupExpiredTokens(database.db);
 	setPublicUrl(PUBLIC_URL);
 	setHttpsOnly(PUBLIC_URL.startsWith('https://'));
+	configureOrigin(PUBLIC_URL, PROTOCOL_HEADER);
 	startWorkers(database.db, state.mailer);
 }
 

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Map as LeafletMapType, Marker } from 'leaflet';
+	import { getI18n } from '#lib/i18n/context.ts';
 
 	/**
 	 * Interactive map. Leaflet and the tiles are only loaded when this component is mounted, which
@@ -23,6 +24,7 @@
 		onpick?: (pin: { lat: number; lng: number }) => void;
 	} = $props();
 
+	const i18n = getI18n();
 	let container: HTMLDivElement | undefined = $state();
 	let map: LeafletMapType | undefined;
 	let marker: Marker | undefined;
@@ -34,7 +36,13 @@
 			await import('leaflet/dist/leaflet.css');
 			if (cancelled || !container) return;
 			const center: [number, number] = lat !== null && lng !== null ? [lat, lng] : [51.163, 10.447];
-			map = L.map(container, { scrollWheelZoom: false }).setView(center, lat !== null ? zoom : 6);
+			map = L.map(container, { scrollWheelZoom: false, zoomControl: false }).setView(
+				center,
+				lat !== null ? zoom : 6
+			);
+			L.control
+				.zoom({ zoomInTitle: i18n.t('places.zoomIn'), zoomOutTitle: i18n.t('places.zoomOut') })
+				.addTo(map);
 			L.tileLayer(tileUrl, { attribution, maxZoom: 19 }).addTo(map);
 			const icon = L.divIcon({
 				className: '',

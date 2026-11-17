@@ -23,6 +23,7 @@ export interface Dashboard {
 	/** Upcoming shifts with free places, soonest first. */
 	understaffed: {
 		id: string;
+		areaId: string;
 		titleDe: string;
 		titleEn: string;
 		areaNameDe: string;
@@ -36,6 +37,7 @@ export interface Dashboard {
 	/** Shifts of today with attendance so far. */
 	today: {
 		id: string;
+		areaId: string;
 		titleDe: string;
 		titleEn: string;
 		startsAt: string;
@@ -131,6 +133,7 @@ export async function loadDashboard(
 				const area = tree.get(s.areaId);
 				return {
 					id: s.id,
+					areaId: s.areaId,
 					titleDe: s.titleDe,
 					titleEn: s.titleEn,
 					areaNameDe: area?.nameDe ?? '',
@@ -146,6 +149,7 @@ export async function loadDashboard(
 			.filter((s) => utcToZoned(s.startsAt, timeZone).date === todayDate)
 			.map((s) => ({
 				id: s.id,
+				areaId: s.areaId,
 				titleDe: s.titleDe,
 				titleEn: s.titleEn,
 				startsAt: s.startsAt.toISOString(),

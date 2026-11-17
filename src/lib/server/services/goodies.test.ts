@@ -10,6 +10,7 @@ import { createEdition } from './editions.ts';
 import { createPlace } from './places.ts';
 import {
 	cancelClaim,
+	changeVariant,
 	claimGoodie,
 	createGoodie,
 	goodieOverview,
@@ -321,6 +322,58 @@ describe('goodies', () => {
 		// A second shift does not redeem the ticket again.
 		await s.work(await s.shiftIn(s.bar.id, '2027-06-13T10:00:00Z', '2027-06-13T14:00:00Z'));
 		expect(await pointsBalance(s.db, s.kim.id, s.edition.id)).toBe(1);
+	});
+
+	it('redeems mandatory goodies after a manual correction too', async () => {
+		const s = await seed();
+		const ticket = await createGoodie(
+			s.db,
+			actor,
+			s.edition.id,
+			goodie({ nameDe: 'Freiticket', price: 2, mandatory: true })
+		);
+		await s.work(await s.shiftIn(s.bar.id, '2027-06-12T10:00:00Z', '2027-06-12T14:00:00Z'));
+		expect((await goodieOverview(s.db, s.kim.id, s.edition.id)).claims).toHaveLength(0);
+		await adjustPoints(s.db, actor, {
+			userId: s.kim.id,
+			editionId: s.edition.id,
+			amount: 1,
+			reason: 'Aufbau ohne Schicht'
+		});
+		const overview = await goodieOverview(s.db, s.kim.id, s.edition.id);
+		expect(overview.claims.map((c) => c.goodie.id)).toEqual([ticket.id]);
+		expect(overview.balance).toBe(0);
+	});
+
+	it('lets the person pick the variant of a mandatory goodie until pickup', async () => {
+		const s = await seed();
+		const shirt = await createGoodie(
+			s.db,
+			actor,
+			s.edition.id,
+			goodie({ nameDe: 'Crew-Shirt', price: 1, mandatory: true, variants: ['S', 'M', 'L'] })
+		);
+		await s.work(await s.shiftIn(s.bar.id, '2027-06-12T10:00:00Z', '2027-06-12T14:00:00Z'));
+		const scope = { editionId: s.edition.id, userId: s.kim.id };
+		const claimOf = async () =>
+			(await goodieOverview(s.db, s.kim.id, s.edition.id)).claims.find(
+				(c) => c.goodie.id === shirt.id
+			)!.claim;
+		const claim = await claimOf();
+		expect(claim.variant).toBe('S');
+
+		await expectDomainError(changeVariant(s.db, scope, claim.id, 'XXL'), 'variantRequired');
+		await changeVariant(s.db, scope, claim.id, 'L');
+		expect((await claimOf()).variant).toBe('L');
+		// Only the person's own claims.
+		await expectDomainError(
+			changeVariant(s.db, { ...scope, userId: crypto.randomUUID() }, claim.id, 'M'),
+			'notFound'
+		);
+		// Not after pickup.
+		await issueClaim(s.db, actor, claim.id, scope, new Date());
+		await expectDomainError(changeVariant(s.db, scope, claim.id, 'M'), 'claimNotOpen');
+		expect(await pointsBalance(s.db, s.kim.id, s.edition.id)).toBe(0);
 	});
 });
 

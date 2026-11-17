@@ -165,6 +165,7 @@ export async function copyEdition(
 								id: undefined,
 								shiftId: id,
 								urgentAt: null,
+								urgentSentAt: null,
 								urgentBonus: 0,
 								urgentNote: ''
 							}))

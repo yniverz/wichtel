@@ -1,0 +1,49 @@
+---
+title: Wichtel Help
+description: Help for Wichtel, the volunteer and shift system for non-profit festivals – for volunteers, leads, organisers and operators.
+template: splash
+hero:
+  tagline: What do you need help with? Pick what fits you – or search for a keyword above.
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+<CardGrid>
+	<LinkCard
+		title="I volunteer"
+		description="Booking and swapping shifts, points and goodies, your account and e-mails."
+		href="/wichtel/en/helpers/"
+	/>
+	<LinkCard
+		title="I lead an area"
+		description="Planning shifts, staffing, requests, news, check-in on site."
+		href="/wichtel/en/leads/"
+	/>
+	<LinkCard
+		title="I run the festival"
+		description="Editions, areas, roles, waves, points, goodies and settings."
+		href="/wichtel/en/organizers/"
+	/>
+	<LinkCard
+		title="I run the server"
+		description="Installing with Docker, reverse proxy, e-mail, updates and backups."
+		href="/wichtel/en/operators/"
+	/>
+</CardGrid>
+
+## Common questions
+
+- [I can't book a shift](/wichtel/en/helpers/cannot-book/)
+- [The confirmation e-mail doesn't arrive](/wichtel/en/helpers/account/)
+- [I can't make it to a shift after all – what now?](/wichtel/en/helpers/cancel-swap/)
+- [When do I get my points?](/wichtel/en/helpers/points-goodies/)
+- [Where are people still missing?](/wichtel/en/leads/dashboard/)
+- [What do I need to set up after installing?](/wichtel/en/organizers/first-steps/)
+- [E-mails don't arrive](/wichtel/en/operators/troubleshooting/)
+
+Couldn't find something or spotted a mistake? [Open an issue on GitHub](https://github.com/yniverz/wichtel/issues).
+
+:::note[Questions about your festival?]
+This help doesn't know times, directions or when goodies are handed out. Your festival's organisers
+answer those – check _News_ in the app or use the _Contact_ link at the bottom of the app.
+:::

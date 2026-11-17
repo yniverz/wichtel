@@ -4,6 +4,7 @@
 	import BrandMark from '#lib/components/BrandMark.svelte';
 	import Button from '#lib/components/Button.svelte';
 	import LocaleSwitch from '#lib/components/LocaleSwitch.svelte';
+	import { helpSiteUrl } from '#lib/help.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
 	import type { MessageKey } from '#lib/i18n/index.ts';
 	import type { LayoutProps } from './$types';
@@ -158,6 +159,12 @@
 		<div class="space-y-3 border-t border-line pt-4">
 			<a href="/app" class="block text-sm text-ink-muted hover:text-ink"
 				>← {i18n.t('admin.nav.toApp')}</a
+			>
+			<a
+				href={helpSiteUrl(data.access.isAdmin ? 'organizers' : 'leads', i18n.locale)}
+				target="_blank"
+				rel="noopener"
+				class="block text-sm text-ink-muted hover:text-ink">{i18n.t('common.help')} ↗</a
 			>
 			<div class="flex items-center justify-between">
 				<LocaleSwitch />

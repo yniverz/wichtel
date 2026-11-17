@@ -18,6 +18,8 @@ export const en: Record<keyof typeof de, string> = {
 	'common.confirm': 'Are you sure?',
 	'common.menu': 'Menu',
 	'common.skipToContent': 'Skip to content',
+	'common.help': 'Help',
+	'common.helpForPage': 'Help for this page (opens in a new tab)',
 
 	'nav.home': 'Home',
 	'nav.shifts': 'Shifts',
@@ -115,6 +117,8 @@ export const en: Record<keyof typeof de, string> = {
 	'error.notFound': 'This does not exist (anymore).',
 	'error.areaCycle': 'An area cannot be moved below itself or one of its sub-areas.',
 	'error.areaHasChildren': 'This area still has sub-areas. Move or delete them first.',
+	'error.areaHasShifts':
+		'This area still has shifts. Move them to another area or delete them first.',
 	'error.cannotAssignRole': 'You can only assign roles whose permissions you hold there yourself.',
 	'error.alreadyAssigned': 'This role is already assigned there.',
 	'error.lastAdmin': 'There must be at least one administrator.',
@@ -190,6 +194,8 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.editions.archived': 'Archived',
 	'admin.editions.archive': 'Archive',
 	'admin.editions.unarchive': 'Restore',
+	'admin.editions.archiveCurrent':
+		'This is the current edition. Once it is archived there is no current edition any more: volunteers then only see “There is no volunteer season running right now” and cannot book anything. If things go on, make another edition the current one first.',
 	'admin.editions.empty': 'No edition created yet.',
 
 	'admin.areas.title': 'Areas',
@@ -301,7 +307,8 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.settings.registrationOpen': 'Registration open for new volunteers',
 
 	'admin.audit.title': 'Audit log',
-	'admin.audit.lead': 'All changes made by leads and admins – stored immutably.',
+	'admin.audit.lead':
+		'All changes made by leads and admins, and also what volunteers change themselves (swaps, groups, password reset, account deletion) – stored immutably.',
 	'admin.audit.details': 'Details',
 	'admin.audit.system': 'System',
 	'admin.audit.empty': 'No entries yet.',
@@ -506,6 +513,7 @@ export const en: Record<keyof typeof de, string> = {
 	'goodies.claim.refund_pending': 'refund pending',
 	'goodies.claim.refunded': 'refunded',
 	'goodies.claim.cancel': 'Undo',
+	'goodies.claim.changeVariant': 'Change option',
 	'goodies.claim.cancelConfirm': 'Undo your choice? You get the points back.',
 	'goodies.claim.refund': 'I already have one',
 	'goodies.claim.refundConfirm':
@@ -517,6 +525,8 @@ export const en: Record<keyof typeof de, string> = {
 	'goodies.variant': 'Option',
 	'goodies.picked': 'Chosen – pick it up at the counter.',
 	'goodies.mandatory': 'Redeemed automatically as soon as you have enough points.',
+	'goodies.mandatoryVariant':
+		'Redeemed automatically as soon as you have enough points. You can change the option until pickup.',
 	'goodies.remaining': '{count} left',
 	'goodies.reason.notEnoughPoints': 'You need {count} more.',
 	'goodies.reason.notEligible': 'Only for volunteers of: {areas}',
@@ -543,7 +553,8 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.settings.bonusOff': '0 = off',
 	'admin.shifts.position.points': 'Points',
 	'admin.shifts.position.pointsInherit': 'auto',
-	'admin.shifts.position.pointsHint': 'Empty = points from area or instance',
+	'admin.shifts.position.pointsHint':
+		'Points per shift for this position. Empty = default of the area or instance. Points per hour are added on top.',
 	'admin.goodies.title': 'Goodies',
 	'admin.goodies.lead': 'Rewards volunteers trade their points for. You can also see who got what.',
 	'admin.goodies.new': 'New goodie',
@@ -863,7 +874,7 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.templates.reset': 'Restore default',
 	'admin.templates.resetConfirm': 'Restore the default text? Your changes will be lost.',
 	'admin.templates.placeholders':
-		'Placeholders: {name}, {festival}, {shift}, {date}, {time}, {location}, {link}',
+		'Placeholders in curly braces are replaced when sending. Each template lists the ones it knows.',
 	'admin.templates.key.booking_confirmed': 'Booking confirmed',
 	'admin.templates.key.booking_requested': 'Request received',
 	'admin.templates.key.request_approved': 'Request approved',
@@ -904,6 +915,9 @@ export const en: Record<keyof typeof de, string> = {
 	'places.mapConsent': 'The map is loaded from {host}. Your IP address is sent to this service.',
 	'places.loadMap': 'Load map',
 	'places.openIn': 'Open in:',
+	'places.appleMaps': 'Apple Maps',
+	'places.zoomIn': 'Zoom in',
+	'places.zoomOut': 'Zoom out',
 	'app.home.desk': 'How to find the volunteer desk',
 	'admin.nav.places': 'Places & site plan',
 	'admin.places.title': 'Places & site plan',
@@ -1146,7 +1160,10 @@ export const en: Record<keyof typeof de, string> = {
 	'mailtpl.account_email_changed.subject': 'Your e-mail address at {festival} was changed',
 	'mailtpl.account_email_changed.body':
 		'Hi {name},\n\nthe organisers changed the e-mail address of your {festival} account. Messages and sign-in now use the new address; we will not write to this address any more.\n\nIf you did not want this, please get in touch with us.\n\nYour {festival} team',
-	'admin.templates.extra': 'Also available in this template: {list}',
+	'admin.templates.available': 'Placeholders in this template: {list}',
+	'admin.templates.retentionDate': 'Here {placeholder} is the day the account will be deleted.',
+	'admin.templates.unknown':
+		'Saved. This template does not know {list} – it will appear in the email exactly like that.',
 	// Lead dashboard, print views, copying editions
 	'admin.dash.filled': 'Filled',
 	'admin.dash.places': '{booked} of {capacity} places',
@@ -1174,6 +1191,7 @@ export const en: Record<keyof typeof de, string> = {
 		'No mail server is set up (SMTP_HOST). E-mails are not sent, addresses are not confirmed and nobody can reset their password themselves. You create reset links on the person’s page.',
 	'print.print': 'Print',
 	'print.plan': 'Print shift plan',
+	'print.planDay': 'Print the shift plan for one day:',
 	'print.crew': 'Print crew list',
 	'print.position': 'Position',
 	'print.name': 'Name',
@@ -1276,6 +1294,13 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.settings.errorAlerts': 'Report errors to all admins by e-mail',
 	'admin.settings.errorAlertsHint':
 		'For unexpected server errors, with error ID and technical details. The same error at most once an hour.',
+	'admin.settings.help': 'Help',
+	'admin.settings.helpLead':
+		'Every page links to the matching page of the Wichtel help. For volunteers you can link your own FAQ instead.',
+	'admin.settings.helpUrl': 'Own help page',
+	'admin.settings.helpUrlHint':
+		'Address of your FAQ, e.g. https://festival.example/faq. Help links for volunteers, on login pages and in the footer then go there; the admin area keeps linking to the Wichtel help. Empty = Wichtel help.',
+	'admin.settings.helpPreview': 'View the Wichtel help',
 	'audit.mcp.connect': 'AI assistant connected',
 	'audit.mcp.disconnect': 'AI assistant disconnected',
 	'audit.mcp.token_reuse': 'AI connection ended (token used twice)',

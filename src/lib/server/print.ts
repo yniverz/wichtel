@@ -7,14 +7,19 @@ import { assignments, users, type Area } from './db/schema.ts';
 import { listPlaces } from './services/places.ts';
 import type { ShiftWithPositions } from './services/shifts.ts';
 import type { PrintShift } from '#lib/print.ts';
+import { localized, type Locale } from '#lib/i18n/index.ts';
 
-/** Shifts with their crews, ready for printing. Phone numbers only where the reader may see them. */
+/**
+ * Shifts with their crews, ready for printing; area and place names in the reader's language.
+ * Phone numbers only where the reader may see them.
+ */
 export async function printShifts(
 	db: Tx,
 	list: ShiftWithPositions[],
 	tree: AreaTree<Area>,
 	authz: Authz,
-	timeZone: string
+	timeZone: string,
+	locale: Locale
 ): Promise<PrintShift[]> {
 	if (list.length === 0) return [];
 	const [people, placeList] = await Promise.all([
@@ -41,7 +46,10 @@ export async function printShifts(
 			.orderBy(asc(users.lastName), asc(users.firstName)),
 		listPlaces(db, list[0].editionId)
 	]);
-	const placeName = (id: string | null) => placeList.find((p) => p.id === id)?.nameDe ?? '';
+	const placeName = (id: string | null) => {
+		const place = placeList.find((p) => p.id === id);
+		return place ? localized(place, 'name', locale) : '';
+	};
 	return list.map((s) => {
 		const showPhone = authz.can('helper.contact.view', s.areaId);
 		const path = [...tree.path(s.areaId), tree.get(s.areaId)].filter((a) => a !== undefined);
@@ -52,7 +60,7 @@ export async function printShifts(
 			day: utcToZoned(s.startsAt, timeZone).date,
 			startsAt: s.startsAt.toISOString(),
 			endsAt: s.endsAt.toISOString(),
-			areaPath: path.map((a) => a.nameDe).join(' › '),
+			areaPath: path.map((a) => localized(a, 'name', locale)).join(' › '),
 			where: [
 				placeName(s.meetingPlaceId) || placeName(s.locationPlaceId),
 				s.meetingPoint || s.location

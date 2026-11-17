@@ -1,19 +1,23 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { accountContext, db } from '#lib/server/app.ts';
+import { safeRedirectTarget } from '#lib/server/cookies.ts';
 import { actorOf, requireUser } from '#lib/server/guards.ts';
 import { mailLimiter, mailPerAddressLimiter } from '#lib/server/limits.ts';
 import { sendVerificationEmail, verifyEmail } from '#lib/server/services/accounts.ts';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
+	// Where the person wanted to go before signing up (e.g. an invitation link).
+	const next = safeRedirectTarget(url.searchParams.get('next'), '');
 	const token = url.searchParams.get('token');
 	if (token) {
 		const user = await verifyEmail(db(), token);
 		// Load the page again: the session data of this request still says "not confirmed", and
 		// the next pages would keep showing that until a full reload.
-		redirect(303, `/verify-email?status=${user ? 'ok' : 'invalid'}`);
+		const keep = next ? `&next=${encodeURIComponent(next)}` : '';
+		redirect(303, `/verify-email?status=${user ? 'ok' : 'invalid'}${keep}`);
 	}
-	return { verified: url.searchParams.get('status') === 'ok' };
+	return { verified: url.searchParams.get('status') === 'ok', next };
 };
 
 export const actions: Actions = {

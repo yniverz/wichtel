@@ -2,7 +2,12 @@ import { fail } from '@sveltejs/kit';
 import { z } from 'zod';
 import { db } from '#lib/server/app.ts';
 import { actorOf, getAdminContext, requireAdmin } from '#lib/server/guards.ts';
-import { MAIL_TEMPLATES, templateText } from '#lib/server/notifications.ts';
+import {
+	MAIL_TEMPLATES,
+	TEMPLATE_PLACEHOLDERS,
+	templateText,
+	unknownPlaceholders
+} from '#lib/server/notifications.ts';
 import {
 	listTemplateOverrides,
 	resetTemplate,
@@ -26,7 +31,7 @@ export const load: PageServerLoad = async (event) => {
 				customised: overrides.some((o) => o.key === key && o.locale === locale)
 			});
 		}
-		templates.push({ key, versions });
+		templates.push({ key, versions, placeholders: TEMPLATE_PLACEHOLDERS[key] });
 	}
 	return { templates };
 };
@@ -46,7 +51,16 @@ export const actions: Actions = {
 				at: `${parsed.values.key}:${parsed.values.locale}`
 			});
 		await saveTemplate(db(), actorOf(event), parsed.data);
-		return { success: 'common.saved', at: `${parsed.data.key}:${parsed.data.locale}` };
+		// Saved anyway: the text may mean the braces literally.
+		const unknown = unknownPlaceholders(
+			parsed.data.key,
+			`${parsed.data.subject}\n${parsed.data.body}`
+		);
+		return {
+			success: 'common.saved',
+			at: `${parsed.data.key}:${parsed.data.locale}`,
+			unknown: unknown.map((name) => `{${name}}`).join(', ')
+		};
 	},
 	reset: async (event) => {
 		requireAdmin(await getAdminContext(event));

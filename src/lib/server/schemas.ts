@@ -75,6 +75,7 @@ export const settingsSchema = z.object({
 	primaryColor: hexColor,
 	accentColor: hexColor,
 	contactEmail: optionalEmail,
+	helpUrl: optionalUrl,
 	defaultLocale: z.enum(LOCALES),
 	timezone: requiredText(64).refine((tz) => {
 		try {

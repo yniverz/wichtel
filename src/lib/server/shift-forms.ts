@@ -62,6 +62,7 @@ export function formValuesFromShift(shift: ShiftWithPositions, timeZone: string,
 			capacity: p.capacity,
 			bookingMode: p.bookingMode,
 			pointsPerShift: p.pointsPerShift,
+			pointsPerHour: p.pointsPerHour,
 			requiredQualificationIds: p.requiredQualificationIds,
 			preferredQualificationIds: p.preferredQualificationIds
 		}))
