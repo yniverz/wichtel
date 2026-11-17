@@ -1,0 +1,43 @@
+/* Colours of the app (see src/routes/layout.css in the app): warm paper, brick red, saffron. */
+:root {
+	--sl-color-accent-low: #f3d9d1;
+	--sl-color-accent: #c03a1c;
+	--sl-color-accent-high: #5c1a0b;
+	--sl-color-white: #1d1b17;
+	--sl-color-gray-1: #2b2823;
+	--sl-color-gray-2: #3d3931;
+	--sl-color-gray-3: #696358;
+	--sl-color-gray-4: #a29c90;
+	--sl-color-gray-5: #dcd5c7;
+	--sl-color-gray-6: #f5f2eb;
+	--sl-color-gray-7: #fbf9f4;
+	--sl-color-black: #fffdf8;
+}
+
+:root[data-theme='dark'] {
+	--sl-color-accent-low: #3d1a12;
+	--sl-color-accent: #e0785f;
+	--sl-color-accent-high: #f6d3c9;
+	--sl-color-white: #ffffff;
+	--sl-color-gray-1: #f2eee6;
+	--sl-color-gray-2: #d6d0c4;
+	--sl-color-gray-3: #a29c90;
+	--sl-color-gray-4: #6f695e;
+	--sl-color-gray-5: #36322b;
+	--sl-color-gray-6: #1f1d19;
+	--sl-color-black: #161512;
+}
+
+/* "Auf einen Blick" boxes at the top of a page stand out a little more. */
+.sl-markdown-content details {
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 6px;
+	padding: 0.5rem 1rem;
+}
+.sl-markdown-content details + details {
+	margin-top: 0.5rem;
+}
+.sl-markdown-content summary {
+	cursor: pointer;
+	font-weight: 600;
+}

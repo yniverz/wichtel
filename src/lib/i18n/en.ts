@@ -18,6 +18,8 @@ export const en: Record<keyof typeof de, string> = {
 	'common.confirm': 'Are you sure?',
 	'common.menu': 'Menu',
 	'common.skipToContent': 'Skip to content',
+	'common.help': 'Help',
+	'common.helpForPage': 'Help for this page (opens in a new tab)',
 
 	'nav.home': 'Home',
 	'nav.shifts': 'Shifts',
@@ -1276,6 +1278,13 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.settings.errorAlerts': 'Report errors to all admins by e-mail',
 	'admin.settings.errorAlertsHint':
 		'For unexpected server errors, with error ID and technical details. The same error at most once an hour.',
+	'admin.settings.help': 'Help',
+	'admin.settings.helpLead':
+		'Every page links to the matching page of the Wichtel help. For volunteers you can link your own FAQ instead.',
+	'admin.settings.helpUrl': 'Own help page',
+	'admin.settings.helpUrlHint':
+		'Address of your FAQ, e.g. https://festival.example/faq. Help links for volunteers, on login pages and in the footer then go there; the admin area keeps linking to the Wichtel help. Empty = Wichtel help.',
+	'admin.settings.helpPreview': 'View the Wichtel help',
 	'audit.mcp.connect': 'AI assistant connected',
 	'audit.mcp.disconnect': 'AI assistant disconnected',
 	'audit.mcp.token_reuse': 'AI connection ended (token used twice)',

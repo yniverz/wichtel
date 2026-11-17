@@ -6,8 +6,8 @@ in Schichten ein, sammeln Punkte für Goodies, und die Orga behält den Überbli
 _A volunteer and shift management system for non-profit festivals (German/English)._
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/overview-dark.png">
-  <img alt="Wichtel: Übersicht für die Verwaltung und Schichtplan auf dem Handy" src="docs/images/overview-light.png">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/src/assets/images/overview-dark.png">
+  <img alt="Wichtel: Übersicht für die Verwaltung und Schichtplan auf dem Handy" src="docs/src/assets/images/overview-light.png">
 </picture>
 
 ## Was du bekommst
@@ -32,7 +32,7 @@ _A volunteer and shift management system for non-profit festivals (German/Englis
 - Jahrgang kopieren, Protokoll aller Änderungen, Deutsch und Englisch, Hell- und Dunkelmodus
 - Optional: Planen mit KI-Assistenten wie Claude, immer mit den Rechten der jeweiligen Person
 
-Die vollständige Liste steht in [docs/FUNKTIONEN.md](docs/FUNKTIONEN.md).
+Die vollständige Liste steht in der [Hilfe unter „Funktionen“](https://yniverz.github.io/wichtel/reference/features/).
 
 ## Schnellstart
 
@@ -43,18 +43,23 @@ curl -o .env https://raw.githubusercontent.com/yniverz/wichtel/main/.env.example
 docker compose up -d && docker compose logs app   # zeigt den Einrichtungslink
 ```
 
-Portainer, Reverse Proxy, E-Mail und Sicherung: [docs/BETRIEB.md](docs/BETRIEB.md).
+Portainer, Reverse Proxy, E-Mail und Sicherung: [Hilfe für den Betrieb](https://yniverz.github.io/wichtel/operators/).
 
-## Dokumentation
+## Hilfe und Dokumentation
 
-| Dokument                                 | Inhalt                                        |
-| ---------------------------------------- | --------------------------------------------- |
-| [Funktionen](docs/FUNKTIONEN.md)         | Alles, was Wichtel kann                       |
-| [Betrieb](docs/BETRIEB.md)               | Installation, Konfiguration, Updates, Backups |
-| [KI-Assistenten](docs/KI-ASSISTENTEN.md) | Claude & Co. anbinden (MCP)                   |
-| [Entwicklung](docs/ENTWICKLUNG.md)       | Lokal starten, Tests, Aufbau des Codes        |
-| [Konzept](docs/KONZEPT.md)               | Fachliches Modell und Entscheidungen          |
-| [Design](docs/DESIGN.md)                 | Gestaltungsrichtlinien                        |
+**[yniverz.github.io/wichtel](https://yniverz.github.io/wichtel/)** – auf Deutsch und
+[Englisch](https://yniverz.github.io/wichtel/en/), mit Suche. Jede Seite der App verlinkt direkt
+auf die passende Hilfeseite.
+
+| Für                                                           | Inhalt                                                     |
+| ------------------------------------------------------------- | ---------------------------------------------------------- |
+| [Helfende](https://yniverz.github.io/wichtel/helpers/)        | Schichten eintragen und tauschen, Punkte, Goodies, Konto   |
+| [Leitungen](https://yniverz.github.io/wichtel/leads/)         | Schichten planen, Besetzung, Anfragen, Check-in vor Ort    |
+| [Organisation](https://yniverz.github.io/wichtel/organizers/) | Jahrgänge, Bereiche, Rollen, Wellen, Punkte, Einstellungen |
+| [Betrieb](https://yniverz.github.io/wichtel/operators/)       | Installation, Konfiguration, Updates, Backups              |
+| [Nachschlagen](https://yniverz.github.io/wichtel/reference/)  | Glossar, Funktionen, Rechte, Entwicklung, Konzept, Design  |
+
+Die Quelle der Hilfe liegt in [`docs/`](docs/README.md).
 
 ## Status
 

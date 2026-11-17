@@ -133,6 +133,8 @@ export const instanceSettings = pgTable(
 		}),
 		faviconAssetId: uuid('favicon_asset_id').references(() => assets.id, { onDelete: 'set null' }),
 		contactEmail: text('contact_email').notNull().default(''),
+		/** The festival's own help page (FAQ). Empty = the Wichtel help site, see `$lib/help.ts`. */
+		helpUrl: text('help_url').notNull().default(''),
 		imprintUrl: text('imprint_url').notNull().default(''),
 		privacyUrl: text('privacy_url').notNull().default(''),
 		defaultLocale: localeEnum('default_locale').notNull().default('de'),

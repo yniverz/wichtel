@@ -1,0 +1,1 @@
+ALTER TABLE "instance_settings" ADD COLUMN "help_url" text DEFAULT '' NOT NULL;

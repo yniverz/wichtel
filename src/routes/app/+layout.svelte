@@ -5,6 +5,7 @@
 	import Button from '#lib/components/Button.svelte';
 	import Footer from '#lib/components/Footer.svelte';
 	import FormMessage from '#lib/components/FormMessage.svelte';
+	import HelpLink from '#lib/components/HelpLink.svelte';
 	import LocaleSwitch from '#lib/components/LocaleSwitch.svelte';
 	import NavIcon from '#lib/components/NavIcon.svelte';
 	import { getI18n } from '#lib/i18n/context.ts';
@@ -74,6 +75,7 @@
 				{/each}
 			</nav>
 			<div class="flex items-center gap-2">
+				<HelpLink />
 				<LocaleSwitch />
 				<form method="POST" action="/logout" class="hidden md:block">
 					<Button type="submit" variant="ghost" size="sm">{i18n.t('nav.logout')}</Button>

@@ -22,3 +22,7 @@ vite.config.ts.timestamp-*
 
 # Load test output (fixture with sessions, results)
 /load/out
+
+# Help site build output
+/docs/dist
+/docs/.astro

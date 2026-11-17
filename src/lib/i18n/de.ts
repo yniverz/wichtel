@@ -20,6 +20,8 @@ export const de = {
 	'common.confirm': 'Bist du sicher?',
 	'common.menu': 'Menü',
 	'common.skipToContent': 'Zum Inhalt springen',
+	'common.help': 'Hilfe',
+	'common.helpForPage': 'Hilfe zu dieser Seite (öffnet in neuem Tab)',
 
 	'nav.home': 'Start',
 	'nav.shifts': 'Schichten',
@@ -1301,6 +1303,13 @@ export const de = {
 	'admin.settings.errorAlerts': 'Fehler per E-Mail an alle Admins melden',
 	'admin.settings.errorAlertsHint':
 		'Bei unerwarteten Serverfehlern, mit Fehler-ID und technischen Details. Gleiche Fehler höchstens einmal pro Stunde.',
+	'admin.settings.help': 'Hilfe',
+	'admin.settings.helpLead':
+		'Jede Seite verlinkt auf die passende Seite der Wichtel-Hilfe. Für Helfende könnt ihr stattdessen eure eigene FAQ verlinken.',
+	'admin.settings.helpUrl': 'Eigene Hilfeseite',
+	'admin.settings.helpUrlHint':
+		'Adresse eurer FAQ, z. B. https://festival.example/faq. Dann führen die Hilfe-Links für Helfende, auf Anmelde-Seiten und im Footer dorthin; die Verwaltung verlinkt weiter auf die Wichtel-Hilfe. Leer = Wichtel-Hilfe.',
+	'admin.settings.helpPreview': 'Wichtel-Hilfe ansehen',
 	'audit.mcp.connect': 'KI-Assistent verbunden',
 	'audit.mcp.disconnect': 'KI-Assistent getrennt',
 	'audit.mcp.token_reuse': 'KI-Verbindung getrennt (Token mehrfach benutzt)',

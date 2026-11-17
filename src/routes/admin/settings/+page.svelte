@@ -9,6 +9,7 @@
 	import { assetUrl } from '#lib/assets.ts';
 	import { contrastRatio, isHexColor, MIN_CONTRAST, readableTextColor } from '#lib/domain/color.ts';
 	import { pendingForm } from '#lib/forms.svelte.ts';
+	import { helpSiteUrl } from '#lib/help.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
 	import { LOCALES } from '#lib/i18n/index.ts';
 	import type { PageProps } from './$types';
@@ -491,6 +492,29 @@
 			<p class="text-sm">
 				<a href="/admin/legal" class="text-brand-text underline"
 					>{i18n.t('admin.settings.legalMoved')} →</a
+				>
+			</p>
+		</div>
+	</Card>
+
+	<Card title={i18n.t('admin.settings.help')} description={i18n.t('admin.settings.helpLead')}>
+		<div class="space-y-3">
+			<Field
+				label={i18n.t('admin.settings.helpUrl')}
+				name="helpUrl"
+				type="url"
+				optional
+				placeholder="https://"
+				value={v.helpUrl}
+				hint={i18n.t('admin.settings.helpUrlHint')}
+				error={result?.errors?.helpUrl}
+			/>
+			<p class="text-sm">
+				<a
+					href={helpSiteUrl('helpers', i18n.locale)}
+					target="_blank"
+					rel="noopener"
+					class="text-brand-text underline">{i18n.t('admin.settings.helpPreview')} ↗</a
 				>
 			</p>
 		</div>

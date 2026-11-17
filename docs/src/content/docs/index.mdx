@@ -1,0 +1,49 @@
+---
+title: Wichtel Hilfe
+description: Hilfe für Wichtel, das Helfer- und Schichtsystem für ehrenamtliche Festivals – für Helfende, Leitungen, Organisation und Betrieb.
+template: splash
+hero:
+  tagline: Wobei brauchst du Hilfe? Wähle aus, was auf dich zutrifft – oder such oben nach einem Stichwort.
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+<CardGrid>
+	<LinkCard
+		title="Ich helfe mit"
+		description="Schichten eintragen, tauschen, Punkte und Goodies, Konto und E-Mails."
+		href="/wichtel/helpers/"
+	/>
+	<LinkCard
+		title="Ich leite einen Bereich"
+		description="Schichten planen, Besetzung, Anfragen, Neuigkeiten, Check-in vor Ort."
+		href="/wichtel/leads/"
+	/>
+	<LinkCard
+		title="Ich organisiere das Festival"
+		description="Jahrgänge, Bereiche, Rollen, Wellen, Punkte, Goodies und Einstellungen."
+		href="/wichtel/organizers/"
+	/>
+	<LinkCard
+		title="Ich betreibe den Server"
+		description="Installation mit Docker, Reverse Proxy, E-Mail, Updates und Sicherung."
+		href="/wichtel/operators/"
+	/>
+</CardGrid>
+
+## Häufige Fragen
+
+- [Ich kann mich nicht für eine Schicht eintragen](/wichtel/helpers/cannot-book/)
+- [Die Bestätigungsmail kommt nicht an](/wichtel/helpers/account/)
+- [Ich kann zu einer Schicht doch nicht – was nun?](/wichtel/helpers/cancel-swap/)
+- [Wann bekomme ich meine Punkte?](/wichtel/helpers/points-goodies/)
+- [Wo fehlen noch Leute?](/wichtel/leads/dashboard/)
+- [Was muss ich nach der Installation einrichten?](/wichtel/organizers/first-steps/)
+- [Mails kommen nicht an](/wichtel/operators/troubleshooting/)
+
+Etwas nicht gefunden oder einen Fehler entdeckt? [Schreib uns ein Issue auf GitHub](https://github.com/yniverz/wichtel/issues).
+
+:::note[Fragen zu deinem Festival?]
+Zeiten, Anfahrt oder die Goodie-Ausgabe kennt diese Hilfe nicht. Die beantwortet die Orga deines
+Festivals – schau in der App unter _News_ oder nutze den Link _Kontakt_ unten in der App.
+:::
