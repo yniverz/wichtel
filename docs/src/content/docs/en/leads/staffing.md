@@ -90,12 +90,12 @@ Every change can be traced in the person's points history.
 
 ## Which permissions you need
 
-| What                       | Permission                                                    |
-| -------------------------- | ------------------------------------------------------------- |
-| Add, remove                | _Add and remove volunteers, approve requests_                 |
-| Add despite a conflict     | additionally _Override rules (overlaps, deadlines, requirements)_ |
-| Tick off attendance        | _Confirm attendance (check-in)_                               |
-| See phone numbers          | _View volunteer contact details_                              |
+| What                   | Permission                                                        |
+| ---------------------- | ----------------------------------------------------------------- |
+| Add, remove            | _Add and remove volunteers, approve requests_                     |
+| Add despite a conflict | additionally _Override rules (overlaps, deadlines, requirements)_ |
+| Tick off attendance    | _Confirm attendance (check-in)_                                   |
+| See phone numbers      | _View volunteer contact details_                                  |
 
 Each in the shift's area (or for the whole edition).
 

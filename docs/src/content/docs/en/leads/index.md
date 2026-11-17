@@ -1,6 +1,8 @@
 ---
 title: Quick help for leads
 description: The most common questions of area and shift leads about the admin area, answered briefly.
+sidebar:
+  label: Quick help
 ---
 
 You lead an area or a shift and have a role with permissions in the admin area (_Admin_). **What you

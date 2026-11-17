@@ -1,6 +1,8 @@
 ---
-title: Quick help
+title: Quick help for organisers
 description: The most common questions from festival organisers – with short answers and links to the guides.
+sidebar:
+  label: Quick help
 ---
 
 This part of the help is for **admins**: the people who set up the whole festival in Wichtel –

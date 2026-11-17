@@ -27,27 +27,27 @@ address yet).
 
 ## What the person page shows
 
-| Section                     | What                                                                                                  | Visible if …                                                                         |
-| --------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Header                      | Name, _Registered on …_, hints _Admin_ / _unconfirmed_                                                | always                                                                               |
-| _Shifts_                    | The person's shifts in the selected edition with their status (e.g. _present_, _no-show_, _Requested_, _Waiting list_), as links | only shifts in areas for which you have shift permissions                            |
-| _Roles in edition …_        | Their roles; with _Assign role_ if you may assign roles                                               | always (assigning only with _Assign roles (only with own permissions)_)              |
-| _Points_ → _Open desk_      | Jump to the desk for this person                                                                      | you have access to _Desk & check-in_                                                 |
-| _Contact_                   | Email address and phone number                                                                        | _View volunteer contact details_ for the whole edition                               |
-| _Details_                   | Answers to the festival's profile fields                                                              | as for _Contact_                                                                     |
-| _Qualifications_            | Their qualifications; grant and revoke                                                                | _Review and grant qualifications_ (see [Qualifications](/wichtel/en/leads/qualifications/)) |
+| Section                | What                                                                                                                             | Visible if …                                                                                |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Header                 | Name, _Registered on …_, hints _Admin_ / _unconfirmed_                                                                           | always                                                                                      |
+| _Shifts_               | The person's shifts in the selected edition with their status (e.g. _present_, _no-show_, _Requested_, _Waiting list_), as links | only shifts in areas for which you have shift permissions                                   |
+| _Roles in edition …_   | Their roles; with _Assign role_ if you may assign roles                                                                          | always (assigning only with _Assign roles (only with own permissions)_)                     |
+| _Points_ → _Open desk_ | Jump to the desk for this person                                                                                                 | you have access to _Desk & check-in_                                                        |
+| _Contact_              | Email address and phone number                                                                                                   | _View volunteer contact details_ for the whole edition                                      |
+| _Details_              | Answers to the festival's profile fields                                                                                         | as for _Contact_                                                                            |
+| _Qualifications_       | Their qualifications; grant and revoke                                                                                           | _Review and grant qualifications_ (see [Qualifications](/wichtel/en/leads/qualifications/)) |
 
 Only admins can change accounts, create password links and delete accounts (see
 [Managing people](/wichtel/en/organizers/people/)).
 
 ## Which contact details you see where
 
-| Where                                            | What                         | Permission needed                                           |
-| ------------------------------------------------ | ---------------------------- | ----------------------------------------------------------- |
-| A shift's staffing list, printed crew list       | Phone number                 | _View volunteer contact details_ in the shift's area        |
-| People list, person page                         | Email, phone number, details | _View volunteer contact details_ for the whole edition      |
-| Search when adding someone to a shift            | Email                        | _View volunteer contact details_ for the whole edition      |
-| _Desk & check-in_                                | Email, phone number          | _View volunteer contact details_ anywhere in the edition    |
+| Where                                      | What                         | Permission needed                                        |
+| ------------------------------------------ | ---------------------------- | -------------------------------------------------------- |
+| A shift's staffing list, printed crew list | Phone number                 | _View volunteer contact details_ in the shift's area     |
+| People list, person page                   | Email, phone number, details | _View volunteer contact details_ for the whole edition   |
+| Search when adding someone to a shift      | Email                        | _View volunteer contact details_ for the whole edition   |
+| _Desk & check-in_                          | Email, phone number          | _View volunteer contact details_ anywhere in the edition |
 
 Profile details the admins have explicitly released for leads (e.g. T-shirt size) appear in the
 staffing list even without this permission.

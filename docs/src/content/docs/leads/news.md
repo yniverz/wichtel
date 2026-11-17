@@ -19,15 +19,15 @@ Startseite) – aber nur bei denen, für die sie bestimmt sind.
 
 ## Für wen du schreiben kannst
 
-| _Für_                              | Wen das erreicht                                                         | Wer das wählen darf                                                     |
-| ---------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
-| _Alle in dieser Schicht_           | alle, die in der Schicht eingetragen sind, angefragt haben oder einen reservierten Platz haben | nur über _Nachricht an alle_ auf der Seite der Schicht; Recht im Bereich der Schicht |
-| _Alle mit Schichten in einem Bereich_ | alle mit einer Schicht in dem Bereich oder seinen Unterbereichen (auch Anfragen und Reservierungen) | für die Bereiche, in denen du das Recht hast                           |
-| _Alle Helfenden dieses Jahrgangs_  | alle mit mindestens einer Schicht im Jahrgang                            | Recht für den ganzen Jahrgang                                           |
-| _Alle mit einer Rolle (Crew)_      | alle mit einer Rolle im Jahrgang                                         | Recht für den ganzen Jahrgang                                           |
-| _Alle mit dieser Rolle_            | alle mit der gewählten Rolle im Jahrgang                                 | Recht für den ganzen Jahrgang                                           |
-| _Alle Konten_                      | alle Konten                                                              | nur Admins                                                              |
-| _Öffentlich (auch ohne Konto)_     | alle, auch ohne Anmeldung                                                | nur Admins                                                              |
+| _Für_                                 | Wen das erreicht                                                                                    | Wer das wählen darf                                                                  |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| _Alle in dieser Schicht_              | alle, die in der Schicht eingetragen sind, angefragt haben oder einen reservierten Platz haben      | nur über _Nachricht an alle_ auf der Seite der Schicht; Recht im Bereich der Schicht |
+| _Alle mit Schichten in einem Bereich_ | alle mit einer Schicht in dem Bereich oder seinen Unterbereichen (auch Anfragen und Reservierungen) | für die Bereiche, in denen du das Recht hast                                         |
+| _Alle Helfenden dieses Jahrgangs_     | alle mit mindestens einer Schicht im Jahrgang                                                       | Recht für den ganzen Jahrgang                                                        |
+| _Alle mit einer Rolle (Crew)_         | alle mit einer Rolle im Jahrgang                                                                    | Recht für den ganzen Jahrgang                                                        |
+| _Alle mit dieser Rolle_               | alle mit der gewählten Rolle im Jahrgang                                                            | Recht für den ganzen Jahrgang                                                        |
+| _Alle Konten_                         | alle Konten                                                                                         | nur Admins                                                                           |
+| _Öffentlich (auch ohne Konto)_        | alle, auch ohne Anmeldung                                                                           | nur Admins                                                                           |
 
 Das Formular bietet dir nur an, was du wählen darfst, und wählt die engste Gruppe vor. Wer erst
 später eine Schicht im Bereich bucht, sieht einen Bereichs-Beitrag dann auch.

@@ -5,7 +5,7 @@ description: Positionen innerhalb einer Schicht – Plätze, Buchung direkt oder
 
 :::tip[Auf einen Blick]
 
-- Eine **Position** ist ein Platz-Typ in einer Schicht, z. B. „Helfer*in“ (8 Plätze) und
+- Eine **Position** ist ein Platz-Typ in einer Schicht, z. B. „Helfer\*in“ (8 Plätze) und
   „Schichtleitung“ (1 Platz).
 - **Bearbeiten:** im Formular der Schicht unter _Positionen_; _+ Position hinzufügen_ für eine weitere.
 - **_Buchung_:** _direkt_ = Helfende tragen sich selbst ein; _auf Anfrage_ = du bestätigst jede
@@ -17,16 +17,16 @@ description: Positionen innerhalb einer Schicht – Plätze, Buchung direkt oder
 
 ## Die Felder einer Position
 
-| Feld              | Bedeutung                                                                                                                       |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| _Bezeichnung_     | Name der Position, z. B. „Helfer*in“ oder „Kasse“. Pflicht.                                                                     |
-| _Englisch_        | Englischer Name, optional. Fehlt er, sehen alle den deutschen.                                                                  |
-| _Plätze_          | Wie viele Personen gebraucht werden, 1 bis 500.                                                                                 |
-| _Buchung_         | _direkt_ oder _auf Anfrage_ (siehe unten).                                                                                      |
-| _Punkte_          | Punkte pro Schicht für diese Position. Leer („auto“) = Punkte nach Bereich bzw. Instanz.                                        |
+| Feld              | Bedeutung                                                                                                                               |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| _Bezeichnung_     | Name der Position, z. B. „Helfer\*in“ oder „Kasse“. Pflicht.                                                                            |
+| _Englisch_        | Englischer Name, optional. Fehlt er, sehen alle den deutschen.                                                                          |
+| _Plätze_          | Wie viele Personen gebraucht werden, 1 bis 500.                                                                                         |
+| _Buchung_         | _direkt_ oder _auf Anfrage_ (siehe unten).                                                                                              |
+| _Punkte_          | Punkte pro Schicht für diese Position. Leer („auto“) = Punkte nach Bereich bzw. Instanz.                                                |
 | _Qualifikationen_ | Für jede eingerichtete Qualifikation: _—_ (egal), _Pflicht_ oder _gern gesehen_. Die Zeile erscheint nur, wenn es Qualifikationen gibt. |
 
-Eine neue Position heißt anfangs „Helfer*in“, hat 4 Plätze und die Buchung _direkt_. Eine Schicht
+Eine neue Position heißt anfangs „Helfer\*in“, hat 4 Plätze und die Buchung _direkt_. Eine Schicht
 braucht mindestens eine und höchstens 20 Positionen.
 
 ## Schritt für Schritt

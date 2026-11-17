@@ -8,13 +8,6 @@ sidebar:
 These are the questions volunteers ask most often. Each answer is short – "Details" takes you to
 the full guide.
 
-:::note[Questions about your festival]
-Times, getting there, goodie pickup, food and everything else that only applies to your festival
-cannot be answered by this help. The organisers answer those: check _News_ in the app or write to
-them via the _Contact_ link at the very bottom of the app. The help link in the app may also point
-to your festival's own FAQ instead of this site.
-:::
-
 ## Account
 
 ### How do I sign up?
@@ -126,3 +119,10 @@ it is wrong, only the organisers can change it.
 
 _Profile_ → _My data_ → _Delete account …_ and confirm with your password. This cannot be undone.
 [→ Details](/wichtel/en/helpers/privacy/)
+
+:::note[Questions about your festival]
+Times, getting there, goodie pickup, food and everything else that only applies to your festival
+cannot be answered by this help. The organisers answer those: check _News_ in the app or write to
+them via the _Contact_ link at the very bottom of the app. The help link in the app may also point
+to your festival's own FAQ instead of this site.
+:::

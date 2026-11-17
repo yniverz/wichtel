@@ -18,15 +18,15 @@ only for the people it is meant for.
 
 ## Who you can write to
 
-| _For_                                | Whom it reaches                                                                             | Who may choose it                                                                  |
-| ------------------------------------ | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| _Everyone on this shift_             | everyone signed up for the shift, with a request or a reserved place                       | only via _Message everyone_ on the shift's page; permission in the shift's area    |
-| _Everyone with shifts in an area_    | everyone with a shift in the area or its sub-areas (requests and reservations included)    | for the areas in which you have the permission                                     |
-| _All volunteers of this edition_     | everyone with at least one shift in the edition                                             | permission for the whole edition                                                   |
-| _Everyone with a role (crew)_        | everyone with a role in the edition                                                         | permission for the whole edition                                                   |
-| _Everyone with this role_            | everyone with the chosen role in the edition                                                | permission for the whole edition                                                   |
-| _All accounts_                       | all accounts                                                                                | admins only                                                                        |
-| _Public (also without an account)_   | everyone, even without logging in                                                           | admins only                                                                        |
+| _For_                              | Whom it reaches                                                                         | Who may choose it                                                               |
+| ---------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| _Everyone on this shift_           | everyone signed up for the shift, with a request or a reserved place                    | only via _Message everyone_ on the shift's page; permission in the shift's area |
+| _Everyone with shifts in an area_  | everyone with a shift in the area or its sub-areas (requests and reservations included) | for the areas in which you have the permission                                  |
+| _All volunteers of this edition_   | everyone with at least one shift in the edition                                         | permission for the whole edition                                                |
+| _Everyone with a role (crew)_      | everyone with a role in the edition                                                     | permission for the whole edition                                                |
+| _Everyone with this role_          | everyone with the chosen role in the edition                                            | permission for the whole edition                                                |
+| _All accounts_                     | all accounts                                                                            | admins only                                                                     |
+| _Public (also without an account)_ | everyone, even without logging in                                                       | admins only                                                                     |
 
 The form only offers what you may choose and preselects the narrowest group. Anyone who books a shift
 in the area later also sees an area post then.

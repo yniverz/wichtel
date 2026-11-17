@@ -1,6 +1,8 @@
 ---
-title: Ich betreibe den Server
+title: Schnelle Hilfe für den Betrieb
 description: Schnelle Hilfe für alle, die Wichtel installieren und betreiben – Voraussetzungen, Schnellstart und die häufigsten Fragen.
+sidebar:
+  label: Schnelle Hilfe
 ---
 
 :::tip[Auf einen Blick]

@@ -92,12 +92,12 @@ Jede Änderung ist im Punkteverlauf der Person nachvollziehbar.
 
 ## Welche Rechte du brauchst
 
-| Was                       | Recht                                                       |
-| ------------------------- | ----------------------------------------------------------- |
-| Eintragen, Austragen      | _Helfende ein- und austragen, Anfragen bestätigen_          |
-| Trotz Konflikt eintragen  | zusätzlich _Regeln übergehen (Überschneidung, Fristen, Anforderungen)_ |
-| Anwesenheit abhaken       | _Anwesenheit bestätigen (Check-in)_                         |
-| Telefonnummern sehen      | _Kontaktdaten der Helfenden sehen_                          |
+| Was                      | Recht                                                                  |
+| ------------------------ | ---------------------------------------------------------------------- |
+| Eintragen, Austragen     | _Helfende ein- und austragen, Anfragen bestätigen_                     |
+| Trotz Konflikt eintragen | zusätzlich _Regeln übergehen (Überschneidung, Fristen, Anforderungen)_ |
+| Anwesenheit abhaken      | _Anwesenheit bestätigen (Check-in)_                                    |
+| Telefonnummern sehen     | _Kontaktdaten der Helfenden sehen_                                     |
 
 Jeweils im Bereich der Schicht (oder für den ganzen Jahrgang).
 

@@ -1,6 +1,8 @@
 ---
 title: Schnelle Hilfe für Leitungen
 description: Die häufigsten Fragen von Bereichs- und Schichtleitungen zur Verwaltung, kurz beantwortet.
+sidebar:
+  label: Schnelle Hilfe
 ---
 
 Du leitest einen Bereich oder eine Schicht und hast dafür eine Rolle mit Rechten in der
@@ -52,7 +54,7 @@ Schicht nicht stattfindet. Das lässt sich nicht rückgängig machen.
 
 ### Was ist eine Position?
 
-Ein Platz-Typ innerhalb einer Schicht, z. B. „Helfer*in“ und „Schichtleitung“, jeweils mit eigener
+Ein Platz-Typ innerhalb einer Schicht, z. B. „Helfer\*in“ und „Schichtleitung“, jeweils mit eigener
 Platzzahl, eigener Buchungsart und eigenen Anforderungen.
 [→ Ausführlich](/wichtel/leads/positions/)
 

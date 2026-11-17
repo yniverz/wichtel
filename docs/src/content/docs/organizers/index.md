@@ -1,6 +1,8 @@
 ---
-title: Schnelle Hilfe
+title: Schnelle Hilfe für die Organisation
 description: Die häufigsten Fragen der Festivalorganisation – mit kurzen Antworten und Links zu den Anleitungen.
+sidebar:
+  label: Schnelle Hilfe
 ---
 
 Dieser Teil der Hilfe ist für **Admins**: Menschen, die das ganze Festival in Wichtel einrichten –

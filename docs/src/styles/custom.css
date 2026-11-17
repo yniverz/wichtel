@@ -12,6 +12,10 @@
 	--sl-color-gray-6: #f5f2eb;
 	--sl-color-gray-7: #fbf9f4;
 	--sl-color-black: #fffdf8;
+	/* "Auf einen Blick" boxes (tip asides) in the saffron of the app instead of purple. */
+	--sl-color-purple-low: #fbf0cc;
+	--sl-color-purple: #8a6100;
+	--sl-color-purple-high: #4a3500;
 }
 
 :root[data-theme='dark'] {
@@ -26,9 +30,12 @@
 	--sl-color-gray-5: #36322b;
 	--sl-color-gray-6: #1f1d19;
 	--sl-color-black: #161512;
+	--sl-color-purple-low: #3a2f0f;
+	--sl-color-purple: #f4c430;
+	--sl-color-purple-high: #fbe7a8;
 }
 
-/* "Auf einen Blick" boxes at the top of a page stand out a little more. */
+/* Special cases fold away, so a quick read stays short. */
 .sl-markdown-content details {
 	border: 1px solid var(--sl-color-gray-5);
 	border-radius: 6px;

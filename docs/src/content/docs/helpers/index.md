@@ -8,13 +8,6 @@ sidebar:
 Hier stehen die Fragen, die Helfende am häufigsten haben. Jede Antwort ist kurz – unter
 „Ausführlich“ findest du die ganze Anleitung.
 
-:::note[Fragen zu deinem Festival]
-Zeiten, Anfahrt, Goodie-Ausgabe, Verpflegung und alles andere, was nur für dein Festival gilt,
-kann diese Hilfe nicht wissen. Das beantwortet die Orga: Schau in der App unter _News_ nach oder
-schreib über den Link _Kontakt_ ganz unten in der App. Der Hilfe-Link in der App kann auch auf die
-eigenen FAQ deines Festivals zeigen statt auf diese Seite.
-:::
-
 ## Konto
 
 ### Wie melde ich mich an?
@@ -126,3 +119,10 @@ sie nicht, kann nur die Orga sie ändern.
 
 _Profil_ → _Meine Daten_ → _Konto löschen …_ und mit deinem Passwort bestätigen. Das lässt sich
 nicht rückgängig machen. [→ Ausführlich](/wichtel/helpers/privacy/)
+
+:::note[Fragen zu deinem Festival]
+Zeiten, Anfahrt, Goodie-Ausgabe, Verpflegung und alles andere, was nur für dein Festival gilt,
+kann diese Hilfe nicht wissen. Das beantwortet die Orga: Schau in der App unter _News_ nach oder
+schreib über den Link _Kontakt_ ganz unten in der App. Der Hilfe-Link in der App kann auch auf die
+eigene FAQ deines Festivals zeigen statt auf diese Seite.
+:::

@@ -32,18 +32,18 @@ description: Wie du in die Verwaltung kommst, den Jahrgang wählst und warum du 
 Die Punkte sind nach Aufgaben gruppiert. Welche du siehst, hängt von den Rechten deiner Rolle ab (die
 Namen der Rechte stehen so in der Rollenverwaltung):
 
-| Gruppe        | Menüpunkt                       | Erscheint, wenn deine Rolle …                                                                                                                                                   |
-| ------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| –             | _Übersicht_                     | immer da ist                                                                                                                                                                    |
-| Vor Ort       | _Ausgabe & Check-in_            | _Goodies ausgeben_ oder _Anwesenheit bestätigen (Check-in)_ hat, oder _Punkte manuell anpassen_ für den ganzen Jahrgang                                                         |
-| Planung       | _Schichten_, _Anfragen_         | _Schichten anlegen und bearbeiten_, _Helfende ein- und austragen, Anfragen bestätigen_ oder _Anwesenheit bestätigen (Check-in)_ hat                                              |
-| Planung       | _Bereiche_                      | _Bereiche anlegen und bearbeiten_ hat                                                                                                                                           |
-| Planung       | _Buchungswellen_, _Orte & Geländeplan_ | _Schichten anlegen und bearbeiten_ für den ganzen Jahrgang hat                                                                                                          |
-| Planung       | _Goodies_                       | _Goodies verwalten_ für den ganzen Jahrgang hat                                                                                                                                 |
-| Menschen      | _Personen_                      | _Rollen vergeben (nur mit eigenen Rechten)_ oder _Kontaktdaten der Helfenden sehen_ hat                                                                                                                   |
-| Menschen      | _Qualifikationen_               | _Qualifikationen prüfen und vergeben_ hat                                                                                                                                       |
-| Kommunikation | _Neuigkeiten_                   | _Neuigkeiten veröffentlichen (auch per E-Mail)_ hat                                                                                                                             |
-| System        | _Protokoll_                     | _Protokoll einsehen_ für den ganzen Jahrgang hat                                                                                                                                |
+| Gruppe        | Menüpunkt                              | Erscheint, wenn deine Rolle …                                                                                                       |
+| ------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| –             | _Übersicht_                            | immer da ist                                                                                                                        |
+| Vor Ort       | _Ausgabe & Check-in_                   | _Goodies ausgeben_ oder _Anwesenheit bestätigen (Check-in)_ hat, oder _Punkte manuell anpassen_ für den ganzen Jahrgang             |
+| Planung       | _Schichten_, _Anfragen_                | _Schichten anlegen und bearbeiten_, _Helfende ein- und austragen, Anfragen bestätigen_ oder _Anwesenheit bestätigen (Check-in)_ hat |
+| Planung       | _Bereiche_                             | _Bereiche anlegen und bearbeiten_ hat                                                                                               |
+| Planung       | _Buchungswellen_, _Orte & Geländeplan_ | _Schichten anlegen und bearbeiten_ für den ganzen Jahrgang hat                                                                      |
+| Planung       | _Goodies_                              | _Goodies verwalten_ für den ganzen Jahrgang hat                                                                                     |
+| Menschen      | _Personen_                             | _Rollen vergeben (nur mit eigenen Rechten)_ oder _Kontaktdaten der Helfenden sehen_ hat                                             |
+| Menschen      | _Qualifikationen_                      | _Qualifikationen prüfen und vergeben_ hat                                                                                           |
+| Kommunikation | _Neuigkeiten_                          | _Neuigkeiten veröffentlichen (auch per E-Mail)_ hat                                                                                 |
+| System        | _Protokoll_                            | _Protokoll einsehen_ für den ganzen Jahrgang hat                                                                                    |
 
 _Rollen_, _Profilfelder_, _E-Mail-Vorlagen_, _Zustellung_, _Jahrgänge_, _Einstellungen_ und
 _Datenschutz & Impressum_ sehen nur Admins.

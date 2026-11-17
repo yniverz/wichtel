@@ -1,6 +1,8 @@
 ---
-title: I run the server
+title: Quick help for operators
 description: Quick help for everyone who installs and runs Wichtel – requirements, quick start and the most common questions.
+sidebar:
+  label: Quick help
 ---
 
 :::tip[At a glance]

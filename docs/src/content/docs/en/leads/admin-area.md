@@ -31,18 +31,18 @@ description: How to get to the admin area, choose the edition and why some menu 
 The items are grouped by task. Which ones you see depends on your role's permissions (the
 permission names are spelled as in the role settings):
 
-| Group         | Menu item                         | Appears if your role …                                                                                                                    |
-| ------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| –             | _Overview_                        | always                                                                                                                                    |
-| On site       | _Desk & check-in_                 | has _Hand out goodies_ or _Confirm attendance (check-in)_, or _Adjust points manually_ for the whole edition                              |
-| Planning      | _Shifts_, _Requests_              | has _Create and edit shifts_, _Add and remove volunteers, approve requests_ or _Confirm attendance (check-in)_                            |
-| Planning      | _Areas_                           | has _Create and edit areas_                                                                                                               |
-| Planning      | _Booking waves_, _Places & site plan_ | has _Create and edit shifts_ for the whole edition                                                                                    |
-| Planning      | _Goodies_                         | has _Manage goodies_ for the whole edition                                                                                                |
-| People        | _People_                          | has _Assign roles (only with own permissions)_ or _View volunteer contact details_                                                        |
-| People        | _Qualifications_                  | has _Review and grant qualifications_                                                                                                     |
-| Communication | _News_                            | has _Publish news (also by e-mail)_                                                                                                       |
-| System        | _Audit log_                       | has _View audit log_ for the whole edition                                                                                                |
+| Group         | Menu item                             | Appears if your role …                                                                                         |
+| ------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| –             | _Overview_                            | always                                                                                                         |
+| On site       | _Desk & check-in_                     | has _Hand out goodies_ or _Confirm attendance (check-in)_, or _Adjust points manually_ for the whole edition   |
+| Planning      | _Shifts_, _Requests_                  | has _Create and edit shifts_, _Add and remove volunteers, approve requests_ or _Confirm attendance (check-in)_ |
+| Planning      | _Areas_                               | has _Create and edit areas_                                                                                    |
+| Planning      | _Booking waves_, _Places & site plan_ | has _Create and edit shifts_ for the whole edition                                                             |
+| Planning      | _Goodies_                             | has _Manage goodies_ for the whole edition                                                                     |
+| People        | _People_                              | has _Assign roles (only with own permissions)_ or _View volunteer contact details_                             |
+| People        | _Qualifications_                      | has _Review and grant qualifications_                                                                          |
+| Communication | _News_                                | has _Publish news (also by e-mail)_                                                                            |
+| System        | _Audit log_                           | has _View audit log_ for the whole edition                                                                     |
 
 _Roles_, _Profile fields_, _Email templates_, _Delivery_, _Editions_, _Settings_ and _Privacy & legal
 notice_ are only visible to admins.

@@ -26,27 +26,27 @@ noch nicht bestätigt).
 
 ## Was die Personenseite zeigt
 
-| Abschnitt                         | Was                                                                                                     | Sichtbar, wenn …                                                                         |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Kopf                              | Name, _Registriert am …_, Hinweise _Admin_ / _nicht bestätigt_                                          | immer                                                                                    |
-| _Schichten_                       | Die Schichten der Person im gewählten Jahrgang mit Stand (z. B. _da_, _nicht erschienen_, _Angefragt_, _Warteliste_), als Links | nur Schichten in Bereichen, für die du Schichtrechte hast                                |
-| _Rollen im Jahrgang …_            | Ihre Rollen; mit _Rolle vergeben_, wenn du Rollen vergeben darfst                                       | immer (vergeben nur mit _Rollen vergeben (nur mit eigenen Rechten)_)                     |
-| _Punkte_ → _Ausgabe öffnen_       | Sprung zur Ausgabe für diese Person                                                                     | du hast Zugriff auf _Ausgabe & Check-in_                                                 |
-| _Kontakt_                         | E-Mail-Adresse und Handynummer                                                                          | _Kontaktdaten der Helfenden sehen_ für den ganzen Jahrgang                               |
-| _Angaben_                         | Antworten auf die Profilfelder des Festivals                                                            | wie _Kontakt_                                                                            |
-| _Qualifikationen_                 | Ihre Qualifikationen; vergeben und entziehen                                                            | _Qualifikationen prüfen und vergeben_ (siehe [Qualifikationen](/wichtel/leads/qualifications/)) |
+| Abschnitt                   | Was                                                                                                                             | Sichtbar, wenn …                                                                                |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Kopf                        | Name, _Registriert am …_, Hinweise _Admin_ / _nicht bestätigt_                                                                  | immer                                                                                           |
+| _Schichten_                 | Die Schichten der Person im gewählten Jahrgang mit Stand (z. B. _da_, _nicht erschienen_, _Angefragt_, _Warteliste_), als Links | nur Schichten in Bereichen, für die du Schichtrechte hast                                       |
+| _Rollen im Jahrgang …_      | Ihre Rollen; mit _Rolle vergeben_, wenn du Rollen vergeben darfst                                                               | immer (vergeben nur mit _Rollen vergeben (nur mit eigenen Rechten)_)                            |
+| _Punkte_ → _Ausgabe öffnen_ | Sprung zur Ausgabe für diese Person                                                                                             | du hast Zugriff auf _Ausgabe & Check-in_                                                        |
+| _Kontakt_                   | E-Mail-Adresse und Handynummer                                                                                                  | _Kontaktdaten der Helfenden sehen_ für den ganzen Jahrgang                                      |
+| _Angaben_                   | Antworten auf die Profilfelder des Festivals                                                                                    | wie _Kontakt_                                                                                   |
+| _Qualifikationen_           | Ihre Qualifikationen; vergeben und entziehen                                                                                    | _Qualifikationen prüfen und vergeben_ (siehe [Qualifikationen](/wichtel/leads/qualifications/)) |
 
 Konten ändern, Passwort-Links und Konten löschen können nur Admins (siehe
 [Personen verwalten](/wichtel/organizers/people/)).
 
 ## Welche Kontaktdaten du wo siehst
 
-| Wo                                              | Was                         | Recht nötig                                                     |
-| ----------------------------------------------- | --------------------------- | --------------------------------------------------------------- |
-| Besetzungsliste einer Schicht, Helferliste zum Drucken | Handynummer          | _Kontaktdaten der Helfenden sehen_ im Bereich der Schicht        |
-| Personenliste, Personenseite                    | E-Mail, Handynummer, Angaben | _Kontaktdaten der Helfenden sehen_ für den ganzen Jahrgang      |
-| Suche beim Eintragen in eine Schicht            | E-Mail                       | _Kontaktdaten der Helfenden sehen_ für den ganzen Jahrgang      |
-| _Ausgabe & Check-in_                            | E-Mail, Handynummer          | _Kontaktdaten der Helfenden sehen_ irgendwo im Jahrgang         |
+| Wo                                                     | Was                          | Recht nötig                                                |
+| ------------------------------------------------------ | ---------------------------- | ---------------------------------------------------------- |
+| Besetzungsliste einer Schicht, Helferliste zum Drucken | Handynummer                  | _Kontaktdaten der Helfenden sehen_ im Bereich der Schicht  |
+| Personenliste, Personenseite                           | E-Mail, Handynummer, Angaben | _Kontaktdaten der Helfenden sehen_ für den ganzen Jahrgang |
+| Suche beim Eintragen in eine Schicht                   | E-Mail                       | _Kontaktdaten der Helfenden sehen_ für den ganzen Jahrgang |
+| _Ausgabe & Check-in_                                   | E-Mail, Handynummer          | _Kontaktdaten der Helfenden sehen_ irgendwo im Jahrgang    |
 
 Profilangaben, die die Admins ausdrücklich für Leitungen freigegeben haben (z. B. T-Shirt-Größe),
 stehen in der Besetzungsliste auch ohne dieses Recht.

@@ -41,7 +41,7 @@ Die Verbindung gilt 90 Tage. Danach verbindest du neu.
 
 - **Lesen** geht immer: Jahrgänge, Bereiche, Orte, Qualifikationen, Schichten mit Besetzung, die
   Übersicht, offene Anfragen und Personen suchen – jeweils nur, was du selbst sehen darfst.
-- **Ändern** geht nur mit _Lesen und ändern_, nur in den Bereichen, die die Admins für Assistenten
+- **Ändern** geht nur mit _Lesen und ändern_, nur für die Aufgaben, die die Admins für Assistenten
   freigegeben haben, und nur soweit deine Rolle es erlaubt. Möglich sind:
   - Schichten planen: Schicht oder Serie anlegen, ändern, löschen,
   - Besetzung: Personen ein- und austragen, Anfragen und Übergaben entscheiden, Dringend-Aufrufe
@@ -51,6 +51,7 @@ Die Verbindung gilt 90 Tage. Danach verbindest du neu.
   - Punkte gutschreiben oder abziehen.
 
   Neuigkeiten und Punkte sind anfangs für Assistenten gesperrt, bis die Admins sie freigeben.
+
 - Rollen, Einstellungen und Konten kann ein Assistent nie ändern.
 
 Ob ein Assistent Namen und Kontaktdaten, nur Namen oder Pseudonyme wie „Person 4F2A9C“ sieht, legen

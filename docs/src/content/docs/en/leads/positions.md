@@ -16,14 +16,14 @@ description: Positions within a shift – places, booking direct or on request, 
 
 ## The fields of a position
 
-| Field              | Meaning                                                                                                                         |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| _Name_             | Name of the position, e.g. “Volunteer” or “Till”. Required.                                                                     |
-| _English_          | English name, optional. Without it, everyone sees the German one.                                                               |
-| _Places_           | How many people are needed, 1 to 500.                                                                                           |
-| _Booking_          | _direct_ or _on request_ (see below).                                                                                           |
-| _Points_           | Points per shift for this position. Empty (“auto”) = points from area or instance.                                              |
-| _Qualifications_   | For every configured qualification: _—_ (doesn't matter), _required_ or _nice to have_. The row only appears if qualifications exist. |
+| Field            | Meaning                                                                                                                               |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| _Name_           | Name of the position, e.g. “Volunteer” or “Till”. Required.                                                                           |
+| _English_        | English name, optional. Without it, everyone sees the German one.                                                                     |
+| _Places_         | How many people are needed, 1 to 500.                                                                                                 |
+| _Booking_        | _direct_ or _on request_ (see below).                                                                                                 |
+| _Points_         | Points per shift for this position. Empty (“auto”) = points from area or instance.                                                    |
+| _Qualifications_ | For every configured qualification: _—_ (doesn't matter), _required_ or _nice to have_. The row only appears if qualifications exist. |
 
 A new position is initially called “Volunteer”, has 4 places and the booking _direct_. A shift needs
 at least one and at most 20 positions.
