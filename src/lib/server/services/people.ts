@@ -9,22 +9,24 @@ export type PersonSummary = Pick<
 	'id' | 'email' | 'firstName' | 'lastName' | 'isAdmin' | 'emailVerifiedAt' | 'createdAt'
 >;
 
+/**
+ * Searches people by name and – only with `matchEmail` – by e-mail address. Viewers who may not
+ * see e-mail addresses must not search by them either: a hit would reveal that an address has an
+ * account.
+ */
 export async function searchPeople(
 	db: Tx,
 	query: string,
-	page = 0
+	page = 0,
+	opts: { matchEmail: boolean } = { matchEmail: false }
 ): Promise<{ people: PersonSummary[]; total: number }> {
 	const q = query.trim();
 	const pattern = `%${q.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+	const byName = ilike(sql`${users.firstName} || ' ' || ${users.lastName}`, pattern);
 	// Deleted accounts only remain as placeholders behind old bookings.
 	const where = and(
 		isNull(users.deletedAt),
-		q
-			? or(
-					ilike(users.email, pattern),
-					ilike(sql`${users.firstName} || ' ' || ${users.lastName}`, pattern)
-				)
-			: undefined
+		q ? (opts.matchEmail ? or(ilike(users.email, pattern), byName) : byName) : undefined
 	);
 	const [people, [{ total }]] = await Promise.all([
 		db

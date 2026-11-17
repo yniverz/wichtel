@@ -23,8 +23,9 @@ description: Give roles the permission for AI assistants such as Claude and deci
 2. Under _Structure & overview_, tick _Connect an AI assistant (e.g. Claude) with one’s own
    permissions_ → _Save_.
 
-None of the role templates has this permission out of the box, not even _Festival lead_. It only
-counts if the role is assigned in the **current** edition.
+Of the role templates, only _Festival lead_ has this permission out of the box (in installations set
+up with an older version, not even that one). It only counts if the role is assigned in the
+**current** edition.
 [Roles and permissions](/wichtel/en/organizers/roles/)
 
 ### 2. Checking the settings

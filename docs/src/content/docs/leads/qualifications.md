@@ -21,7 +21,8 @@ die Qualifikation eingerichtet haben.
 ## Schritt für Schritt: Nachweise prüfen
 
 1. Öffne _Qualifikationen_. Unter _Zu prüfen_ stehen alle offenen Nachweise, die ältesten zuerst.
-2. Jeder Eintrag zeigt: die Person (Link zur Personenseite), die Qualifikation, das Datum, eine
+2. Jeder Eintrag zeigt: die Person (Link zur Personenseite, wenn du _Personen_ öffnen darfst), die
+   Qualifikation, das Datum, eine
    Anmerkung der Person in Anführungszeichen und den Nachweis:
    - _Nachweis ansehen: {Dateiname}_ – öffnet das Dokument in einem neuen Tab (nur mit dem Recht
      _Hochgeladene Nachweise ansehen_; sonst steht nur der Dateiname da),

@@ -39,13 +39,13 @@ To take it away, tap _Remove_ next to the role.
 
 ### Structure & overview
 
-| Permission                                                         | What it allows                                                                                                                                             |
-| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| _Create and edit areas_                                            | Create sub-areas, edit, move and delete areas. Top-level areas only with the permission for the whole edition.                                             |
-| _Assign roles (only with own permissions)_                         | Assign and remove roles under _People_ – only where one has this permission, and only roles whose permissions one holds there completely.                  |
-| _View staffing dashboard_                                          | Belongs to the _Overview_. At the moment, however, the staffing figures there are shown to everyone who may plan shifts, add people or confirm attendance. |
-| _View audit log_                                                   | Read the [audit log](/wichtel/en/organizers/audit/) of the selected edition. Only works with _Whole edition_.                                              |
-| _Connect an AI assistant (e.g. Claude) with one’s own permissions_ | Connect an [AI assistant](/wichtel/en/organizers/ai/). Only counts in the current edition.                                                                 |
+| Permission                                                         | What it allows                                                                                                                                                                                                                                     |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _Create and edit areas_                                            | Create sub-areas, edit, move and delete areas. Top-level areas only with the permission for the whole edition.                                                                                                                                     |
+| _Assign roles (only with own permissions)_                         | Assign and remove roles under _People_ – only where one has this permission, and only roles whose permissions one holds there completely.                                                                                                          |
+| _View staffing dashboard_                                          | See the staffing of one's own areas on the _Overview_ (figures, table by area and day, understaffed shifts) – read-only, without being able to open the shifts. Also opens the admin area. Anyone with shift permissions sees the staffing anyway. |
+| _View audit log_                                                   | Read the [audit log](/wichtel/en/organizers/audit/) of the selected edition. Only works with _Whole edition_.                                                                                                                                      |
+| _Connect an AI assistant (e.g. Claude) with one’s own permissions_ | Connect an [AI assistant](/wichtel/en/organizers/ai/). Only counts in the current edition.                                                                                                                                                         |
 
 ### Shifts
 
@@ -78,11 +78,13 @@ overview of all permissions is also in [Permissions](/wichtel/en/reference/permi
 
 ## Typical roles
 
-During setup Wichtel creates these templates. You can change them freely.
+During setup Wichtel creates these templates. You can change them freely. In installations set up
+with an older version, _Festival lead_ still lacks _Connect an AI assistant_ – add it under _Roles_
+if they should use AI assistants.
 
 | Role             | Typically assigned for | Permissions                                                                                                                      |
 | ---------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| _Festival lead_  | _Whole edition_        | all except _Connect an AI assistant_                                                                                             |
+| _Festival lead_  | _Whole edition_        | all, including _Connect an AI assistant_                                                                                         |
 | _Area lead_      | one area               | areas, assign roles, dashboard, shifts, add and remove, override rules, attendance, review qualifications, contact details, news |
 | _Shift lead_     | one (sub-)area         | attendance, contact details, dashboard                                                                                           |
 | _Volunteer desk_ | _Whole edition_        | dashboard, add and remove, attendance, review qualifications, contact details, hand out goodies                                  |

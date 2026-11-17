@@ -46,8 +46,9 @@ More: [Staffing](/wichtel/en/leads/staffing/)
 
 ### Audit log
 
-The unchangeable list of all changes made by leads and admins: who, when, what. Anyone with the
-permission _View audit log_ can read it.
+The unchangeable list of all changes made by leads and admins – and of some that volunteers make
+themselves (e.g. swaps, groups, deleting their account): who, when, what. Anyone with the permission
+_View audit log_ can read it.
 More: [Audit log](/wichtel/en/organizers/audit/)
 
 ### Bonus points

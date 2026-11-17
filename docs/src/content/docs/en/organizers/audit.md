@@ -42,6 +42,10 @@ All actions that change something, for example:
 - **Communication:** news, e-mail templates, e-mails sent again or discarded.
 - **AI assistants:** connected, disconnected.
 
+The audit log records not only what leads and admins do, but also some changes volunteers make
+themselves: handovers and swaps, groups, resetting their own password and deleting their own account.
+The person shown is then the volunteer themselves.
+
 Sign-ins and merely looking at things are not recorded – with one exception: downloading a data
 export is recorded.
 

@@ -16,7 +16,8 @@ description: Approve or decline booking requests and shift handovers or swaps on
 
 A booking request is created when someone signs up for a position _on request_ (see
 [Positions](/wichtel/en/leads/positions/)). Each entry shows the person, the shift, the position and
-the time. Name and shift are links to their detail pages.
+the time. The shift links to its page, the name to the person page – the latter only if you may open
+_People_.
 
 - **_Approve_** – the person is signed up and gets the e-mail “Confirmed: …”. If the position has
   filled up in the meantime, you get “All places are taken.” – then make room first or decline.

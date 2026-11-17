@@ -13,7 +13,7 @@ change roles.
 ### How do I get to the admin area?
 
 In the volunteer view, the menu has _Admin_; the home page also has _Go to admin_. Both only appear if
-you have a role in the current edition.
+you have a role in an edition that is not archived.
 [→ Details](/wichtel/en/leads/admin-area/)
 
 ### Why are menu items missing that others have?

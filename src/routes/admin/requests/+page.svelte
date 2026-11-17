@@ -90,9 +90,10 @@
 				{#each data.requests as request (request.id)}
 					<li class="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-4">
 						<div class="min-w-0">
-							<a href="/admin/people/{request.userId}" class="font-bold hover:underline"
-								>{request.name}</a
-							>
+							{#if data.access.people}<a
+									href="/admin/people/{request.userId}"
+									class="font-bold hover:underline">{request.name}</a
+								>{:else}<span class="font-bold">{request.name}</span>{/if}
 							<p class="text-sm">
 								<a href="/admin/shifts/{request.shift.id}" class="hover:underline"
 									>{localized(request.shift, 'title', i18n.locale)}</a

@@ -1,3 +1,4 @@
+import { canViewPeople } from '#lib/domain/permissions.ts';
 import { getAdminContext } from '#lib/server/guards.ts';
 import { hasShiftAccess } from '#lib/server/shift-access.ts';
 import { db } from '#lib/server/app.ts';
@@ -39,10 +40,7 @@ export const load: LayoutServerLoad = async (event) => {
 				authz.canSomewhere('goodie.issue') ||
 				authz.canSomewhere('attendance.confirm') ||
 				authz.can('points.adjust'),
-			people:
-				authz.isAdmin ||
-				authz.canSomewhere('role.assign') ||
-				authz.canSomewhere('helper.contact.view'),
+			people: canViewPeople(authz),
 			audit: authz.can('audit.view')
 		}
 	};

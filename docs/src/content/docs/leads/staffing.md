@@ -5,8 +5,7 @@ description: Personen in Schichten eintragen und austragen, Regeln übergehen un
 
 :::tip[Auf einen Blick]
 
-- **Eintragen:** Schicht öffnen → bei der Position _+ Person eintragen_ → Name oder E-Mail suchen →
-  _Eintragen_.
+- **Eintragen:** Schicht öffnen → bei der Position _+ Person eintragen_ → Namen suchen → _Eintragen_.
 - **Austragen:** bei der Person _Austragen_ → bestätigen.
 - **Abhaken:** bei der Person _da_ oder _nicht erschienen_ wählen – ab dem Tag der Schicht.
 - **Punkte** gibt es nur für _da_.
@@ -35,7 +34,9 @@ Neben dem Namen steht der Stand:
 ## Jemanden eintragen
 
 1. Tippe bei der Position auf _+ Person eintragen_.
-2. Gib mindestens zwei Buchstaben des Namens oder der E-Mail-Adresse ein und wähle die Person aus.
+2. Gib mindestens zwei Buchstaben des Namens ein und wähle die Person aus. Nach der E-Mail-Adresse
+   kannst du nur suchen, wenn du E-Mail-Adressen sehen darfst (_Kontaktdaten der Helfenden sehen_ für
+   den ganzen Jahrgang).
 3. Tippe auf _Eintragen_.
 
 Die Person ist sofort eingetragen – auch bei Positionen _auf Anfrage_, bei internen Schichten und

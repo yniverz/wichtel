@@ -59,9 +59,10 @@
 			<ul class="divide-y divide-line">
 				{#each data.assignments as a (a.id)}
 					<li class="flex justify-between gap-3 py-2 text-sm">
-						<a href="/admin/people/{a.userId}" class="font-medium hover:text-brand-text"
-							>{a.firstName} {a.lastName}</a
-						>
+						{#if data.access.people}<a
+								href="/admin/people/{a.userId}"
+								class="font-medium hover:text-brand-text">{a.firstName} {a.lastName}</a
+							>{:else}<span class="font-medium">{a.firstName} {a.lastName}</span>{/if}
 						<span class="text-ink-muted"
 							>{i18n.locale === 'en' && a.roleNameEn ? a.roleNameEn : a.roleNameDe}</span
 						>

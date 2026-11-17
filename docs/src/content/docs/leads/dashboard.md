@@ -15,9 +15,12 @@ description: Was die Übersicht der Verwaltung zeigt – Besetzung, Heatmap, unt
 :::
 
 Die Zahlen beziehen sich immer auf den Jahrgang, der oben gewählt ist, und nur auf die Bereiche, in
-denen deine Rolle Schichtrechte hat (_Schichten anlegen und bearbeiten_, _Helfende ein- und
-austragen, Anfragen bestätigen_ oder _Anwesenheit bestätigen (Check-in)_). Ohne eines dieser Rechte
-bleibt die Übersicht weitgehend leer.
+denen deine Rolle _Besetzungs-Dashboard sehen_ oder Schichtrechte hat (_Schichten anlegen und
+bearbeiten_, _Helfende ein- und austragen, Anfragen bestätigen_ oder _Anwesenheit bestätigen
+(Check-in)_). Ohne eines dieser Rechte bleibt die Übersicht weitgehend leer.
+
+Mit _Besetzungs-Dashboard sehen_ allein kannst du nur schauen: Die Zahlen sind dann keine Links, weil
+du die Schichten selbst nicht öffnen darfst.
 
 ## Was du siehst
 

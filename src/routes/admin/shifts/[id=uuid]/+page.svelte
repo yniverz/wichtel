@@ -127,9 +127,10 @@
 						{#each position.people as person (person.id)}
 							<li class="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
 								<div class="min-w-40 flex-1">
-									<a href="/admin/people/{person.userId}" class="font-semibold hover:underline"
-										>{person.name}</a
-									>
+									{#if data.access.people}<a
+											href="/admin/people/{person.userId}"
+											class="font-semibold hover:underline">{person.name}</a
+										>{:else}<span class="font-semibold">{person.name}</span>{/if}
 									{#if person.phone}<a
 											href="tel:{person.phone}"
 											class="block text-sm text-ink-muted tabular-nums hover:underline"

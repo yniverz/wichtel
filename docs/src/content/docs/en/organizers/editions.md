@@ -50,9 +50,16 @@ At the top of the sidebar (on a phone under _Menu_), choose another edition in t
 This only applies to you and your browser; volunteers notice nothing. This way you can prepare next
 year while the current one is still running.
 
+Admins see all editions in the switch. Leads only see the editions that are not archived and in which
+they have a role – so they cannot lock themselves out by accident.
+
 ### Archiving an edition
 
 _Editions_ → edition → _Edit_ → _Archive_. _Restore_ undoes it.
+
+If it is the **current** edition, a warning appears above the button and the confirmation repeats it:
+afterwards there is no current edition any more, and volunteers only see “There is no volunteer
+season running right now”. If things go on, make the new edition current first.
 
 ## What is copied?
 
@@ -99,9 +106,10 @@ existing shifts.
 An archived edition is no longer the current one, and roles in that edition no longer give any
 permissions – so former leads keep nothing. Admins still see the edition in the _Edition_ switch.
 
-If you archive the **current** edition, there is no current edition afterwards. Volunteers then only
-see a note that no volunteer season is running. So first make the new edition current, then archive
-the old one.
+If you archive the **current** edition, there is no current edition afterwards – the page warns you
+about this. Volunteers then only see a note that no volunteer season is running. That is fine once
+the season is over; if things go on, first make the new edition current, then archive the old one.
+_Restore_ does not make an edition current again; use _Make current edition_ for that.
 
 </details>
 

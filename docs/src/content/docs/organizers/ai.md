@@ -23,8 +23,9 @@ description: Rollen das Recht für KI-Assistenten wie Claude geben und festlegen
 2. Hake unter _Struktur & Überblick_ _KI-Assistent verbinden (z. B. Claude), mit den eigenen Rechten_
    an → _Speichern_.
 
-Keine der Rollen-Vorlagen hat dieses Recht ab Werk, auch die _Gesamtleitung_ nicht. Es zählt nur,
-wenn die Rolle im **aktuellen** Jahrgang vergeben ist. [Rollen und Rechte](/wichtel/organizers/roles/)
+Von den Rollen-Vorlagen hat nur die _Gesamtleitung_ dieses Recht ab Werk (in Installationen, die mit
+einer älteren Version eingerichtet wurden, auch sie nicht). Es zählt nur, wenn die Rolle im
+**aktuellen** Jahrgang vergeben ist. [Rollen und Rechte](/wichtel/organizers/roles/)
 
 ### 2. Die Einstellungen prüfen
 

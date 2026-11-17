@@ -153,9 +153,12 @@
 				<ul class="divide-y divide-line">
 					{#each d.today as s (s.id)}
 						<li>
-							<a
-								href="/admin/shifts/{s.id}"
-								class="grid grid-cols-[6.5rem_1fr_auto] items-baseline gap-3 py-2.5 hover:bg-ink/5"
+							<svelte:element
+								this={s.link ? 'a' : 'div'}
+								href={s.link ? `/admin/shifts/${s.id}` : undefined}
+								class="grid grid-cols-[6.5rem_1fr_auto] items-baseline gap-3 py-2.5 {s.link
+									? 'hover:bg-ink/5'
+									: ''}"
 							>
 								<span class="text-sm tabular-nums">{range(s)}</span>
 								<span class="font-semibold">{localized(s, 'title', i18n.locale)}</span>
@@ -168,7 +171,7 @@
 											· {i18n.t('admin.dash.noShow', { count: s.noShow })}</span
 										>{/if}</span
 								>
-							</a>
+							</svelte:element>
 						</li>
 					{/each}
 				</ul>
@@ -205,13 +208,16 @@
 										<td class="min-w-16 p-0">
 											{#if cell}
 												{@const fill = percent(cell.booked, cell.capacity)}
-												<a
-													href="/admin/shifts?area={row.areaId}#day-{d.heatmap.days[i]}"
+												<svelte:element
+													this={row.link ? 'a' : 'span'}
+													href={row.link
+														? `/admin/shifts?area=${row.areaId}#day-${d.heatmap.days[i]}`
+														: undefined}
 													class="block rounded-sm px-2 py-2 font-semibold {cellClass(fill)}"
 													title={i18n.t('admin.dash.places', {
 														booked: cell.booked,
 														capacity: cell.capacity
-													})}>{cell.booked}/{cell.capacity}</a
+													})}>{cell.booked}/{cell.capacity}</svelte:element
 												>
 											{:else}
 												<span class="block px-2 py-2 text-ink-muted/50">–</span>
@@ -236,9 +242,12 @@
 				<ul class="divide-y divide-line">
 					{#each d.understaffed as s (s.id)}
 						<li>
-							<a
-								href="/admin/shifts/{s.id}"
-								class="grid grid-cols-[6.5rem_1fr_auto] items-baseline gap-3 py-2.5 hover:bg-ink/5"
+							<svelte:element
+								this={s.link ? 'a' : 'div'}
+								href={s.link ? `/admin/shifts/${s.id}` : undefined}
+								class="grid grid-cols-[6.5rem_1fr_auto] items-baseline gap-3 py-2.5 {s.link
+									? 'hover:bg-ink/5'
+									: ''}"
 							>
 								<span class="text-sm leading-tight tabular-nums"
 									><span class="font-semibold">{day(s.startsAt)}</span><br />{range(s)}</span
@@ -257,7 +266,7 @@
 									{#if s.urgent}<Badge tone="urgent">{i18n.t('shifts.urgent')}</Badge>{/if}
 									{i18n.t('shifts.free', { free: s.free })}
 								</span>
-							</a>
+							</svelte:element>
 						</li>
 					{/each}
 				</ul>

@@ -196,6 +196,8 @@ export const de = {
 	'admin.editions.archived': 'Archiviert',
 	'admin.editions.archive': 'Archivieren',
 	'admin.editions.unarchive': 'Wiederherstellen',
+	'admin.editions.archiveCurrent':
+		'Das ist der aktuelle Jahrgang. Nach dem Archivieren gibt es keinen aktuellen Jahrgang mehr: Helfende sehen dann nur „Gerade läuft keine Helfer-Saison“ und können nichts buchen. Geht es weiter, mach vorher einen anderen Jahrgang zum aktuellen.',
 	'admin.editions.empty': 'Noch kein Jahrgang angelegt.',
 
 	'admin.areas.title': 'Bereiche',
@@ -307,7 +309,8 @@ export const de = {
 	'admin.settings.registrationOpen': 'Registrierung für neue Helfende geöffnet',
 
 	'admin.audit.title': 'Protokoll',
-	'admin.audit.lead': 'Alle Änderungen durch Leitungen und Admins – unveränderlich gespeichert.',
+	'admin.audit.lead':
+		'Alle Änderungen durch Leitungen und Admins und auch, was Helfende selbst ändern (Tausch, Gruppen, Passwort zurücksetzen, Konto löschen) – unveränderlich gespeichert.',
 	'admin.audit.details': 'Details',
 	'admin.audit.system': 'System',
 	'admin.audit.empty': 'Noch keine Einträge.',

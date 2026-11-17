@@ -5,7 +5,7 @@ description: Add people to shifts and remove them, override rules and record att
 
 :::tip[At a glance]
 
-- **Add:** open the shift → at the position _+ Add person_ → search name or email → _Add_.
+- **Add:** open the shift → at the position _+ Add person_ → search the name → _Add_.
 - **Remove:** at the person _Remove_ → confirm.
 - **Tick off:** at the person choose _present_ or _no-show_ – from the day of the shift.
 - **Points** are only given for _present_.
@@ -33,7 +33,8 @@ Next to the name is the status:
 ## Adding someone
 
 1. Tap _+ Add person_ at the position.
-2. Type at least two letters of the name or email address and choose the person.
+2. Type at least two letters of the name and choose the person. You can only search by email address
+   if you may see email addresses (_View volunteer contact details_ for the whole edition).
 3. Tap _Add_.
 
 The person is signed up immediately – also for positions _on request_, for internal shifts and

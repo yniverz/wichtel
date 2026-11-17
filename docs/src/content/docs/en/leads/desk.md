@@ -34,7 +34,8 @@ This works if your role in the current edition has _Hand out goodies_ or _Confir
 ### Searching by hand
 
 1. Open _Desk & check-in_.
-2. Type at least two letters of the name or email address under _Find person_ and tap _Search_.
+2. Type at least two letters of the name under _Find person_ and tap _Search_. You can only search by
+   email address with _View volunteer contact details_.
 3. Tap the person.
 
 Only people taking part in this edition are found (with a shift, a goodie or points), at most 20

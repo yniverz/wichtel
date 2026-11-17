@@ -5,7 +5,7 @@ description: Search for people, which contact details you may see and what the p
 
 :::tip[At a glance]
 
-- **Search:** _Admin_ → _People_ → enter name or email → _Search_.
+- **Search:** _Admin_ → _People_ → enter the name → _Search_.
 - **Phone number, quickly:** in the shift's staffing list – if your role has _View volunteer contact
   details_ for the area.
 - **Email addresses and profile details** are only visible with this permission for the whole
@@ -19,7 +19,8 @@ description: Search for people, which contact details you may see and what the p
 
 1. Open _People_. The list shows all accounts of this Wichtel installation – not just this year's
    volunteers –, sorted by last name, 50 per page.
-2. Enter part of the name or email address and tap _Search_.
+2. Enter part of the name and tap _Search_. If you may see email addresses, the search also finds
+   parts of the email address.
 3. Tap a person to open their page.
 
 The list shows hints such as _Admin_ or _unconfirmed_ (the person has not confirmed their email
@@ -52,6 +53,9 @@ Only admins can change accounts, create password links and delete accounts (see
 Profile details the admins have explicitly released for leads (e.g. T-shirt size) appear in the
 staffing list even without this permission.
 
+You can only search by email address where you also see it. Otherwise the search only finds names –
+so it does not reveal whether an address has an account.
+
 ## Common questions
 
 ### I lead an area and still don't see any email addresses
@@ -60,11 +64,11 @@ Your permission applies to your area. There you see the phone numbers in the sta
 and details on the person page need the permission for the whole edition. Ask the admins if you need
 them.
 
-### I click a name and get “You do not have permission to do this.”
+### Why are names not links for me?
 
 The person page belongs to the _People_ menu item. Without _View volunteer contact details_ or
-_Assign roles (only with own permissions)_ you cannot open it, even if names elsewhere appear as
-links.
+_Assign roles (only with own permissions)_ you cannot open it. Names in staffing lists, requests,
+qualifications and areas then appear as plain text.
 
 ## Special cases
 
