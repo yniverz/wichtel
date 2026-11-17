@@ -865,7 +865,7 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.templates.reset': 'Restore default',
 	'admin.templates.resetConfirm': 'Restore the default text? Your changes will be lost.',
 	'admin.templates.placeholders':
-		'Placeholders: {name}, {festival}, {shift}, {date}, {time}, {location}, {link}',
+		'Placeholders in curly braces are replaced when sending. Each template lists the ones it knows.',
 	'admin.templates.key.booking_confirmed': 'Booking confirmed',
 	'admin.templates.key.booking_requested': 'Request received',
 	'admin.templates.key.request_approved': 'Request approved',
@@ -906,6 +906,9 @@ export const en: Record<keyof typeof de, string> = {
 	'places.mapConsent': 'The map is loaded from {host}. Your IP address is sent to this service.',
 	'places.loadMap': 'Load map',
 	'places.openIn': 'Open in:',
+	'places.appleMaps': 'Apple Maps',
+	'places.zoomIn': 'Zoom in',
+	'places.zoomOut': 'Zoom out',
 	'app.home.desk': 'How to find the volunteer desk',
 	'admin.nav.places': 'Places & site plan',
 	'admin.places.title': 'Places & site plan',
@@ -1148,7 +1151,10 @@ export const en: Record<keyof typeof de, string> = {
 	'mailtpl.account_email_changed.subject': 'Your e-mail address at {festival} was changed',
 	'mailtpl.account_email_changed.body':
 		'Hi {name},\n\nthe organisers changed the e-mail address of your {festival} account. Messages and sign-in now use the new address; we will not write to this address any more.\n\nIf you did not want this, please get in touch with us.\n\nYour {festival} team',
-	'admin.templates.extra': 'Also available in this template: {list}',
+	'admin.templates.available': 'Placeholders in this template: {list}',
+	'admin.templates.retentionDate': 'Here {placeholder} is the day the account will be deleted.',
+	'admin.templates.unknown':
+		'Saved. This template does not know {list} – it will appear in the email exactly like that.',
 	// Lead dashboard, print views, copying editions
 	'admin.dash.filled': 'Filled',
 	'admin.dash.places': '{booked} of {capacity} places',
@@ -1176,6 +1182,7 @@ export const en: Record<keyof typeof de, string> = {
 		'No mail server is set up (SMTP_HOST). E-mails are not sent, addresses are not confirmed and nobody can reset their password themselves. You create reset links on the person’s page.',
 	'print.print': 'Print',
 	'print.plan': 'Print shift plan',
+	'print.planDay': 'Print the shift plan for one day:',
 	'print.crew': 'Print crew list',
 	'print.position': 'Position',
 	'print.name': 'Name',

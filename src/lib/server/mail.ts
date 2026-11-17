@@ -43,15 +43,18 @@ export function createSmtpMailer(config: SmtpConfig): Mailer {
 
 /**
  * Fallback without a mail server: logs e-mails instead of sending them. Their text contains
- * secret links (password reset), so it is only logged when `withBodies` is set (development).
+ * secret links (password reset) and the address is personal data, so both are only logged when
+ * `withBodies` is set (development or `LOG_MAIL_BODIES`); otherwise just the subject.
  */
 export function createConsoleMailer(withBodies: boolean): Mailer {
 	return {
 		async send(message) {
 			log.info('e-mail not sent (SMTP_HOST unset)', {
-				to: message.to,
+				to: withBodies ? message.to : undefined,
 				subject: message.subject,
-				text: withBodies ? message.text : '(not logged; set LOG_MAIL_BODIES=true to see it)'
+				text: withBodies
+					? message.text
+					: '(address and text not logged; set LOG_MAIL_BODIES=true to see them)'
 			});
 		}
 	};

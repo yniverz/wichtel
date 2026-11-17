@@ -46,6 +46,44 @@ export const MAIL_TEMPLATES = [
 ] as const;
 export type MailTemplate = (typeof MAIL_TEMPLATES)[number];
 
+const COMMON = ['name', 'festival', 'link'];
+/** Filled from the shift by `shiftParams`. */
+const SHIFT = ['shift', 'date', 'time', 'location'];
+
+/**
+ * The placeholders each template is sent with. Anything else in braces stays in the e-mail as
+ * typed. In `account_retention`, `{date}` is the day the account will be deleted.
+ */
+export const TEMPLATE_PLACEHOLDERS: Record<MailTemplate, readonly string[]> = {
+	booking_confirmed: [...COMMON, ...SHIFT],
+	booking_requested: [...COMMON, ...SHIFT],
+	request_approved: [...COMMON, ...SHIFT],
+	request_rejected: [...COMMON, ...SHIFT],
+	added_by_lead: [...COMMON, ...SHIFT],
+	removed_by_lead: [...COMMON, ...SHIFT],
+	shift_changed: [...COMMON, ...SHIFT],
+	shift_cancelled: [...COMMON, ...SHIFT],
+	reminder: [...COMMON, ...SHIFT],
+	waitlist_promoted: [...COMMON, ...SHIFT],
+	group_hold: [...COMMON, ...SHIFT, 'person', 'until'],
+	hold_expired: [...COMMON, ...SHIFT],
+	swap_offered: [...COMMON, ...SHIFT, 'person'],
+	swap_proposed: [...COMMON, ...SHIFT, 'person', 'given'],
+	swap_pending: [...COMMON, ...SHIFT, 'person'],
+	swap_completed: [...COMMON, ...SHIFT, 'person'],
+	swap_declined: [...COMMON, ...SHIFT, 'person'],
+	urgent_call: [...COMMON, ...SHIFT, 'position', 'free', 'bonus', 'note'],
+	account_retention: [...COMMON, 'date', 'months'],
+	account_email_changed: COMMON
+};
+
+/** Placeholders in a template text that this template does not fill, each once. */
+export function unknownPlaceholders(key: MailTemplate, text: string): string[] {
+	const known = TEMPLATE_PLACEHOLDERS[key];
+	const used = [...text.matchAll(/\{(\w+)\}/g)].map((m) => m[1]);
+	return [...new Set(used.filter((name) => !known.includes(name)))];
+}
+
 /**
  * Public base URL for links in e-mails; set once at startup. Kept on `globalThis` like the other
  * process-wide values, so a module reload in development does not fall back to the default.

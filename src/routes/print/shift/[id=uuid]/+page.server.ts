@@ -14,6 +14,6 @@ export const load: PageServerLoad = async (event) => {
 	if (!shift || shift.editionId !== edition.id) error(404, 'error.notFound');
 	if (!canSeeShiftArea(ctx, shift.areaId)) error(403, 'error.forbidden');
 	const tz = (await getSettings(db())).timezone;
-	const [printable] = await printShifts(db(), [shift], tree, ctx.authz, tz);
+	const [printable] = await printShifts(db(), [shift], tree, ctx.authz, tz, event.locals.locale);
 	return { timezone: tz, editionName: edition.name, shift: printable };
 };

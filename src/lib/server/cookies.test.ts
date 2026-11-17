@@ -30,9 +30,10 @@ describe('secureCookie', () => {
 	afterEach(() => setHttpsOnly(false));
 
 	it('follows the request protocol unless the public URL is https', () => {
-		const http = { url: new URL('http://helfen.example.de/') };
+		const at = (url: string) => ({ url: new URL(url), request: new Request(url) });
+		const http = at('http://helfen.example.de/');
 		expect(secureCookie(http)).toBe(false);
-		expect(secureCookie({ url: new URL('https://helfen.example.de/') })).toBe(true);
+		expect(secureCookie(at('https://helfen.example.de/'))).toBe(true);
 		setHttpsOnly(true);
 		expect(secureCookie(http)).toBe(true);
 	});

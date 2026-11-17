@@ -1,5 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { utcToZoned } from '#lib/domain/time.ts';
+import { localized } from '#lib/i18n/index.ts';
 import { db } from '#lib/server/app.ts';
 import { getAdminContext, requireEdition } from '#lib/server/guards.ts';
 import { printShifts } from '#lib/server/print.ts';
@@ -30,8 +31,8 @@ export const load: PageServerLoad = async (event) => {
 	return {
 		timezone: tz,
 		editionName: edition.name,
-		areaName: area ? (tree.get(area)?.nameDe ?? '') : null,
+		areaName: area ? localized(tree.get(area) ?? {}, 'name', event.locals.locale) : null,
 		day,
-		shifts: await printShifts(db(), list, tree, ctx.authz, tz)
+		shifts: await printShifts(db(), list, tree, ctx.authz, tz, event.locals.locale)
 	};
 };

@@ -882,7 +882,7 @@ export const de = {
 	'admin.templates.reset': 'Standard wiederherstellen',
 	'admin.templates.resetConfirm': 'Standardtext wiederherstellen? Deine Anpassung geht verloren.',
 	'admin.templates.placeholders':
-		'Platzhalter: {name}, {festival}, {shift}, {date}, {time}, {location}, {link}',
+		'Platzhalter in geschweiften Klammern werden beim Versand ersetzt. Welche eine Vorlage kennt, steht jeweils dabei.',
 	'admin.templates.key.booking_confirmed': 'Buchung bestätigt',
 	'admin.templates.key.booking_requested': 'Anfrage eingegangen',
 	'admin.templates.key.request_approved': 'Anfrage bestätigt',
@@ -924,6 +924,9 @@ export const de = {
 		'Die Karte wird von {host} geladen. Dabei wird deine IP-Adresse an diesen Dienst übertragen.',
 	'places.loadMap': 'Karte laden',
 	'places.openIn': 'Öffnen in:',
+	'places.appleMaps': 'Apple Karten',
+	'places.zoomIn': 'Vergrößern',
+	'places.zoomOut': 'Verkleinern',
 	'app.home.desk': 'So findest du die Helferanmeldung',
 	'admin.nav.places': 'Orte & Geländeplan',
 	'admin.places.title': 'Orte & Geländeplan',
@@ -1169,7 +1172,11 @@ export const de = {
 	'mailtpl.account_email_changed.subject': 'Deine E-Mail-Adresse bei {festival} wurde geändert',
 	'mailtpl.account_email_changed.body':
 		'Hallo {name},\n\ndie Festivalleitung hat die E-Mail-Adresse deines Kontos bei {festival} geändert. Nachrichten und Anmeldung laufen ab jetzt über die neue Adresse; an diese Adresse schicken wir nichts mehr.\n\nWenn du das nicht wolltest, melde dich bitte bei uns.\n\nDein {festival}-Team',
-	'admin.templates.extra': 'Zusätzlich in dieser Vorlage: {list}',
+	'admin.templates.available': 'Platzhalter in dieser Vorlage: {list}',
+	'admin.templates.retentionDate':
+		'{placeholder} ist hier der Tag, an dem das Konto gelöscht wird.',
+	'admin.templates.unknown':
+		'Gespeichert. Diese Vorlage kennt {list} nicht – das steht dann genau so in der E-Mail.',
 	// Lead dashboard, print views, copying editions
 	'admin.dash.filled': 'Besetzt',
 	'admin.dash.places': '{booked} von {capacity} Plätzen',
@@ -1197,6 +1204,7 @@ export const de = {
 		'Es ist kein E-Mail-Server eingerichtet (SMTP_HOST). E-Mails werden nicht verschickt, Adressen nicht bestätigt, und niemand kann sein Passwort selbst zurücksetzen. Reset-Links erzeugst du auf der Seite der Person.',
 	'print.print': 'Drucken',
 	'print.plan': 'Schichtplan drucken',
+	'print.planDay': 'Schichtplan für einen Tag drucken:',
 	'print.crew': 'Helferliste drucken',
 	'print.position': 'Position',
 	'print.name': 'Name',

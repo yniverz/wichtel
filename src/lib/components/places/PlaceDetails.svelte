@@ -82,7 +82,7 @@
 				>Google Maps</a
 			>
 			<a href={links.apple} target="_blank" rel="noopener" class="text-brand-text hover:underline"
-				>Apple Karten</a
+				>{i18n.t('places.appleMaps')}</a
 			>
 			<a href={links.osm} target="_blank" rel="noopener" class="text-brand-text hover:underline"
 				>OpenStreetMap</a

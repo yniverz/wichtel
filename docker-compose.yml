@@ -21,10 +21,14 @@ services:
       SMTP_FROM: ${SMTP_FROM:-}
       LOG_LEVEL: ${LOG_LEVEL:-info}
       LOG_FORMAT: ${LOG_FORMAT:-json}
+      LOG_MAIL_BODIES: ${LOG_MAIL_BODIES:-}
       # Behind a reverse proxy: trust its headers for protocol, host and client IP.
+      # Without X-Forwarded-Proto (direct access, no proxy), the scheme of PUBLIC_URL is used.
       PROTOCOL_HEADER: x-forwarded-proto
       HOST_HEADER: x-forwarded-host
       ADDRESS_HEADER: x-forwarded-for
+      # Number of proxies in front of the app (e.g. 2 for Cloudflare + Caddy).
+      XFF_DEPTH: ${XFF_DEPTH:-1}
     ports:
       # Host address and port the app is reachable on (container listens on 3000).
       - '${WICHTEL_BIND:-127.0.0.1}:${WICHTEL_PORT:-3006}:3000'
