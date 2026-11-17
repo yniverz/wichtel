@@ -71,7 +71,7 @@ der innere Proxy die Adresse von Cloudflare weiterreicht.
 
 `GET /healthz` antwortet mit `ok`, wenn App und Datenbank erreichbar sind, sonst mit Status 503.
 Docker nutzt das auch selbst: `docker compose ps` zeigt `healthy`.
-[Ausführlich](/wichtel/operators/updates-backups/#gesundheit-prüfen)
+[Ausführlich](/wichtel/operators/updates-backups/#health-check)
 
 ### Wo sehe ich die Logs?
 
