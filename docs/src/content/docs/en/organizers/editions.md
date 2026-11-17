@@ -56,16 +56,16 @@ _Editions_ → edition → _Edit_ → _Archive_. _Restore_ undoes it.
 
 ## What is copied?
 
-| What                                                   | Copied                                     |
-| ------------------------------------------------------ | ------------------------------------------ |
-| Areas with their deadline and point rules              | **always**                                 |
-| _Places, site plan and volunteer desk_                 | if ticked                                  |
-| _Shifts with positions_                                | if ticked, times moved                     |
-| _Goodies_                                              | if ticked                                  |
-| _Role assignments (leads)_                             | if ticked, on the same areas               |
-| _Booking waves (with new invite links)_                | if ticked, times moved                     |
-| Bookings, points, handed-out goodies                   | **never**                                  |
-| Profile fields, qualifications, e-mail templates       | apply to all editions anyway               |
+| What                                             | Copied                       |
+| ------------------------------------------------ | ---------------------------- |
+| Areas with their deadline and point rules        | **always**                   |
+| _Places, site plan and volunteer desk_           | if ticked                    |
+| _Shifts with positions_                          | if ticked, times moved       |
+| _Goodies_                                        | if ticked                    |
+| _Role assignments (leads)_                       | if ticked, on the same areas |
+| _Booking waves (with new invite links)_          | if ticked, times moved       |
+| Bookings, points, handed-out goodies             | **never**                    |
+| Profile fields, qualifications, e-mail templates | apply to all editions anyway |
 
 ## Common questions
 

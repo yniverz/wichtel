@@ -29,12 +29,12 @@ To change or delete a wave, expand it in the list.
 
 ## Audiences
 
-| _For_                                                              | Who may book                                                                                                  |
-| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| _all volunteers_                                                   | everyone with an account                                                                                      |
-| _Crew (people with a role in this edition)_                        | everyone with a [role](/wichtel/en/organizers/roles/) in the current edition, and all admins                   |
-| _Returning volunteers (worked in an earlier edition) and crew_     | everyone whose attendance was confirmed for at least one shift in an earlier edition, plus the crew           |
-| _People with the invitation link_                                  | everyone who opened this wave's invitation link                                                               |
+| _For_                                                          | Who may book                                                                                        |
+| -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| _all volunteers_                                               | everyone with an account                                                                            |
+| _Crew (people with a role in this edition)_                    | everyone with a [role](/wichtel/en/organizers/roles/) in the current edition, and all admins        |
+| _Returning volunteers (worked in an earlier edition) and crew_ | everyone whose attendance was confirmed for at least one shift in an earlier edition, plus the crew |
+| _People with the invitation link_                              | everyone who opened this wave's invitation link                                                     |
 
 “Worked” means: attendance was confirmed (check-in). Someone who only booked in the past but was
 never checked in does not count as returning.
@@ -69,12 +69,12 @@ starts – announce it, for example, via [news](/wichtel/en/leads/news/).
 
 ## Example: crew first, then returning volunteers, then everyone
 
-| Name              | For                                                                | Opens on        | Areas |
-| ----------------- | ------------------------------------------------------------------ | --------------- | ----- |
-| Crew early access | _Crew (people with a role in this edition)_                        | 1 May, 18:00    | all   |
-| Regulars          | _Returning volunteers (worked in an earlier edition) and crew_     | 8 May, 18:00    | all   |
-| Friends of the bar | _People with the invitation link_                                 | 8 May, 18:00    | Bar   |
-| Everyone          | _all volunteers_                                                   | 15 May, 18:00   | all   |
+| Name               | For                                                            | Opens on      | Areas |
+| ------------------ | -------------------------------------------------------------- | ------------- | ----- |
+| Crew early access  | _Crew (people with a role in this edition)_                    | 1 May, 18:00  | all   |
+| Regulars           | _Returning volunteers (worked in an earlier edition) and crew_ | 8 May, 18:00  | all   |
+| Friends of the bar | _People with the invitation link_                              | 8 May, 18:00  | Bar   |
+| Everyone           | _all volunteers_                                               | 15 May, 18:00 | all   |
 
 None of the waves has an end, so booking stays open for each group from its start. The crew can book
 from 1 May, returning volunteers from 8 May, invited friends from 8 May in the bar only, and from

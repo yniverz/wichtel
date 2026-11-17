@@ -62,10 +62,10 @@ solange oben nichts eingetragen ist.
 
 Wichtel räumt automatisch auf. Du stellst unter _Löschfristen_ ein:
 
-| Feld                                             | Ab Werk  | Bedeutung                                                                                      |
-| ------------------------------------------------ | -------- | ---------------------------------------------------------------------------------------------- |
-| _Inaktive Konten löschen nach (Monaten)_         | 24       | Konten ohne Anmeldung und ohne Schicht werden anonymisiert. Zwei Wochen vorher kommt eine E-Mail. 0 = nie. |
-| _IP-Adressen im Protokoll löschen nach (Tagen)_  | 90       | Danach entfernt Wichtel die IP-Adressen aus dem [Protokoll](/wichtel/organizers/audit/). Das Protokoll selbst bleibt. |
+| Feld                                            | Ab Werk | Bedeutung                                                                                                             |
+| ----------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
+| _Inaktive Konten löschen nach (Monaten)_        | 24      | Konten ohne Anmeldung und ohne Schicht werden anonymisiert. Zwei Wochen vorher kommt eine E-Mail. 0 = nie.            |
+| _IP-Adressen im Protokoll löschen nach (Tagen)_ | 90      | Danach entfernt Wichtel die IP-Adressen aus dem [Protokoll](/wichtel/organizers/audit/). Das Protokoll selbst bleibt. |
 
 Admins werden nie automatisch gelöscht.
 

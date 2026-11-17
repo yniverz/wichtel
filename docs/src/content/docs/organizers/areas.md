@@ -48,12 +48,12 @@ machen.
 Jeder Bereich kann die Vorgaben aus den _Einstellungen_ ändern. **Leer** heißt: wie der übergeordnete
 Bereich, und ganz oben wie die Einstellungen.
 
-| Feld                              | Bedeutung                                                         | Mehr                                                |
-| --------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------- |
-| _Frist zum Austragen (Stunden)_   | Bis wie viele Stunden vor Beginn sich Helfende selbst austragen   | [Buchungsregeln](/wichtel/organizers/booking-rules/) |
-| _Späte Übergaben bestätigen_      | _wie übergeordnet_, _ja, Leitung bestätigt_ oder _nein, sofort_   | [Buchungsregeln](/wichtel/organizers/booking-rules/) |
-| _Punkte pro Schicht_              | Grundpunkte für jede Schicht im Bereich                           | [Punkte-Regeln](/wichtel/organizers/points/)        |
-| _Punkte pro Stunde_               | Punkte je Schichtstunde im Bereich                                | [Punkte-Regeln](/wichtel/organizers/points/)        |
+| Feld                            | Bedeutung                                                       | Mehr                                                 |
+| ------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------- |
+| _Frist zum Austragen (Stunden)_ | Bis wie viele Stunden vor Beginn sich Helfende selbst austragen | [Buchungsregeln](/wichtel/organizers/booking-rules/) |
+| _Späte Übergaben bestätigen_    | _wie übergeordnet_, _ja, Leitung bestätigt_ oder _nein, sofort_ | [Buchungsregeln](/wichtel/organizers/booking-rules/) |
+| _Punkte pro Schicht_            | Grundpunkte für jede Schicht im Bereich                         | [Punkte-Regeln](/wichtel/organizers/points/)         |
+| _Punkte pro Stunde_             | Punkte je Schichtstunde im Bereich                              | [Punkte-Regeln](/wichtel/organizers/points/)         |
 
 Es gilt immer die nächstliegende Angabe: bei der Frist zuerst die der Schicht, dann die des Bereichs,
 dann die der übergeordneten Bereiche, zuletzt die Einstellung. Bei den Punkten entsprechend zuerst die

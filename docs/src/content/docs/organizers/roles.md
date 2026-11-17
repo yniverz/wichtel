@@ -39,38 +39,38 @@ Zum Entziehen tippst du bei der Rolle auf _Entfernen_.
 
 ### Struktur & Überblick
 
-| Recht                                                           | Was es erlaubt                                                                                                                                                         |
-| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| _Bereiche anlegen und bearbeiten_                               | Unterbereiche anlegen, Bereiche bearbeiten, verschieben und löschen. Bereiche auf oberster Ebene nur mit Recht für den ganzen Jahrgang.                                |
-| _Rollen vergeben (nur mit eigenen Rechten)_                     | Unter _Personen_ Rollen vergeben und entziehen – nur dort, wo man das Recht hat, und nur Rollen, deren Rechte man dort alle selbst hat.                                 |
-| _Besetzungs-Dashboard sehen_                                    | Gehört zur _Übersicht_. Die Besetzungszahlen dort sieht im Moment aber jede Person, die Schichten planen, Leute eintragen oder Anwesenheit bestätigen darf.              |
-| _Protokoll einsehen_                                            | Das [Protokoll](/wichtel/organizers/audit/) des gewählten Jahrgangs lesen. Wirkt nur mit _Gesamten Jahrgang_.                                                          |
-| _KI-Assistent verbinden (z. B. Claude), mit den eigenen Rechten_ | Einen [KI-Assistenten](/wichtel/organizers/ai/) verbinden. Zählt nur im aktuellen Jahrgang.                                                                           |
+| Recht                                                            | Was es erlaubt                                                                                                                                              |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _Bereiche anlegen und bearbeiten_                                | Unterbereiche anlegen, Bereiche bearbeiten, verschieben und löschen. Bereiche auf oberster Ebene nur mit Recht für den ganzen Jahrgang.                     |
+| _Rollen vergeben (nur mit eigenen Rechten)_                      | Unter _Personen_ Rollen vergeben und entziehen – nur dort, wo man das Recht hat, und nur Rollen, deren Rechte man dort alle selbst hat.                     |
+| _Besetzungs-Dashboard sehen_                                     | Gehört zur _Übersicht_. Die Besetzungszahlen dort sieht im Moment aber jede Person, die Schichten planen, Leute eintragen oder Anwesenheit bestätigen darf. |
+| _Protokoll einsehen_                                             | Das [Protokoll](/wichtel/organizers/audit/) des gewählten Jahrgangs lesen. Wirkt nur mit _Gesamten Jahrgang_.                                               |
+| _KI-Assistent verbinden (z. B. Claude), mit den eigenen Rechten_ | Einen [KI-Assistenten](/wichtel/organizers/ai/) verbinden. Zählt nur im aktuellen Jahrgang.                                                                 |
 
 ### Schichten
 
-| Recht                                                      | Was es erlaubt                                                                                                                                   |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| _Schichten anlegen und bearbeiten_                         | Schichten und Serien planen. Mit _Gesamten Jahrgang_ zusätzlich _Buchungswellen_ und _Orte & Geländeplan_.                                       |
-| _Helfende ein- und austragen, Anfragen bestätigen_         | Personen in Schichten eintragen und austragen, Anfragen und Übergaben entscheiden.                                                                |
-| _Regeln übergehen (Überschneidung, Fristen, Anforderungen)_ | _Trotzdem eintragen_, auch wenn die Position voll ist, sich etwas überschneidet, die Schicht schon begonnen hat oder eine Qualifikation fehlt.   |
-| _Anwesenheit bestätigen (Check-in)_                        | In der Besetzung abhaken und unter _Ausgabe & Check-in_ einchecken.                                                                              |
+| Recht                                                       | Was es erlaubt                                                                                                                                 |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| _Schichten anlegen und bearbeiten_                          | Schichten und Serien planen. Mit _Gesamten Jahrgang_ zusätzlich _Buchungswellen_ und _Orte & Geländeplan_.                                     |
+| _Helfende ein- und austragen, Anfragen bestätigen_          | Personen in Schichten eintragen und austragen, Anfragen und Übergaben entscheiden.                                                             |
+| _Regeln übergehen (Überschneidung, Fristen, Anforderungen)_ | _Trotzdem eintragen_, auch wenn die Position voll ist, sich etwas überschneidet, die Schicht schon begonnen hat oder eine Qualifikation fehlt. |
+| _Anwesenheit bestätigen (Check-in)_                         | In der Besetzung abhaken und unter _Ausgabe & Check-in_ einchecken.                                                                            |
 
 ### Personen
 
-| Recht                                           | Was es erlaubt                                                                                                                                      |
-| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| _Kontaktdaten der Helfenden sehen_              | Telefonnummer und E-Mail-Adresse der Helfenden in den eigenen Bereichen sehen. Zählt nur im aktuellen Jahrgang.                                    |
+| Recht                                           | Was es erlaubt                                                                                                                                         |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| _Kontaktdaten der Helfenden sehen_              | Telefonnummer und E-Mail-Adresse der Helfenden in den eigenen Bereichen sehen. Zählt nur im aktuellen Jahrgang.                                        |
 | _Qualifikationen prüfen und vergeben_           | Nachweise bestätigen oder ablehnen, Qualifikationen vergeben und entziehen. Qualifikationen gelten für alle – das Recht in irgendeinem Bereich genügt. |
-| _Hochgeladene Nachweise ansehen_                | Die hochgeladenen Dokumente öffnen. Zählt nur im aktuellen Jahrgang.                                                                               |
-| _Neuigkeiten veröffentlichen (auch per E-Mail)_ | Neuigkeiten für die eigenen Bereiche und deren Schichten schreiben; mit _Gesamten Jahrgang_ auch an weitere Gruppen.                                |
+| _Hochgeladene Nachweise ansehen_                | Die hochgeladenen Dokumente öffnen. Zählt nur im aktuellen Jahrgang.                                                                                   |
+| _Neuigkeiten veröffentlichen (auch per E-Mail)_ | Neuigkeiten für die eigenen Bereiche und deren Schichten schreiben; mit _Gesamten Jahrgang_ auch an weitere Gruppen.                                   |
 
 ### Punkte & Goodies
 
-| Recht                     | Was es erlaubt                                                                                     |
-| ------------------------- | -------------------------------------------------------------------------------------------------- |
-| _Goodies verwalten_       | Goodies anlegen und ändern. Wirkt nur mit _Gesamten Jahrgang_.                                     |
-| _Goodies ausgeben_        | Unter _Ausgabe & Check-in_ Goodies ausgeben.                                                       |
+| Recht                     | Was es erlaubt                                                                                                          |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| _Goodies verwalten_       | Goodies anlegen und ändern. Wirkt nur mit _Gesamten Jahrgang_.                                                          |
+| _Goodies ausgeben_        | Unter _Ausgabe & Check-in_ Goodies ausgeben.                                                                            |
 | _Punkte manuell anpassen_ | Unter _Ausgabe & Check-in_ → _Punkte korrigieren_ Punkte gutschreiben oder abziehen. Wirkt nur mit _Gesamten Jahrgang_. |
 
 Die Leitungs-Seiten erklären, wie man mit diesen Rechten arbeitet:
@@ -81,13 +81,13 @@ Die Leitungs-Seiten erklären, wie man mit diesen Rechten arbeitet:
 
 Bei der Einrichtung legt Wichtel diese Vorlagen an. Du kannst sie frei ändern.
 
-| Rolle               | Typisch vergeben für     | Rechte                                                                                                                                             |
-| ------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| _Gesamtleitung_     | _Gesamten Jahrgang_      | alle außer _KI-Assistent verbinden_                                                                                                                |
-| _Bereichsleitung_   | einen Bereich            | Bereiche, Rollen vergeben, Dashboard, Schichten, ein- und austragen, Regeln übergehen, Anwesenheit, Qualifikationen prüfen, Kontaktdaten, Neuigkeiten |
-| _Schichtleitung_    | einen (Unter-)Bereich    | Anwesenheit, Kontaktdaten, Dashboard                                                                                                               |
-| _Helferanmeldung_   | _Gesamten Jahrgang_      | Dashboard, ein- und austragen, Anwesenheit, Qualifikationen prüfen, Kontaktdaten, Goodies ausgeben                                                 |
-| _Goodie-Ausgabe_    | _Gesamten Jahrgang_      | Goodies ausgeben                                                                                                                                   |
+| Rolle             | Typisch vergeben für  | Rechte                                                                                                                                                |
+| ----------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _Gesamtleitung_   | _Gesamten Jahrgang_   | alle außer _KI-Assistent verbinden_                                                                                                                   |
+| _Bereichsleitung_ | einen Bereich         | Bereiche, Rollen vergeben, Dashboard, Schichten, ein- und austragen, Regeln übergehen, Anwesenheit, Qualifikationen prüfen, Kontaktdaten, Neuigkeiten |
+| _Schichtleitung_  | einen (Unter-)Bereich | Anwesenheit, Kontaktdaten, Dashboard                                                                                                                  |
+| _Helferanmeldung_ | _Gesamten Jahrgang_   | Dashboard, ein- und austragen, Anwesenheit, Qualifikationen prüfen, Kontaktdaten, Goodies ausgeben                                                    |
+| _Goodie-Ausgabe_  | _Gesamten Jahrgang_   | Goodies ausgeben                                                                                                                                      |
 
 Beispiele:
 

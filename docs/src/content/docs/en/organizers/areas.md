@@ -45,12 +45,12 @@ Role assignments on this area disappear along with it. This cannot be undone.
 Every area can change the defaults from _Settings_. **Empty** means: as the parent area, and at the
 top as the settings.
 
-| Field                            | Meaning                                                              | More                                                   |
-| -------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------ |
-| _Cancellation deadline (hours)_  | Up to how many hours before the start volunteers can cancel themselves | [Booking rules](/wichtel/en/organizers/booking-rules/) |
-| _Approve late handovers_         | _as parent_, _yes, a lead approves_ or _no, immediately_             | [Booking rules](/wichtel/en/organizers/booking-rules/) |
-| _Points per shift_               | Base points for every shift in the area                              | [Point rules](/wichtel/en/organizers/points/)          |
-| _Points per hour_                | Points per shift hour in the area                                    | [Point rules](/wichtel/en/organizers/points/)          |
+| Field                           | Meaning                                                                | More                                                   |
+| ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------ |
+| _Cancellation deadline (hours)_ | Up to how many hours before the start volunteers can cancel themselves | [Booking rules](/wichtel/en/organizers/booking-rules/) |
+| _Approve late handovers_        | _as parent_, _yes, a lead approves_ or _no, immediately_               | [Booking rules](/wichtel/en/organizers/booking-rules/) |
+| _Points per shift_              | Base points for every shift in the area                                | [Point rules](/wichtel/en/organizers/points/)          |
+| _Points per hour_               | Points per shift hour in the area                                      | [Point rules](/wichtel/en/organizers/points/)          |
 
 The closest setting always wins: for the deadline first the shift's, then the area's, then the parent
 areas', and finally the setting. For points, the position's comes first in the same way.

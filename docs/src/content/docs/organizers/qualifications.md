@@ -37,11 +37,11 @@ Jeder Antrag landet bei _Qualifikationen_ unter _Zu prüfen_. Dort kann man ihn 
 _Ablehnen_, mit einem optionalen _Hinweis an die Person_. Wie das im Alltag geht, steht unter
 [Qualifikationen prüfen](/wichtel/leads/qualifications/).
 
-| Recht                                              | Erlaubt                                                                                      |
-| -------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| _Qualifikationen prüfen und vergeben_              | Anträge bestätigen oder ablehnen, Qualifikationen direkt vergeben und entziehen               |
-| _Hochgeladene Nachweise ansehen_                   | die hochgeladenen Dokumente öffnen (_Nachweis ansehen_)                                       |
-| Admin                                              | zusätzlich Qualifikationen anlegen und ändern                                                 |
+| Recht                                 | Erlaubt                                                                         |
+| ------------------------------------- | ------------------------------------------------------------------------------- |
+| _Qualifikationen prüfen und vergeben_ | Anträge bestätigen oder ablehnen, Qualifikationen direkt vergeben und entziehen |
+| _Hochgeladene Nachweise ansehen_      | die hochgeladenen Dokumente öffnen (_Nachweis ansehen_)                         |
+| Admin                                 | zusätzlich Qualifikationen anlegen und ändern                                   |
 
 Gib das Recht, Dokumente anzusehen, nur den Personen, die es wirklich brauchen. Helfende sehen beim
 Hochladen: „Nachweise sehen nur die Personen, die sie prüfen.“

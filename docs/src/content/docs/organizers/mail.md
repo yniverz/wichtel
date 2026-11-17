@@ -33,29 +33,29 @@ dargestellt. Leerzeilen trennen Absätze.
 
 Diese Platzhalter gibt es in allen Vorlagen zu Schichten:
 
-| Platzhalter  | Wird ersetzt durch                                                                    |
-| ------------ | ------------------------------------------------------------------------------------- |
-| `{name}`     | Vorname der empfangenden Person                                                       |
-| `{festival}` | Name des Festivals aus den [Einstellungen](/wichtel/organizers/settings/)             |
-| `{shift}`    | Titel der Schicht                                                                     |
-| `{date}`     | Tag der Schicht, ausgeschrieben                                                       |
-| `{time}`     | Uhrzeit von–bis                                                                       |
+| Platzhalter  | Wird ersetzt durch                                                                                    |
+| ------------ | ----------------------------------------------------------------------------------------------------- |
+| `{name}`     | Vorname der empfangenden Person                                                                       |
+| `{festival}` | Name des Festivals aus den [Einstellungen](/wichtel/organizers/settings/)                             |
+| `{shift}`    | Titel der Schicht                                                                                     |
+| `{date}`     | Tag der Schicht, ausgeschrieben                                                                       |
+| `{time}`     | Uhrzeit von–bis                                                                                       |
 | `{location}` | Ort und Treffpunkt mit Kartenlink, jeweils in einer eigenen Zeile (leer, wenn nichts eingetragen ist) |
-| `{link}`     | Link in die App                                                                       |
+| `{link}`     | Link in die App                                                                                       |
 
 Einige Vorlagen haben zusätzliche Platzhalter. Die Seite zeigt sie beim Aufklappen unter „Zusätzlich
 in dieser Vorlage“:
 
-| Vorlage                                  | Zusätzlich                                   |
-| ---------------------------------------- | -------------------------------------------- |
-| _Platz von der Gruppe reserviert_        | `{person}` (wer reserviert hat), `{until}` (bis wann) |
-| _Schicht angeboten (direkt)_             | `{person}`                                   |
-| _Tausch vorgeschlagen_                   | `{person}`, `{given}`                        |
-| _Übergabe wartet auf Leitung_            | `{person}`                                   |
-| _Schicht übernommen_                     | `{person}`                                   |
-| _Übergabe abgelehnt_                     | `{person}`                                   |
-| _Dringend-Aufruf_                        | `{position}`, `{free}` (freie Plätze), `{bonus}`, `{note}` |
-| _Konto wird wegen Inaktivität gelöscht_ | `{months}`; `{date}` ist hier der Tag der Löschung |
+| Vorlage                                 | Zusätzlich                                                 |
+| --------------------------------------- | ---------------------------------------------------------- |
+| _Platz von der Gruppe reserviert_       | `{person}` (wer reserviert hat), `{until}` (bis wann)      |
+| _Schicht angeboten (direkt)_            | `{person}`                                                 |
+| _Tausch vorgeschlagen_                  | `{person}`, `{given}`                                      |
+| _Übergabe wartet auf Leitung_           | `{person}`                                                 |
+| _Schicht übernommen_                    | `{person}`                                                 |
+| _Übergabe abgelehnt_                    | `{person}`                                                 |
+| _Dringend-Aufruf_                       | `{position}`, `{free}` (freie Plätze), `{bonus}`, `{note}` |
+| _Konto wird wegen Inaktivität gelöscht_ | `{months}`; `{date}` ist hier der Tag der Löschung         |
 
 Die beiden Vorlagen zu Konten (_Konto wird wegen Inaktivität gelöscht_ und _E-Mail-Adresse von der
 Leitung geändert (an die alte Adresse)_) betreffen keine Schicht – `{shift}`, `{time}` und

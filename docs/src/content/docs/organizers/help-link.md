@@ -17,11 +17,11 @@ description: Wie die App auf diese Hilfe verlinkt und wie du Helfende stattdesse
 
 ## Wo die Hilfe-Links sind
 
-| Wo                                                                 | Link                      | Führt ohne eigene FAQ zu                    |
-| ------------------------------------------------------------------ | ------------------------- | ------------------------------------------- |
-| Verwaltung                                                         | „?“ neben dem Seitentitel | der passenden Seite dieser Hilfe            |
-| Helfer-Bereich                                                     | „?“ in der Kopfzeile      | der passenden Seite dieser Hilfe            |
-| Fußzeile im Helfer-Bereich, beim Anmelden und Registrieren und auf den anderen öffentlichen Seiten | _Hilfe_ | dem Teil [Ich helfe mit](/wichtel/helpers/) |
+| Wo                                                                                                 | Link                      | Führt ohne eigene FAQ zu                    |
+| -------------------------------------------------------------------------------------------------- | ------------------------- | ------------------------------------------- |
+| Verwaltung                                                                                         | „?“ neben dem Seitentitel | der passenden Seite dieser Hilfe            |
+| Helfer-Bereich                                                                                     | „?“ in der Kopfzeile      | der passenden Seite dieser Hilfe            |
+| Fußzeile im Helfer-Bereich, beim Anmelden und Registrieren und auf den anderen öffentlichen Seiten | _Hilfe_                   | dem Teil [Ich helfe mit](/wichtel/helpers/) |
 
 Die Links öffnen sich in einem neuen Tab und in der Sprache, in der die Person die App gerade nutzt.
 

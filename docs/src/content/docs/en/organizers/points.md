@@ -30,11 +30,11 @@ For each shift of a person:
 
 ## Where the rules live
 
-| Level    | Where                                                     | What                                         |
-| -------- | --------------------------------------------------------- | -------------------------------------------- |
-| Instance | _Settings_ → card _Points_                                | _Points per shift_, _Points per hour_, bonuses |
-| Area     | _Areas_ → edit area → _Points_                            | _Points per shift_, _Points per hour_        |
-| Position | edit shift → positions → field _Points_ (empty = _auto_)  | points per shift                             |
+| Level    | Where                                                    | What                                           |
+| -------- | -------------------------------------------------------- | ---------------------------------------------- |
+| Instance | _Settings_ → card _Points_                               | _Points per shift_, _Points per hour_, bonuses |
+| Area     | _Areas_ → edit area → _Points_                           | _Points per shift_, _Points per hour_          |
+| Position | edit shift → positions → field _Points_ (empty = _auto_) | points per shift                               |
 
 Each value comes from the most specific level that sets it: first the position, then the shift's
 area, then its parent areas, finally the settings. An empty field means “same as above”. This applies
@@ -73,24 +73,24 @@ notice or someone takes over a shift from the shift market shortly before.
 Settings: _Points per shift_ 0, _Points per hour_ 2, _Night bonus_ 3 (00:00–06:00), _Last-minute
 bonus_ 2 (24 hours).
 
-| Shift                                          | Calculation                 | Points |
-| ---------------------------------------------- | --------------------------- | ------ |
-| Entrance 14:00–18:00, booked weeks ahead       | 0 + 4 × 2                   | 8      |
-| Bar 22:00–02:00                                | 0 + 4 × 2 + 3 (night)       | 11     |
-| Bar 18:00–00:00                                | 0 + 6 × 2 (ends exactly at 00:00) | 12 |
-| Set-up 09:00–10:45, booked the evening before  | 0 + 1.75 × 2 = 3.5 → 4, + 2 (last minute) | 6 |
+| Shift                                         | Calculation                               | Points |
+| --------------------------------------------- | ----------------------------------------- | ------ |
+| Entrance 14:00–18:00, booked weeks ahead      | 0 + 4 × 2                                 | 8      |
+| Bar 22:00–02:00                               | 0 + 4 × 2 + 3 (night)                     | 11     |
+| Bar 18:00–00:00                               | 0 + 6 × 2 (ends exactly at 00:00)         | 12     |
+| Set-up 09:00–10:45, booked the evening before | 0 + 1.75 × 2 = 3.5 → 4, + 2 (last minute) | 6      |
 
 Now the area _Bar_ sets _Points per shift_ to 2 and leaves _Points per hour_ empty:
 
-| Shift           | Calculation              | Points |
-| --------------- | ------------------------ | ------ |
-| Bar 22:00–02:00 | 2 + 4 × 2 + 3 (night)    | 13     |
+| Shift           | Calculation           | Points |
+| --------------- | --------------------- | ------ |
+| Bar 22:00–02:00 | 2 + 4 × 2 + 3 (night) | 13     |
 
 And a position _Till_ in the bar has the value 5 in the _Points_ field:
 
-| Shift                   | Calculation           | Points |
-| ----------------------- | --------------------- | ------ |
-| Bar 18:00–22:00, Till   | 5 + 4 × 2             | 13     |
+| Shift                 | Calculation | Points |
+| --------------------- | ----------- | ------ |
+| Bar 18:00–22:00, Till | 5 + 4 × 2   | 13     |
 
 ## When points are credited
 

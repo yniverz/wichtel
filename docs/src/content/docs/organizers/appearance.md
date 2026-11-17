@@ -24,15 +24,15 @@ description: Name, Untertitel, Farben, Logo, Hintergrundbild und Browser-Symbol 
 
 ## Wo was erscheint
 
-| Einstellung                   | Wo                                                                                                   |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------- |
-| _Name des Festivals_          | Kopfzeile, Startseite, Browser-Tab, E-Mails                                                          |
-| _Untertitel_                  | Startseite unter dem Namen; auf großen Bildschirmen neben Anmeldung und Registrierung                |
-| _Hauptfarbe_                  | Knöpfe wie _Eintragen_, Links, Markierungen; auch die Farbe der Browserleiste auf manchen Handys      |
-| _Akzentfarbe_                 | kleine Hervorhebungen, z. B. Punkte-Abzeichen                                                        |
-| _Logo_                        | Kopfzeile, links neben dem Namen. Ohne Logo steht dort der Anfangsbuchstabe in der Hauptfarbe.        |
-| _Hintergrundbild_             | als breites Bild auf der Startseite; auf großen Bildschirmen neben Anmeldung und Registrierung       |
-| _Browser-Symbol (Favicon)_    | im Browser-Tab und in Lesezeichen. Ohne eigenes Symbol nutzt Wichtel sein eigenes.                   |
+| Einstellung                | Wo                                                                                               |
+| -------------------------- | ------------------------------------------------------------------------------------------------ |
+| _Name des Festivals_       | Kopfzeile, Startseite, Browser-Tab, E-Mails                                                      |
+| _Untertitel_               | Startseite unter dem Namen; auf großen Bildschirmen neben Anmeldung und Registrierung            |
+| _Hauptfarbe_               | Knöpfe wie _Eintragen_, Links, Markierungen; auch die Farbe der Browserleiste auf manchen Handys |
+| _Akzentfarbe_              | kleine Hervorhebungen, z. B. Punkte-Abzeichen                                                    |
+| _Logo_                     | Kopfzeile, links neben dem Namen. Ohne Logo steht dort der Anfangsbuchstabe in der Hauptfarbe.   |
+| _Hintergrundbild_          | als breites Bild auf der Startseite; auf großen Bildschirmen neben Anmeldung und Registrierung   |
+| _Browser-Symbol (Favicon)_ | im Browser-Tab und in Lesezeichen. Ohne eigenes Symbol nutzt Wichtel sein eigenes.               |
 
 ## Farben und Kontrast
 

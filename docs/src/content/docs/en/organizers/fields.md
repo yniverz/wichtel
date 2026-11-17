@@ -30,26 +30,26 @@ description: Add extra questions for volunteers – when they are asked, whether
 
 ## Field types
 
-| _Type_            | Answer                                  |
-| ----------------- | --------------------------------------- |
-| _Text_            | one line, up to 200 characters          |
-| _Long text_       | several lines, up to 2000 characters    |
-| _Number_          | a number (comma or point)               |
-| _Date_            | a date                                  |
-| _Choice_          | exactly one of the options              |
-| _Multiple choice_ | one or more of the options              |
-| _Yes/No_          | a checkbox                              |
+| _Type_            | Answer                               |
+| ----------------- | ------------------------------------ |
+| _Text_            | one line, up to 200 characters       |
+| _Long text_       | several lines, up to 2000 characters |
+| _Number_          | a number (comma or point)            |
+| _Date_            | a date                               |
+| _Choice_          | exactly one of the options           |
+| _Multiple choice_ | one or more of the options           |
+| _Yes/No_          | a checkbox                           |
 
 A _Yes/No_ field marked _Required_ must be ticked – good for agreements like “I have read the house
 rules”.
 
 ## When the question is asked
 
-| _Ask_                             | Where volunteers answer                                                                        |
-| --------------------------------- | ---------------------------------------------------------------------------------------------- |
-| _at sign-up_                      | in the sign-up form; can be changed later in the profile                                       |
-| _only in the profile_             | in the profile                                                                                 |
-| _when choosing certain goodies_   | when someone chooses one of the selected goodies (“For this we still need: …”)                 |
+| _Ask_                           | Where volunteers answer                                                        |
+| ------------------------------- | ------------------------------------------------------------------------------ |
+| _at sign-up_                    | in the sign-up form; can be changed later in the profile                       |
+| _only in the profile_           | in the profile                                                                 |
+| _when choosing certain goodies_ | when someone chooses one of the selected goodies (“For this we still need: …”) |
 
 If someone is missing an answer to a required sign-up or profile field (e.g. because you added the
 field later), their home page says “Please complete your details in your profile.” If a goodie field

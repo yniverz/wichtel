@@ -56,16 +56,16 @@ _Jahrgänge_ → Jahrgang → _Bearbeiten_ → _Archivieren_. Mit _Wiederherstel
 
 ## Was wird beim Kopieren übernommen?
 
-| Was                                               | Wird übernommen                                                       |
-| ------------------------------------------------- | --------------------------------------------------------------------- |
-| Bereiche mit Fristen- und Punkte-Regeln           | **immer**                                                             |
-| _Orte, Geländeplan und Helferanmeldung_           | wenn angehakt                                                         |
-| _Schichten mit Positionen_                        | wenn angehakt, Zeiten verschoben                                      |
-| _Goodies_                                         | wenn angehakt                                                         |
-| _Rollenvergaben (Leitungen)_                      | wenn angehakt, auf denselben Bereichen                                |
-| _Buchungswellen (mit neuen Einladungslinks)_      | wenn angehakt, Zeiten verschoben                                      |
-| Buchungen, Punkte, ausgegebene Goodies            | **nie**                                                               |
-| Profilfelder, Qualifikationen, E-Mail-Vorlagen    | gelten ohnehin für alle Jahrgänge                                     |
+| Was                                            | Wird übernommen                        |
+| ---------------------------------------------- | -------------------------------------- |
+| Bereiche mit Fristen- und Punkte-Regeln        | **immer**                              |
+| _Orte, Geländeplan und Helferanmeldung_        | wenn angehakt                          |
+| _Schichten mit Positionen_                     | wenn angehakt, Zeiten verschoben       |
+| _Goodies_                                      | wenn angehakt                          |
+| _Rollenvergaben (Leitungen)_                   | wenn angehakt, auf denselben Bereichen |
+| _Buchungswellen (mit neuen Einladungslinks)_   | wenn angehakt, Zeiten verschoben       |
+| Buchungen, Punkte, ausgegebene Goodies         | **nie**                                |
+| Profilfelder, Qualifikationen, E-Mail-Vorlagen | gelten ohnehin für alle Jahrgänge      |
 
 ## Häufige Fragen
 

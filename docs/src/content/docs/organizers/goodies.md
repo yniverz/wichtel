@@ -29,22 +29,22 @@ description: Belohnungen anlegen, die Helfende gegen Punkte eintauschen – mit 
 
 ## Alle Felder
 
-| Feld                                                        | Bedeutung                                                                                                                                                      |
-| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| _Preis in Punkten_                                          | So viele Punkte kostet das Goodie. Sie werden bei der Auswahl sofort abgezogen.                                                                                 |
-| _Höchstens pro Person_                                      | Wie oft eine Person das Goodie bekommen kann.                                                                                                                  |
-| _Reihenfolge_                                               | Sortierung in der Liste.                                                                                                                                       |
-| _Varianten_                                                 | Auswahl wie Größen. Wer auswählt, muss eine Variante nehmen.                                                                                                    |
-| _Abholort_                                                  | Ein [Ort](/wichtel/organizers/places/) dieses Jahrgangs. _Helferanmeldung (Standard)_ heißt: der Ort, der unter _Orte & Geländeplan_ als Helferanmeldung festgelegt ist. |
-| _Hinweis zur Abholung_                                      | Freier Text, z. B. Ausgabezeiten.                                                                                                                              |
-| _Kontingent für Selbstauswahl_                              | Wie viele Stück Helfende insgesamt selbst auswählen können. Leer = unbegrenzt. An der Ausgabe kann immer zusätzlich ausgegeben werden.                           |
-| _Bestand (nur zur Übersicht)_                               | Stückzahl, die ihr habt. Sperrt nichts; die Liste zeigt, wie viel davon noch übrig ist.                                                                         |
-| _Aktiv (für Helfende sichtbar)_                             | Ohne Haken können Helfende das Goodie nicht wählen.                                                                                                             |
-| _Vorschuss: auch mit vorgemerkten Punkten wählbar_          | Helfende können das Goodie schon mit Punkten aus gebuchten, noch nicht bestätigten Schichten wählen.                                                            |
-| _Erstattung statt Ausgabe möglich („habe ich schon“)_       | Helfende können statt der Ausgabe eine Erstattung wählen, z. B. wenn sie schon ein Ticket gekauft haben.                                                         |
-| _Pflicht-Goodie: wird automatisch eingelöst_                | Siehe unten.                                                                                                                                                   |
-| _Reihenfolge der Pflicht-Goodies_                           | Bei mehreren Pflicht-Goodies: kleinere Zahl zuerst.                                                                                                             |
-| _Nur für Helfende aus diesen Bereichen_                     | Nur wer mindestens eine bestätigte Schicht in einem dieser Bereiche (oder einem Unterbereich) hat. Keine Auswahl = für alle.                                     |
+| Feld                                                  | Bedeutung                                                                                                                                                                |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| _Preis in Punkten_                                    | So viele Punkte kostet das Goodie. Sie werden bei der Auswahl sofort abgezogen.                                                                                          |
+| _Höchstens pro Person_                                | Wie oft eine Person das Goodie bekommen kann.                                                                                                                            |
+| _Reihenfolge_                                         | Sortierung in der Liste.                                                                                                                                                 |
+| _Varianten_                                           | Auswahl wie Größen. Wer auswählt, muss eine Variante nehmen.                                                                                                             |
+| _Abholort_                                            | Ein [Ort](/wichtel/organizers/places/) dieses Jahrgangs. _Helferanmeldung (Standard)_ heißt: der Ort, der unter _Orte & Geländeplan_ als Helferanmeldung festgelegt ist. |
+| _Hinweis zur Abholung_                                | Freier Text, z. B. Ausgabezeiten.                                                                                                                                        |
+| _Kontingent für Selbstauswahl_                        | Wie viele Stück Helfende insgesamt selbst auswählen können. Leer = unbegrenzt. An der Ausgabe kann immer zusätzlich ausgegeben werden.                                   |
+| _Bestand (nur zur Übersicht)_                         | Stückzahl, die ihr habt. Sperrt nichts; die Liste zeigt, wie viel davon noch übrig ist.                                                                                  |
+| _Aktiv (für Helfende sichtbar)_                       | Ohne Haken können Helfende das Goodie nicht wählen.                                                                                                                      |
+| _Vorschuss: auch mit vorgemerkten Punkten wählbar_    | Helfende können das Goodie schon mit Punkten aus gebuchten, noch nicht bestätigten Schichten wählen.                                                                     |
+| _Erstattung statt Ausgabe möglich („habe ich schon“)_ | Helfende können statt der Ausgabe eine Erstattung wählen, z. B. wenn sie schon ein Ticket gekauft haben.                                                                 |
+| _Pflicht-Goodie: wird automatisch eingelöst_          | Siehe unten.                                                                                                                                                             |
+| _Reihenfolge der Pflicht-Goodies_                     | Bei mehreren Pflicht-Goodies: kleinere Zahl zuerst.                                                                                                                      |
+| _Nur für Helfende aus diesen Bereichen_               | Nur wer mindestens eine bestätigte Schicht in einem dieser Bereiche (oder einem Unterbereich) hat. Keine Auswahl = für alle.                                             |
 
 ## Pflicht-Goodies (z. B. das Freiticket)
 

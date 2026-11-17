@@ -31,26 +31,26 @@ description: Zusätzliche Fragen an Helfende anlegen – wann sie gestellt werde
 
 ## Arten von Feldern
 
-| _Art_              | Antwort                                   |
-| ------------------ | ----------------------------------------- |
-| _Text_             | eine Zeile, bis 200 Zeichen               |
-| _Mehrzeiliger Text_ | mehrere Zeilen, bis 2000 Zeichen         |
-| _Zahl_             | eine Zahl (Komma oder Punkt)              |
-| _Datum_            | ein Datum                                 |
-| _Auswahl_          | genau eine der Auswahlmöglichkeiten       |
-| _Mehrfachauswahl_  | eine oder mehrere Auswahlmöglichkeiten    |
-| _Ja/Nein_          | ein Häkchen                               |
+| _Art_               | Antwort                                |
+| ------------------- | -------------------------------------- |
+| _Text_              | eine Zeile, bis 200 Zeichen            |
+| _Mehrzeiliger Text_ | mehrere Zeilen, bis 2000 Zeichen       |
+| _Zahl_              | eine Zahl (Komma oder Punkt)           |
+| _Datum_             | ein Datum                              |
+| _Auswahl_           | genau eine der Auswahlmöglichkeiten    |
+| _Mehrfachauswahl_   | eine oder mehrere Auswahlmöglichkeiten |
+| _Ja/Nein_           | ein Häkchen                            |
 
 Ein _Ja/Nein_-Feld als _Pflichtfeld_ muss angehakt werden – gut für Zustimmungen wie „Ich habe die
 Hausordnung gelesen“.
 
 ## Wann gefragt wird
 
-| _Abfragen_                               | Wo Helfende antworten                                                                                     |
-| ---------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| _bei der Registrierung_                  | im Registrierungsformular; später im Profil änderbar                                                      |
-| _nur im Profil_                          | im Profil                                                                                                 |
-| _bei der Auswahl bestimmter Goodies_     | wenn jemand eines der gewählten Goodies auswählt („Dafür brauchen wir noch: …“)                           |
+| _Abfragen_                           | Wo Helfende antworten                                                           |
+| ------------------------------------ | ------------------------------------------------------------------------------- |
+| _bei der Registrierung_              | im Registrierungsformular; später im Profil änderbar                            |
+| _nur im Profil_                      | im Profil                                                                       |
+| _bei der Auswahl bestimmter Goodies_ | wenn jemand eines der gewählten Goodies auswählt („Dafür brauchen wir noch: …“) |
 
 Fehlt jemandem eine Antwort auf ein Pflichtfeld aus Registrierung oder Profil (z. B. weil du das
 Feld später angelegt hast), steht auf der Startseite „Bitte ergänze noch deine Angaben im Profil.“

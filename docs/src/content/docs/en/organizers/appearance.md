@@ -24,15 +24,15 @@ description: Set the name, tagline, colours, logo, background image and browser 
 
 ## Where things appear
 
-| Setting                     | Where                                                                                           |
-| --------------------------- | ----------------------------------------------------------------------------------------------- |
-| _Festival name_             | header, start page, browser tab, e-mails                                                        |
-| _Tagline_                   | start page below the name; on large screens next to login and sign-up                           |
-| _Primary color_             | buttons such as _Sign up_, links, highlights; also the colour of the browser bar on some phones  |
-| _Accent color_              | small highlights, e.g. points badges                                                            |
-| _Logo_                      | header, left of the name. Without a logo, the first letter appears there in the primary colour. |
-| _Background image_          | as a wide image on the start page; on large screens next to login and sign-up                    |
-| _Browser icon (favicon)_    | in the browser tab and in bookmarks. Without your own icon, Wichtel uses its own.               |
+| Setting                  | Where                                                                                           |
+| ------------------------ | ----------------------------------------------------------------------------------------------- |
+| _Festival name_          | header, start page, browser tab, e-mails                                                        |
+| _Tagline_                | start page below the name; on large screens next to login and sign-up                           |
+| _Primary color_          | buttons such as _Sign up_, links, highlights; also the colour of the browser bar on some phones |
+| _Accent color_           | small highlights, e.g. points badges                                                            |
+| _Logo_                   | header, left of the name. Without a logo, the first letter appears there in the primary colour. |
+| _Background image_       | as a wide image on the start page; on large screens next to login and sign-up                   |
+| _Browser icon (favicon)_ | in the browser tab and in bookmarks. Without your own icon, Wichtel uses its own.               |
 
 ## Colours and contrast
 

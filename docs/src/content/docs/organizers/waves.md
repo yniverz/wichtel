@@ -31,12 +31,12 @@ description: Schichten zeitgesteuert freigeben – zuerst für die Crew, dann f�
 
 ## Zielgruppen
 
-| _Für_                                                         | Wer darf buchen                                                                                                      |
-| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| _alle Helfenden_                                              | alle mit Konto                                                                                                       |
-| _Crew (Personen mit einer Rolle in diesem Jahrgang)_          | alle, die im aktuellen Jahrgang eine [Rolle](/wichtel/organizers/roles/) haben, und alle Admins                       |
-| _Wiederkehrende (in einem früheren Jahrgang dabei) und Crew_ | alle, die in einem früheren Jahrgang bei mindestens einer Schicht als anwesend bestätigt wurden, plus die Crew        |
-| _Personen mit Einladungslink_                                 | alle, die den Einladungslink dieser Welle geöffnet haben                                                             |
+| _Für_                                                        | Wer darf buchen                                                                                                |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| _alle Helfenden_                                             | alle mit Konto                                                                                                 |
+| _Crew (Personen mit einer Rolle in diesem Jahrgang)_         | alle, die im aktuellen Jahrgang eine [Rolle](/wichtel/organizers/roles/) haben, und alle Admins                |
+| _Wiederkehrende (in einem früheren Jahrgang dabei) und Crew_ | alle, die in einem früheren Jahrgang bei mindestens einer Schicht als anwesend bestätigt wurden, plus die Crew |
+| _Personen mit Einladungslink_                                | alle, die den Einladungslink dieser Welle geöffnet haben                                                       |
 
 „Dabei gewesen“ heißt: Die Anwesenheit wurde bestätigt (Check-in). Wer früher nur gebucht hatte,
 aber nicht eingecheckt wurde, zählt nicht als wiederkehrend.
@@ -71,12 +71,12 @@ verschickt Wichtel nicht – kündige sie z. B. über [Neuigkeiten](/wichtel/lea
 
 ## Beispiel: Crew zuerst, dann Wiederkehrende, dann alle
 
-| Name           | Für                                                           | Öffnet am       | Bereiche |
-| -------------- | ------------------------------------------------------------- | --------------- | -------- |
-| Crew-Vorlauf   | _Crew (Personen mit einer Rolle in diesem Jahrgang)_          | 1. Mai, 18:00   | alle     |
-| Stammhelfende  | _Wiederkehrende (in einem früheren Jahrgang dabei) und Crew_ | 8. Mai, 18:00   | alle     |
-| Freunde Bar    | _Personen mit Einladungslink_                                 | 8. Mai, 18:00   | Bar      |
-| Alle           | _alle Helfenden_                                              | 15. Mai, 18:00  | alle     |
+| Name          | Für                                                          | Öffnet am      | Bereiche |
+| ------------- | ------------------------------------------------------------ | -------------- | -------- |
+| Crew-Vorlauf  | _Crew (Personen mit einer Rolle in diesem Jahrgang)_         | 1. Mai, 18:00  | alle     |
+| Stammhelfende | _Wiederkehrende (in einem früheren Jahrgang dabei) und Crew_ | 8. Mai, 18:00  | alle     |
+| Freunde Bar   | _Personen mit Einladungslink_                                | 8. Mai, 18:00  | Bar      |
+| Alle          | _alle Helfenden_                                             | 15. Mai, 18:00 | alle     |
 
 Keine der Wellen hat ein Ende, also bleibt die Buchung für jede Gruppe ab ihrem Start offen. Die
 Crew kann ab dem 1. Mai buchen, Wiederkehrende ab dem 8. Mai, eingeladene Freunde ab dem 8. Mai nur

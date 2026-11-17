@@ -39,39 +39,39 @@ To take it away, tap _Remove_ next to the role.
 
 ### Structure & overview
 
-| Permission                                                         | What it allows                                                                                                                                                  |
-| ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| _Create and edit areas_                                            | Create sub-areas, edit, move and delete areas. Top-level areas only with the permission for the whole edition.                                                  |
-| _Assign roles (only with own permissions)_                         | Assign and remove roles under _People_ – only where one has this permission, and only roles whose permissions one holds there completely.                       |
-| _View staffing dashboard_                                          | Belongs to the _Overview_. At the moment, however, the staffing figures there are shown to everyone who may plan shifts, add people or confirm attendance.     |
-| _View audit log_                                                   | Read the [audit log](/wichtel/en/organizers/audit/) of the selected edition. Only works with _Whole edition_.                                                  |
-| _Connect an AI assistant (e.g. Claude) with one’s own permissions_ | Connect an [AI assistant](/wichtel/en/organizers/ai/). Only counts in the current edition.                                                                     |
+| Permission                                                         | What it allows                                                                                                                                             |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _Create and edit areas_                                            | Create sub-areas, edit, move and delete areas. Top-level areas only with the permission for the whole edition.                                             |
+| _Assign roles (only with own permissions)_                         | Assign and remove roles under _People_ – only where one has this permission, and only roles whose permissions one holds there completely.                  |
+| _View staffing dashboard_                                          | Belongs to the _Overview_. At the moment, however, the staffing figures there are shown to everyone who may plan shifts, add people or confirm attendance. |
+| _View audit log_                                                   | Read the [audit log](/wichtel/en/organizers/audit/) of the selected edition. Only works with _Whole edition_.                                              |
+| _Connect an AI assistant (e.g. Claude) with one’s own permissions_ | Connect an [AI assistant](/wichtel/en/organizers/ai/). Only counts in the current edition.                                                                 |
 
 ### Shifts
 
-| Permission                                          | What it allows                                                                                                                              |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| _Create and edit shifts_                            | Plan shifts and series. With _Whole edition_ also _Booking waves_ and _Places & site plan_.                                                  |
-| _Add and remove volunteers, approve requests_       | Add people to shifts and remove them, decide requests and handovers.                                                                        |
-| _Override rules (overlaps, deadlines, requirements)_ | _Add anyway_, even if the position is full, something overlaps, the shift has already started or a qualification is missing.                |
-| _Confirm attendance (check-in)_                     | Tick people off in the roster and check them in under _Desk & check-in_.                                                                    |
+| Permission                                           | What it allows                                                                                                               |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| _Create and edit shifts_                             | Plan shifts and series. With _Whole edition_ also _Booking waves_ and _Places & site plan_.                                  |
+| _Add and remove volunteers, approve requests_        | Add people to shifts and remove them, decide requests and handovers.                                                         |
+| _Override rules (overlaps, deadlines, requirements)_ | _Add anyway_, even if the position is full, something overlaps, the shift has already started or a qualification is missing. |
+| _Confirm attendance (check-in)_                      | Tick people off in the roster and check them in under _Desk & check-in_.                                                     |
 
 ### People
 
-| Permission                         | What it allows                                                                                                                              |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| _View volunteer contact details_   | See volunteers' phone numbers and e-mail addresses in one's own areas. Only counts in the current edition.                                  |
-| _Review and grant qualifications_  | Approve or reject proofs, grant and revoke qualifications. Qualifications apply to everyone – the permission in any area is enough.          |
-| _View uploaded documents_          | Open uploaded documents. Only counts in the current edition.                                                                                |
-| _Publish news (also by e-mail)_    | Write news for one's own areas and their shifts; with _Whole edition_ also to wider groups.                                                 |
+| Permission                        | What it allows                                                                                                                      |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| _View volunteer contact details_  | See volunteers' phone numbers and e-mail addresses in one's own areas. Only counts in the current edition.                          |
+| _Review and grant qualifications_ | Approve or reject proofs, grant and revoke qualifications. Qualifications apply to everyone – the permission in any area is enough. |
+| _View uploaded documents_         | Open uploaded documents. Only counts in the current edition.                                                                        |
+| _Publish news (also by e-mail)_   | Write news for one's own areas and their shifts; with _Whole edition_ also to wider groups.                                         |
 
 ### Points & goodies
 
-| Permission                | What it allows                                                                                                 |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| _Manage goodies_          | Create and change goodies. Only works with _Whole edition_.                                                    |
-| _Hand out goodies_        | Hand out goodies under _Desk & check-in_.                                                                      |
-| _Adjust points manually_  | Add or remove points under _Desk & check-in_ → _Correct points_. Only works with _Whole edition_.              |
+| Permission               | What it allows                                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------------------------- |
+| _Manage goodies_         | Create and change goodies. Only works with _Whole edition_.                                       |
+| _Hand out goodies_       | Hand out goodies under _Desk & check-in_.                                                         |
+| _Adjust points manually_ | Add or remove points under _Desk & check-in_ → _Correct points_. Only works with _Whole edition_. |
 
 The lead pages explain how to work with these permissions: [I lead an area](/wichtel/en/leads/). An
 overview of all permissions is also in [Permissions](/wichtel/en/reference/permissions/).
@@ -80,13 +80,13 @@ overview of all permissions is also in [Permissions](/wichtel/en/reference/permi
 
 During setup Wichtel creates these templates. You can change them freely.
 
-| Role               | Typically assigned for   | Permissions                                                                                                                                     |
-| ------------------ | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| _Festival lead_    | _Whole edition_          | all except _Connect an AI assistant_                                                                                                            |
-| _Area lead_        | one area                 | areas, assign roles, dashboard, shifts, add and remove, override rules, attendance, review qualifications, contact details, news                |
-| _Shift lead_       | one (sub-)area           | attendance, contact details, dashboard                                                                                                          |
-| _Volunteer desk_   | _Whole edition_          | dashboard, add and remove, attendance, review qualifications, contact details, hand out goodies                                                 |
-| _Goodie desk_      | _Whole edition_          | hand out goodies                                                                                                                                |
+| Role             | Typically assigned for | Permissions                                                                                                                      |
+| ---------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| _Festival lead_  | _Whole edition_        | all except _Connect an AI assistant_                                                                                             |
+| _Area lead_      | one area               | areas, assign roles, dashboard, shifts, add and remove, override rules, attendance, review qualifications, contact details, news |
+| _Shift lead_     | one (sub-)area         | attendance, contact details, dashboard                                                                                           |
+| _Volunteer desk_ | _Whole edition_        | dashboard, add and remove, attendance, review qualifications, contact details, hand out goodies                                  |
+| _Goodie desk_    | _Whole edition_        | hand out goodies                                                                                                                 |
 
 Examples:
 

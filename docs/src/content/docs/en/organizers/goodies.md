@@ -28,22 +28,22 @@ description: Create rewards volunteers trade their points for – with price, op
 
 ## All fields
 
-| Field                                                           | Meaning                                                                                                                                                   |
-| --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| _Price in points_                                               | How many points the goodie costs. They are deducted as soon as it is chosen.                                                                               |
-| _Max. per person_                                               | How often one person can get the goodie.                                                                                                                   |
-| _Order_                                                         | Sort order in the list.                                                                                                                                    |
-| _Options_                                                       | Choices such as sizes. Whoever chooses the goodie must pick an option.                                                                                     |
-| _Pickup place_                                                  | A [place](/wichtel/en/organizers/places/) of this edition. _Volunteer desk (default)_ means the place set as volunteer desk under _Places & site plan_.      |
-| _Pickup details_                                                | Free text, e.g. opening times.                                                                                                                             |
-| _Self-service contingent_                                       | How many volunteers can choose themselves in total. Empty = unlimited. The desk can always hand out more.                                                  |
-| _Stock (for overview only)_                                     | How many you have. Blocks nothing; the list shows how many are left.                                                                                       |
-| _Active (visible to volunteers)_                                | Without the tick, volunteers cannot choose the goodie.                                                                                                     |
-| _Advance: may be chosen with pending points_                    | Volunteers can choose the goodie with points from booked, not yet confirmed shifts.                                                                        |
-| _Refund instead of handing out possible (“already have one”)_   | Volunteers can choose a refund instead of the item, e.g. if they have already bought a ticket.                                                             |
-| _Mandatory: redeemed automatically_                             | See below.                                                                                                                                                 |
-| _Order of mandatory goodies_                                    | With several mandatory goodies: lower number first.                                                                                                        |
-| _Only for volunteers of these areas_                            | Only people with at least one confirmed shift in one of these areas (or a sub-area). No selection = everyone.                                              |
+| Field                                                         | Meaning                                                                                                                                                 |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _Price in points_                                             | How many points the goodie costs. They are deducted as soon as it is chosen.                                                                            |
+| _Max. per person_                                             | How often one person can get the goodie.                                                                                                                |
+| _Order_                                                       | Sort order in the list.                                                                                                                                 |
+| _Options_                                                     | Choices such as sizes. Whoever chooses the goodie must pick an option.                                                                                  |
+| _Pickup place_                                                | A [place](/wichtel/en/organizers/places/) of this edition. _Volunteer desk (default)_ means the place set as volunteer desk under _Places & site plan_. |
+| _Pickup details_                                              | Free text, e.g. opening times.                                                                                                                          |
+| _Self-service contingent_                                     | How many volunteers can choose themselves in total. Empty = unlimited. The desk can always hand out more.                                               |
+| _Stock (for overview only)_                                   | How many you have. Blocks nothing; the list shows how many are left.                                                                                    |
+| _Active (visible to volunteers)_                              | Without the tick, volunteers cannot choose the goodie.                                                                                                  |
+| _Advance: may be chosen with pending points_                  | Volunteers can choose the goodie with points from booked, not yet confirmed shifts.                                                                     |
+| _Refund instead of handing out possible (“already have one”)_ | Volunteers can choose a refund instead of the item, e.g. if they have already bought a ticket.                                                          |
+| _Mandatory: redeemed automatically_                           | See below.                                                                                                                                              |
+| _Order of mandatory goodies_                                  | With several mandatory goodies: lower number first.                                                                                                     |
+| _Only for volunteers of these areas_                          | Only people with at least one confirmed shift in one of these areas (or a sub-area). No selection = everyone.                                           |
 
 ## Mandatory goodies (e.g. the free ticket)
 

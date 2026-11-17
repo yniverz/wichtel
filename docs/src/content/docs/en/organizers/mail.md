@@ -32,29 +32,29 @@ lines separate paragraphs.
 
 These placeholders exist in all templates about shifts:
 
-| Placeholder  | Replaced by                                                                          |
-| ------------ | ------------------------------------------------------------------------------------ |
-| `{name}`     | first name of the recipient                                                          |
-| `{festival}` | festival name from the [settings](/wichtel/en/organizers/settings/)                  |
-| `{shift}`    | title of the shift                                                                   |
-| `{date}`     | day of the shift, written out                                                        |
-| `{time}`     | time from–to                                                                         |
+| Placeholder  | Replaced by                                                                              |
+| ------------ | ---------------------------------------------------------------------------------------- |
+| `{name}`     | first name of the recipient                                                              |
+| `{festival}` | festival name from the [settings](/wichtel/en/organizers/settings/)                      |
+| `{shift}`    | title of the shift                                                                       |
+| `{date}`     | day of the shift, written out                                                            |
+| `{time}`     | time from–to                                                                             |
 | `{location}` | location and meeting point with map link, each on its own line (empty if nothing is set) |
-| `{link}`     | link into the app                                                                    |
+| `{link}`     | link into the app                                                                        |
 
 Some templates have additional placeholders. The page shows them when you expand the template under
 “Also available in this template”:
 
-| Template                              | Additionally                                            |
-| ------------------------------------- | ------------------------------------------------------- |
-| _Place reserved by group_             | `{person}` (who reserved), `{until}` (until when)       |
-| _Shift offered (direct)_              | `{person}`                                              |
-| _Swap suggested_                      | `{person}`, `{given}`                                   |
-| _Handover waiting for a lead_         | `{person}`                                              |
-| _Shift taken over_                    | `{person}`                                              |
-| _Handover declined_                   | `{person}`                                              |
-| _Urgent call_                         | `{position}`, `{free}` (free places), `{bonus}`, `{note}` |
-| _Account deleted for inactivity_      | `{months}`; `{date}` is the day of deletion here        |
+| Template                         | Additionally                                              |
+| -------------------------------- | --------------------------------------------------------- |
+| _Place reserved by group_        | `{person}` (who reserved), `{until}` (until when)         |
+| _Shift offered (direct)_         | `{person}`                                                |
+| _Swap suggested_                 | `{person}`, `{given}`                                     |
+| _Handover waiting for a lead_    | `{person}`                                                |
+| _Shift taken over_               | `{person}`                                                |
+| _Handover declined_              | `{person}`                                                |
+| _Urgent call_                    | `{position}`, `{free}` (free places), `{bonus}`, `{note}` |
+| _Account deleted for inactivity_ | `{months}`; `{date}` is the day of deletion here          |
 
 The two account templates (_Account deleted for inactivity_ and _E-mail address changed by the
 organisers (to the old address)_) are not about a shift – `{shift}`, `{time}` and `{location}` would

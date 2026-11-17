@@ -15,18 +15,18 @@ description: Which rules apply to signing up, cancelling, swapping and groups, w
 
 ## All rules at a glance
 
-| Setting                                                       | Default         | Where                                                      |
-| ------------------------------------------------------------- | --------------- | ---------------------------------------------------------- |
-| _Cancellation deadline (hours before start)_                  | 48              | Settings → _Booking_; can be overridden in area and shift  |
-| _Minimum break between two shifts (minutes)_                  | 0 (no break)    | Settings → _Booking_                                       |
-| _Reminder email (hours before start)_                         | 24              | Settings → _Booking_ (0 = no reminders)                    |
-| _Offer a waiting list for full positions_                     | on              | Settings → _Booking_                                       |
-| _Allow the shift market and direct swaps_                     | on              | Settings → _Swaps & groups_                                |
-| _Handovers after the cancel deadline need a lead’s approval_  | off             | Settings → _Swaps & groups_; can be overridden in the area |
-| _Allow groups_                                                | on              | Settings → _Swaps & groups_                                |
-| _Maximum people per group_                                    | 8 (2–50)        | Settings → _Swaps & groups_                                |
-| _Reservation for group members (hours)_                       | 24              | Settings → _Swaps & groups_                                |
-| Overlaps                                                      | always prevented | cannot be switched off                                    |
+| Setting                                                      | Default          | Where                                                      |
+| ------------------------------------------------------------ | ---------------- | ---------------------------------------------------------- |
+| _Cancellation deadline (hours before start)_                 | 48               | Settings → _Booking_; can be overridden in area and shift  |
+| _Minimum break between two shifts (minutes)_                 | 0 (no break)     | Settings → _Booking_                                       |
+| _Reminder email (hours before start)_                        | 24               | Settings → _Booking_ (0 = no reminders)                    |
+| _Offer a waiting list for full positions_                    | on               | Settings → _Booking_                                       |
+| _Allow the shift market and direct swaps_                    | on               | Settings → _Swaps & groups_                                |
+| _Handovers after the cancel deadline need a lead’s approval_ | off              | Settings → _Swaps & groups_; can be overridden in the area |
+| _Allow groups_                                               | on               | Settings → _Swaps & groups_                                |
+| _Maximum people per group_                                   | 8 (2–50)         | Settings → _Swaps & groups_                                |
+| _Reservation for group members (hours)_                      | 24               | Settings → _Swaps & groups_                                |
+| Overlaps                                                     | always prevented | cannot be switched off                                     |
 
 The settings apply to the whole installation, i.e. to all editions. Only admins can change them.
 Don't forget to save – the _Save_ button is at the bottom of the page.

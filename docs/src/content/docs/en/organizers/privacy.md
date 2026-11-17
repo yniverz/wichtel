@@ -63,10 +63,10 @@ is entered above.
 
 Wichtel cleans up automatically. Under _Retention_ you set:
 
-| Field                                              | Default | Meaning                                                                                                     |
-| -------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
-| _Delete inactive accounts after (months)_          | 24      | Accounts without sign-in and without a shift are anonymised. An e-mail goes out two weeks before. 0 = never. |
-| _Remove IP addresses from the log after (days)_    | 90      | After that, Wichtel removes the IP addresses from the [audit log](/wichtel/en/organizers/audit/). The log itself is kept. |
+| Field                                           | Default | Meaning                                                                                                                   |
+| ----------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------- |
+| _Delete inactive accounts after (months)_       | 24      | Accounts without sign-in and without a shift are anonymised. An e-mail goes out two weeks before. 0 = never.              |
+| _Remove IP addresses from the log after (days)_ | 90      | After that, Wichtel removes the IP addresses from the [audit log](/wichtel/en/organizers/audit/). The log itself is kept. |
 
 Admins are never deleted automatically.
 

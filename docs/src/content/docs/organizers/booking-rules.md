@@ -16,18 +16,18 @@ description: Welche Regeln beim Eintragen, Austragen, Tauschen und in Gruppen ge
 
 ## Alle Regeln im Überblick
 
-| Einstellung                                                                     | Standard        | Wo                                                         |
-| ------------------------------------------------------------------------------- | --------------- | ---------------------------------------------------------- |
-| _Frist zum Austragen (Stunden vor Beginn)_                                      | 48              | Einstellungen → _Buchung_; überschreibbar in Bereich und Schicht |
-| _Mindestpause zwischen zwei Schichten (Minuten)_                                | 0 (keine Pause) | Einstellungen → _Buchung_                                  |
-| _Erinnerungs-Mail (Stunden vor Beginn)_                                         | 24              | Einstellungen → _Buchung_ (0 = keine Erinnerungen)         |
-| _Warteliste für volle Positionen anbieten_                                      | an              | Einstellungen → _Buchung_                                  |
-| _Schichtbörse und direkten Tausch erlauben_                                     | an              | Einstellungen → _Tausch & Gruppen_                         |
-| _Übergaben nach Ablauf der Austragungsfrist von der Leitung bestätigen lassen_ | aus             | Einstellungen → _Tausch & Gruppen_; überschreibbar im Bereich |
-| _Gruppen erlauben_                                                              | an              | Einstellungen → _Tausch & Gruppen_                         |
-| _Höchstens Personen pro Gruppe_                                                 | 8 (2–50)        | Einstellungen → _Tausch & Gruppen_                         |
-| _Reservierung für Gruppenmitglieder (Stunden)_                                  | 24              | Einstellungen → _Tausch & Gruppen_                         |
-| Überschneidungen                                                                | immer verhindert | nicht abschaltbar                                         |
+| Einstellung                                                                    | Standard         | Wo                                                               |
+| ------------------------------------------------------------------------------ | ---------------- | ---------------------------------------------------------------- |
+| _Frist zum Austragen (Stunden vor Beginn)_                                     | 48               | Einstellungen → _Buchung_; überschreibbar in Bereich und Schicht |
+| _Mindestpause zwischen zwei Schichten (Minuten)_                               | 0 (keine Pause)  | Einstellungen → _Buchung_                                        |
+| _Erinnerungs-Mail (Stunden vor Beginn)_                                        | 24               | Einstellungen → _Buchung_ (0 = keine Erinnerungen)               |
+| _Warteliste für volle Positionen anbieten_                                     | an               | Einstellungen → _Buchung_                                        |
+| _Schichtbörse und direkten Tausch erlauben_                                    | an               | Einstellungen → _Tausch & Gruppen_                               |
+| _Übergaben nach Ablauf der Austragungsfrist von der Leitung bestätigen lassen_ | aus              | Einstellungen → _Tausch & Gruppen_; überschreibbar im Bereich    |
+| _Gruppen erlauben_                                                             | an               | Einstellungen → _Tausch & Gruppen_                               |
+| _Höchstens Personen pro Gruppe_                                                | 8 (2–50)         | Einstellungen → _Tausch & Gruppen_                               |
+| _Reservierung für Gruppenmitglieder (Stunden)_                                 | 24               | Einstellungen → _Tausch & Gruppen_                               |
+| Überschneidungen                                                               | immer verhindert | nicht abschaltbar                                                |
 
 Die Einstellungen gelten für die ganze Installation, also für alle Jahrgänge. Nur Admins können sie
 ändern. Speichern nicht vergessen – der Knopf _Speichern_ steht unten auf der Seite.

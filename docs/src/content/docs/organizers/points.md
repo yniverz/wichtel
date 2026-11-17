@@ -31,11 +31,11 @@ Für jede Schicht einer Person:
 
 ## Wo die Regeln stehen
 
-| Ebene    | Wo                                                       | Was                                          |
-| -------- | -------------------------------------------------------- | -------------------------------------------- |
-| Instanz  | _Einstellungen_ → Karte _Punkte_                         | _Punkte pro Schicht_, _Punkte pro Stunde_, Boni |
-| Bereich  | _Bereiche_ → Bereich bearbeiten → _Punkte_              | _Punkte pro Schicht_, _Punkte pro Stunde_    |
-| Position | Schicht bearbeiten → Positionen → Feld _Punkte_ (leer = _auto_) | Punkte pro Schicht                   |
+| Ebene    | Wo                                                              | Was                                             |
+| -------- | --------------------------------------------------------------- | ----------------------------------------------- |
+| Instanz  | _Einstellungen_ → Karte _Punkte_                                | _Punkte pro Schicht_, _Punkte pro Stunde_, Boni |
+| Bereich  | _Bereiche_ → Bereich bearbeiten → _Punkte_                      | _Punkte pro Schicht_, _Punkte pro Stunde_       |
+| Position | Schicht bearbeiten → Positionen → Feld _Punkte_ (leer = _auto_) | Punkte pro Schicht                              |
 
 Jeder Wert kommt von der genauesten Ebene, die ihn setzt: erst die Position, dann der Bereich der
 Schicht, dann dessen übergeordnete Bereiche, zuletzt die Einstellungen. Ein leeres Feld heißt „wie
@@ -74,24 +74,24 @@ jemanden kurzfristig einträgt oder jemand kurz vorher eine Schicht von der Schi
 Einstellungen: _Punkte pro Schicht_ 0, _Punkte pro Stunde_ 2, _Nachtbonus_ 3 (00:00–06:00),
 _Kurzfrist-Bonus_ 2 (24 Stunden).
 
-| Schicht                                        | Rechnung                    | Punkte |
-| ---------------------------------------------- | --------------------------- | ------ |
-| Einlass 14:00–18:00, Wochen vorher gebucht     | 0 + 4 × 2                   | 8      |
-| Bar 22:00–02:00                                | 0 + 4 × 2 + 3 (Nacht)       | 11     |
-| Bar 18:00–00:00                                | 0 + 6 × 2 (endet genau 00:00) | 12   |
-| Aufbau 09:00–10:45, am Vortag abends gebucht   | 0 + 1,75 × 2 = 3,5 → 4, + 2 (kurzfristig) | 6 |
+| Schicht                                      | Rechnung                                  | Punkte |
+| -------------------------------------------- | ----------------------------------------- | ------ |
+| Einlass 14:00–18:00, Wochen vorher gebucht   | 0 + 4 × 2                                 | 8      |
+| Bar 22:00–02:00                              | 0 + 4 × 2 + 3 (Nacht)                     | 11     |
+| Bar 18:00–00:00                              | 0 + 6 × 2 (endet genau 00:00)             | 12     |
+| Aufbau 09:00–10:45, am Vortag abends gebucht | 0 + 1,75 × 2 = 3,5 → 4, + 2 (kurzfristig) | 6      |
 
 Jetzt setzt der Bereich _Bar_ _Punkte pro Schicht_ auf 2 und lässt _Punkte pro Stunde_ leer:
 
-| Schicht         | Rechnung                 | Punkte |
-| --------------- | ------------------------ | ------ |
-| Bar 22:00–02:00 | 2 + 4 × 2 + 3 (Nacht)    | 13     |
+| Schicht         | Rechnung              | Punkte |
+| --------------- | --------------------- | ------ |
+| Bar 22:00–02:00 | 2 + 4 × 2 + 3 (Nacht) | 13     |
 
 Und eine Position _Kasse_ in der Bar hat im Feld _Punkte_ den Wert 5:
 
-| Schicht                  | Rechnung              | Punkte |
-| ------------------------ | --------------------- | ------ |
-| Bar 18:00–22:00, Kasse   | 5 + 4 × 2             | 13     |
+| Schicht                | Rechnung  | Punkte |
+| ---------------------- | --------- | ------ |
+| Bar 18:00–22:00, Kasse | 5 + 4 × 2 | 13     |
 
 ## Wann Punkte gutgeschrieben werden
 

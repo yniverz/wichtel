@@ -33,13 +33,13 @@ Unter _Einstellungen_ → _KI-Assistenten (MCP)_:
 **Was Assistenten ändern dürfen.** Lesen geht immer. Ändern nur in den angehakten Gruppen – und auch
 dann nur, soweit die Person es selbst darf:
 
-| Gruppe                     | Was der Assistent dann darf                                                            | Ab Werk |
-| -------------------------- | -------------------------------------------------------------------------------------- | ------- |
-| _Schichten planen_         | Schichten und Serien anlegen, ändern, löschen                                          | an      |
-| _Besetzung_                | Leute ein- und austragen, Anfragen und Übergaben entscheiden, Dringend-Aufrufe         | an      |
-| _Bereiche und Orte_        | Bereiche und Orte anlegen                                                              | an      |
-| _Neuigkeiten & Rundmails_  | Neuigkeiten für Bereiche, Schichten oder alle Helfenden veröffentlichen, auch per E-Mail | aus   |
-| _Punkte_                   | Punkte manuell gutschreiben oder abziehen                                              | aus     |
+| Gruppe                    | Was der Assistent dann darf                                                              | Ab Werk |
+| ------------------------- | ---------------------------------------------------------------------------------------- | ------- |
+| _Schichten planen_        | Schichten und Serien anlegen, ändern, löschen                                            | an      |
+| _Besetzung_               | Leute ein- und austragen, Anfragen und Übergaben entscheiden, Dringend-Aufrufe           | an      |
+| _Bereiche und Orte_       | Bereiche und Orte anlegen                                                                | an      |
+| _Neuigkeiten & Rundmails_ | Neuigkeiten für Bereiche, Schichten oder alle Helfenden veröffentlichen, auch per E-Mail | aus     |
+| _Punkte_                  | Punkte manuell gutschreiben oder abziehen                                                | aus     |
 
 Rollen, Einstellungen und Konten können Assistenten grundsätzlich nicht ändern.
 

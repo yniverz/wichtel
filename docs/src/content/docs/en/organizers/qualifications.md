@@ -36,11 +36,11 @@ Every request lands under _Qualifications_ in _To review_. There it can be appro
 declined with _Decline_, with an optional _Note to the person_. How this works day to day is described
 under [Reviewing qualifications](/wichtel/en/leads/qualifications/).
 
-| Permission                                | Allows                                                                            |
-| ----------------------------------------- | --------------------------------------------------------------------------------- |
-| _Review and grant qualifications_         | approve or decline requests, grant and revoke qualifications directly             |
-| _View uploaded documents_                 | open uploaded documents (_View proof_)                                            |
-| Admin                                     | additionally create and change qualifications                                     |
+| Permission                        | Allows                                                                |
+| --------------------------------- | --------------------------------------------------------------------- |
+| _Review and grant qualifications_ | approve or decline requests, grant and revoke qualifications directly |
+| _View uploaded documents_         | open uploaded documents (_View proof_)                                |
+| Admin                             | additionally create and change qualifications                         |
 
 Only give the permission to view documents to the people who really need it. When uploading,
 volunteers see: “Only the people reviewing it can see your proof.”
