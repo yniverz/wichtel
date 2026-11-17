@@ -51,7 +51,8 @@ später eine Schicht im Bereich bucht, sieht einen Bereichs-Beitrag dann auch.
 
 Mit _Auch per E-Mail senden_ bekommen alle, die der Beitrag **im Moment des Veröffentlichens**
 betrifft, ihn zusätzlich als E-Mail – in ihrer Sprache, mit einem Link zum Beitrag. Wer später dazukommt,
-sieht ihn nur im Newsfeed. In der Liste steht danach „per E-Mail an {Anzahl}“.
+sieht ihn nur im Newsfeed. Konten, deren E-Mail-Adresse noch nicht bestätigt ist, bekommen keine
+Mail (und zählen bei der Anzahl nicht mit). In der Liste steht danach „per E-Mail an {Anzahl}“.
 
 ## Anheften
 

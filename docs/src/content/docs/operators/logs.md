@@ -28,8 +28,9 @@ Container als JSON:
 - **Anfragen** werden ohne IP-Adresse und ohne Suchparameter protokolliert. `path` ist die Route,
   bei Seiten mit ID z. B. `/admin/editions/[id=uuid]`. Aufrufe von `/healthz` und statischen Dateien
   erscheinen nicht.
-- Wichtel loggt keine Namen, Passwörter oder Tokens. Ausnahmen: der Einrichtungslink vor der
-  Einrichtung, und ohne Mailserver Empfänger und Betreff nicht verschickter Mails.
+- Wichtel loggt keine Namen, E-Mail-Adressen, Passwörter oder Tokens. Ausnahmen: der
+  Einrichtungslink vor der Einrichtung, ohne Mailserver der Betreff nicht verschickter Mails, und
+  Empfänger und Text dieser Mails nur mit `LOG_MAIL_BODIES=true`.
 
 ## Filtern mit jq
 
@@ -63,7 +64,8 @@ verschickt insgesamt höchstens zehn Fehler-Mails pro Stunde. Ins Log kommt jede
 Hintergrundaufgaben (Mailversand, Erinnerungen, Aufräumen) werden so gemeldet.
 
 Abschalten: _Verwaltung → Einstellungen → Betrieb_ → _Fehler per E-Mail an alle Admins melden_
-(standardmäßig an). Ohne Mailserver landen die Fehler-Mails nur im Log.
+(standardmäßig an). Ohne Mailserver steht von den Fehler-Mails nur der Betreff im Log; der Fehler
+selbst steht dort ohnehin.
 
 ## Fehlgeschlagene Mails
 
@@ -84,7 +86,8 @@ Verwaltung an; unter _Kommunikation → Zustellung_ lassen sie sich erneut sende
 | `Wichtel is not set up yet. Open this link …`                           | Einrichtungslink, siehe [Installation](/wichtel/operators/install/#einrichtungslink).                                     |
 | `SETUP_TOKEN is no longer needed and can be removed`                    | Einrichtung ist fertig; `SETUP_TOKEN` aus der Konfiguration entfernen.                                                    |
 | `No mail server (SMTP_HOST): …`                                         | Kein Mailserver eingerichtet, siehe [ohne Mailserver](/wichtel/operators/email/#ohne-mailserver).                         |
-| `e-mail not sent (SMTP_HOST unset)`                                     | Eine Mail, die ohne Mailserver nur geloggt wurde.                                                                         |
+| `SMTP_FROM is not set: …`                                               | Mailserver ohne Absender; fast alle Mailserver lehnen den Standard ab, siehe [E-Mail](/wichtel/operators/email/).         |
+| `e-mail not sent (SMTP_HOST unset)`                                     | Eine Mail, die ohne Mailserver nicht verschickt wurde (nur mit Betreff).                                                  |
 | `client address unknown – does the reverse proxy send X-Forwarded-For?` | Proxy schickt kein passendes `X-Forwarded-For`, siehe [Reverse Proxy](/wichtel/operators/reverse-proxy/).                 |
 | `server busy: requests turned away`                                     | Sehr viel Andrang, Aufrufe der Schichtliste wurden abgewiesen, siehe [Kapazität](/wichtel/operators/capacity/).           |
 | `unexpected error`                                                      | Unerwarteter Fehler mit Fehler-ID.                                                                                        |

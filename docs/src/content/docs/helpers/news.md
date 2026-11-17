@@ -48,7 +48,8 @@ du die englische Fassung.
 
 ## Per E-Mail
 
-Die Orga kann einen Beitrag zusätzlich per E-Mail an alle schicken, die er betrifft. Die Mail hat
+Die Orga kann einen Beitrag zusätzlich per E-Mail an alle schicken, die er betrifft – sofern deine
+E-Mail-Adresse bestätigt ist. Die Mail hat
 den Titel des Beitrags als Betreff und einen Link zu den Neuigkeiten. Spätere Änderungen am Beitrag
 werden nicht noch einmal verschickt – im Zweifel gilt, was in der App steht.
 

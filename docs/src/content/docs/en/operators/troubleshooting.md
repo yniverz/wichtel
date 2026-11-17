@@ -41,11 +41,12 @@ variables), or `.env` is not next to `docker-compose.yml`.
 <summary>The app container keeps restarting – error about a variable</summary>
 
 **Cause:** Wichtel checks some variables on start. Typical messages in the log:
+“PUBLIC_URL must be an absolute URL …”, “PUBLIC_URL must not contain a path …”,
 “SETUP_TOKEN must be at least 24 characters”, “SMTP_PORT must be an integer”,
 “LOG_LEVEL must be debug, info, warn or error”, “LOG_FORMAT must be json or text”.
 
-**Fix:** correct the value (`SETUP_TOKEN` at least 24 characters, or leave it empty) and run
-`docker compose up -d`. See [Configuration](/wichtel/en/operators/configuration/).
+**Fix:** correct the value (`PUBLIC_URL` with `https://` or `http://` and without a path,
+`SETUP_TOKEN` at least 24 characters or empty) and run `docker compose up -d`. See [Configuration](/wichtel/en/operators/configuration/).
 
 </details>
 
@@ -91,7 +92,8 @@ docker compose up -d
 **Cause:** `PUBLIC_URL` starts with `https://`, but you open Wichtel over http. Wichtel then sets the
 session cookie with `Secure`, and the browser does not send it back over http.
 
-**Fix:** open Wichtel over https. For testing without TLS, set an http `PUBLIC_URL` – see
+**Fix:** open Wichtel over https. For testing without TLS, set an http `PUBLIC_URL` (no proxy is
+needed for that) – see
 [Testing over http](/wichtel/en/operators/reverse-proxy/#special-cases). If the browser has already
 received HSTS for the address, it forces https anyway.
 
@@ -101,11 +103,13 @@ received HSTS for the address, it forces https anyway.
 <summary>“Cross-site POST form submissions are forbidden” (status 403)</summary>
 
 **Cause:** Wichtel compares the origin of a form with the address the reverse proxy reports. If they do
-not match, the form is rejected. Typical: the proxy sends no `X-Forwarded-Proto` (Wichtel then assumes
-`https`), does not pass on the real host name (with nginx, `proxy_set_header Host $host` is missing) or
-the app port is called directly without a proxy.
+not match, the form is rejected. Typical: the proxy does not pass on the real host name (with nginx,
+`proxy_set_header Host $host` is missing), it sends no `X-Forwarded-Proto` (then the protocol of
+`PUBLIC_URL` applies), or Wichtel is opened over http although `PUBLIC_URL` starts with `https://`.
 
-**Fix:** set up the proxy as described under [Reverse proxy](/wichtel/en/operators/reverse-proxy/).
+**Fix:** set up the proxy as described under [Reverse proxy](/wichtel/en/operators/reverse-proxy/). For
+testing without a proxy and TLS, set `PUBLIC_URL` to the http address, see
+[Testing over http](/wichtel/en/operators/reverse-proxy/#special-cases).
 
 </details>
 
@@ -133,7 +137,7 @@ header. Login throttling then only works per account.
 2. **The mail server refuses:** _Admin → Communication → Delivery_ → _Send a test e-mail to me_ shows
    the mail server's answer. Common: wrong password, `SMTP_SECURE` does not match the port (`true` for
    465, `false` for 587) or `SMTP_FROM` is not set – the default `wichtel@localhost` is usually
-   rejected.
+   rejected (the log then shows `SMTP_FROM is not set` on start).
 3. **Server unreachable:** if the test e-mail gives up after about 15 seconds, often a firewall or the
    hosting provider blocks the outgoing SMTP port.
 4. **In spam:** set up SPF, DKIM and DMARC for the sender domain.

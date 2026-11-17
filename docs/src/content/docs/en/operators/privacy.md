@@ -26,8 +26,9 @@ The cleanup runs on start and then every six hours:
 Admins set the periods for accounts and IP addresses under _Admin → Privacy & legal notice →
 Retention_ (`0` = never). If the cleanup did something, the log shows `retention run`.
 
-Wichtel's own logs contain no IP addresses and no query parameters. Without a mail server, however,
-they contain the recipient and subject of unsent mails – see [Logs](/wichtel/en/operators/logs/).
+Wichtel's own logs contain no IP addresses, e-mail addresses or query parameters. Without a mail
+server they contain the subject of unsent mails, and their recipient and text only with
+`LOG_MAIL_BODIES=true` – see [Logs](/wichtel/en/operators/logs/).
 
 ## What you have to take care of
 

@@ -36,7 +36,8 @@ successful build of `main`.
 
 2. Edit `.env`. Required are:
    - `PUBLIC_URL` – the public address, exactly as it appears in the browser, e.g.
-     `https://helfen.example.de`.
+     `https://helfen.example.de` (without a path). For a first test without a proxy, the server's
+     http address works too, e.g. `http://192.168.1.10:3006` with `WICHTEL_BIND=0.0.0.0`.
    - `POSTGRES_PASSWORD` – a long, random password for the database, e.g. from
      `openssl rand -hex 24`.
 

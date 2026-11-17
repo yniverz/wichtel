@@ -120,14 +120,12 @@ Wichtel nimmt aus `X-Forwarded-For` die Adresse an Position `XFF_DEPTH`, von rec
 Standard ist `1`: die Adresse, die der Proxy direkt vor Wichtel gesehen hat. Steht ein weiterer Proxy
 davor (Cloudflare → Caddy → Wichtel), wäre das die Adresse von Cloudflare. Dann:
 
-1. `XFF_DEPTH` auf die Zahl der Proxys setzen, hier `2`. Die `docker-compose.yml` reicht die
-   Variable nicht von selbst weiter – in einer `docker-compose.override.yml` ergänzen:
+1. `XFF_DEPTH` auf die Zahl der Proxys setzen, hier `2` – in der `.env` neben der
+   `docker-compose.yml` (bei Portainer in den Umgebungsvariablen des Stacks), danach
+   `docker compose up -d`:
 
-   ```yaml
-   services:
-     app:
-       environment:
-         XFF_DEPTH: 2
+   ```bash
+   XFF_DEPTH=2
    ```
 
 2. Der innere Proxy muss das `X-Forwarded-For` von Cloudflare **ergänzen statt ersetzen**.
@@ -170,11 +168,16 @@ Diese Header musst du im Proxy **nicht** ergänzen:
 <details>
 <summary>Testen über http ohne TLS</summary>
 
-`PUBLIC_URL` auf die http-Adresse setzen (z. B. `http://192.168.1.10:8080`), sonst setzt Wichtel
-`Secure`-Cookies und die Anmeldung klappt nicht. Auch beim Test einen Proxy davor betreiben, der
-`X-Forwarded-Proto: http` schickt: Fehlt der Header, nimmt Wichtel `https` an, und abgeschickte
-Formulare werden als „Cross-site“ abgelehnt. Caddy mit einer Adresse wie `http://:8080` erledigt
-das.
+`PUBLIC_URL` auf genau die http-Adresse setzen, unter der du testest (z. B.
+`http://192.168.1.10:3006`), und in der `.env` `WICHTEL_BIND=0.0.0.0` setzen, damit der Port im Netz
+erreichbar ist. Ein Proxy ist dafür nicht nötig: Kommt eine Anfrage ohne `X-Forwarded-Proto` an,
+nimmt Wichtel das Protokoll aus `PUBLIC_URL`. Mit einer https-`PUBLIC_URL` dagegen setzt Wichtel
+`Secure`-Cookies und erwartet https – über http klappen dann weder Anmeldung noch Formulare
+(„Cross-site … form submissions are forbidden“).
+
+Ohne Proxy fehlt auch `X-Forwarded-For`; Wichtel warnt dann einmal mit
+[`client address unknown`](#die-warnung-client-address-unknown). Für einen Test ist das in Ordnung,
+für den Betrieb gehört ein Proxy mit TLS davor.
 
 </details>
 

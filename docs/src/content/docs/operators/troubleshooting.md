@@ -43,11 +43,12 @@ ausführen.
 <summary>Der App-Container startet immer wieder neu – Fehler zu einer Variable</summary>
 
 **Ursache:** Wichtel prüft beim Start einige Variablen. Typische Meldungen im Log:
+„PUBLIC_URL must be an absolute URL …“, „PUBLIC_URL must not contain a path …“,
 „SETUP_TOKEN must be at least 24 characters“, „SMTP_PORT must be an integer“,
 „LOG_LEVEL must be debug, info, warn or error“, „LOG_FORMAT must be json or text“.
 
-**Lösung:** Den Wert korrigieren (`SETUP_TOKEN` mindestens 24 Zeichen oder leer lassen) und
-`docker compose up -d`. Siehe [Konfiguration](/wichtel/operators/configuration/).
+**Lösung:** Den Wert korrigieren (`PUBLIC_URL` mit `https://` bzw. `http://` und ohne Pfad,
+`SETUP_TOKEN` mindestens 24 Zeichen oder leer lassen) und `docker compose up -d`. Siehe [Konfiguration](/wichtel/operators/configuration/).
 
 </details>
 
@@ -95,8 +96,8 @@ entsprechend anpassen.
 **Ursache:** `PUBLIC_URL` beginnt mit `https://`, du öffnest Wichtel aber über http. Dann setzt Wichtel
 das Sitzungs-Cookie mit `Secure`, und der Browser schickt es über http nicht zurück.
 
-**Lösung:** Wichtel über https aufrufen. Zum Testen ohne TLS eine http-`PUBLIC_URL` setzen –
-siehe [Testen über http](/wichtel/operators/reverse-proxy/#sonderfälle). Hat der Browser schon
+**Lösung:** Wichtel über https aufrufen. Zum Testen ohne TLS eine http-`PUBLIC_URL` setzen (ein
+Proxy ist dafür nicht nötig) – siehe [Testen über http](/wichtel/operators/reverse-proxy/#sonderfälle). Hat der Browser schon
 einmal HSTS für die Adresse bekommen, erzwingt er ohnehin https.
 
 </details>
@@ -105,11 +106,14 @@ einmal HSTS für die Adresse bekommen, erzwingt er ohnehin https.
 <summary>„Cross-site POST form submissions are forbidden“ (Status 403)</summary>
 
 **Ursache:** Wichtel vergleicht die Herkunft eines Formulars mit der Adresse, die der Reverse Proxy
-meldet. Passen sie nicht, wird das Formular abgelehnt. Typisch: Der Proxy schickt kein
-`X-Forwarded-Proto` (dann nimmt Wichtel `https` an), gibt nicht den echten Hostnamen weiter (bei nginx
-fehlt `proxy_set_header Host $host`) oder der App-Port wird ohne Proxy direkt aufgerufen.
+meldet. Passen sie nicht, wird das Formular abgelehnt. Typisch: Der Proxy gibt nicht den echten
+Hostnamen weiter (bei nginx fehlt `proxy_set_header Host $host`), er schickt kein
+`X-Forwarded-Proto` (dann gilt das Protokoll von `PUBLIC_URL`), oder Wichtel wird über http
+aufgerufen, obwohl `PUBLIC_URL` mit `https://` beginnt.
 
-**Lösung:** Den Proxy wie unter [Reverse Proxy](/wichtel/operators/reverse-proxy/) einrichten.
+**Lösung:** Den Proxy wie unter [Reverse Proxy](/wichtel/operators/reverse-proxy/) einrichten. Zum
+Testen ohne Proxy und TLS `PUBLIC_URL` auf die http-Adresse setzen, siehe
+[Testen über http](/wichtel/operators/reverse-proxy/#sonderfälle).
 
 </details>
 
@@ -137,7 +141,7 @@ Die Login-Begrenzung gilt dann nur noch pro Konto.
 2. **Mailserver lehnt ab:** _Verwaltung → Kommunikation → Zustellung_ → _Testmail an mich senden_
    zeigt die Antwort des Mailservers. Häufig: falsches Passwort, `SMTP_SECURE` passt nicht zum Port
    (`true` für 465, `false` für 587) oder `SMTP_FROM` ist nicht gesetzt – der Standard
-   `wichtel@localhost` wird meist abgelehnt.
+   `wichtel@localhost` wird meist abgelehnt (beim Start steht dann `SMTP_FROM is not set` im Log).
 3. **Server nicht erreichbar:** Bricht die Testmail nach etwa 15 Sekunden ab, blockiert oft eine
    Firewall oder der Hoster den ausgehenden SMTP-Port.
 4. **Im Spam:** SPF, DKIM und DMARC für die Absender-Domain einrichten.

@@ -61,11 +61,12 @@ so only a reverse proxy on the same machine can reach it. Change it with `WICHTE
 ### Do I need HTTPS?
 
 Yes, for real use. Wichtel itself only speaks http and belongs behind a reverse proxy with TLS. Never
-expose the app port directly to the internet. [In detail](/wichtel/en/operators/reverse-proxy/)
+expose the app port directly to the internet. For testing, plain http without a proxy works too if
+`PUBLIC_URL` is the http address. [In detail](/wichtel/en/operators/reverse-proxy/)
 
 ### I use Cloudflare (or two proxies in a row).
 
-Set `XFF_DEPTH` to the number of proxies, e.g. `2` for Cloudflare + Caddy, and make sure the inner
+Set `XFF_DEPTH` in `.env` to the number of proxies, e.g. `2` for Cloudflare + Caddy, and make sure the inner
 proxy passes on Cloudflare's address.
 [In detail](/wichtel/en/operators/reverse-proxy/#several-proxies-for-example-cloudflare)
 

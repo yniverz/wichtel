@@ -5,7 +5,8 @@ description: Schichtplan je Bereich und Helferliste je Schicht mit Spalte zum Ab
 
 :::tip[Auf einen Blick]
 
-- **Schichtplan:** _Schichten_ → optional Bereich wählen → _Schichtplan drucken_.
+- **Schichtplan:** _Schichten_ → optional Bereich wählen → _Schichtplan drucken_ – oder darunter
+  einen einzelnen Tag.
 - **Helferliste einer Schicht:** Schicht öffnen → _Helferliste drucken_.
 - Auf der Druckansicht oben _Drucken_ tippen (oder als PDF speichern).
 - Jede Liste hat eine Spalte _Da_ zum Abhaken auf Papier.
@@ -17,7 +18,8 @@ description: Schichtplan je Bereich und Helferliste je Schicht mit Spalte zum Ab
 1. Öffne _Schichten_.
 2. Wähle oben einen Bereich, wenn du nur diesen (mit seinen Unterbereichen) drucken willst. Ohne
    Auswahl kommen alle Schichten deiner Bereiche.
-3. Tippe auf _Schichtplan drucken_.
+3. Tippe auf _Schichtplan drucken_. Nur einen Tag? Unter der Bereichsauswahl steht „Schichtplan für
+   einen Tag drucken:“ mit einem Link je Tag.
 4. Prüf die Vorschau und tippe oben auf _Drucken_.
 
 Der Plan hat die Überschrift _Schichtplan_ (mit Bereichsname, wenn du einen gewählt hast). Jeder Tag
@@ -33,7 +35,7 @@ beginnt auf einem neuen Blatt; eine Schicht wird nicht über zwei Seiten getrenn
 
 Für jede Schicht:
 
-- Tag, Uhrzeit, Titel und der Bereich (mit übergeordneten Bereichen),
+- Tag, Uhrzeit, Titel und der Bereich (mit übergeordneten Bereichen) in deiner Sprache,
 - _Treffpunkt_ und _Ansprechperson_, wenn eingetragen,
 - eine Tabelle mit _Position_, _Name_, _Telefon_ und _Da_.
 
@@ -49,8 +51,8 @@ der Schicht hat.
 
 ### Kann ich nur einen Tag drucken?
 
-In der Oberfläche gibt es dafür keine Auswahl. Weil jeder Tag auf einem neuen Blatt beginnt, kannst du
-im Druckdialog einfach nur die Seiten dieses Tages wählen.
+Ja. Unter _Schichten_ steht „Schichtplan für einen Tag drucken:“ mit einem Link je Tag (nur, wenn
+es Schichten an mehr als einem Tag gibt). Ein gewählter Bereich gilt dabei mit.
 
 ### Wie komme ich zurück?
 

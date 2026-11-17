@@ -49,7 +49,8 @@ in the area later also sees an area post then.
 
 With _Also send by e-mail_, everyone the post concerns **at the moment of publishing** also gets it as
 an e-mail – in their language, with a link to the post. Anyone who joins later only sees it in the
-news feed. Afterwards the list shows “e-mailed to {number}”.
+news feed. Accounts whose e-mail address is not confirmed yet get no e-mail (and are not counted).
+Afterwards the list shows “e-mailed to {number}”.
 
 ## Pinning
 

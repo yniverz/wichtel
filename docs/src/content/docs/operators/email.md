@@ -29,7 +29,9 @@ description: Mailserver für Wichtel einrichten, Zustellung prüfen und verstehe
 
    `SMTP_SECURE=true` für Port `465` (TLS von Anfang an), `false` für Port `587`. Ohne `SMTP_USER`
    meldet sich Wichtel nicht am Mailserver an. `SMTP_FROM` muss eine Adresse sein, die der
-   Mailserver als Absender erlaubt.
+   Mailserver als Absender erlaubt. Fehlt `SMTP_FROM`, schickt Wichtel als `wichtel@localhost` –
+   das lehnen fast alle Mailserver ab, deshalb steht beim Start dann eine Warnung im Log
+   (`SMTP_FROM is not set`).
 
 2. `docker compose up -d` – der Container startet mit den neuen Werten neu.
 3. Als Admin _Verwaltung → Kommunikation → Zustellung_ öffnen und _Testmail an mich senden_
@@ -42,6 +44,8 @@ description: Mailserver für Wichtel einrichten, Zustellung prüfen und verstehe
 ## Was Wichtel mit Mailserver tut
 
 - **Bestätigung:** Nach der Registrierung meldet man sich erst an, wenn die Adresse bestätigt ist.
+- **Nur an bestätigte Adressen:** Neuigkeiten und Dringend-Aufrufe gehen nur an Konten, deren
+  Adresse bestätigt ist.
 - **Keine Kontensuche:** Ist eine Adresse schon registriert, zeigt Wichtel dieselbe Meldung wie bei
   einem neuen Konto und schickt der Inhaberin stattdessen einen Link zum Zurücksetzen. So lässt sich
   nicht ausprobieren, wer ein Konto hat.
@@ -59,8 +63,8 @@ description: Mailserver für Wichtel einrichten, Zustellung prüfen und verstehe
 
 Ist `SMTP_HOST` leer:
 
-- werden **keine Mails verschickt**. Wichtel schreibt stattdessen Empfänger und Betreff ins Log
-  (`e-mail not sent (SMTP_HOST unset)`), den Text nur mit `LOG_MAIL_BODIES=true`;
+- werden **keine Mails verschickt**. Wichtel schreibt stattdessen nur den Betreff ins Log
+  (`e-mail not sent (SMTP_HOST unset)`); Empfängeradresse und Text nur mit `LOG_MAIL_BODIES=true`;
 - gelten **Adressen ohne Bestätigung**;
 - kann **niemand sein Passwort selbst zurücksetzen**.
 
@@ -70,10 +74,10 @@ einmal verwendbar, protokolliert) und geben ihn persönlich weiter. Mit Mailserv
 auch direkt _Per E-Mail senden_.
 
 :::caution[LOG_MAIL_BODIES]
-Mailtexte stehen nur in der Entwicklung im Log, weil sie geheime Links enthalten (Passwort
-zurücksetzen, Bestätigung). `LOG_MAIL_BODIES=true` erzwingt es auch im Betrieb – nicht empfohlen:
-Wer das Log lesen kann, kann dann fremde Konten übernehmen. Die `docker-compose.yml` reicht die
-Variable nicht von selbst weiter; sie müsste im `environment` des Dienstes `app` ergänzt werden.
+Empfängeradressen und Mailtexte stehen nur in der Entwicklung im Log: Die Adressen sind
+personenbezogene Daten, die Texte enthalten geheime Links (Passwort zurücksetzen, Bestätigung).
+`LOG_MAIL_BODIES=true` in der `.env` erzwingt beides auch im Betrieb – nicht empfohlen: Wer das Log
+lesen kann, kann dann fremde Konten übernehmen.
 :::
 
 ## Häufige Fragen

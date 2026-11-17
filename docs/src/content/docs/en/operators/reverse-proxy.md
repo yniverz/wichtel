@@ -118,14 +118,11 @@ Wichtel takes the address at position `XFF_DEPTH` from `X-Forwarded-For`, counte
 default is `1`: the address seen by the proxy directly in front of Wichtel. With another proxy in front
 (Cloudflare → Caddy → Wichtel), that would be Cloudflare's address. Then:
 
-1. Set `XFF_DEPTH` to the number of proxies, here `2`. `docker-compose.yml` does not pass the variable
-   on by itself – add it in a `docker-compose.override.yml`:
+1. Set `XFF_DEPTH` to the number of proxies, here `2` – in `.env` next to `docker-compose.yml` (with
+   Portainer in the stack's environment variables), then run `docker compose up -d`:
 
-   ```yaml
-   services:
-     app:
-       environment:
-         XFF_DEPTH: 2
+   ```bash
+   XFF_DEPTH=2
    ```
 
 2. The inner proxy must **append to** Cloudflare's `X-Forwarded-For` **instead of replacing it**.
@@ -168,10 +165,15 @@ You do **not** need to add these headers in the proxy:
 <details>
 <summary>Testing over http without TLS</summary>
 
-Set `PUBLIC_URL` to the http address (e.g. `http://192.168.1.10:8080`); otherwise Wichtel sets
-`Secure` cookies and signing in does not work. Even for testing, run a proxy in front that sends
-`X-Forwarded-Proto: http`: without the header Wichtel assumes `https`, and submitted forms are rejected
-as “Cross-site”. Caddy with an address like `http://:8080` does that.
+Set `PUBLIC_URL` to exactly the http address you test with (e.g. `http://192.168.1.10:3006`), and set
+`WICHTEL_BIND=0.0.0.0` in `.env` so the port is reachable from the network. No proxy is needed for
+this: if a request arrives without `X-Forwarded-Proto`, Wichtel takes the protocol from `PUBLIC_URL`.
+With an https `PUBLIC_URL`, however, Wichtel sets `Secure` cookies and expects https – over http
+neither signing in nor forms work then (“Cross-site … form submissions are forbidden”).
+
+Without a proxy, `X-Forwarded-For` is missing too; Wichtel then warns once with
+[`client address unknown`](#the-warning-client-address-unknown). That is fine for a test; for real use,
+put a proxy with TLS in front.
 
 </details>
 

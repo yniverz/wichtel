@@ -47,7 +47,7 @@ Tapping it opens a window with:
 - your festival's **site plan** with a marker showing where the place is,
 - a **map**: tap _Load map_. Only then is the map loaded from a map service; your IP address is sent
   to that service. Nothing is loaded unless you tap.
-- **_Open in:_ Google Maps, Apple Karten (Apple Maps), OpenStreetMap** – to navigate in your
+- **_Open in:_ Google Maps, Apple Maps, OpenStreetMap** – to navigate in your
   favourite app.
 
 What appears depends on what the organisers have entered for the place. If _Location_ or _Meeting

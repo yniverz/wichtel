@@ -26,8 +26,9 @@ Wichtel writes one line per event to stdout (warnings and errors to stderr), in 
 - **Requests** are logged without IP address and without query parameters. `path` is the route, for
   pages with an ID e.g. `/admin/editions/[id=uuid]`. Calls to `/healthz` and static files do not
   appear.
-- Wichtel does not log names, passwords or tokens. Exceptions: the setup link before setup, and
-  without a mail server the recipient and subject of unsent mails.
+- Wichtel does not log names, e-mail addresses, passwords or tokens. Exceptions: the setup link
+  before setup, without a mail server the subject of unsent mails, and their recipient and text only
+  with `LOG_MAIL_BODIES=true`.
 
 ## Filtering with jq
 
@@ -62,7 +63,8 @@ most ten error e-mails an hour in total. Every error goes to the log. Errors in 
 mail, reminders, cleanup) are reported the same way.
 
 Turn off: _Admin → Settings → Operations_ → _Report errors to all admins by e-mail_ (on by default).
-Without a mail server, the error e-mails only end up in the log.
+Without a mail server, only the subject of the error e-mails appears in the log; the error itself is
+logged anyway.
 
 ## Failed e-mails
 
@@ -77,17 +79,18 @@ _Communication → Delivery_ they can be sent again. More: [E-mail](/wichtel/en/
 
 ## Important messages
 
-| Message                                                                 | Meaning                                                                                                          |
-| ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `Wichtel is not set up yet. Open this link …`                           | Setup link, see [Installation](/wichtel/en/operators/install/#setup-link).                                       |
-| `SETUP_TOKEN is no longer needed and can be removed`                    | Setup is done; remove `SETUP_TOKEN` from the configuration.                                                      |
-| `No mail server (SMTP_HOST): …`                                         | No mail server set up, see [without a mail server](/wichtel/en/operators/email/#without-a-mail-server).          |
-| `e-mail not sent (SMTP_HOST unset)`                                     | A mail that was only logged because there is no mail server.                                                     |
-| `client address unknown – does the reverse proxy send X-Forwarded-For?` | The proxy does not send a matching `X-Forwarded-For`, see [Reverse proxy](/wichtel/en/operators/reverse-proxy/). |
-| `server busy: requests turned away`                                     | Very heavy load, shift list requests were turned away, see [Capacity](/wichtel/en/operators/capacity/).          |
-| `unexpected error`                                                      | Unexpected error with error ID.                                                                                  |
-| `mail failed, will retry` / `mail failed for good`                      | Sending a mail failed, see above.                                                                                |
-| `retention run`                                                         | The automatic cleanup notified or anonymised accounts, see [Privacy](/wichtel/en/operators/privacy/).            |
+| Message                                                                 | Meaning                                                                                                               |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `Wichtel is not set up yet. Open this link …`                           | Setup link, see [Installation](/wichtel/en/operators/install/#setup-link).                                            |
+| `SETUP_TOKEN is no longer needed and can be removed`                    | Setup is done; remove `SETUP_TOKEN` from the configuration.                                                           |
+| `No mail server (SMTP_HOST): …`                                         | No mail server set up, see [without a mail server](/wichtel/en/operators/email/#without-a-mail-server).               |
+| `SMTP_FROM is not set: …`                                               | Mail server without a sender; almost all mail servers reject the default, see [E-mail](/wichtel/en/operators/email/). |
+| `e-mail not sent (SMTP_HOST unset)`                                     | A mail that was not sent because there is no mail server (subject only).                                              |
+| `client address unknown – does the reverse proxy send X-Forwarded-For?` | The proxy does not send a matching `X-Forwarded-For`, see [Reverse proxy](/wichtel/en/operators/reverse-proxy/).      |
+| `server busy: requests turned away`                                     | Very heavy load, shift list requests were turned away, see [Capacity](/wichtel/en/operators/capacity/).               |
+| `unexpected error`                                                      | Unexpected error with error ID.                                                                                       |
+| `mail failed, will retry` / `mail failed for good`                      | Sending a mail failed, see above.                                                                                     |
+| `retention run`                                                         | The automatic cleanup notified or anonymised accounts, see [Privacy](/wichtel/en/operators/privacy/).                 |
 
 ## See also
 

@@ -27,8 +27,9 @@ Das Aufräumen läuft beim Start und danach alle sechs Stunden:
 Die Fristen für Konten und IP-Adressen stellen Admins unter _Verwaltung → Datenschutz & Impressum → Löschfristen_ ein (`0` =
 nie). Hat das Aufräumen etwas getan, steht `retention run` im Log.
 
-Wichtels eigene Logs enthalten keine IP-Adressen und keine Suchparameter. Ohne Mailserver stehen
-aber Empfänger und Betreff nicht verschickter Mails darin – siehe [Logs](/wichtel/operators/logs/).
+Wichtels eigene Logs enthalten keine IP-Adressen, E-Mail-Adressen und Suchparameter. Ohne
+Mailserver steht der Betreff nicht verschickter Mails darin, Empfänger und Text nur mit
+`LOG_MAIL_BODIES=true` – siehe [Logs](/wichtel/operators/logs/).
 
 ## Worum du dich kümmern musst
 

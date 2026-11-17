@@ -61,11 +61,12 @@ Im Container auf `3000`. Die `docker-compose.yml` veröffentlicht ihn auf dem Ho
 ### Brauche ich HTTPS?
 
 Ja, für den echten Betrieb. Wichtel selbst spricht nur http und gehört hinter einen Reverse Proxy
-mit TLS. Den App-Port nie direkt ins Internet freigeben. [Ausführlich](/wichtel/operators/reverse-proxy/)
+mit TLS. Den App-Port nie direkt ins Internet freigeben. Zum Testen geht es auch ohne Proxy über
+http, wenn `PUBLIC_URL` die http-Adresse ist. [Ausführlich](/wichtel/operators/reverse-proxy/)
 
 ### Ich nutze Cloudflare (oder zwei Proxys hintereinander).
 
-`XFF_DEPTH` auf die Zahl der Proxys setzen, z. B. `2` für Cloudflare + Caddy, und dafür sorgen, dass
+`XFF_DEPTH` in der `.env` auf die Zahl der Proxys setzen, z. B. `2` für Cloudflare + Caddy, und dafür sorgen, dass
 der innere Proxy die Adresse von Cloudflare weiterreicht.
 [Ausführlich](/wichtel/operators/reverse-proxy/#mehrere-proxys-zum-beispiel-cloudflare)
 

@@ -36,7 +36,8 @@ erfolgreichen Build von `main` neu veröffentlicht.
 
 2. `.env` bearbeiten. Pflicht sind:
    - `PUBLIC_URL` – die öffentliche Adresse, genau so, wie sie im Browser steht, z. B.
-     `https://helfen.example.de`.
+     `https://helfen.example.de` (ohne Pfad). Für einen ersten Test ohne Proxy geht auch die
+     http-Adresse des Servers, z. B. `http://192.168.1.10:3006` mit `WICHTEL_BIND=0.0.0.0`.
    - `POSTGRES_PASSWORD` – ein langes, zufälliges Passwort für die Datenbank, z. B. aus
      `openssl rand -hex 24`.
 

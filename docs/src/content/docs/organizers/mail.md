@@ -7,7 +7,8 @@ description: Die Texte der automatischen E-Mails anpassen, Platzhalter nutzen un
 
 - **Texte anpassen:** _Verwaltung → Kommunikation → E-Mail-Vorlagen_ → Vorlage aufklappen → Deutsch
   und Englisch getrennt bearbeiten.
-- **Platzhalter** wie `{name}` oder `{shift}` setzt Wichtel beim Versand ein.
+- **Platzhalter** wie `{name}` oder `{shift}` setzt Wichtel beim Versand ein. Welche eine Vorlage
+  kennt, steht beim Aufklappen unter „Platzhalter in dieser Vorlage“.
 - **Zurück zum Original:** _Standard wiederherstellen_.
 - **Kommt alles an?** _Verwaltung → Kommunikation → Zustellung_: _Testmail an mich senden_,
   hängende Mails _Erneut senden_ oder _Verwerfen_, Verlauf der letzten 30 Tage.
@@ -43,8 +44,8 @@ Diese Platzhalter gibt es in allen Vorlagen zu Schichten:
 | `{location}` | Ort und Treffpunkt mit Kartenlink, jeweils in einer eigenen Zeile (leer, wenn nichts eingetragen ist) |
 | `{link}`     | Link in die App                                                                                       |
 
-Einige Vorlagen haben zusätzliche Platzhalter. Die Seite zeigt sie beim Aufklappen unter „Zusätzlich
-in dieser Vorlage“:
+Einige Vorlagen haben zusätzliche Platzhalter. Die Seite zeigt beim Aufklappen unter „Platzhalter in
+dieser Vorlage“ genau die, die diese Vorlage kennt:
 
 | Vorlage                                 | Zusätzlich                                                 |
 | --------------------------------------- | ---------------------------------------------------------- |
@@ -58,10 +59,13 @@ in dieser Vorlage“:
 | _Konto wird wegen Inaktivität gelöscht_ | `{months}`; `{date}` ist hier der Tag der Löschung         |
 
 Die beiden Vorlagen zu Konten (_Konto wird wegen Inaktivität gelöscht_ und _E-Mail-Adresse von der
-Leitung geändert (an die alte Adresse)_) betreffen keine Schicht – `{shift}`, `{time}` und
-`{location}` würden dort unverändert als Text in der Mail stehen. Dasselbe passiert mit einem falsch
-geschriebenen Platzhalter. Trag dich nach Änderungen am besten zur Probe selbst in eine Schicht ein
-und lies die Mail.
+Leitung geändert (an die alte Adresse)_) betreffen keine Schicht: Sie kennen nur `{name}`,
+`{festival}` und `{link}` (die Löschungs-Vorlage zusätzlich `{months}` und `{date}`). `{shift}`,
+`{time}` und `{location}` würden dort unverändert als Text in der Mail stehen. Dasselbe passiert mit
+einem falsch geschriebenen Platzhalter. Speicherst du einen Text mit einem Platzhalter, den die
+Vorlage nicht kennt, speichert Wichtel ihn trotzdem und weist darauf hin („Diese Vorlage kennt …
+nicht“). Trag dich nach Änderungen am besten zur Probe selbst in eine Schicht ein und lies die
+Mail.
 
 ### Alle Vorlagen
 

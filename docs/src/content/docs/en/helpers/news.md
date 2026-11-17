@@ -46,7 +46,8 @@ version.
 
 ## By email
 
-The organisers can also send a post by email to everyone it concerns. The email has the post's title
+The organisers can also send a post by email to everyone it concerns – as long as your email address
+is confirmed. The email has the post's title
 as its subject and a link to the news. Later changes to the post are not sent again – when in doubt,
 what the app shows is what counts.
 

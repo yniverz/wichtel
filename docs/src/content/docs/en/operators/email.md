@@ -29,7 +29,8 @@ description: Set up a mail server for Wichtel, check delivery and understand wha
 
    `SMTP_SECURE=true` for port `465` (TLS from the start), `false` for port `587`. Without
    `SMTP_USER`, Wichtel does not log in to the mail server. `SMTP_FROM` must be an address the mail
-   server allows as sender.
+   server allows as sender. Without `SMTP_FROM`, Wichtel sends as `wichtel@localhost` – almost every
+   mail server rejects that, so a warning appears in the log on start (`SMTP_FROM is not set`).
 
 2. `docker compose up -d` – the container restarts with the new values.
 3. As admin open _Admin → Communication → Delivery_ and click _Send a test e-mail to me_. The mail goes
@@ -41,6 +42,8 @@ description: Set up a mail server for Wichtel, check delivery and understand wha
 ## What Wichtel does with a mail server
 
 - **Confirmation:** after registering, people can only sign in once the address is confirmed.
+- **Only to confirmed addresses:** news and urgent calls only go to accounts whose address is
+  confirmed.
 - **No account probing:** if an address is already registered, Wichtel shows the same message as for a
   new account and sends the owner a password reset link instead. So nobody can find out who has an
   account.
@@ -58,8 +61,8 @@ description: Set up a mail server for Wichtel, check delivery and understand wha
 
 If `SMTP_HOST` is empty:
 
-- **no mails are sent**. Instead Wichtel writes recipient and subject to the log
-  (`e-mail not sent (SMTP_HOST unset)`), the text only with `LOG_MAIL_BODIES=true`;
+- **no mails are sent**. Instead Wichtel writes only the subject to the log
+  (`e-mail not sent (SMTP_HOST unset)`); recipient address and text only with `LOG_MAIL_BODIES=true`;
 - **addresses count as confirmed** without checking;
 - **nobody can reset their own password**.
 
@@ -68,10 +71,10 @@ a person's page with _Create reset link_ (valid for one hour, single use, logged
 hand it over personally. With a mail server they can also _Send by e-mail_ from there.
 
 :::caution[LOG_MAIL_BODIES]
-Mail texts only appear in the log in development because they contain secret links (password reset,
-confirmation). `LOG_MAIL_BODIES=true` forces it in production too – not recommended: anyone who can
-read the log could then take over other people's accounts. `docker-compose.yml` does not pass the
-variable on by itself; it would have to be added to the `environment` of the `app` service.
+Recipient addresses and mail texts only appear in the log in development: the addresses are personal
+data, and the texts contain secret links (password reset, confirmation). `LOG_MAIL_BODIES=true` in
+`.env` forces both in production too – not recommended: anyone who can read the log could then take
+over other people's accounts.
 :::
 
 ## Common questions

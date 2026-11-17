@@ -5,7 +5,8 @@ description: Shift plan per area and crew list per shift with a column to tick o
 
 :::tip[At a glance]
 
-- **Shift plan:** _Shifts_ → optionally choose an area → _Print shift plan_.
+- **Shift plan:** _Shifts_ → optionally choose an area → _Print shift plan_ – or a single day below
+  it.
 - **Crew list of a shift:** open the shift → _Print crew list_.
 - On the print view, tap _Print_ at the top (or save as PDF).
 - Every list has a _Here_ column for ticking off on paper.
@@ -17,7 +18,8 @@ description: Shift plan per area and crew list per shift with a column to tick o
 1. Open _Shifts_.
 2. Choose an area at the top if you only want to print that one (with its sub-areas). Without a
    choice you get all shifts of your areas.
-3. Tap _Print shift plan_.
+3. Tap _Print shift plan_. Just one day? Below the area choice there is “Print the shift plan for one
+   day:” with a link per day.
 4. Check the preview and tap _Print_ at the top.
 
 The plan has the heading _Shift plan_ (with the area name if you chose one). Every day starts on a new
@@ -33,7 +35,7 @@ sheet; a shift is never split across two pages.
 
 For every shift:
 
-- day, time, title and the area (with the areas above it),
+- day, time, title and the area (with the areas above it) in your language,
 - _Meeting point_ and _Contact_, if filled in,
 - a table with _Position_, _Name_, _Phone_ and _Here_.
 
@@ -49,8 +51,8 @@ area.
 
 ### Can I print just one day?
 
-There is no choice for that in the interface. Because every day starts on a new sheet, you can simply
-select only that day's pages in the print dialog.
+Yes. Under _Shifts_ there is “Print the shift plan for one day:” with a link per day (only if there
+are shifts on more than one day). A chosen area applies as well.
 
 ### How do I get back?
 

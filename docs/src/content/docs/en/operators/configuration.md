@@ -17,10 +17,10 @@ description: All of Wichtel's environment variables with default and purpose, an
 
 ### Required
 
-| Variable            | Default | Purpose                                                                                                            |
-| ------------------- | ------- | ------------------------------------------------------------------------------------------------------------------ |
-| `PUBLIC_URL`        | –       | Public address, e.g. `https://helfen.example.de`. A trailing slash is removed. See [below](#what-public_url-does). |
-| `POSTGRES_PASSWORD` | –       | Password of the bundled database. Only for `docker-compose.yml`, which also builds `DATABASE_URL` from it.         |
+| Variable            | Default | Purpose                                                                                                                                                                               |
+| ------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PUBLIC_URL`        | –       | Public address, e.g. `https://helfen.example.de`: only `https://` or `http://`, host and optional port, **no path**. A trailing slash is removed. See [below](#what-public_url-does). |
+| `POSTGRES_PASSWORD` | –       | Password of the bundled database. Only for `docker-compose.yml`, which also builds `DATABASE_URL` from it.                                                                            |
 
 If one of them is missing, `docker compose` stops with “set PUBLIC_URL …” or “set POSTGRES_PASSWORD”.
 
@@ -34,39 +34,42 @@ If one of them is missing, `docker compose` stops with “set PUBLIC_URL …” 
 
 ### E-mail (SMTP)
 
-| Variable        | Default                       | Purpose                                                                                                                 |
-| --------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `SMTP_HOST`     | empty                         | Mail server. Empty = no e-mails are sent, they only appear in the log, and new accounts need no confirmation.           |
-| `SMTP_PORT`     | `587`                         | Port of the mail server. Must be an integer.                                                                            |
-| `SMTP_SECURE`   | `false`                       | `true` (or `1`) = TLS from the start, usually port `465`. With `false` typically port `587`.                            |
-| `SMTP_USER`     | empty                         | User name. If empty, Wichtel does not log in to the mail server.                                                        |
-| `SMTP_PASSWORD` | empty                         | Password for the user name.                                                                                             |
-| `SMTP_FROM`     | `Wichtel <wichtel@localhost>` | Sender, e.g. `"Festival Volunteers <helfen@example.de>"`. Always set it – real mail servers usually reject the default. |
+| Variable        | Default                       | Purpose                                                                                                                                                                                             |
+| --------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SMTP_HOST`     | empty                         | Mail server. Empty = no e-mails are sent (the log only shows their subject), and new accounts need no confirmation.                                                                                 |
+| `SMTP_PORT`     | `587`                         | Port of the mail server. Must be an integer.                                                                                                                                                        |
+| `SMTP_SECURE`   | `false`                       | `true` (or `1`) = TLS from the start, usually port `465`. With `false` typically port `587`.                                                                                                        |
+| `SMTP_USER`     | empty                         | User name. If empty, Wichtel does not log in to the mail server.                                                                                                                                    |
+| `SMTP_PASSWORD` | empty                         | Password for the user name.                                                                                                                                                                         |
+| `SMTP_FROM`     | `Wichtel <wichtel@localhost>` | Sender, e.g. `"Festival Volunteers <helfen@example.de>"`. Always set it – real mail servers usually reject the default; if it is missing while `SMTP_HOST` is set, Wichtel logs a warning on start. |
 
 More: [E-mail](/wichtel/en/operators/email/).
 
 ### Optional
 
-| Variable          | Default                          | Purpose                                                                                                                                           |
-| ----------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SETUP_TOKEN`     | empty                            | Fixed token for the setup link, **at least 24 characters**. Empty = random token in the log. Remove after setup.                                  |
-| `LOG_LEVEL`       | `info`                           | `debug`, `info`, `warn` or `error`.                                                                                                               |
-| `LOG_FORMAT`      | `json` in the container          | `json` (one JSON line per event) or `text` (readable). If unset: `json` in production, `text` in development.                                     |
-| `LOG_MAIL_BODIES` | off (on only in development)     | Without SMTP, also log the e-mail texts. They contain secret links (e.g. password reset) – not recommended in production.                         |
-| `UPLOAD_DIR`      | `/data/uploads` in the container | Where uploaded files are stored (logos, backgrounds, site plans, proofs). In the container `/data` is the `uploads` volume; do not change.        |
-| `DATABASE_URL`    | set by `docker-compose.yml`      | PostgreSQL connection, e.g. `postgres://wichtel:<password>@db:5432/wichtel`. Only needed if you use your own database instead of the bundled one. |
+| Variable          | Default                          | Purpose                                                                                                                                                                        |
+| ----------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `SETUP_TOKEN`     | empty                            | Fixed token for the setup link, **at least 24 characters**. Empty = random token in the log. Remove after setup.                                                               |
+| `LOG_LEVEL`       | `info`                           | `debug`, `info`, `warn` or `error`.                                                                                                                                            |
+| `LOG_FORMAT`      | `json` in the container          | `json` (one JSON line per event) or `text` (readable). If unset: `json` in production, `text` in development.                                                                  |
+| `LOG_MAIL_BODIES` | off (on only in development)     | Without SMTP, also log the recipient address and the e-mail text. The texts contain secret links (e.g. password reset) – not recommended in production.                        |
+| `XFF_DEPTH`       | `1`                              | How many proxies are in front of Wichtel, e.g. `2` for Cloudflare + Caddy. See [several proxies](/wichtel/en/operators/reverse-proxy/#several-proxies-for-example-cloudflare). |
+| `UPLOAD_DIR`      | `/data/uploads` in the container | Where uploaded files are stored (logos, backgrounds, site plans, proofs). In the container `/data` is the `uploads` volume; do not change.                                     |
+| `DATABASE_URL`    | set by `docker-compose.yml`      | PostgreSQL connection, e.g. `postgres://wichtel:<password>@db:5432/wichtel`. Only needed if you use your own database instead of the bundled one.                              |
 
 :::note
-`docker-compose.yml` only passes certain variables to the container: `PUBLIC_URL`, `SETUP_TOKEN`, the
-`SMTP_*` variables, `LOG_LEVEL` and `LOG_FORMAT`. Variables such as `LOG_MAIL_BODIES` or `XFF_DEPTH`
-only take effect if you add them to the `environment` section of the `app` service – easiest in a
-`docker-compose.override.yml` next to `docker-compose.yml`, which Docker Compose reads automatically:
+`docker-compose.yml` passes `PUBLIC_URL`, `SETUP_TOKEN`, the `SMTP_*` variables, `LOG_LEVEL`,
+`LOG_FORMAT`, `LOG_MAIL_BODIES` and `XFF_DEPTH` from `.env` to the container; it builds
+`DATABASE_URL` itself, and the image sets `UPLOAD_DIR`. Other variables (such as those under “Already
+set” below) only take effect if you add them to the `environment` section of the `app` service –
+easiest in a `docker-compose.override.yml` next to `docker-compose.yml`, which Docker Compose reads
+automatically:
 
 ```yaml
 services:
   app:
     environment:
-      XFF_DEPTH: 2
+      BODY_SIZE_LIMIT: 32M
 ```
 
 :::
@@ -76,15 +79,14 @@ services:
 The image or `docker-compose.yml` already sets these values. They belong to SvelteKit's Node server;
 you rarely need to change them.
 
-| Variable          | Value               | Purpose                                                                                                                                       |
-| ----------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PROTOCOL_HEADER` | `x-forwarded-proto` | The protocol (http/https) comes from the reverse proxy.                                                                                       |
-| `HOST_HEADER`     | `x-forwarded-host`  | The host name comes from the reverse proxy (otherwise from `Host`).                                                                           |
-| `ADDRESS_HEADER`  | `x-forwarded-for`   | The client address comes from the reverse proxy.                                                                                              |
-| `XFF_DEPTH`       | `1`                 | How many proxies are in front of Wichtel. See [several proxies](/wichtel/en/operators/reverse-proxy/#several-proxies-for-example-cloudflare). |
-| `BODY_SIZE_LIMIT` | `16M`               | Upper limit for requests; Wichtel itself allows 16 MB only for uploads, 1 MB otherwise.                                                       |
-| `PORT`            | `3000`              | Port inside the container.                                                                                                                    |
-| `NODE_ENV`        | `production`        | Operating mode (JSON logs, strict check of `SETUP_TOKEN`, among others).                                                                      |
+| Variable          | Value               | Purpose                                                                                                                                    |
+| ----------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `PROTOCOL_HEADER` | `x-forwarded-proto` | The protocol (http/https) comes from the reverse proxy. Without the header (access without a proxy), the protocol of `PUBLIC_URL` applies. |
+| `HOST_HEADER`     | `x-forwarded-host`  | The host name comes from the reverse proxy (otherwise from `Host`).                                                                        |
+| `ADDRESS_HEADER`  | `x-forwarded-for`   | The client address comes from the reverse proxy.                                                                                           |
+| `BODY_SIZE_LIMIT` | `16M`               | Upper limit for requests; Wichtel itself allows 16 MB only for uploads, 1 MB otherwise.                                                    |
+| `PORT`            | `3000`              | Port inside the container.                                                                                                                 |
+| `NODE_ENV`        | `production`        | Operating mode (JSON logs, strict check of `SETUP_TOKEN`, among others).                                                                   |
 
 ## What PUBLIC_URL does
 
@@ -97,6 +99,10 @@ you rarely need to change them.
   `Strict-Transport-Security` header (one year, including subdomains) and always sets cookies with
   `Secure`. Browsers do not send such cookies over http – so if you test over http, you need an http
   `PUBLIC_URL`.
+- **The protocol without a proxy:** if a request arrives without `X-Forwarded-Proto` because the app
+  port is called directly, Wichtel takes the protocol from `PUBLIC_URL`. With an http `PUBLIC_URL`,
+  sign-in and forms therefore also work without a proxy. See
+  [testing over http](/wichtel/en/operators/reverse-proxy/#special-cases).
 - **Sign-in of AI assistants** (OAuth and the MCP endpoint `/mcp`). For e.g. Claude to connect,
   `PUBLIC_URL` must be the public https address and the server must be reachable from the internet.
   See [AI assistants](/wichtel/en/organizers/ai/).
@@ -116,6 +122,11 @@ enter an https `PUBLIC_URL` once HTTPS works permanently.
 
 Wichtel checks some values on start and stops on invalid ones:
 
+- `PUBLIC_URL` not a complete address: “PUBLIC_URL must be an absolute URL starting with https:// or
+  http://” (e.g. `helfen.example.de` without `https://`)
+- `PUBLIC_URL` with a path, query or user name: “PUBLIC_URL must not contain a path, query or user
+  name” – Wichtel always runs at the root of its own (sub)domain, not under
+  `https://example.de/helfen`
 - `SETUP_TOKEN` shorter than 24 characters: “SETUP_TOKEN must be at least 24 characters”
 - `SMTP_PORT` not an integer: “SMTP_PORT must be an integer”
 - `LOG_LEVEL` not `debug`/`info`/`warn`/`error`: “LOG_LEVEL must be debug, info, warn or error”

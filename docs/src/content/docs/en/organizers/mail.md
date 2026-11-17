@@ -7,7 +7,8 @@ description: Adjust the texts of automatic e-mails, use placeholders and check u
 
 - **Adjust texts:** _Admin → Communication → Email templates_ → expand a template → edit German and
   English separately.
-- **Placeholders** such as `{name}` or `{shift}` are filled in by Wichtel when sending.
+- **Placeholders** such as `{name}` or `{shift}` are filled in by Wichtel when sending. Which ones a
+  template knows is shown under “Placeholders in this template” when you expand it.
 - **Back to the original:** _Restore default_.
 - **Does everything arrive?** _Admin → Communication → Delivery_: _Send a test e-mail to me_, _Send
   again_ or _Discard_ stuck e-mails, history of the last 30 days.
@@ -42,8 +43,8 @@ These placeholders exist in all templates about shifts:
 | `{location}` | location and meeting point with map link, each on its own line (empty if nothing is set) |
 | `{link}`     | link into the app                                                                        |
 
-Some templates have additional placeholders. The page shows them when you expand the template under
-“Also available in this template”:
+Some templates have additional placeholders. When you expand a template, the page lists exactly the
+ones it knows under “Placeholders in this template”:
 
 | Template                         | Additionally                                              |
 | -------------------------------- | --------------------------------------------------------- |
@@ -57,9 +58,12 @@ Some templates have additional placeholders. The page shows them when you expand
 | _Account deleted for inactivity_ | `{months}`; `{date}` is the day of deletion here          |
 
 The two account templates (_Account deleted for inactivity_ and _E-mail address changed by the
-organisers (to the old address)_) are not about a shift – `{shift}`, `{time}` and `{location}` would
-appear there literally as text in the e-mail. The same happens with a misspelt placeholder. After
-changes, best sign yourself up for a shift as a test and read the e-mail.
+organisers (to the old address)_) are not about a shift: they only know `{name}`, `{festival}` and
+`{link}` (the deletion template also `{months}` and `{date}`). `{shift}`, `{time}` and `{location}`
+would appear there literally as text in the e-mail. The same happens with a misspelt placeholder. If
+you save a text with a placeholder the template does not know, Wichtel saves it anyway and points it
+out (“This template does not know …”). After changes, best sign yourself up for a shift as a test
+and read the e-mail.
 
 ### All templates
 
