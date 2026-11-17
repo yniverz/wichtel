@@ -31,6 +31,7 @@ import {
 } from '#lib/server/services/roles.ts';
 import { checkbox, optionalUuid, parseForm, uuid } from '#lib/server/validation.ts';
 import { displayValue } from '#lib/domain/fields.ts';
+import { canViewPeople } from '#lib/domain/permissions.ts';
 import { listFields, valuesOf } from '#lib/server/services/fields.ts';
 import { and, asc, eq, inArray } from 'drizzle-orm';
 import { assignments as assignmentTable, shifts } from '#lib/server/db/schema.ts';
@@ -52,13 +53,7 @@ async function personDetails(userId: string) {
 export const load: PageServerLoad = async (event) => {
 	const ctx = await getAdminContext(event);
 	const { authz } = ctx;
-	if (!(
-		authz.isAdmin ||
-		authz.canSomewhere('role.assign') ||
-		authz.canSomewhere('helper.contact.view')
-	)) {
-		error(403, 'error.forbidden');
-	}
+	if (!canViewPeople(authz)) error(403, 'error.forbidden');
 	const person = await getPerson(db(), event.params.id);
 	if (!person || person.deletedAt) error(404, 'error.notFound');
 	const canReviewQualifications = authz.canSomewhere('qualification.review');

@@ -233,8 +233,9 @@ Mehr dazu: [Profilfelder](/wichtel/organizers/fields/)
 
 ### Protokoll
 
-Die unveränderliche Liste aller Änderungen durch Leitungen und Admins: wer, wann, was. Einsehen kann es,
-wer das Recht _Protokoll einsehen_ hat.
+Die unveränderliche Liste aller Änderungen durch Leitungen und Admins – und mancher, die Helfende
+selbst vornehmen (z. B. Tausch, Gruppen, Konto löschen): wer, wann, was. Einsehen kann es, wer das
+Recht _Protokoll einsehen_ hat.
 Mehr dazu: [Protokoll](/wichtel/organizers/audit/)
 
 ### Punkte

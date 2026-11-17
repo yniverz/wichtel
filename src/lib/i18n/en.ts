@@ -192,6 +192,8 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.editions.archived': 'Archived',
 	'admin.editions.archive': 'Archive',
 	'admin.editions.unarchive': 'Restore',
+	'admin.editions.archiveCurrent':
+		'This is the current edition. Once it is archived there is no current edition any more: volunteers then only see “There is no volunteer season running right now” and cannot book anything. If things go on, make another edition the current one first.',
 	'admin.editions.empty': 'No edition created yet.',
 
 	'admin.areas.title': 'Areas',
@@ -303,7 +305,8 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.settings.registrationOpen': 'Registration open for new volunteers',
 
 	'admin.audit.title': 'Audit log',
-	'admin.audit.lead': 'All changes made by leads and admins – stored immutably.',
+	'admin.audit.lead':
+		'All changes made by leads and admins, and also what volunteers change themselves (swaps, groups, password reset, account deletion) – stored immutably.',
 	'admin.audit.details': 'Details',
 	'admin.audit.system': 'System',
 	'admin.audit.empty': 'No entries yet.',

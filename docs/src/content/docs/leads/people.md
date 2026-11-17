@@ -5,7 +5,7 @@ description: Personen suchen, welche Kontaktdaten du sehen darfst und was die Pe
 
 :::tip[Auf einen Blick]
 
-- **Suchen:** _Verwaltung_ → _Personen_ → Name oder E-Mail eingeben → _Suchen_.
+- **Suchen:** _Verwaltung_ → _Personen_ → Namen eingeben → _Suchen_.
 - **Telefonnummer schnell:** in der Besetzungsliste der Schicht – wenn deine Rolle _Kontaktdaten der
   Helfenden sehen_ für den Bereich hat.
 - **E-Mail-Adressen und Profilangaben** siehst du nur mit diesem Recht für den ganzen Jahrgang.
@@ -18,7 +18,8 @@ description: Personen suchen, welche Kontaktdaten du sehen darfst und was die Pe
 
 1. Öffne _Personen_. Die Liste zeigt alle Konten dieser Wichtel-Installation – nicht nur die
    Helfenden dieses Jahres –, nach Nachnamen sortiert, 50 pro Seite.
-2. Gib einen Teil des Namens oder der E-Mail-Adresse ein und tippe auf _Suchen_.
+2. Gib einen Teil des Namens ein und tippe auf _Suchen_. Wenn du E-Mail-Adressen sehen darfst, findet
+   die Suche auch Teile der E-Mail-Adresse.
 3. Tippe eine Person an, um ihre Seite zu öffnen.
 
 In der Liste stehen Hinweise wie _Admin_ oder _nicht bestätigt_ (die Person hat ihre E-Mail-Adresse
@@ -51,6 +52,9 @@ Konten ändern, Passwort-Links und Konten löschen können nur Admins (siehe
 Profilangaben, die die Admins ausdrücklich für Leitungen freigegeben haben (z. B. T-Shirt-Größe),
 stehen in der Besetzungsliste auch ohne dieses Recht.
 
+Nach E-Mail-Adressen suchen kannst du nur dort, wo du sie auch siehst. Sonst findet die Suche nur
+Namen – sie verrät also nicht, ob es zu einer Adresse ein Konto gibt.
+
 ## Häufige Fragen
 
 ### Ich leite einen Bereich und sehe trotzdem keine E-Mail-Adressen
@@ -59,11 +63,11 @@ Dein Recht gilt für deinen Bereich. Dort siehst du die Handynummern in den Bese
 und Angaben auf der Personenseite brauchen das Recht für den ganzen Jahrgang. Frag die Admins, wenn
 du sie brauchst.
 
-### Ich klicke auf einen Namen und bekomme „Dafür fehlen dir die Rechte.“
+### Warum sind Namen bei mir keine Links?
 
 Die Personenseite gehört zum Menüpunkt _Personen_. Ohne _Kontaktdaten der Helfenden sehen_ oder
-_Rollen vergeben (nur mit eigenen Rechten)_ kannst du sie nicht öffnen, auch wenn Namen anderswo als
-Link erscheinen.
+_Rollen vergeben (nur mit eigenen Rechten)_ kannst du sie nicht öffnen. Dann stehen Namen in
+Besetzungslisten, Anfragen, Qualifikationen und Bereichen als einfacher Text da.
 
 ## Sonderfälle
 

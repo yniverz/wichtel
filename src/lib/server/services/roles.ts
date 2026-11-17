@@ -7,12 +7,14 @@ import {
 	roleAssignments,
 	roles,
 	users,
+	type Edition,
 	type Role,
 	type User
 } from '../db/schema.ts';
 import { audit, diff, type Actor } from '../audit.ts';
 import { DomainError } from '../errors.ts';
 import { loadAreaTree } from './areas.ts';
+import { listEditions } from './editions.ts';
 
 export interface RoleInput {
 	nameDe: string;
@@ -136,6 +138,38 @@ export async function loadAuthz(
 			: g.permissions.filter((p) => !CURRENT_EDITION_ONLY.includes(p))
 	}));
 	return new Authz(user.isAdmin, effective, (id) => tree.lineage(id));
+}
+
+/**
+ * Editions a person may open in the admin area: all for admins, otherwise those not archived in
+ * which they hold a role (roles of archived editions give no rights). Newest first.
+ */
+export async function adminEditions(
+	db: Tx,
+	user: Pick<User, 'id' | 'isAdmin'>
+): Promise<Edition[]> {
+	const all = await listEditions(db);
+	if (user.isAdmin) return all;
+	const rows = await db
+		.selectDistinct({ editionId: roleAssignments.editionId })
+		.from(roleAssignments)
+		.where(eq(roleAssignments.userId, user.id));
+	const withRole = new Set(rows.map((r) => r.editionId));
+	return all.filter((e) => withRole.has(e.id) && e.archivedAt === null);
+}
+
+/**
+ * The edition the admin area shows: the selected one if the person may open it, else the current
+ * one, else the newest one they have a role in. A stale or foreign selection never locks anyone
+ * out.
+ */
+export function pickAdminEdition(
+	usable: readonly Edition[],
+	selectedId: string | undefined
+): Edition | null {
+	return (
+		usable.find((e) => e.id === selectedId) ?? usable.find((e) => e.isCurrent) ?? usable[0] ?? null
+	);
 }
 
 /** Permissions on personal data that only count in the current edition. */
@@ -274,6 +308,7 @@ export const ROLE_TEMPLATES: RoleInput[] = [
 			'role.assign',
 			'dashboard.view',
 			'audit.view',
+			'mcp.use',
 			'shift.manage',
 			'assignment.manage',
 			'assignment.override',

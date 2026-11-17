@@ -15,8 +15,12 @@ description: What the admin overview shows – staffing, heatmap, understaffed s
 :::
 
 The numbers always refer to the edition selected at the top, and only to the areas in which your role
-has shift permissions (_Create and edit shifts_, _Add and remove volunteers, approve requests_ or
-_Confirm attendance (check-in)_). Without one of these permissions the overview stays mostly empty.
+has _View staffing dashboard_ or shift permissions (_Create and edit shifts_, _Add and remove
+volunteers, approve requests_ or _Confirm attendance (check-in)_). Without one of these permissions
+the overview stays mostly empty.
+
+With _View staffing dashboard_ alone you can only look: the figures are not links then, because you
+may not open the shifts themselves.
 
 ## What you see
 

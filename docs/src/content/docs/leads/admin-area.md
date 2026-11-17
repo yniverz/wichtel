@@ -66,14 +66,16 @@ Druckansichten zeigen dir nur, was in deinen Bereichen liegt.
 ### Ich bekomme „Dafür fehlen dir die Rechte.“
 
 Die Seite oder Aktion braucht ein Recht, das deine Rolle (in diesem Bereich oder Jahrgang) nicht hat.
-Das passiert z. B., wenn du einem Link auf eine Personenseite folgst, aber keinen Zugriff auf
-_Personen_ hast.
+Das passiert z. B., wenn dir jemand einen Link auf eine Seite schickt, die außerhalb deiner Rechte
+liegt. Links in der Verwaltung zeigt Wichtel dir nur, wenn du die Seite auch öffnen darfst – Namen
+sind z. B. nur dann Links zur Personenseite, wenn du _Personen_ öffnen darfst.
 
 ### Was bedeutet der Jahrgang oben?
 
 Ein Jahrgang ist ein Festivaljahr mit eigenen Bereichen, Schichten und Punkten. In der Verwaltung
-arbeitest du immer an genau einem Jahrgang; die Auswahl merkt sich dein Browser. Helfende sehen
-dagegen immer den aktuellen Jahrgang.
+arbeitest du immer an genau einem Jahrgang; die Auswahl merkt sich dein Browser. Zur Auswahl stehen
+nur Jahrgänge, in denen du eine Rolle hast (Admins sehen alle). Helfende sehen dagegen immer den
+aktuellen Jahrgang.
 
 ## Sonderfälle
 
@@ -91,22 +93,22 @@ Jahrgang.
 </details>
 
 <details>
-<summary>Ich habe einen Jahrgang gewählt und komme nicht mehr in die Verwaltung</summary>
+<summary>Mein gewählter Jahrgang ist plötzlich ein anderer</summary>
 
-Hast du im gewählten Jahrgang keine Rolle, zeigt jede Seite der Verwaltung „Dafür fehlen dir die
-Rechte.“ – und damit ist auch der Umschalter nicht mehr erreichbar. Die Auswahl ist in deinem Browser
-gespeichert. Lösche die Cookies dieser Seite in den Browser-Einstellungen und melde dich neu an; dann
-öffnet die Verwaltung wieder den aktuellen Jahrgang. Wähle deshalb nur Jahrgänge, in denen du eine
-Rolle hast.
+Passt die gespeicherte Auswahl nicht mehr – etwa weil deine Rolle in diesem Jahrgang entfernt oder der
+Jahrgang archiviert wurde –, öffnet die Verwaltung stattdessen den aktuellen Jahrgang. Hast du dort
+keine Rolle, öffnet sie den neuesten Jahrgang, in dem du eine hast. Prüf im Feld _Jahrgang_, woran du
+gerade arbeitest.
 
 </details>
 
 <details>
 <summary>Ich sehe den Menüpunkt „Verwaltung“ nicht, obwohl ich eine Rolle habe</summary>
 
-Der Menüpunkt in der Helfer-Ansicht richtet sich nach dem aktuellen Jahrgang. Ist deine Rolle für
-einen anderen Jahrgang vergeben (z. B. schon für das nächste Jahr), erscheint er nicht. Frag die
-Admins.
+Der Menüpunkt erscheint, sobald du in irgendeinem Jahrgang eine Rolle hast, der nicht archiviert ist
+– auch wenn sie z. B. erst für das nächste Jahr vergeben ist. Die Verwaltung öffnet dann diesen
+Jahrgang. Fehlt er trotzdem, ist deine Rolle in einem archivierten Jahrgang vergeben oder gar nicht.
+Frag die Admins.
 
 </details>
 

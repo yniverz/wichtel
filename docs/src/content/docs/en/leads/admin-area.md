@@ -66,13 +66,15 @@ within your areas.
 ### I get “You do not have permission to do this.”
 
 The page or action needs a permission your role does not have (in this area or edition). This
-happens, for example, when you follow a link to a person's page but have no access to _People_.
+happens, for example, when someone sends you a link to a page outside your permissions. Within the
+admin area Wichtel only shows you links to pages you may open – names, for instance, only link to the
+person's page if you may open _People_.
 
 ### What does the edition at the top mean?
 
 An edition is one festival year with its own areas, shifts and points. In the admin area you always
-work on exactly one edition; your browser remembers the choice. Volunteers, on the other hand,
-always see the current edition.
+work on exactly one edition; your browser remembers the choice. Only editions in which you have a
+role are offered (admins see all). Volunteers, on the other hand, always see the current edition.
 
 ## Special cases
 
@@ -89,20 +91,21 @@ details_ and _View uploaded documents_ only work through roles in the **current*
 </details>
 
 <details>
-<summary>I chose an edition and can no longer get into the admin area</summary>
+<summary>My selected edition suddenly is a different one</summary>
 
-If you have no role in the selected edition, every page of the admin area shows “You do not have
-permission to do this.” – so the switch is out of reach too. The choice is stored in your browser.
-Delete this site's cookies in your browser settings and log in again; the admin area then opens the
-current edition again. So only choose editions in which you have a role.
+If the stored choice no longer fits – for example because your role in that edition was removed or
+the edition was archived – the admin area opens the current edition instead. If you have no role
+there, it opens the newest edition in which you have one. Check the _Edition_ field to see what you
+are working on.
 
 </details>
 
 <details>
 <summary>I don't see the “Admin” menu item even though I have a role</summary>
 
-The menu item in the volunteer view follows the current edition. If your role was given for another
-edition (e.g. already for next year), it does not appear. Ask the admins.
+The menu item appears as soon as you have a role in any edition that is not archived – even if it
+was given for next year, for example. The admin area then opens that edition. If it is still
+missing, your role was given in an archived edition or not at all. Ask the admins.
 
 </details>
 

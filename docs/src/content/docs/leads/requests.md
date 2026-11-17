@@ -17,7 +17,8 @@ description: Buchungsanfragen und Schichtübergaben oder Tausch auf der Seite �
 
 Eine Buchungsanfrage entsteht, wenn sich jemand für eine Position _auf Anfrage_ meldet (siehe
 [Positionen](/wichtel/leads/positions/)). Jeder Eintrag zeigt die Person, die Schicht, die Position
-und die Zeit. Name und Schicht sind Links zu den Detailseiten.
+und die Zeit. Die Schicht ist ein Link zu ihrer Seite, der Name zur Personenseite – Letzteres nur,
+wenn du _Personen_ öffnen darfst.
 
 - **_Bestätigen_** – die Person ist eingetragen und bekommt die E-Mail „Bestätigt: …“. Ist die
   Position inzwischen voll, kommt „Alle Plätze sind schon vergeben.“ – dann erst Platz schaffen oder

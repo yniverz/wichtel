@@ -19,7 +19,7 @@ import {
 } from '../db/schema.ts';
 import type { Actor } from '../audit.ts';
 import { isDomainError } from '../errors.ts';
-import { canSeeShiftArea, planningScope } from '../shift-access.ts';
+import { canSeeShiftArea, dashboardScope, planningScope } from '../shift-access.ts';
 import { createArea, loadAreaTree } from '../services/areas.ts';
 import {
 	decideRequest,
@@ -449,7 +449,7 @@ export function buildMcpServer(ctx: McpContext): McpServer {
 				ctx.db,
 				s.edition.id,
 				s.tree,
-				planningScope(s.authz, s.tree),
+				dashboardScope(s.authz, s.tree),
 				tz,
 				ctx.now()
 			);
@@ -548,7 +548,7 @@ export function buildMcpServer(ctx: McpContext): McpServer {
 					.slice(0, 15)
 					.map((p) => person(p, contact));
 			}
-			const { people } = await searchPeople(ctx.db, query);
+			const { people } = await searchPeople(ctx.db, query, 0, { matchEmail: contact });
 			return people.slice(0, 15).map((p) => person(p, contact));
 		}
 	);

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AreaTree } from './area-tree.ts';
-import { Authz } from './permissions.ts';
+import { Authz, canSeeEmails, canViewPeople } from './permissions.ts';
 
 // Gesamt ─┬─ Infrastruktur ── Aufbau ── Bühne
 //         └─ Awareness
@@ -62,5 +62,29 @@ describe('Authz', () => {
 		expect(a.scopesFor('shift.manage')).toEqual(['infra']);
 		expect(a.canSomewhere('role.assign')).toBe(true);
 		expect(a.canSomewhere('goodie.issue')).toBe(false);
+	});
+});
+
+describe('people pages', () => {
+	it('open only with role.assign or contact data, not with shift rights alone', () => {
+		expect(canViewPeople(authz([{ areaId: 'infra', permissions: ['assignment.manage'] }]))).toBe(
+			false
+		);
+		expect(canViewPeople(authz([{ areaId: 'infra', permissions: ['role.assign'] }]))).toBe(true);
+		expect(canViewPeople(authz([{ areaId: 'infra', permissions: ['helper.contact.view'] }]))).toBe(
+			true
+		);
+		expect(canViewPeople(authz([], true))).toBe(true);
+	});
+
+	it('show (and search) e-mail addresses only with edition-wide contact data', () => {
+		expect(canSeeEmails(authz([{ areaId: null, permissions: ['role.assign'] }]))).toBe(false);
+		expect(canSeeEmails(authz([{ areaId: 'infra', permissions: ['helper.contact.view'] }]))).toBe(
+			false
+		);
+		expect(canSeeEmails(authz([{ areaId: null, permissions: ['helper.contact.view'] }]))).toBe(
+			true
+		);
+		expect(canSeeEmails(authz([], true))).toBe(true);
 	});
 });

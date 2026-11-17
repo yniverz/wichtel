@@ -10,7 +10,7 @@ import { involvedInEdition } from '../desk.ts';
 import { createEdition, makeCurrentEdition, setEditionArchived } from './editions.ts';
 import { createPlace, deletePlace } from './places.ts';
 import { exportPersonalData } from './privacy.ts';
-import { loadAuthz, removeAssignment } from './roles.ts';
+import { adminEditions, loadAuthz, pickAdminEdition, removeAssignment } from './roles.ts';
 import { invalidateSettingsCache } from './settings.ts';
 import { createShift, getShift } from './shifts.ts';
 import { callUrgent } from './urgent.ts';
@@ -177,6 +177,44 @@ describe('edition isolation', () => {
 		const s = await seed();
 		await setEditionArchived(s.db, actor, s.past.id, true);
 		expect((await loadAuthz(s.db, s.ex, s.past.id)).hasAnyGrant).toBe(false);
+	});
+});
+
+describe('admin area editions', () => {
+	const ids = (editions: { id: string }[]) => editions.map((e) => e.id);
+
+	it('offers leads only editions with a role of theirs, admins all', async () => {
+		const s = await seed();
+		expect(ids(await adminEditions(s.db, s.lead))).toEqual([s.current.id]);
+		expect(ids(await adminEditions(s.db, s.ex))).toEqual([s.past.id]);
+		expect(await adminEditions(s.db, s.helper)).toEqual([]);
+		expect(ids(await adminEditions(s.db, { ...s.helper, isAdmin: true }))).toEqual([
+			s.current.id,
+			s.past.id
+		]);
+		// Roles of archived editions give no rights, so the edition is not offered either.
+		await setEditionArchived(s.db, actor, s.past.id, true);
+		expect(await adminEditions(s.db, s.ex)).toEqual([]);
+	});
+
+	it('falls back instead of locking a lead out when the selection is not theirs', async () => {
+		const s = await seed();
+		const lead = await adminEditions(s.db, s.lead);
+		expect(pickAdminEdition(lead, s.past.id)?.id).toBe(s.current.id);
+		expect(pickAdminEdition(lead, 'unknown')?.id).toBe(s.current.id);
+		expect(pickAdminEdition(lead, s.current.id)?.id).toBe(s.current.id);
+		// A role only in a non-current edition: that edition, even with nothing selected.
+		const ex = await adminEditions(s.db, s.ex);
+		expect(pickAdminEdition(ex, undefined)?.id).toBe(s.past.id);
+		expect(pickAdminEdition(ex, s.current.id)?.id).toBe(s.past.id);
+		expect((await loadAuthz(s.db, s.ex, pickAdminEdition(ex, undefined)!.id)).hasAnyGrant).toBe(
+			true
+		);
+		// Admins may pick any edition, and land in the current one otherwise.
+		const all = await adminEditions(s.db, { ...s.helper, isAdmin: true });
+		expect(pickAdminEdition(all, s.past.id)?.id).toBe(s.past.id);
+		expect(pickAdminEdition(all, undefined)?.id).toBe(s.current.id);
+		expect(pickAdminEdition([], s.current.id)).toBeNull();
 	});
 });
 

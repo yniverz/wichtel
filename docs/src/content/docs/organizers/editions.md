@@ -50,9 +50,16 @@ Wähle oben in der Seitenleiste (auf dem Handy unter _Menü_) beim Schalter _Jah
 aus. Das gilt nur für dich und deinen Browser; Helfende merken davon nichts. So kannst du das
 nächste Jahr vorbereiten, während das aktuelle noch läuft.
 
+Admins sehen im Schalter alle Jahrgänge. Leitungen sehen nur die nicht archivierten Jahrgänge, in
+denen sie eine Rolle haben – sie können sich also nicht versehentlich aussperren.
+
 ### Einen Jahrgang archivieren
 
 _Jahrgänge_ → Jahrgang → _Bearbeiten_ → _Archivieren_. Mit _Wiederherstellen_ machst du es rückgängig.
+
+Ist es der **aktuelle** Jahrgang, steht über dem Knopf eine Warnung, und die Rückfrage wiederholt sie:
+Danach gibt es keinen aktuellen Jahrgang mehr, und Helfende sehen nur „Gerade läuft keine
+Helfer-Saison“. Geht es weiter, mach vorher den neuen Jahrgang zum aktuellen.
 
 ## Was wird beim Kopieren übernommen?
 
@@ -100,9 +107,11 @@ Ein archivierter Jahrgang ist nicht mehr der aktuelle, und Rollen in diesem Jahr
 Rechte mehr – frühere Leitungen behalten also nichts. Admins sehen den Jahrgang weiter im Schalter
 _Jahrgang_.
 
-Archivierst du den **aktuellen** Jahrgang, gibt es danach keinen aktuellen mehr. Helfende sehen dann
-nur den Hinweis, dass gerade keine Helfer-Saison läuft. Mach deshalb erst den neuen Jahrgang zum
-aktuellen und archiviere danach den alten.
+Archivierst du den **aktuellen** Jahrgang, gibt es danach keinen aktuellen mehr – die Seite warnt
+davor. Helfende sehen dann nur den Hinweis, dass gerade keine Helfer-Saison läuft. Das passt, wenn die
+Saison vorbei ist; geht es weiter, mach erst den neuen Jahrgang zum aktuellen und archiviere danach
+den alten. _Wiederherstellen_ macht einen Jahrgang nicht wieder zum aktuellen; dafür gibt es _Zum
+aktuellen Jahrgang machen_.
 
 </details>
 

@@ -34,8 +34,8 @@ Das klappt, wenn deine Rolle im aktuellen Jahrgang _Goodies ausgeben_ oder _Anwe
 ### Von Hand suchen
 
 1. Öffne _Ausgabe & Check-in_.
-2. Gib mindestens zwei Buchstaben des Namens oder der E-Mail-Adresse unter _Person suchen_ ein und
-   tippe auf _Suchen_.
+2. Gib mindestens zwei Buchstaben des Namens unter _Person suchen_ ein und tippe auf _Suchen_. Nach
+   der E-Mail-Adresse kannst du nur mit _Kontaktdaten der Helfenden sehen_ suchen.
 3. Tippe die Person an.
 
 Gefunden werden nur Personen, die in diesem Jahrgang dabei sind (mit einer Schicht, einem Goodie oder

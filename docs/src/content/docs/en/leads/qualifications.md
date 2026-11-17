@@ -21,7 +21,8 @@ qualification.
 ## Step by step: reviewing proofs
 
 1. Open _Qualifications_. Under _To review_ you find all open proofs, oldest first.
-2. Each entry shows: the person (link to the person page), the qualification, the date, a note from
+2. Each entry shows: the person (link to the person page if you may open _People_), the
+   qualification, the date, a note from
    the person in quotation marks, and the proof:
    - _View proof: {file name}_ – opens the document in a new tab (only with the permission _View
      uploaded documents_; otherwise only the file name is shown),

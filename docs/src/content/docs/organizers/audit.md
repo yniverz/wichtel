@@ -42,6 +42,10 @@ Alle Aktionen, die etwas ändern, zum Beispiel:
 - **Kommunikation:** Neuigkeiten, E-Mail-Vorlagen, erneut gesendete oder verworfene E-Mails.
 - **KI-Assistenten:** verbunden, getrennt.
 
+Das Protokoll hält nicht nur fest, was Leitungen und Admins tun, sondern auch manches, was Helfende
+selbst ändern: Übergaben und Tausch, Gruppen, das Zurücksetzen des eigenen Passworts und das Löschen
+des eigenen Kontos. Als Person steht dann die oder der Helfende selbst da.
+
 Nicht im Protokoll stehen Anmeldungen und reines Ansehen – mit einer Ausnahme: Das Herunterladen
 einer Datenauskunft wird protokolliert.
 

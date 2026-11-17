@@ -13,7 +13,7 @@ sie (oder Leitungen mit dem Recht, Rollen zu vergeben) können Rollen ändern.
 ### Wie komme ich in die Verwaltung?
 
 In der Helfer-Ansicht steht im Menü _Verwaltung_, auf der Startseite außerdem _Zur Verwaltung_. Beides
-erscheint nur, wenn du im aktuellen Jahrgang eine Rolle hast.
+erscheint nur, wenn du in einem Jahrgang eine Rolle hast, der nicht archiviert ist.
 [→ Ausführlich](/wichtel/leads/admin-area/)
 
 ### Warum fehlen bei mir Menüpunkte, die andere haben?

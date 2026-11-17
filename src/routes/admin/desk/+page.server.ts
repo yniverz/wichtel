@@ -9,7 +9,10 @@ export const load: PageServerLoad = async (event) => {
 	const access = deskAccess(ctx);
 	const q = event.url.searchParams.get('q') ?? '';
 	const { edition } = requireEdition(ctx);
-	let people = q.trim().length >= 2 ? (await searchPeople(db(), q)).people : [];
+	let people =
+		q.trim().length >= 2
+			? (await searchPeople(db(), q, 0, { matchEmail: access.contact })).people
+			: [];
 	if (!ctx.authz.isAdmin) {
 		const involved = await involvedInEdition(
 			db(),

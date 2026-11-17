@@ -52,9 +52,10 @@
 							<li class="py-4">
 								<div class="flex flex-wrap items-baseline justify-between gap-2">
 									<p>
-										<a href="/admin/people/{p.userId}" class="font-bold hover:underline"
-											>{p.firstName} {p.lastName}</a
-										>
+										{#if data.access.people}<a
+												href="/admin/people/{p.userId}"
+												class="font-bold hover:underline">{p.firstName} {p.lastName}</a
+											>{:else}<span class="font-bold">{p.firstName} {p.lastName}</span>{/if}
 										· {localized(
 											{ nameDe: p.qualificationNameDe, nameEn: p.qualificationNameEn },
 											'name',
@@ -114,15 +115,15 @@
 					</h2>
 					<ul class="divide-y divide-line text-sm">
 						{#each data.recent as r (r.id)}
+							{@const label = `${r.firstName} ${r.lastName} · ${localized(
+								{ nameDe: r.qualificationNameDe, nameEn: r.qualificationNameEn },
+								'name',
+								i18n.locale
+							)}`}
 							<li class="flex justify-between gap-3 py-2">
-								<a href="/admin/people/{r.userId}" class="hover:underline"
-									>{r.firstName}
-									{r.lastName} · {localized(
-										{ nameDe: r.qualificationNameDe, nameEn: r.qualificationNameEn },
-										'name',
-										i18n.locale
-									)}</a
-								>
+								{#if data.access.people}<a href="/admin/people/{r.userId}" class="hover:underline"
+										>{label}</a
+									>{:else}<span>{label}</span>{/if}
 								<span class="text-ink-muted"
 									>{i18n.t(`quals.status.${r.status}` as MessageKey)}</span
 								>

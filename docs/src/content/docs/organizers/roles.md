@@ -39,13 +39,13 @@ Zum Entziehen tippst du bei der Rolle auf _Entfernen_.
 
 ### Struktur & Überblick
 
-| Recht                                                            | Was es erlaubt                                                                                                                                              |
-| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| _Bereiche anlegen und bearbeiten_                                | Unterbereiche anlegen, Bereiche bearbeiten, verschieben und löschen. Bereiche auf oberster Ebene nur mit Recht für den ganzen Jahrgang.                     |
-| _Rollen vergeben (nur mit eigenen Rechten)_                      | Unter _Personen_ Rollen vergeben und entziehen – nur dort, wo man das Recht hat, und nur Rollen, deren Rechte man dort alle selbst hat.                     |
-| _Besetzungs-Dashboard sehen_                                     | Gehört zur _Übersicht_. Die Besetzungszahlen dort sieht im Moment aber jede Person, die Schichten planen, Leute eintragen oder Anwesenheit bestätigen darf. |
-| _Protokoll einsehen_                                             | Das [Protokoll](/wichtel/organizers/audit/) des gewählten Jahrgangs lesen. Wirkt nur mit _Gesamten Jahrgang_.                                               |
-| _KI-Assistent verbinden (z. B. Claude), mit den eigenen Rechten_ | Einen [KI-Assistenten](/wichtel/organizers/ai/) verbinden. Zählt nur im aktuellen Jahrgang.                                                                 |
+| Recht                                                            | Was es erlaubt                                                                                                                                                                                                                                                  |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _Bereiche anlegen und bearbeiten_                                | Unterbereiche anlegen, Bereiche bearbeiten, verschieben und löschen. Bereiche auf oberster Ebene nur mit Recht für den ganzen Jahrgang.                                                                                                                         |
+| _Rollen vergeben (nur mit eigenen Rechten)_                      | Unter _Personen_ Rollen vergeben und entziehen – nur dort, wo man das Recht hat, und nur Rollen, deren Rechte man dort alle selbst hat.                                                                                                                         |
+| _Besetzungs-Dashboard sehen_                                     | Auf der _Übersicht_ die Besetzung der eigenen Bereiche sehen (Zahlen, Tabelle nach Bereich und Tag, unterbesetzte Schichten) – nur lesend, ohne die Schichten öffnen zu können. Öffnet auch die Verwaltung. Wer Schichtrechte hat, sieht die Besetzung ohnehin. |
+| _Protokoll einsehen_                                             | Das [Protokoll](/wichtel/organizers/audit/) des gewählten Jahrgangs lesen. Wirkt nur mit _Gesamten Jahrgang_.                                                                                                                                                   |
+| _KI-Assistent verbinden (z. B. Claude), mit den eigenen Rechten_ | Einen [KI-Assistenten](/wichtel/organizers/ai/) verbinden. Zählt nur im aktuellen Jahrgang.                                                                                                                                                                     |
 
 ### Schichten
 
@@ -79,11 +79,13 @@ Die Leitungs-Seiten erklären, wie man mit diesen Rechten arbeitet:
 
 ## Typische Rollen
 
-Bei der Einrichtung legt Wichtel diese Vorlagen an. Du kannst sie frei ändern.
+Bei der Einrichtung legt Wichtel diese Vorlagen an. Du kannst sie frei ändern. In Installationen, die
+mit einer älteren Version eingerichtet wurden, fehlt der _Gesamtleitung_ noch _KI-Assistent
+verbinden_ – ergänze es unter _Rollen_, wenn sie KI-Assistenten nutzen soll.
 
 | Rolle             | Typisch vergeben für  | Rechte                                                                                                                                                |
 | ----------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| _Gesamtleitung_   | _Gesamten Jahrgang_   | alle außer _KI-Assistent verbinden_                                                                                                                   |
+| _Gesamtleitung_   | _Gesamten Jahrgang_   | alle, auch _KI-Assistent verbinden_                                                                                                                   |
 | _Bereichsleitung_ | einen Bereich         | Bereiche, Rollen vergeben, Dashboard, Schichten, ein- und austragen, Regeln übergehen, Anwesenheit, Qualifikationen prüfen, Kontaktdaten, Neuigkeiten |
 | _Schichtleitung_  | einen (Unter-)Bereich | Anwesenheit, Kontaktdaten, Dashboard                                                                                                                  |
 | _Helferanmeldung_ | _Gesamten Jahrgang_   | Dashboard, ein- und austragen, Anwesenheit, Qualifikationen prüfen, Kontaktdaten, Goodies ausgeben                                                    |

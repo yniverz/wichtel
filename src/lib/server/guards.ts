@@ -8,8 +8,7 @@ import type { Area, Edition, User } from './db/schema.ts';
 import { isDomainError } from './errors.ts';
 import { log } from './log.ts';
 import { loadAreaTree } from './services/areas.ts';
-import { getCurrentEdition, getEdition, listEditions } from './services/editions.ts';
-import { loadAuthz } from './services/roles.ts';
+import { adminEditions, loadAuthz, pickAdminEdition } from './services/roles.ts';
 
 export function requireUser(event: RequestEvent): User {
 	const user = event.locals.user;
@@ -47,8 +46,9 @@ export function actorOf(event: RequestEvent): Actor {
 export interface AdminContext {
 	user: User;
 	authz: Authz;
+	/** Editions the person may switch to: all for admins, else those with a role of theirs. */
 	editions: Edition[];
-	/** The edition being administered (cookie selection, else the current one). */
+	/** The edition being administered (cookie selection if allowed, else the current one). */
 	edition: Edition | null;
 	tree: AreaTree<Area> | null;
 }
@@ -57,7 +57,7 @@ const adminContexts = new WeakMap<Request, Promise<AdminContext>>();
 
 /**
  * Loads the admin context once per request. Throws 403 if the user has neither admin rights nor
- * any role in the selected edition.
+ * any role in an edition that is not archived.
  */
 export function getAdminContext(event: RequestEvent): Promise<AdminContext> {
 	let ctx = adminContexts.get(event.request);
@@ -71,13 +71,10 @@ export function getAdminContext(event: RequestEvent): Promise<AdminContext> {
 async function loadAdminContext(event: RequestEvent): Promise<AdminContext> {
 	const user = requireVerifiedUser(event);
 	const database = db();
-	const editions = await listEditions(database);
-	const selectedId = event.cookies.get(ADMIN_EDITION_COOKIE);
-	const edition =
-		(selectedId ? await getEdition(database, selectedId) : undefined) ??
-		(await getCurrentEdition(database)) ??
-		editions[0] ??
-		null;
+	// Only editions the person may open; a selection outside them falls back instead of locking
+	// them out of the admin area.
+	const editions = await adminEditions(database, user);
+	const edition = pickAdminEdition(editions, event.cookies.get(ADMIN_EDITION_COOKIE));
 	const [authz, tree] = await Promise.all([
 		loadAuthz(database, user, edition?.id ?? null),
 		edition ? loadAreaTree(database, edition.id) : Promise.resolve(null)

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import Alert from '#lib/components/Alert.svelte';
 	import Button from '#lib/components/Button.svelte';
 	import Card from '#lib/components/Card.svelte';
 	import ConfirmForm from '#lib/components/ConfirmForm.svelte';
@@ -74,10 +75,19 @@
 			{i18n.t('admin.editions.unarchive')}
 		</ConfirmForm>
 	{:else}
+		{#if data.item.isCurrent}
+			<div class="mb-3">
+				<Alert tone="warning">{i18n.t('admin.editions.archiveCurrent')}</Alert>
+			</div>
+		{/if}
 		<ConfirmForm
 			action="?/archive"
-			variant="secondary"
-			message={i18n.t('admin.editions.archive') + ': ' + data.item.name + '?'}
+			variant={data.item.isCurrent ? 'danger' : 'secondary'}
+			message={i18n.t('admin.editions.archive') +
+				': ' +
+				data.item.name +
+				'?' +
+				(data.item.isCurrent ? ' ' + i18n.t('admin.editions.archiveCurrent') : '')}
 			confirmLabel={i18n.t('admin.editions.archive')}
 		>
 			{i18n.t('admin.editions.archive')}
