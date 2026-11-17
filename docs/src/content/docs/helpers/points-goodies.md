@@ -12,6 +12,10 @@ description: Wann du Punkte bekommst, was bestätigte und vorgemerkte Punkte sin
 
 :::
 
+![Punkte und eigene Goodies](../../../assets/screenshots/de/helper-goodies.png)
+
+![Goodies eintauschen](../../../assets/screenshots/de/helper-goodies-trade.png)
+
 ## Punkte
 
 ### Wann gibt es Punkte?

@@ -48,3 +48,15 @@
 	cursor: pointer;
 	font-weight: 600;
 }
+
+/* Phone screenshots stay phone-sized instead of filling the whole column. */
+.sl-markdown-content img[alt][src*='helper-'] {
+	max-width: min(100%, 320px);
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 12px;
+}
+.sl-markdown-content img[alt][src*='lead-'],
+.sl-markdown-content img[alt][src*='admin-'] {
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 6px;
+}

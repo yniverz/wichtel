@@ -14,6 +14,8 @@ description: Scan QR codes at the volunteer desk, check in today's shifts, hand 
 
 :::
 
+![Desk & check-in for one person](../../../../assets/screenshots/en/admin-desk.png)
+
 You see the _Desk & check-in_ menu item if your role has _Hand out goodies_ or _Confirm attendance
 (check-in)_, or _Adjust points manually_ for the whole edition. What you can do on a person's page
 depends on which of these permissions you have.
@@ -43,7 +45,7 @@ results.
 
 ## A person's page
 
-At the top are the name and _confirmed points_ (plus “+{number} pending from booked shifts”), with
+At the top are the name and _confirmed points_ (plus “+3 pending from booked shifts”), with
 the contact permission also the phone number.
 
 ### Shifts today

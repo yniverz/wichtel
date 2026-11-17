@@ -13,6 +13,8 @@ description: Sign up, confirm your email address, log in, reset your password an
 
 :::
 
+![The profile](../../../../assets/screenshots/en/helper-profile.png)
+
 ## Sign up
 
 1. Open your festival's page and tap _Sign up as a volunteer_. On the login page you can also use

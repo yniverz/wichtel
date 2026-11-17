@@ -17,6 +17,8 @@ _Verwaltung_ (im Menü der Helfer-Ansicht).
 
 :::
 
+![Übersicht für Admins](../../../assets/screenshots/de/admin-dashboard.png)
+
 ## Struktur
 
 ### Wie lege ich das nächste Festivaljahr an?

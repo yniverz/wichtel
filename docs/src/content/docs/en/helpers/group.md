@@ -15,6 +15,8 @@ sidebar:
 
 :::
 
+![A group with its members and their shifts](../../../../assets/screenshots/en/helper-group.png)
+
 ## Start a group
 
 1. Tap _Profile_ → _Group_ (or on the home page under _Your group_ tap _Start a group_).

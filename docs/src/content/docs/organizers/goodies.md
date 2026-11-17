@@ -14,6 +14,8 @@ description: Belohnungen anlegen, die Helfende gegen Punkte eintauschen – mit 
 
 :::
 
+![Goodies in der Verwaltung](../../../assets/screenshots/de/admin-goodies.png)
+
 ## Schritt für Schritt
 
 1. Öffne _Goodies_ und tippe auf _Neues Goodie_.

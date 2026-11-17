@@ -14,6 +14,8 @@ description: How the app links to this help and how to send volunteers to your f
 
 :::
 
+![The Help card in the settings](../../../../assets/screenshots/en/admin-settings-help.png)
+
 ## Where the help links are
 
 | Where                                                                            | Link                       | Without an own FAQ, leads to                    |

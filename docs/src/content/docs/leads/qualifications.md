@@ -24,7 +24,7 @@ die Qualifikation eingerichtet haben.
 2. Jeder Eintrag zeigt: die Person (Link zur Personenseite, wenn du _Personen_ öffnen darfst), die
    Qualifikation, das Datum, eine
    Anmerkung der Person in Anführungszeichen und den Nachweis:
-   - _Nachweis ansehen: {Dateiname}_ – öffnet das Dokument in einem neuen Tab (nur mit dem Recht
+   - _Nachweis ansehen: hygieneschulung.pdf_ – öffnet das Dokument in einem neuen Tab (nur mit dem Recht
      _Hochgeladene Nachweise ansehen_; sonst steht nur der Dateiname da),
    - oder _nur angekreuzt, kein Dokument_.
 3. Schreib bei Bedarf einen _Hinweis an die Person (optional)_, z. B. „Bitte die Rückseite mit

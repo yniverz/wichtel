@@ -14,6 +14,8 @@ description: An der Helferanmeldung QR-Codes scannen, Schichten von heute einche
 
 :::
 
+![Ausgabe & Check-in für eine Person](../../../assets/screenshots/de/admin-desk.png)
+
 Den Menüpunkt _Ausgabe & Check-in_ siehst du, wenn deine Rolle _Goodies ausgeben_ oder _Anwesenheit
 bestätigen (Check-in)_ hat oder _Punkte manuell anpassen_ für den ganzen Jahrgang. Was du auf der
 Seite einer Person tun kannst, hängt davon ab, welches dieser Rechte du hast.
@@ -43,7 +45,7 @@ Punkten), höchstens 20 Treffer.
 
 ## Die Seite einer Person
 
-Oben stehen Name und _bestätigte Punkte_ (dazu „+{Anzahl} vorgemerkt aus gebuchten Schichten“), mit
+Oben stehen Name und _bestätigte Punkte_ (dazu „+3 vorgemerkt aus gebuchten Schichten“), mit
 Kontaktrecht auch die Handynummer.
 
 ### Schichten heute

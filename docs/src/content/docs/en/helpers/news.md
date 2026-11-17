@@ -12,6 +12,8 @@ description: Where to find news from the organisers and your areas, what the cou
 
 :::
 
+![News with a pinned post](../../../../assets/screenshots/en/helper-news.png)
+
 ## Where do I find the news?
 
 - **_News_** in the menu: all posts that concern you. Open long posts with _Read more_.

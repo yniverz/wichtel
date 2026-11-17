@@ -14,6 +14,8 @@ description: Release shifts on a schedule – first for the crew, then for retur
 
 :::
 
+![Booking waves](../../../../assets/screenshots/en/admin-waves.png)
+
 ## Step by step
 
 1. Open _Booking waves_ and expand _+ New wave_.

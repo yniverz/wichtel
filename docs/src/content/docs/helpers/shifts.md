@@ -12,6 +12,10 @@ description: Schichten nach Tag und Bereich finden, dich eintragen oder anfragen
 
 :::
 
+![Schichtliste auf dem Handy](../../../assets/screenshots/de/helper-shifts.png)
+
+![Eine geöffnete Schicht mit Eintragen und Warteliste](../../../assets/screenshots/de/helper-shift-detail.png)
+
 ## Schritt für Schritt
 
 1. Tippe unten auf _Schichten_.

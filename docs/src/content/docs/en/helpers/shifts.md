@@ -12,6 +12,10 @@ description: Find shifts by day and area, sign up or send a request, use the wai
 
 :::
 
+![Shift list on a phone](../../../../assets/screenshots/en/helper-shifts.png)
+
+![An opened shift with sign-up and waiting list](../../../../assets/screenshots/en/helper-shift-detail.png)
+
 ## Step by step
 
 1. Tap _Shifts_ at the bottom.

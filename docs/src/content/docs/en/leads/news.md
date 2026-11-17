@@ -13,6 +13,8 @@ description: Write posts for your area, a shift or the crew, send them by e-mail
 
 :::
 
+![Editing a news post](../../../../assets/screenshots/en/lead-news-editor.png)
+
 News appears in the volunteers' news feed (_News_ in the app, the latest also on the home page) – but
 only for the people it is meant for.
 
@@ -41,8 +43,8 @@ in the area later also sees an area post then.
    and receive this version, everyone else the German one.
 5. Optionally _Pin to the top_ and _Pinned up to and including_ (see below).
 6. Optionally _Also send by e-mail_.
-7. Tap _Preview_. You see “What volunteers will see” and “Reaches {number} people”.
-8. If everything is fine, tap _Publish_ and confirm (“Publish this post and e-mail it to {number}
+7. Tap _Preview_. You see “What volunteers will see” and “Reaches 37 people”.
+8. If everything is fine, tap _Publish_ and confirm (“Publish this post and e-mail it to 37
    people?” if the e-mail goes along).
 
 ## By e-mail
@@ -50,7 +52,7 @@ in the area later also sees an area post then.
 With _Also send by e-mail_, everyone the post concerns **at the moment of publishing** also gets it as
 an e-mail – in their language, with a link to the post. Anyone who joins later only sees it in the
 news feed. Accounts whose e-mail address is not confirmed yet get no e-mail (and are not counted).
-Afterwards the list shows “e-mailed to {number}”.
+Afterwards the list shows “e-mailed to 37”.
 
 ## Pinning
 

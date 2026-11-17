@@ -79,7 +79,7 @@ _auf Anfrage_ oder eine Qualifikation als _Pflicht_.
 
 ### Warum kann ich eine Position nicht entfernen?
 
-Positionen mit Buchungen oder Anfragen lassen sich nicht entfernen; dann steht dort „{Anzahl}
+Positionen mit Buchungen oder Anfragen lassen sich nicht entfernen; dann steht dort „2
 gebucht“ statt ✕. Die einzige Position einer Schicht lässt sich auch nicht entfernen.
 
 ### Ich habe die Plätze verringert und bekomme einen Fehler

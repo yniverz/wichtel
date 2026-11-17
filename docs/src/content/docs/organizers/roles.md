@@ -14,6 +14,8 @@ description: Was jedes Recht erlaubt, wie Rollen für Bereiche und Jahrgänge ge
 
 :::
 
+![Eine Rolle mit ihren Rechten](../../../assets/screenshots/de/admin-role-editor.png)
+
 ## Schritt für Schritt
 
 ### Eine Rolle anlegen oder ändern

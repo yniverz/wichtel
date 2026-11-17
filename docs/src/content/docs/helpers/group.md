@@ -16,6 +16,8 @@ sidebar:
 
 :::
 
+![Eine Gruppe mit ihren Mitgliedern und Schichten](../../../assets/screenshots/de/helper-group.png)
+
 ## Gruppe gründen
 
 1. Tippe auf _Profil_ → _Gruppe_ (oder auf der Startseite unter _Deine Gruppe_ auf _Gruppe

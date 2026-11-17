@@ -15,6 +15,8 @@ description: Wie die App auf diese Hilfe verlinkt und wie du Helfende stattdesse
 
 :::
 
+![Die Karte Hilfe in den Einstellungen](../../../assets/screenshots/de/admin-settings-help.png)
+
 ## Wo die Hilfe-Links sind
 
 | Wo                                                                                                 | Link                      | Führt ohne eigene FAQ zu                    |

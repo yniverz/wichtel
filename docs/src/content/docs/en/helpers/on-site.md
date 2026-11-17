@@ -14,6 +14,8 @@ sidebar:
 
 :::
 
+![Your personal QR code](../../../../assets/screenshots/en/helper-qr-code.png)
+
 ## Your personal QR code
 
 Under _Goodies_ you see _Your code_ with your name. Tap the code to show it larger. On a phone there

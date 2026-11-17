@@ -13,6 +13,8 @@ description: Create, change, duplicate or cancel a single shift – with every f
 
 :::
 
+![Shift list in the admin area](../../../../assets/screenshots/en/lead-shifts.png)
+
 ## Step by step: new shift
 
 1. Open _Shifts_ and tap _New shift_. If you filtered the list to an area before, it is already

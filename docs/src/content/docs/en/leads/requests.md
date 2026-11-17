@@ -12,6 +12,8 @@ description: Approve or decline booking requests and shift handovers or swaps on
 
 :::
 
+![Open requests](../../../../assets/screenshots/en/lead-requests.png)
+
 ## Booking requests
 
 A booking request is created when someone signs up for a position _on request_ (see

@@ -126,3 +126,5 @@ cannot be answered by this help. The organisers answer those: check _News_ in th
 them via the _Contact_ link at the very bottom of the app. The help link in the app may also point
 to your festival's own FAQ instead of this site.
 :::
+
+![Start page of the app on a phone](../../../../assets/screenshots/en/helper-home.png)

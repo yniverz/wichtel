@@ -12,6 +12,8 @@ description: Set the name, tagline, colours, logo, background image and browser 
 
 :::
 
+![Appearance with preview](../../../../assets/screenshots/en/admin-settings.png)
+
 ## Step by step
 
 1. Enter the _Festival name_. It appears everywhere in the app, in the browser tab and in e-mails.

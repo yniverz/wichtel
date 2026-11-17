@@ -13,6 +13,8 @@ description: Add people to shifts and remove them, override rules and record att
 
 :::
 
+![Staffing of a shift](../../../../assets/screenshots/en/lead-shift-editor.png)
+
 Everything happens on a shift's page in the _Staffing_ section: _Shifts_ → tap the shift. For each
 position you see who is signed up and “booked/places”.
 
@@ -59,7 +61,7 @@ overridden. No separate reason text is asked for.
 ## Removing someone
 
 1. Tap _Remove_ at the person.
-2. Confirm the question “Remove {name} from this shift?”.
+2. Confirm the question “Remove Lena Vogt from this shift?”.
 
 Anyone who was signed up, had requested or held a reserved place gets the e-mail “Removed: …”. If
 this frees a place, the next person on the waiting list moves up automatically. As a lead you can

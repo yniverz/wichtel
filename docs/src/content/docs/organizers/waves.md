@@ -14,6 +14,8 @@ description: Schichten zeitgesteuert freigeben – zuerst für die Crew, dann f�
 
 :::
 
+![Buchungswellen](../../../assets/screenshots/de/admin-waves.png)
+
 ## Schritt für Schritt
 
 1. Öffne _Buchungswellen_ und klapp _+ Neue Welle_ auf.

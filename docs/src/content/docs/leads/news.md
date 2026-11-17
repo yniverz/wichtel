@@ -14,6 +14,8 @@ description: Beiträge für deinen Bereich, eine Schicht oder die Crew schreiben
 
 :::
 
+![Neuigkeit bearbeiten](../../../assets/screenshots/de/lead-news-editor.png)
+
 Neuigkeiten erscheinen im Newsfeed der Helfenden (_News_ in der App, die neuesten auch auf der
 Startseite) – aber nur bei denen, für die sie bestimmt sind.
 
@@ -43,8 +45,8 @@ später eine Schicht im Bereich bucht, sieht einen Bereichs-Beitrag dann auch.
    und bekommt dann diese Fassung, sonst die deutsche.
 5. Optional _Oben anheften_ und _Angeheftet bis einschließlich_ (siehe unten).
 6. Optional _Auch per E-Mail senden_.
-7. Tippe auf _Vorschau_. Du siehst „So sehen es die Helfenden“ und „Erreicht {Anzahl} Personen“.
-8. Passt alles, tippe auf _Veröffentlichen_ und bestätige („Beitrag veröffentlichen und an {Anzahl}
+7. Tippe auf _Vorschau_. Du siehst „So sehen es die Helfenden“ und „Erreicht 37 Personen“.
+8. Passt alles, tippe auf _Veröffentlichen_ und bestätige („Beitrag veröffentlichen und an 37
    Personen mailen?“, wenn die E-Mail mitgeht).
 
 ## Per E-Mail
@@ -52,7 +54,7 @@ später eine Schicht im Bereich bucht, sieht einen Bereichs-Beitrag dann auch.
 Mit _Auch per E-Mail senden_ bekommen alle, die der Beitrag **im Moment des Veröffentlichens**
 betrifft, ihn zusätzlich als E-Mail – in ihrer Sprache, mit einem Link zum Beitrag. Wer später dazukommt,
 sieht ihn nur im Newsfeed. Konten, deren E-Mail-Adresse noch nicht bestätigt ist, bekommen keine
-Mail (und zählen bei der Anzahl nicht mit). In der Liste steht danach „per E-Mail an {Anzahl}“.
+Mail (und zählen bei der Anzahl nicht mit). In der Liste steht danach „per E-Mail an 37“.
 
 ## Anheften
 

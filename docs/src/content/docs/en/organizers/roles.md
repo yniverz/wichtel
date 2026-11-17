@@ -14,6 +14,8 @@ description: What each permission allows, how roles apply to areas and editions,
 
 :::
 
+![A role with its permissions](../../../../assets/screenshots/en/admin-role-editor.png)
+
 ## Step by step
 
 ### Creating or changing a role

@@ -17,6 +17,8 @@ area (in the menu of the volunteer view).
 
 :::
 
+![Overview for admins](../../../../assets/screenshots/en/admin-dashboard.png)
+
 ## Structure
 
 ### How do I set up next year's festival?

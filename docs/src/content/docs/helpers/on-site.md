@@ -14,6 +14,8 @@ sidebar:
 
 :::
 
+![Der persönliche QR-Code](../../../assets/screenshots/de/helper-qr-code.png)
+
 ## Dein persönlicher QR-Code
 
 Unter _Goodies_ steht _Dein Code_ mit deinem Namen. Tippe auf den Code, um ihn größer anzuzeigen.

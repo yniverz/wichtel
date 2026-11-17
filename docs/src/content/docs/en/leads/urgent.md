@@ -14,6 +14,8 @@ description: Find people at short notice – who gets the e-mail, how bonus poin
 
 :::
 
+![Shift with a running urgent call](../../../../assets/screenshots/en/admin-urgent.png)
+
 ## Step by step
 
 1. Open the shift (e.g. from _Understaffed next_ on the [overview](/wichtel/en/leads/dashboard/)).
@@ -22,8 +24,8 @@ description: Find people at short notice – who gets the e-mail, how bonus poin
 3. Optionally:
    - _Bonus points_ (0 to 100) – “For everyone who signs up now. 0 = no bonus.”
    - _Short message (optional)_ – up to 300 characters, included in the e-mail.
-4. Tap _Send call_. You see “Call sent to {number} people.”
-5. The position now shows “Urgent since {time}” (with “+{bonus}” if you gave bonus points).
+4. Tap _Send call_. You see “Call sent to 23 people.”
+5. The position now shows “Urgent since 14:05” (with “+2” if you gave bonus points).
 
 ## Who gets the e-mail
 
@@ -40,7 +42,7 @@ the bonus, and contains a direct link to the shift. It goes out in each person's
 ## What volunteers see
 
 While the call is running and places are free, the position is marked _Urgent_ in the shift list,
-with “+{bonus} bonus points”. On their home page the shift appears under _Urgently needed_. Everyone
+with “+2 bonus points”. On their home page the shift appears under _Urgently needed_. Everyone
 can sign up for a position with a running call, even if their booking wave is not open yet.
 
 ## Bonus points

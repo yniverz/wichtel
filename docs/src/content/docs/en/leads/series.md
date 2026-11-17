@@ -9,10 +9,12 @@ description: Create many similar shifts at once – days times time slots – an
   _Create series_.
 - **Every selected day and every time slot** becomes a shift of its own with the same details and
   positions.
-- **Before creating**, the page shows: “{number} shifts will be created.”
+- **Before creating**, the page shows: “3 shifts will be created.”
 - **Afterwards** every shift stands on its own: you edit or delete them one by one.
 
 :::
+
+![Creating a series](../../../../assets/screenshots/en/lead-series.png)
 
 ## Step by step
 
@@ -24,12 +26,12 @@ description: Create many similar shifts at once – days times time slots – an
    - _Time slots_ – start and end, initially 10:00–14:00. _+ Add time slot_ adds another one (it
      starts where the last one ends). If the end is before the start, the shift ends the next day,
      e.g. 22:00–02:00.
-4. Read the number below: “{number} shifts will be created.” It changes immediately when you change
+4. Read the number below: “3 shifts will be created.” It changes immediately when you change
    days or time slots.
 5. Set the [positions](/wichtel/en/leads/positions/) – they apply to every shift of the series.
 6. Fill in location, contact, description, _Visible to_ and _Cancellation deadline (hours)_ as for a
    [single shift](/wichtel/en/leads/shifts/).
-7. Tap _Create series_. You land in the _Shifts_ list with the message “{number} shifts created.”
+7. Tap _Create series_. You land in the _Shifts_ list with the message “3 shifts created.”
 
 ### Example
 

@@ -12,6 +12,10 @@ description: When you get points, what confirmed and pending points are, and how
 
 :::
 
+![Points and your goodies](../../../../assets/screenshots/en/helper-goodies.png)
+
+![Trading points for goodies](../../../../assets/screenshots/en/helper-goodies-trade.png)
+
 ## Points
 
 ### When do I get points?

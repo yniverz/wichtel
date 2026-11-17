@@ -13,6 +13,8 @@ description: Buchungsanfragen und Schichtübergaben oder Tausch auf der Seite �
 
 :::
 
+![Offene Anfragen](../../../assets/screenshots/de/lead-requests.png)
+
 ## Buchungsanfragen
 
 Eine Buchungsanfrage entsteht, wenn sich jemand für eine Position _auf Anfrage_ meldet (siehe

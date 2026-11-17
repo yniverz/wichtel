@@ -77,7 +77,7 @@ or make a qualification _required_.
 
 ### Why can't I remove a position?
 
-Positions with bookings or requests cannot be removed; they show “{number} booked” instead of ✕. The
+Positions with bookings or requests cannot be removed; they show “2 booked” instead of ✕. The
 only position of a shift cannot be removed either.
 
 ### I reduced the places and get an error

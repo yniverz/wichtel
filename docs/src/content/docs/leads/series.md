@@ -9,10 +9,12 @@ description: Viele gleichartige Schichten auf einmal anlegen – Tage mal Zeitfe
   _Serie anlegen_.
 - Für **jeden gewählten Tag und jedes Zeitfenster** entsteht eine eigene Schicht mit denselben
   Angaben und Positionen.
-- **Vor dem Anlegen** zeigt die Seite: „Es werden {Anzahl} Schichten angelegt.“
+- **Vor dem Anlegen** zeigt die Seite: „Es werden 3 Schichten angelegt.“
 - **Danach** ist jede Schicht eigenständig: Du bearbeitest oder löschst sie einzeln.
 
 :::
+
+![Serie anlegen](../../../assets/screenshots/de/lead-series.png)
 
 ## Schritt für Schritt
 
@@ -24,12 +26,12 @@ description: Viele gleichartige Schichten auf einmal anlegen – Tage mal Zeitfe
    - _Zeitfenster_ – Beginn und Ende, anfangs 10:00–14:00. Mit _+ Zeitfenster hinzufügen_ kommt ein
      weiteres dazu (es beginnt, wo das letzte endet). Liegt das Ende vor dem Beginn, endet die
      Schicht am Folgetag, z. B. 22:00–02:00.
-4. Lies die Zahl darunter: „Es werden {Anzahl} Schichten angelegt.“ Sie ändert sich sofort, wenn du
+4. Lies die Zahl darunter: „Es werden 3 Schichten angelegt.“ Sie ändert sich sofort, wenn du
    Tage oder Zeitfenster änderst.
 5. Leg die [Positionen](/wichtel/leads/positions/) fest – sie gelten für jede Schicht der Serie.
 6. Fülle Ort, Ansprechperson, Beschreibung, _Sichtbar für_ und _Frist zum Austragen (Stunden)_ aus
    wie bei einer [einzelnen Schicht](/wichtel/leads/shifts/).
-7. Tippe auf _Serie anlegen_. Du landest in der Liste _Schichten_ mit der Meldung „{Anzahl} Schichten
+7. Tippe auf _Serie anlegen_. Du landest in der Liste _Schichten_ mit der Meldung „3 Schichten
    angelegt.“
 
 ### Beispiel

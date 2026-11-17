@@ -126,3 +126,5 @@ kann diese Hilfe nicht wissen. Das beantwortet die Orga: Schau in der App unter 
 schreib über den Link _Kontakt_ ganz unten in der App. Der Hilfe-Link in der App kann auch auf die
 eigene FAQ deines Festivals zeigen statt auf diese Seite.
 :::
+
+![Startseite der App auf dem Handy](../../../assets/screenshots/de/helper-home.png)

@@ -14,6 +14,8 @@ description: Create rewards volunteers trade their points for – with price, op
 
 :::
 
+![Goodies in the admin area](../../../../assets/screenshots/en/admin-goodies.png)
+
 ## Step by step
 
 1. Open _Goodies_ and tap _New goodie_.

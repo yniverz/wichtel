@@ -12,6 +12,8 @@ description: Name, Untertitel, Farben, Logo, Hintergrundbild und Browser-Symbol 
 
 :::
 
+![Erscheinungsbild mit Vorschau](../../../assets/screenshots/de/admin-settings.png)
+
 ## Schritt für Schritt
 
 1. Trag den _Name des Festivals_ ein. Er steht überall in der App, im Browser-Tab und in E-Mails.

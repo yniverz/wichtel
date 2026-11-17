@@ -14,6 +14,8 @@ description: Was die Übersicht der Verwaltung zeigt – Besetzung, Heatmap, unt
 
 :::
 
+![Übersicht einer Bereichsleitung](../../../assets/screenshots/de/lead-dashboard.png)
+
 Die Zahlen beziehen sich immer auf den Jahrgang, der oben gewählt ist, und nur auf die Bereiche, in
 denen deine Rolle _Besetzungs-Dashboard sehen_ oder Schichtrechte hat (_Schichten anlegen und
 bearbeiten_, _Helfende ein- und austragen, Anfragen bestätigen_ oder _Anwesenheit bestätigen
@@ -27,7 +29,7 @@ du die Schichten selbst nicht öffnen darfst.
 ### Besetzt
 
 Die große Prozentzahl: vergebene Plätze geteilt durch alle Plätze aller Schichten in deinen
-Bereichen, darunter „{gebucht} von {Plätzen} Plätzen“. Gezählt werden Buchungen und für Gruppen
+Bereichen, darunter „45 von 54 Plätzen“. Gezählt werden Buchungen und für Gruppen
 reservierte Plätze, keine offenen Anfragen.
 
 ### Helfende eingetragen
@@ -39,15 +41,15 @@ Schichten.
 
 Erscheint nur, wenn etwas auf dich wartet:
 
-- _{Anzahl} Anfragen_ – Buchungsanfragen, Übergaben und Tausch. Der Link führt zu
+- _2 Anfragen_ – Buchungsanfragen, Übergaben und Tausch. Der Link führt zu
   [_Anfragen_](/wichtel/leads/requests/).
-- _{Anzahl} Nachweise_ – Qualifikationsnachweise zum Prüfen, nur wenn du sie prüfen darfst. Der Link
+- _2 Nachweise_ – Qualifikationsnachweise zum Prüfen, nur wenn du sie prüfen darfst. Der Link
   führt zu [_Qualifikationen_](/wichtel/leads/qualifications/).
 
 ### Heute
 
-Alle Schichten deiner Bereiche, die heute beginnen, mit dem Stand der Anwesenheit: „{x} von {y} da“
-und gegebenenfalls „{n} nicht erschienen“. Ein Klick öffnet die Schicht, dort hakst du ab (siehe
+Alle Schichten deiner Bereiche, die heute beginnen, mit dem Stand der Anwesenheit: „3 von 4 da“
+und gegebenenfalls „1 nicht erschienen“. Ein Klick öffnet die Schicht, dort hakst du ab (siehe
 [Besetzung](/wichtel/leads/staffing/)).
 
 ### Besetzung nach Bereich und Tag
@@ -62,7 +64,7 @@ Plätze“ für alle Schichten dieses Bereichs, die an dem Tag beginnen.
 ### Als Nächstes unterbesetzt
 
 Die nächsten zehn Schichten, die noch nicht begonnen haben und freie Plätze haben, die früheste
-zuerst – mit Tag, Uhrzeit, Bereich und „{n} frei“. Läuft für eine Position ein
+zuerst – mit Tag, Uhrzeit, Bereich und „2 frei“. Läuft für eine Position ein
 [Dringend-Aufruf](/wichtel/leads/urgent/), steht _Dringend_ dabei. Sind alle kommenden Schichten
 voll, steht dort „Alle kommenden Schichten sind voll.“
 

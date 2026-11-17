@@ -13,6 +13,8 @@ description: Personen in Schichten eintragen und austragen, Regeln übergehen un
 
 :::
 
+![Besetzung einer Schicht](../../../assets/screenshots/de/lead-shift-editor.png)
+
 Alles passiert auf der Seite einer Schicht im Abschnitt _Besetzung_: _Schichten_ → Schicht antippen.
 Für jede Position siehst du, wer eingetragen ist, und „gebucht/Plätze“.
 
@@ -61,7 +63,7 @@ Ein eigener Begründungstext wird dabei nicht abgefragt.
 ## Jemanden austragen
 
 1. Tippe bei der Person auf _Austragen_.
-2. Bestätige die Frage „{Name} aus der Schicht austragen?“.
+2. Bestätige die Frage „Lena Vogt aus der Schicht austragen?“.
 
 Wer eingetragen war, angefragt hatte oder einen reservierten Platz hatte, bekommt die E-Mail
 „Ausgetragen: …“. Wird dadurch ein Platz frei, rückt die nächste Person von der Warteliste

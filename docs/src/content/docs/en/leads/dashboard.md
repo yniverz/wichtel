@@ -14,6 +14,8 @@ description: What the admin overview shows – staffing, heatmap, understaffed s
 
 :::
 
+![Overview of an area lead](../../../../assets/screenshots/en/lead-dashboard.png)
+
 The numbers always refer to the edition selected at the top, and only to the areas in which your role
 has _View staffing dashboard_ or shift permissions (_Create and edit shifts_, _Add and remove
 volunteers, approve requests_ or _Confirm attendance (check-in)_). Without one of these permissions
@@ -26,8 +28,8 @@ may not open the shifts themselves.
 
 ### Filled
 
-The big percentage: places taken divided by all places of all shifts in your areas, with “{booked} of
-{capacity} places” below. Bookings and places reserved for groups count; open requests do not.
+The big percentage: places taken divided by all places of all shifts in your areas, with “45 of
+54 places” below. Bookings and places reserved for groups count; open requests do not.
 
 ### Helpers signed up
 
@@ -37,15 +39,15 @@ How many different people are signed up for your shifts, and below it in how man
 
 Only appears when something is waiting for you:
 
-- _{number} requests_ – booking requests, handovers and swaps. The link leads to
+- _2 requests_ – booking requests, handovers and swaps. The link leads to
   [_Requests_](/wichtel/en/leads/requests/).
-- _{number} proofs_ – qualification proofs to review, only if you may review them. The link leads to
+- _2 proofs_ – qualification proofs to review, only if you may review them. The link leads to
   [_Qualifications_](/wichtel/en/leads/qualifications/).
 
 ### Today
 
-All shifts of your areas that start today, with the attendance so far: “{x} of {y} here” and, if
-any, “{n} no-show”. A click opens the shift, where you tick people off (see
+All shifts of your areas that start today, with the attendance so far: “3 of 4 here” and, if
+any, “1 no-show”. A click opens the shift, where you tick people off (see
 [Staffing](/wichtel/en/leads/staffing/)).
 
 ### Staffing by area and day
@@ -60,7 +62,7 @@ all shifts of that area starting on that day.
 ### Understaffed next
 
 The next ten shifts that have not started yet and have free places, soonest first – with day, time,
-area and “{n} free”. If an [urgent call](/wichtel/en/leads/urgent/) is running for a position, it
+area and “2 free”. If an [urgent call](/wichtel/en/leads/urgent/) is running for a position, it
 shows _Urgent_. If all upcoming shifts are full, it says “All upcoming shifts are full.”
 
 ## Common questions

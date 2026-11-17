@@ -15,6 +15,8 @@ description: Kurzfristig Leute finden – wer die E-Mail bekommt, wie Bonuspunkt
 
 :::
 
+![Schicht mit laufendem Dringend-Aufruf](../../../assets/screenshots/de/admin-urgent.png)
+
 ## Schritt für Schritt
 
 1. Öffne die Schicht (z. B. aus _Als Nächstes unterbesetzt_ auf der [Übersicht](/wichtel/leads/dashboard/)).
@@ -23,8 +25,8 @@ description: Kurzfristig Leute finden – wer die E-Mail bekommt, wie Bonuspunkt
 3. Optional:
    - _Bonuspunkte_ (0 bis 100) – „Für alle, die sich jetzt eintragen. 0 = kein Bonus.“
    - _Kurze Nachricht (optional)_ – bis 300 Zeichen, steht in der E-Mail.
-4. Tippe auf _Aufruf senden_. Du siehst „Aufruf an {Anzahl} Personen gesendet.“
-5. Bei der Position steht jetzt „Dringend seit {Uhrzeit}“ (mit „+{Bonus}“, falls du Bonuspunkte
+4. Tippe auf _Aufruf senden_. Du siehst „Aufruf an 23 Personen gesendet.“
+5. Bei der Position steht jetzt „Dringend seit 14:05“ (mit „+2“, falls du Bonuspunkte
    vergeben hast).
 
 ## Wer die E-Mail bekommt
@@ -42,7 +44,7 @@ Bonus und enthält einen Direktlink zur Schicht. Sie geht in der Sprache der jew
 ## Was Helfende sehen
 
 Solange der Aufruf läuft und Plätze frei sind, ist die Position in der Schichtliste als _Dringend_
-markiert, mit „+{Bonus} Bonuspunkte“. Auf ihrer Startseite erscheint die Schicht unter _Dringend
+markiert, mit „+2 Bonuspunkte“. Auf ihrer Startseite erscheint die Schicht unter _Dringend
 gesucht_. Für eine Position mit laufendem Aufruf können sich alle eintragen, auch wenn ihre
 Buchungswelle noch nicht offen ist.
 

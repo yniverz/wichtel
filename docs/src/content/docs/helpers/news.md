@@ -12,6 +12,8 @@ description: Wo du die Neuigkeiten der Orga und deiner Bereiche findest, was der
 
 :::
 
+![Neuigkeiten mit angeheftetem Beitrag](../../../assets/screenshots/de/helper-news.png)
+
 ## Wo finde ich die Neuigkeiten?
 
 - **_News_** im Menü: alle Beiträge, die dich betreffen. Lange Beiträge öffnest du mit

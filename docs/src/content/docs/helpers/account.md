@@ -13,6 +13,8 @@ description: Registrieren, E-Mail-Adresse bestätigen, anmelden, Passwort zurüc
 
 :::
 
+![Das Profil](../../../assets/screenshots/de/helper-profile.png)
+
 ## Registrieren
 
 1. Öffne die Seite deines Festivals und tippe auf _Jetzt als Helfer\*in anmelden_. Auf der

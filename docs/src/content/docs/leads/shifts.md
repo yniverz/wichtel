@@ -14,6 +14,8 @@ description: Eine einzelne Schicht anlegen, ändern, duplizieren oder absagen �
 
 :::
 
+![Schichtliste in der Verwaltung](../../../assets/screenshots/de/lead-shifts.png)
+
 ## Schritt für Schritt: neue Schicht
 
 1. Öffne _Schichten_ und tippe auf _Neue Schicht_. Hast du die Liste vorher auf einen Bereich
