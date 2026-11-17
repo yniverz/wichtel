@@ -36,7 +36,9 @@ Unterbereiche gehängt werden.
 ### Einen Bereich löschen
 
 Bereich → _Bearbeiten_ → _Löschen_ → bestätigen. Vorher müssen alle Unterbereiche verschoben oder
-gelöscht sein, und im Bereich dürfen keine Schichten mehr liegen.
+gelöscht sein, und im Bereich dürfen keine Schichten mehr liegen. Sonst steht statt _Löschen_ ein
+Hinweis, z. B. „Im Bereich gibt es noch Schichten. Verschiebe sie in einen anderen Bereich oder
+lösche sie zuerst.“
 
 :::caution
 Rollenvergaben auf diesem Bereich verschwinden beim Löschen mit. Das lässt sich nicht rückgängig

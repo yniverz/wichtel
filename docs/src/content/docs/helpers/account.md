@@ -23,7 +23,8 @@ description: Registrieren, E-Mail-Adresse bestätigen, anmelden, Passwort zurüc
 4. Öffne die E-Mail „Bitte bestätige deine E-Mail-Adresse“ und tippe auf den Link darin. Der Link
    ist 48 Stunden gültig und funktioniert auch auf einem anderen Gerät.
 5. Es erscheint _Deine E-Mail-Adresse ist bestätigt. Willkommen!_ Tippe auf _Anmelden_ und melde
-   dich mit E-Mail-Adresse und Passwort an.
+   dich mit E-Mail-Adresse und Passwort an. Bist du über einen Einladungslink gekommen, landest du
+   danach direkt dort.
 
 Steht dort _Die Registrierung ist gerade geschlossen_, nimmt das Festival gerade keine neuen
 Helfenden an. Schau später wieder vorbei oder frag die Orga.

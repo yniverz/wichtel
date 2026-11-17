@@ -23,7 +23,7 @@ description: Sign up, confirm your email address, log in, reset your password an
 4. Open the email "Please confirm your email address" and tap the link inside. The link is valid
    for 48 hours and also works on another device.
 5. You see _Your email address is confirmed. Welcome!_ Tap _Log in_ and log in with your email
-   address and password.
+   address and password. If you came through an invitation link, you then land right there.
 
 If it says _Registration is currently closed_, the festival is not taking on new volunteers right
 now. Check back later or ask the organisers.

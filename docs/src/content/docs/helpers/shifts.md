@@ -135,8 +135,8 @@ schon woanders eingetragen bist, wirst du übersprungen und bleibst auf der List
 <details>
 <summary>Meine Anfrage wurde abgelehnt</summary>
 
-Bei dir steht dann _Abgelehnt_. Die App bietet dir für diese Schicht kein neues Eintragen an.
-Schau nach einer anderen Schicht oder sprich die Leitung an.
+Bei dir steht dann _Abgelehnt_. Du kannst trotzdem noch einmal anfragen – frag aber am besten
+vorher bei der Leitung nach, warum es nicht geklappt hat. Oder schau nach einer anderen Schicht.
 
 </details>
 

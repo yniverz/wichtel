@@ -38,7 +38,7 @@ description: Belohnungen anlegen, die Helfende gegen Punkte eintauschen – mit 
 | _Abholort_                                            | Ein [Ort](/wichtel/organizers/places/) dieses Jahrgangs. _Helferanmeldung (Standard)_ heißt: der Ort, der unter _Orte & Geländeplan_ als Helferanmeldung festgelegt ist. |
 | _Hinweis zur Abholung_                                | Freier Text, z. B. Ausgabezeiten.                                                                                                                                        |
 | _Kontingent für Selbstauswahl_                        | Wie viele Stück Helfende insgesamt selbst auswählen können. Leer = unbegrenzt. An der Ausgabe kann immer zusätzlich ausgegeben werden.                                   |
-| _Bestand (nur zur Übersicht)_                         | Stückzahl, die ihr habt. Sperrt nichts; die Liste zeigt, wie viel davon noch übrig ist.                                                                                  |
+| _Bestand (nur zur Übersicht)_                         | Stückzahl, die ihr habt. Sperrt nichts; die Liste zeigt, wie viel davon noch übrig ist (Bestand minus ausgegebene; Erstattete zählen nicht).                             |
 | _Aktiv (für Helfende sichtbar)_                       | Ohne Haken können Helfende das Goodie nicht wählen.                                                                                                                      |
 | _Vorschuss: auch mit vorgemerkten Punkten wählbar_    | Helfende können das Goodie schon mit Punkten aus gebuchten, noch nicht bestätigten Schichten wählen.                                                                     |
 | _Erstattung statt Ausgabe möglich („habe ich schon“)_ | Helfende können statt der Ausgabe eine Erstattung wählen, z. B. wenn sie schon ein Ticket gekauft haben.                                                                 |
@@ -49,13 +49,16 @@ description: Belohnungen anlegen, die Helfende gegen Punkte eintauschen – mit 
 ## Pflicht-Goodies (z. B. das Freiticket)
 
 Ein Pflicht-Goodie bekommt jede Person, sobald sie genug **bestätigte** Punkte hat. Wichtel löst es
-automatisch ein, wenn die Anwesenheit bestätigt wird – Helfende müssen nichts tun.
+automatisch ein, wenn die Anwesenheit bestätigt wird oder eine
+[Punkte-Korrektur](/wichtel/organizers/points/#punkte-korrigieren) den Stand erhöht – Helfende
+müssen nichts tun.
 
 - **Die ersten Punkte gehen an die Pflicht-Goodies.** Solange ein Pflicht-Goodie noch offen ist,
   hält Wichtel seinen Preis zurück. Für andere Goodies steht nur der Rest zur Verfügung.
 - **Reihenfolge:** Bei mehreren Pflicht-Goodies kommt das mit der kleineren Zahl bei _Reihenfolge der
   Pflicht-Goodies_ zuerst. Reicht es für das erste nicht, wird auch kein späteres eingelöst.
-- **Varianten:** Beim automatischen Einlösen nimmt Wichtel die erste Variante aus der Liste.
+- **Varianten:** Beim automatischen Einlösen nimmt Wichtel die erste Variante aus der Liste. Bis
+  zur Ausgabe kann die Person unter _Deine Goodies_ eine andere wählen (_Variante ändern_).
 - **Zurückgeben:** Helfende können ein Pflicht-Goodie nicht selbst gegen Punkte zurückgeben.
 - **Erstattung statt Ausgabe:** Ist _Erstattung statt Ausgabe möglich_ angehakt, kann die Person
   „Habe ich schon“ antippen. Dann steht das Goodie auf „Erstattung ausstehend“, die Punkte bleiben
@@ -80,7 +83,8 @@ Hinweis und – wenn es gerade nicht geht – der Grund, z. B.:
 - „Wird automatisch eingelöst, sobald du genug Punkte hast.“ – Pflicht-Goodie.
 
 Haben Helfende ein Goodie ausgewählt, steht es auf „liegt zur Abholung bereit“. Bis zur Ausgabe
-können sie die Auswahl aufheben und bekommen die Punkte zurück. Gibt es
+können sie die Auswahl aufheben und bekommen die Punkte zurück – außer bei Pflicht-Goodies – und
+bei Goodies mit Varianten die Variante ändern. Gibt es
 [Profilfelder](/wichtel/organizers/fields/) für dieses Goodie (z. B. T-Shirt-Schnitt), fragt Wichtel
 sie bei der Auswahl ab.
 
@@ -93,7 +97,8 @@ Kontingent, aber gegen _Höchstens pro Person_ und die Punkte. Goodies mit _Vors
 auch ins Minus gehen.
 
 In der Goodie-Liste der Verwaltung siehst du je Goodie das genutzte _Kontingent_, den
-restlichen _Bestand_ und unter _Wer hat was_, wer es ausgewählt oder bekommen hat.
+restlichen _Bestand_ (abzüglich der ausgegebenen Stücke; erstattete wurden nie ausgegeben) und
+unter _Wer hat was_, wer es ausgewählt oder bekommen hat.
 
 ## Häufige Fragen
 

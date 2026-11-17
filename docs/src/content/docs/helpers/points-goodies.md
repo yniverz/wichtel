@@ -36,7 +36,8 @@ Das legt dein Festival fest: pro Schicht, pro Stunde oder beides, für einzelne 
 Positionen auch anders. Dazu kann es Boni geben:
 
 - **Nachtbonus** für Schichten in der Nacht,
-- **Kurzfrist-Bonus**, wenn du dich kurz vor Beginn einträgst,
+- **Kurzfrist-Bonus**, wenn du dich kurz vor Beginn einträgst oder kurz vorher von der Warteliste
+  nachrückst,
 - **Bonuspunkte bei Dringend-Aufrufen:** Steht bei einer Schicht _Dringend_ und _+… Bonuspunkte_,
   bekommst du die zusätzlich, wenn du dich während des Aufrufs einträgst.
 
@@ -77,7 +78,10 @@ Manche Goodies stehen mit _Wird automatisch eingelöst, sobald du genug Punkte h
 Das ist meist das Freiticket oder etwas Ähnliches.
 
 - Du wählst sie nicht selbst aus. Sobald deine bestätigten Punkte reichen, wird das Goodie
-  automatisch für dich eingelöst und erscheint unter _Deine Goodies_.
+  automatisch für dich eingelöst und erscheint unter _Deine Goodies_. Das gilt auch, wenn die
+  Leitung dir Punkte von Hand gutschreibt.
+- Hat es Varianten (zum Beispiel Größen), ist erst einmal die erste ausgewählt. Bis zur Abholung
+  kannst du unter _Deine Goodies_ eine andere wählen und auf _Variante ändern_ tippen.
 - Gibt es mehrere, kommen sie in der vom Festival festgelegten Reihenfolge dran.
 - **Die ersten Punkte gehen an die Pflicht-Goodies.** Solange eins noch offen ist, kannst du für
   andere Goodies nur die Punkte nutzen, die darüber hinausgehen.
@@ -86,6 +90,8 @@ Das ist meist das Freiticket oder etwas Ähnliches.
 
 Solange ein Goodie noch _liegt zur Abholung bereit_ ist:
 
+- **_Variante ändern_:** Bei Goodies mit Varianten wählst du eine andere aus, zum Beispiel eine
+  andere Größe. Das geht auch bei Pflicht-Goodies.
 - **_Auswahl aufheben_:** Du bekommst die Punkte zurück. Bei Pflicht-Goodies geht das nicht.
 - **_Habe ich schon_:** Erscheint bei Goodies, die erstattet werden können – zum Beispiel, wenn du
   schon ein Ticket gekauft hast. Das Goodie wird dir dann erstattet statt ausgegeben, die Punkte

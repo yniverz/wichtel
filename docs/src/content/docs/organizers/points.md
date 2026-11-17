@@ -44,7 +44,9 @@ darüber“. Das gilt für _Punkte pro Schicht_ und _Punkte pro Stunde_ **getren
 :::caution
 Das Feld _Punkte_ an einer Position ersetzt nur die Punkte **pro Schicht**. Punkte pro Stunde aus
 Bereich oder Einstellungen kommen weiterhin dazu. Soll eine Position genau eine feste Zahl bringen,
-setz _Punkte pro Stunde_ im Bereich auf 0.
+setz _Punkte pro Stunde_ im Bereich auf 0. Punkte pro Stunde für eine einzelne Position lassen sich
+nur über einen [KI-Assistenten](/wichtel/organizers/ai/) setzen; sie bleiben erhalten, wenn jemand
+die Schicht danach im Formular speichert.
 :::
 
 Die Boni (_Nachtbonus_, _Kurzfrist-Bonus_) gibt es nur in den Einstellungen; sie gelten überall
@@ -66,8 +68,10 @@ Beginn des Fensters (z. B. um 00:00), zählt das nicht.
 - _Kurzfrist-Bonus (Punkte)_: wie viele Extrapunkte. 0 = aus.
 - _Kurzfristig = gebucht weniger als … Stunden vor Beginn_: Standard 24.
 
-Maßgeblich ist der Zeitpunkt, an dem der Eintrag entstanden ist – also auch, wenn eine Leitung
-jemanden kurzfristig einträgt oder jemand kurz vorher eine Schicht von der Schichtbörse übernimmt.
+Maßgeblich ist der Zeitpunkt, an dem die Person den Platz bekommen hat – also auch, wenn eine
+Leitung jemanden kurzfristig einträgt oder jemand kurz vorher eine Schicht von der Schichtbörse
+übernimmt. Wer von der Warteliste nachrückt, bekommt den Platz erst beim Nachrücken; wann sich die
+Person auf die Warteliste gesetzt hat, spielt keine Rolle.
 
 ## Beispiele
 
@@ -121,6 +125,9 @@ Punkte zeigen dagegen immer den aktuellen Stand der Regeln.
 Die Korrektur erscheint im Punkteverlauf der Person als „Korrektur: _Grund_“ und im
 [Protokoll](/wichtel/organizers/audit/). Die Person sieht den Grund also – formuliere ihn
 entsprechend.
+
+Reichen die Punkte nach einer Gutschrift für ein [Pflicht-Goodie](/wichtel/organizers/goodies/),
+löst Wichtel es gleich ein – genau wie nach einem Check-in.
 
 Korrigieren dürfen Admins und alle mit dem Recht _Punkte manuell anpassen_ für den ganzen Jahrgang.
 

@@ -34,7 +34,8 @@ along. An area cannot be placed below itself or one of its sub-areas.
 ### Deleting an area
 
 Area → _Edit_ → _Delete_ → confirm. All sub-areas must have been moved or deleted first, and there
-must be no shifts left in the area.
+must be no shifts left in the area. Otherwise a note replaces _Delete_, e.g. “This area still has
+shifts. Move them to another area or delete them first.”
 
 :::caution
 Role assignments on this area disappear along with it. This cannot be undone.

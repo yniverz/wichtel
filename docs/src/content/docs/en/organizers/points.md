@@ -43,7 +43,9 @@ to _Points per shift_ and _Points per hour_ **separately**.
 :::caution
 The _Points_ field on a position only replaces the points **per shift**. Points per hour from the area
 or the settings are still added. If a position should be worth exactly one fixed number, set _Points
-per hour_ in the area to 0.
+per hour_ in the area to 0. Points per hour for a single position can only be set
+through an [AI assistant](/wichtel/en/organizers/ai/); they are kept when someone later saves the
+shift in the form.
 :::
 
 The bonuses (_Night bonus_, _Last-minute bonus_) only exist in the settings; they apply everywhere
@@ -65,8 +67,10 @@ begins (e.g. at 00:00), that does not count.
 - _Last-minute bonus (points)_: how many extra points. 0 = off.
 - _Last-minute = booked less than … hours before start_: default 24.
 
-What counts is the moment the booking was created – including when a lead adds someone at short
-notice or someone takes over a shift from the shift market shortly before.
+What counts is the moment the person got the place – including when a lead adds someone at short
+notice or someone takes over a shift from the shift market shortly before. People who move up from
+the waiting list get the place when they move up; when they joined the waiting list does not
+matter.
 
 ## Examples
 
@@ -119,6 +123,9 @@ on the other hand, always reflect the current rules.
 
 The correction appears in the person's points history as “Correction: _reason_” and in the
 [audit log](/wichtel/en/organizers/audit/). So the person sees the reason – word it accordingly.
+
+If the points are enough for a [mandatory goodie](/wichtel/en/organizers/goodies/) after a credit,
+Wichtel redeems it right away – just like after a check-in.
 
 Admins and everyone with the permission _Adjust points manually_ for the whole edition can make
 corrections.

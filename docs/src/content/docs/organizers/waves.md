@@ -50,8 +50,8 @@ Leute, die du für ein bestimmtes Team gewinnen willst.
 - Wer den Link öffnet und nicht angemeldet ist, kommt zuerst zur Anmeldung und danach automatisch
   zurück. Danach landet die Person bei den Schichten und sieht „Einladung angenommen: … Du kannst
   jetzt Schichten buchen, sobald die Welle offen ist.“
-- Wer noch kein Konto hat, registriert sich zuerst und öffnet den Link danach noch einmal. Schreib
-  das am besten gleich mit in deine Einladung.
+- Wer noch kein Konto hat, registriert sich über _Noch kein Konto?_ → _Registrieren_. Nach dem
+  Bestätigen der E-Mail-Adresse und dem Anmelden geht es ebenfalls automatisch weiter.
 - Der Link gilt dauerhaft für diese eine Welle. Wer ihn hat, kann ihn weitergeben – teile ihn also
   nur dort, wo das in Ordnung ist.
 - Ist die Registrierung in den Einstellungen geschlossen, können über den Link nur Personen mit
@@ -64,7 +64,8 @@ Ist die Buchung für jemanden noch nicht offen, kann die Person trotzdem alle Sc
 - Ist für sie gerade nirgends etwas buchbar, steht oben „Die Buchung öffnet für dich am … Du kannst
   dich jetzt schon umsehen.“ – mit dem frühesten Termin einer Welle, die für sie in Frage kommt.
 - An den Schichten steht statt _Eintragen_ „Buchung öffnet …“ oder, wenn keine Welle mehr für sie
-  kommt, „Buchung gerade geschlossen“.
+  kommt, „Buchung gerade geschlossen“. Positionen mit laufendem
+  [Dringend-Aufruf](/wichtel/leads/urgent/) zeigen trotzdem _Eintragen_.
 
 Wann die Buchung für sie öffnet, sieht also jede Person selbst. Eine E-Mail zum Start einer Welle
 verschickt Wichtel nicht – kündige sie z. B. über [Neuigkeiten](/wichtel/leads/news/) an.

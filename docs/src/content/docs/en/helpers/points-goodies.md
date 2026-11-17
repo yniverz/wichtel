@@ -36,7 +36,8 @@ Your festival decides: per shift, per hour or both, and possibly different for i
 positions. There may also be bonuses:
 
 - a **night bonus** for shifts during the night,
-- a **last-minute bonus** if you sign up shortly before the start,
+- a **last-minute bonus** if you sign up shortly before the start or move up from the waiting
+  list shortly before,
 - **bonus points for urgent calls:** If a shift shows _Urgent_ and _+… bonus points_, you get them
   on top if you sign up while the call is running.
 
@@ -76,7 +77,10 @@ Some goodies are listed with _Redeemed automatically as soon as you have enough 
 usually the free ticket or something similar.
 
 - You do not choose them yourself. As soon as your confirmed points are enough, the goodie is
-  redeemed for you automatically and appears under _Your goodies_.
+  redeemed for you automatically and appears under _Your goodies_. This also happens when a lead
+  credits you points by hand.
+- If it has options (for example sizes), the first one is chosen to begin with. Until pickup you can
+  pick another one under _Your goodies_ and tap _Change option_.
 - If there are several, they are redeemed in the order your festival has set.
 - **The first points go to mandatory goodies.** As long as one is still open, you can only use the
   points beyond that for other goodies.
@@ -85,6 +89,8 @@ usually the free ticket or something similar.
 
 As long as a goodie is still _ready for pickup_:
 
+- **_Change option_:** For goodies with options, pick another one, for example a different size.
+  This also works for mandatory goodies.
 - **_Undo_:** You get the points back. Not possible for mandatory goodies.
 - **_I already have one_:** Shown for goodies that can be refunded – for example if you have already
   bought a ticket. The goodie is then refunded instead of handed out; the points stay used. It then
