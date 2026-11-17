@@ -23,7 +23,7 @@ description: Positionen innerhalb einer Schicht – Plätze, Buchung direkt oder
 | _Englisch_        | Englischer Name, optional. Fehlt er, sehen alle den deutschen.                                                                          |
 | _Plätze_          | Wie viele Personen gebraucht werden, 1 bis 500.                                                                                         |
 | _Buchung_         | _direkt_ oder _auf Anfrage_ (siehe unten).                                                                                              |
-| _Punkte_          | Punkte pro Schicht für diese Position. Leer („auto“) = Punkte nach Bereich bzw. Instanz.                                                |
+| _Punkte_          | Punkte pro Schicht für diese Position. Leer („auto“) = Vorgabe des Bereichs bzw. der Instanz. Punkte pro Stunde kommen dazu.            |
 | _Qualifikationen_ | Für jede eingerichtete Qualifikation: _—_ (egal), _Pflicht_ oder _gern gesehen_. Die Zeile erscheint nur, wenn es Qualifikationen gibt. |
 
 Eine neue Position heißt anfangs „Helfer\*in“, hat 4 Plätze und die Buchung _direkt_. Eine Schicht
@@ -62,6 +62,10 @@ Lässt du _Punkte_ leer, gelten die Punkte-Regeln des Bereichs bzw. der Instanz.
 ein, ersetzt sie die Punkte pro Schicht für genau diese Position – z. B. mehr Punkte für die
 Schichtleitung. Gibt es auf deinem Festival zusätzlich Punkte pro Stunde, Nacht- oder
 Kurzfrist-Bonus, kommen diese weiterhin dazu.
+
+Punkte pro Stunde für eine einzelne Position lassen sich nur über einen
+[KI-Assistenten](/wichtel/leads/ai/) setzen. Sie bleiben erhalten, wenn du die Schicht hier
+speicherst.
 
 Punkte gibt es erst, wenn die Person als _da_ abgehakt ist (siehe
 [Besetzung](/wichtel/leads/staffing/)).

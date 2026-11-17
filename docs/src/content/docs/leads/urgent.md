@@ -9,8 +9,9 @@ description: Kurzfristig Leute finden – wer die E-Mail bekommt, wie Bonuspunkt
   _Kurze Nachricht (optional)_ → _Aufruf senden_.
 - **Wer die E-Mail bekommt:** alle mit bestätigtem Konto, die passen und zu der Zeit frei sind.
 - **Bonuspunkte** bekommt, wer sich einträgt, solange der Aufruf läuft.
-- **Beenden:** bei der Position _Aufruf beenden_.
-- Höchstens einmal pro Stunde je Position.
+- **Beenden:** bei der Position _Aufruf beenden_. Ist die Position voll, endet der Aufruf von
+  selbst.
+- Höchstens einmal pro Stunde je Position – auch wenn du den Aufruf vorher beendest.
 
 :::
 
@@ -56,14 +57,15 @@ _da_ abgehakt ist (siehe [Besetzung](/wichtel/leads/staffing/)).
 Tippe bei der Position auf _Aufruf beenden_. Ab dann bekommt niemand mehr die Bonuspunkte; wer sich
 schon eingetragen hat, behält sie.
 
-Der Aufruf endet nicht von selbst, wenn die Position voll ist. Helfende sehen ihn dann zwar nicht
-mehr, aber wird wieder ein Platz frei, gilt der Bonus weiter. Beende ihn also, wenn du fertig bist.
+Ist die Position voll, endet der Aufruf von selbst. Wird danach wieder ein Platz frei, gibt es
+keinen Bonus mehr – dafür musst du neu aufrufen.
 
 ## Häufige Fragen
 
 ### „Für diese Position wurde gerade erst aufgerufen. Bitte warte eine Stunde.“
 
 Damit niemand mit E-Mails überschüttet wird, geht pro Position höchstens ein Aufruf pro Stunde raus.
+Die Stunde zählt ab dem letzten Aufruf – auch wenn er inzwischen beendet ist.
 
 ### Kann ich den Bonus nachträglich ändern?
 
@@ -87,7 +89,8 @@ Jahrgang schon eine Schicht haben.
 <details>
 <summary>Steht der Aufruf im Protokoll?</summary>
 
-Ja, mit Bonus und Zahl der Empfänger:innen. Auch das Beenden wird protokolliert.
+Ja, mit Bonus und Zahl der Empfänger:innen. Auch das Beenden wird protokolliert – endet der Aufruf
+von selbst, weil die Position voll ist, ohne Person.
 
 </details>
 

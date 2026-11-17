@@ -49,8 +49,11 @@
 	);
 
 	const hasFree = (s: (typeof data.shifts)[number]) => s.positions.some((p) => p.free > 0);
+	/** On the shift, or asked for it: no booking actions. A declined request can be asked again. */
+	const taken = (s: (typeof data.shifts)[number]) =>
+		s.mine !== null && s.mine.status !== 'rejected';
 	const onMarket = (s: (typeof data.shifts)[number]) =>
-		!s.past && !s.mine && s.positions.some((p) => p.marketOfferId);
+		!s.past && !taken(s) && s.positions.some((p) => p.marketOfferId);
 	const anyMarket = $derived(data.anyMarket);
 	const chips = $derived<{ key: 'free' | 'mine' | 'market'; label: MessageKey }[]>([
 		{ key: 'free', label: 'shifts.filter.free' },
@@ -237,7 +240,7 @@
 				{#each list as shift (shift.id)}
 					{@const expanded = open === shift.id}
 					{@const free = shift.positions.reduce((n, p) => n + p.free, 0)}
-					{@const urgent = !shift.mine && shift.positions.some((p) => p.urgent)}
+					{@const urgent = !taken(shift) && shift.positions.some((p) => p.urgent)}
 					<li id="row-{shift.id}" class="border-b border-line {shift.past ? 'opacity-55' : ''}">
 						<button
 							class="grid w-full grid-cols-[4.75rem_1fr_auto] items-start gap-3 py-3.5 text-left"
@@ -435,7 +438,7 @@
 														</p>
 													{/if}
 												</div>
-											{:else if isMine && shift.mine}
+											{:else if isMine && shift.mine && taken(shift)}
 												<div class="flex flex-col items-end gap-1">
 													{#if shift.mine.canCancel}
 														<ConfirmForm
@@ -489,8 +492,8 @@
 														{/if}
 													{/if}
 												</div>
-											{:else if !shift.mine && !shift.past}
-												{#if !shift.bookingOpen}
+											{:else if !taken(shift) && !shift.past}
+												{#if !position.bookingOpen}
 													<p class="max-w-48 text-right text-xs text-ink-muted">
 														{shift.bookingOpensAt
 															? i18n.t('shifts.bookingOpens', {
@@ -556,7 +559,7 @@
 															>
 														{/if}
 													</div>
-												{:else if shift.waitlistEnabled && !position.required.some((q) => !q.held)}
+												{:else if shift.bookingOpen && shift.waitlistEnabled && !position.required.some((q) => !q.held)}
 													<form
 														method="POST"
 														action={act('waitlist')}
@@ -630,7 +633,7 @@
 										</li>
 									{/each}
 								</ul>
-								{#if !shift.mine && shift.positions.some((p) => p.mode === 'request')}
+								{#if !taken(shift) && shift.positions.some((p) => p.mode === 'request')}
 									<p class="text-xs text-ink-muted">{i18n.t('shifts.requestHint')}</p>
 								{/if}
 							</div>

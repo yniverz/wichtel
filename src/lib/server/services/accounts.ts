@@ -43,10 +43,11 @@ export interface RegisterInput {
  */
 export async function registerOrNotify(
 	ctx: AccountContext,
-	input: RegisterInput
+	input: RegisterInput,
+	next?: string
 ): Promise<User | null> {
 	try {
-		return await register(ctx, input);
+		return await register(ctx, input, next);
 	} catch (e) {
 		if (ctx.skipEmailVerification || !(e instanceof DomainError) || e.code !== 'emailTaken')
 			throw e;
@@ -77,7 +78,15 @@ export async function findUserByEmail(db: DB, email: string): Promise<User | und
 	return user;
 }
 
-export async function register(ctx: AccountContext, input: RegisterInput): Promise<User> {
+/**
+ * Creates an account. `next` (a checked same-origin path, e.g. an invitation link) is put into the
+ * confirmation link so the person ends up there after confirming and signing in.
+ */
+export async function register(
+	ctx: AccountContext,
+	input: RegisterInput,
+	next?: string
+): Promise<User> {
 	const settings = await getSettings(ctx.db);
 	if (!settings.registrationOpen) throw new DomainError('registrationClosed');
 
@@ -97,7 +106,7 @@ export async function register(ctx: AccountContext, input: RegisterInput): Promi
 		.returning();
 	if (!user) throw new DomainError('emailTaken', 'email');
 
-	if (!ctx.skipEmailVerification) await sendVerificationEmail(ctx, user);
+	if (!ctx.skipEmailVerification) await sendVerificationEmail(ctx, user, next);
 	return user;
 }
 
@@ -140,7 +149,11 @@ async function consumeToken(
 	return row?.userId ?? null;
 }
 
-export async function sendVerificationEmail(ctx: AccountContext, user: User): Promise<void> {
+export async function sendVerificationEmail(
+	ctx: AccountContext,
+	user: User,
+	next?: string
+): Promise<void> {
 	if (user.emailVerifiedAt) return;
 	const settings = await getSettings(ctx.db);
 	const token = await issueToken(ctx.db, user.id, 'verify_email', VERIFY_TTL);
@@ -156,7 +169,9 @@ export async function sendVerificationEmail(ctx: AccountContext, user: User): Pr
 			subject: 'mail.verify.subject',
 			body: 'mail.verify.body',
 			expiry: 'mail.verify.expiry',
-			link: `${ctx.baseUrl}/verify-email?token=${encodeURIComponent(token)}`
+			link: `${ctx.baseUrl}/verify-email?token=${encodeURIComponent(token)}${
+				next ? `&next=${encodeURIComponent(next)}` : ''
+			}`
 		})
 	);
 }

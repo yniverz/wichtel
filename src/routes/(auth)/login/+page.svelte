@@ -13,6 +13,8 @@
 	const i18n = getI18n();
 	const submitter = pendingForm();
 	const notice = $derived(page.url.searchParams.get('notice'));
+	// Signing up instead keeps the destination (e.g. an invitation link).
+	const next = $derived(page.url.searchParams.get('next'));
 </script>
 
 <svelte:head
@@ -56,8 +58,9 @@
 {#if page.data.settings.registrationOpen}
 	<p class="mt-6 text-center text-sm text-ink-muted">
 		{i18n.t('auth.login.noAccount')}
-		<a href="/register" class="font-semibold text-brand-text hover:underline"
-			>{i18n.t('nav.register')}</a
+		<a
+			href={next ? `/register?next=${encodeURIComponent(next)}` : '/register'}
+			class="font-semibold text-brand-text hover:underline">{i18n.t('nav.register')}</a
 		>
 	</p>
 {/if}

@@ -24,8 +24,10 @@ Helfende vom letzten Jahr, dann für alle. Für dich ist die Buchung noch nicht 
   oft auch _Die Buchung öffnet für dich am …_.
 - _Buchung gerade geschlossen_ heißt: Im Moment ist keine Welle für dich offen, und es ist auch
   keine angekündigt.
-- Hast du einen **Einladungslink** bekommen, öffne ihn, während du angemeldet bist. Es erscheint
-  _Einladung angenommen: …_, und du kannst buchen, sobald diese Welle offen ist.
+- Positionen mit _Dringend_ sind die Ausnahme: Dort kannst du dich trotzdem eintragen.
+- Hast du einen **Einladungslink** bekommen, öffne ihn. Bist du nicht angemeldet, meldest du dich
+  an oder registrierst dich – danach geht es automatisch weiter. Es erscheint _Einladung
+  angenommen: …_, und du kannst buchen, sobald diese Welle offen ist.
 
 ### „Überschneidet sich mit einer deiner Schichten“
 
@@ -61,8 +63,9 @@ entscheidet. Bis dahin steht bei dir _Angefragt_.
 
 ### „Abgelehnt“
 
-Die Leitung hat deine Anfrage für diese Schicht abgelehnt. Die App bietet dir für diese Schicht
-kein neues Eintragen an. Sprich bei Fragen die Leitung an.
+Die Leitung hat deine Anfrage für diese Schicht abgelehnt. _Abgelehnt_ bleibt als Hinweis stehen,
+du kannst aber noch einmal _Anfragen_ (oder dich für eine andere Position der Schicht eintragen).
+Frag am besten vorher bei der Leitung nach, warum es nicht geklappt hat.
 
 ### Schicht ist ausgegraut, kein Knopf
 

@@ -8,6 +8,7 @@ import { listPlaces, placeView } from '#lib/server/services/places.ts';
 import { getCurrentEdition } from '#lib/server/services/editions.ts';
 import {
 	cancelClaim,
+	changeVariant,
 	claimGoodie,
 	goodieOverview,
 	requestRefund
@@ -80,6 +81,7 @@ export const load: PageServerLoad = async (event) => {
 					nameEn: goodie.nameEn,
 					mandatory: goodie.mandatory,
 					refundable: goodie.refundable,
+					variants: goodie.variants,
 					pickup: pickup(goodie)
 				}
 			})),
@@ -143,6 +145,20 @@ export const actions: Actions = {
 		if (!parsed.ok || !scope) return fail(400, { error: 'error.notFound' });
 		const result = await attempt(() =>
 			cancelClaim(db(), actorOf(event), parsed.data.claimId, scope, true)
+		);
+		if (!result.ok) return result.failure;
+		return { success: 'common.saved' };
+	},
+	variant: async (event) => {
+		const user = requireVerifiedUser(event);
+		const scope = await ownScope(user.id);
+		const parsed = parseForm(
+			z.object({ claimId: uuid, variant: z.string() }),
+			await event.request.formData()
+		);
+		if (!parsed.ok || !scope) return fail(400, { error: 'error.notFound' });
+		const result = await attempt(() =>
+			changeVariant(db(), scope, parsed.data.claimId, parsed.data.variant)
 		);
 		if (!result.ok) return result.failure;
 		return { success: 'common.saved' };

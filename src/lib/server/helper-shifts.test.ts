@@ -2,16 +2,17 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 import { Authz } from '#lib/domain/permissions.ts';
 import type { Database } from './db/client.ts';
-import { users } from './db/schema.ts';
+import { shiftPositions, users } from './db/schema.ts';
 import { createTestDatabase } from './testing/db.ts';
 import { register } from './services/accounts.ts';
 import { createArea } from './services/areas.ts';
-import { bookPosition } from './services/assignments.ts';
+import { bookPosition, decideRequest } from './services/assignments.ts';
 import { createEdition } from './services/editions.ts';
 import { invalidateSettingsCache } from './services/settings.ts';
 import { createShift, getShift, type ShiftInput } from './services/shifts.ts';
 import { createOffer } from './services/swaps.ts';
 import { callUrgent } from './services/urgent.ts';
+import { bookingAccess, createWave } from './services/waves.ts';
 import { helperShiftsView, type HelperShift, type ShiftFacts } from './helper-shifts.ts';
 
 let database: Database;
@@ -111,7 +112,21 @@ async function seed() {
 	await bookPosition(ctx, anna.id, urgent.positions[0].id, opts);
 	await bookPosition(ctx, anna.id, market.positions[0].id, opts);
 	await callUrgent(db, actor, admin, urgent.positions[0].id, { bonus: 2, note: '' }, new Date());
-	return { db, edition, anna, ben, cem, bar, security, past, full, urgent, market, internal };
+	return {
+		db,
+		edition,
+		anna,
+		ben,
+		cem,
+		bar,
+		security,
+		past,
+		full,
+		urgent,
+		market,
+		internal,
+		makeShift: shift
+	};
 }
 
 /** The facts must say the same as the fully built shift. */
@@ -119,9 +134,10 @@ function expectConsistent(facts: ShiftFacts, built: HelperShift) {
 	expect(facts.day).toBe(built.day);
 	expect(facts.past).toBe(built.past);
 	expect(facts.mine).toBe(built.mine !== null);
+	expect(facts.taken).toBe(built.mine !== null && built.mine.status !== 'rejected');
 	expect(facts.open).toBe(!built.past && built.positions.some((p) => p.free > 0));
 	expect(facts.onMarket).toBe(
-		!built.past && !built.mine && built.positions.some((p) => p.marketOfferId)
+		!built.past && !facts.taken && built.positions.some((p) => p.marketOfferId)
 	);
 	expect(facts.urgent).toBe(!built.past && built.positions.some((p) => p.urgent));
 	expect(facts.bookingOpen).toBe(built.bookingOpen);
@@ -177,6 +193,63 @@ describe('helperShiftsView', () => {
 		expect(await factsFor(s.cem, s.market.id)).toMatchObject({ onMarket: true, open: false });
 		expect((await factsFor(s.ben, s.market.id)).onMarket).toBe(false);
 		expect(await factsFor(s.anna, s.market.id)).toMatchObject({ onMarket: false, mine: true });
+	});
+
+	it('opens positions with an urgent call to people whose wave is not open yet', async () => {
+		const s = await seed();
+		await createWave(s.db, { userId: null }, s.edition.id, {
+			name: 'Später',
+			opensAt: new Date('2027-06-20T00:00:00Z'),
+			closesAt: null,
+			areaIds: [],
+			audience: 'everyone'
+		});
+		const view = await helperShiftsView(
+			s.db,
+			s.cem,
+			new Authz(false, [], nobody),
+			s.edition.id,
+			NOW
+		);
+		const built = (id: string) => view.build(view.shifts.find((x) => x.id === id)!);
+		const urgent = built(s.urgent.id);
+		expect(urgent.bookingOpen).toBe(false);
+		expect(urgent.positions[0]).toMatchObject({ bookingOpen: true, urgent: { bonus: 2 } });
+		expect(built(s.market.id).positions[0].bookingOpen).toBe(false);
+
+		// The booking rules agree.
+		const access = await bookingAccess(s.db, s.cem, s.edition.id, NOW);
+		await bookPosition({ db: s.db, now: new Date() }, s.cem.id, s.urgent.positions[0].id, {
+			editionId: s.edition.id,
+			canSee: () => true,
+			isOpen: (shift) => access(shift.areaId).open
+		});
+	});
+
+	it('lets people ask again after a declined request', async () => {
+		const s = await seed();
+		const shift = await s.makeShift(s.bar.id, 'Anfrage', '2027-06-13T10:00:00Z');
+		const positionId = shift.positions[0].id;
+		await s.db
+			.update(shiftPositions)
+			.set({ bookingMode: 'request' })
+			.where(eq(shiftPositions.id, positionId));
+		const ctx = { db: s.db, now: new Date() };
+		const opts = { editionId: s.edition.id, canSee: () => true };
+		const request = await bookPosition(ctx, s.cem.id, positionId, opts);
+		await decideRequest(ctx, { userId: null }, admin, request.id, false);
+
+		const view = await helperShiftsView(
+			s.db,
+			s.cem,
+			new Authz(false, [], nobody),
+			s.edition.id,
+			NOW
+		);
+		const target = view.shifts.find((x) => x.id === shift.id)!;
+		expect(view.build(target).mine?.status).toBe('rejected');
+		expect(view.facts(target)).toMatchObject({ mine: true, taken: false });
+		expect((await bookPosition(ctx, s.cem.id, positionId, opts)).status).toBe('requested');
 	});
 
 	it('shows internal shifts only to people with a role covering the area', async () => {

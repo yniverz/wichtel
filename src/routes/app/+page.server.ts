@@ -176,7 +176,7 @@ async function homeShifts(user: User, authz: Authz, editionId: string, now: Date
 		shifts: all.filter((s) => s.facts.mine).map((s) => view.build(s.shift)),
 		openShifts: all.filter((s) => s.facts.open).length,
 		urgent: all
-			.filter((s) => s.facts.urgent && !s.facts.mine)
+			.filter((s) => s.facts.urgent && !s.facts.taken)
 			.slice(0, 3)
 			.map((s) => view.build(s.shift))
 	};

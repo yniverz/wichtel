@@ -37,7 +37,7 @@ description: Create rewards volunteers trade their points for – with price, op
 | _Pickup place_                                                | A [place](/wichtel/en/organizers/places/) of this edition. _Volunteer desk (default)_ means the place set as volunteer desk under _Places & site plan_. |
 | _Pickup details_                                              | Free text, e.g. opening times.                                                                                                                          |
 | _Self-service contingent_                                     | How many volunteers can choose themselves in total. Empty = unlimited. The desk can always hand out more.                                               |
-| _Stock (for overview only)_                                   | How many you have. Blocks nothing; the list shows how many are left.                                                                                    |
+| _Stock (for overview only)_                                   | How many you have. Blocks nothing; the list shows how many are left (stock minus handed out; refunded ones do not count).                               |
 | _Active (visible to volunteers)_                              | Without the tick, volunteers cannot choose the goodie.                                                                                                  |
 | _Advance: may be chosen with pending points_                  | Volunteers can choose the goodie with points from booked, not yet confirmed shifts.                                                                     |
 | _Refund instead of handing out possible (“already have one”)_ | Volunteers can choose a refund instead of the item, e.g. if they have already bought a ticket.                                                          |
@@ -48,13 +48,16 @@ description: Create rewards volunteers trade their points for – with price, op
 ## Mandatory goodies (e.g. the free ticket)
 
 Everyone gets a mandatory goodie as soon as they have enough **confirmed** points. Wichtel redeems it
-automatically when attendance is confirmed – volunteers don't have to do anything.
+automatically when attendance is confirmed or a
+[points correction](/wichtel/en/organizers/points/#correcting-points) raises the balance –
+volunteers don't have to do anything.
 
 - **The first points go to mandatory goodies.** As long as a mandatory goodie is still open, Wichtel
   holds back its price. Other goodies can only use what is left.
 - **Order:** with several mandatory goodies, the one with the lower number in _Order of mandatory
   goodies_ comes first. If there is not enough for the first one, no later one is redeemed either.
-- **Options:** when redeeming automatically, Wichtel takes the first option in the list.
+- **Options:** when redeeming automatically, Wichtel takes the first option in the list. Until it is
+  handed out, the person can pick another one under _Your goodies_ (_Change option_).
 - **Giving back:** volunteers cannot return a mandatory goodie for points themselves.
 - **Refund instead of handing out:** if _Refund instead of handing out possible_ is ticked, the person
   can tap “I already have one”. The goodie then shows “refund pending”, the points stay used, and
@@ -78,7 +81,8 @@ if it is not possible right now – the reason, for example:
 - “Redeemed automatically as soon as you have enough points.” – mandatory goodie.
 
 Once chosen, a goodie shows “ready for pickup”. Until it is handed out, volunteers can undo their
-choice and get the points back. If there are [profile fields](/wichtel/en/organizers/fields/) for this
+choice and get the points back – except for mandatory goodies – and change the option of goodies
+that have options. If there are [profile fields](/wichtel/en/organizers/fields/) for this
 goodie (e.g. T-shirt cut), Wichtel asks for them when choosing.
 
 ## At the desk
@@ -89,8 +93,9 @@ hand out something the person did not choose beforehand – this does not count 
 contingent, but against _Max. per person_ and the points. Goodies with _Advance_ may go below zero
 here.
 
-In the admin goodie list you see per goodie the used _Contingent_, the remaining _Stock_ and, under
-_Who has what_, who chose or received it.
+In the admin goodie list you see per goodie the used _Contingent_, the remaining _Stock_ (minus the
+items handed out; refunded ones were never handed out) and, under _Who has what_, who chose or
+received it.
 
 ## Common questions
 

@@ -23,8 +23,10 @@ volunteers from last year, then for everyone. Booking is not open for you yet.
 - _Booking opens …_ tells you when it starts for you. The top of the page then often also says
   _Booking opens for you on …_.
 - _Booking currently closed_ means: no wave is open for you right now, and none is announced.
-- If you received an **invitation link**, open it while you are logged in. You see _Invitation
-  accepted: …_, and you can book as soon as that wave is open.
+- Positions marked _Urgent_ are the exception: you can sign up there anyway.
+- If you received an **invitation link**, open it. If you are not logged in, log in or sign up –
+  you are then taken on automatically. You see _Invitation accepted: …_, and you can book as soon
+  as that wave is open.
 
 ### "Overlaps with one of your shifts"
 
@@ -58,8 +60,9 @@ you see _Requested_.
 
 ### "Declined"
 
-The lead declined your request for this shift. The app does not offer you to sign up for this shift
-again. Talk to the lead if you have questions.
+The lead declined your request for this shift. _Declined_ stays as a note, but you can _Request_
+again (or sign up for another position of the shift). Best ask the lead first why it did not work
+out.
 
 ### The shift is faded and has no button
 

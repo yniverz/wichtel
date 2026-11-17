@@ -9,6 +9,8 @@
 		bookingMode: 'open' | 'request';
 		/** Points override for this position; null = inherit from area/instance. */
 		pointsPerShift?: number | null;
+		/** Not editable here (only through AI assistants), but kept when saving. */
+		pointsPerHour?: number | null;
 		requiredQualificationIds?: string[];
 		preferredQualificationIds?: string[];
 		/** Read-only info for existing positions. */

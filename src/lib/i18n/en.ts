@@ -117,6 +117,8 @@ export const en: Record<keyof typeof de, string> = {
 	'error.notFound': 'This does not exist (anymore).',
 	'error.areaCycle': 'An area cannot be moved below itself or one of its sub-areas.',
 	'error.areaHasChildren': 'This area still has sub-areas. Move or delete them first.',
+	'error.areaHasShifts':
+		'This area still has shifts. Move them to another area or delete them first.',
 	'error.cannotAssignRole': 'You can only assign roles whose permissions you hold there yourself.',
 	'error.alreadyAssigned': 'This role is already assigned there.',
 	'error.lastAdmin': 'There must be at least one administrator.',
@@ -511,6 +513,7 @@ export const en: Record<keyof typeof de, string> = {
 	'goodies.claim.refund_pending': 'refund pending',
 	'goodies.claim.refunded': 'refunded',
 	'goodies.claim.cancel': 'Undo',
+	'goodies.claim.changeVariant': 'Change option',
 	'goodies.claim.cancelConfirm': 'Undo your choice? You get the points back.',
 	'goodies.claim.refund': 'I already have one',
 	'goodies.claim.refundConfirm':
@@ -522,6 +525,8 @@ export const en: Record<keyof typeof de, string> = {
 	'goodies.variant': 'Option',
 	'goodies.picked': 'Chosen – pick it up at the counter.',
 	'goodies.mandatory': 'Redeemed automatically as soon as you have enough points.',
+	'goodies.mandatoryVariant':
+		'Redeemed automatically as soon as you have enough points. You can change the option until pickup.',
 	'goodies.remaining': '{count} left',
 	'goodies.reason.notEnoughPoints': 'You need {count} more.',
 	'goodies.reason.notEligible': 'Only for volunteers of: {areas}',
@@ -548,7 +553,8 @@ export const en: Record<keyof typeof de, string> = {
 	'admin.settings.bonusOff': '0 = off',
 	'admin.shifts.position.points': 'Points',
 	'admin.shifts.position.pointsInherit': 'auto',
-	'admin.shifts.position.pointsHint': 'Empty = points from area or instance',
+	'admin.shifts.position.pointsHint':
+		'Points per shift for this position. Empty = default of the area or instance. Points per hour are added on top.',
 	'admin.goodies.title': 'Goodies',
 	'admin.goodies.lead': 'Rewards volunteers trade their points for. You can also see who got what.',
 	'admin.goodies.new': 'New goodie',

@@ -28,6 +28,7 @@ import { searchPeople } from './people.ts';
 import { assignRole, createRole, loadAuthz, removeAssignment, ROLE_TEMPLATES } from './roles.ts';
 import { checkSetupToken, completeSetup, isSetupComplete, prepareSetup } from './setup.ts';
 import { updateSettings } from './settings.ts';
+import { createShift, deleteShift } from './shifts.ts';
 
 let database: Database;
 let ctx: AccountContext;
@@ -92,6 +93,14 @@ describe('accounts', () => {
 			authenticate(database.db, 'nobody@x.de', 'whatever123'),
 			'invalidCredentials'
 		);
+	});
+
+	it('keeps the destination (e.g. an invitation link) in the confirmation link', async () => {
+		await registerOrNotify(ctx, helper, '/invite/abc?x=1');
+		const text = (await outbox()).at(-1)!.text;
+		const link = new URL(text.match(/http:\/\/test\S+/)![0]);
+		expect(link.pathname).toBe('/verify-email');
+		expect(link.searchParams.get('next')).toBe('/invite/abc?x=1');
 	});
 
 	it('rejects duplicate e-mails and closed registration', async () => {
@@ -271,6 +280,33 @@ describe('editions, areas and roles', () => {
 			'areaHasChildren'
 		);
 		await move(buehne.id, null, 'Bühne');
+		// Shifts would be lost: they must be moved or deleted first.
+		const shift = await createShift(database.db, actor, edition.id, {
+			areaId: buehne.id,
+			titleDe: 'Aufbau',
+			titleEn: '',
+			descriptionDe: '',
+			descriptionEn: '',
+			location: '',
+			meetingPoint: '',
+			contact: '',
+			visibility: 'public',
+			cancelDeadlineHours: null,
+			startsAt: new Date('2027-06-01T10:00:00Z'),
+			endsAt: new Date('2027-06-01T12:00:00Z'),
+			positions: [
+				{
+					nameDe: 'Team',
+					nameEn: '',
+					descriptionDe: '',
+					descriptionEn: '',
+					capacity: 1,
+					bookingMode: 'open'
+				}
+			]
+		});
+		await expectDomainError(deleteArea(database.db, actor, edition.id, buehne.id), 'areaHasShifts');
+		await deleteShift(database.db, actor, shift.id);
 		await deleteArea(database.db, actor, edition.id, buehne.id);
 	});
 

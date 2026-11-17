@@ -9,8 +9,8 @@ description: Find people at short notice – who gets the e-mail, how bonus poin
   message (optional)_ → _Send call_.
 - **Who gets the e-mail:** everyone with a confirmed account who fits and is free at that time.
 - **Bonus points** go to whoever signs up while the call is running.
-- **End:** at the position _End call_.
-- At most once per hour per position.
+- **End:** at the position _End call_. When the position is full, the call ends by itself.
+- At most once per hour per position – even if you end the call earlier.
 
 :::
 
@@ -54,14 +54,15 @@ _present_ (see [Staffing](/wichtel/en/leads/staffing/)).
 Tap _End call_ at the position. From then on nobody gets the bonus points any more; people who have
 already signed up keep theirs.
 
-The call does not end by itself when the position is full. Volunteers no longer see it then, but if a
-place becomes free again, the bonus still applies. So end it when you are done.
+When the position is full, the call ends by itself. If a place becomes free again afterwards, there
+is no bonus any more – call again for that.
 
 ## Common questions
 
 ### “A call for this position just went out. Please wait an hour.”
 
-So that nobody gets flooded with e-mails, at most one call per hour goes out per position.
+So that nobody gets flooded with e-mails, at most one call per hour goes out per position. The hour
+counts from the last call – even if it has been ended since.
 
 ### Can I change the bonus afterwards?
 

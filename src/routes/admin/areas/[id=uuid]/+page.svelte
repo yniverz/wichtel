@@ -76,6 +76,8 @@
 		{#if result?.action === 'delete'}<FormMessage error={result.error} />{/if}
 		{#if data.hasChildren}
 			<p class="text-sm text-ink-muted">{i18n.t('error.areaHasChildren')}</p>
+		{:else if data.hasShifts}
+			<p class="text-sm text-ink-muted">{i18n.t('error.areaHasShifts')}</p>
 		{:else}
 			<ConfirmForm
 				action="?/delete"

@@ -130,8 +130,8 @@ somewhere else at the same time, you are skipped and stay on the list.
 <details>
 <summary>My request was declined</summary>
 
-You then see _Declined_. The app does not offer you to sign up for this shift again. Look for
-another shift or talk to the lead.
+You then see _Declined_. You can still request again – but best ask the lead first why it did not
+work out. Or look for another shift.
 
 </details>
 

@@ -1,7 +1,7 @@
 import { and, asc, eq } from 'drizzle-orm';
 import { AreaTree } from '#lib/domain/area-tree.ts';
 import type { DB, Tx } from '../db/client.ts';
-import { areas, type Area } from '../db/schema.ts';
+import { areas, shifts, type Area } from '../db/schema.ts';
 import { audit, diff, type Actor } from '../audit.ts';
 import { DomainError } from '../errors.ts';
 
@@ -92,6 +92,16 @@ export async function updateArea(
 	});
 }
 
+/** Whether shifts are planned in exactly this area (not counting sub-areas). */
+export async function areaHasShifts(db: Tx, areaId: string): Promise<boolean> {
+	const [row] = await db
+		.select({ id: shifts.id })
+		.from(shifts)
+		.where(eq(shifts.areaId, areaId))
+		.limit(1);
+	return Boolean(row);
+}
+
 export async function deleteArea(
 	db: DB,
 	actor: Actor,
@@ -103,6 +113,7 @@ export async function deleteArea(
 		const area = tree.get(id);
 		if (!area) throw new DomainError('notFound');
 		if (tree.children(id).length > 0) throw new DomainError('areaHasChildren');
+		if (await areaHasShifts(tx, id)) throw new DomainError('areaHasShifts');
 		await tx.delete(areas).where(eq(areas.id, id));
 		await audit(tx, actor, {
 			action: 'area.delete',

@@ -21,7 +21,7 @@ import { pointsBalance } from './points.ts';
 import { invalidateSettingsCache, updateSettings } from './settings.ts';
 import { createShift, getShift, type ShiftInput } from './shifts.ts';
 import { answerProposal, createOffer, decideSwap, takeOffer } from './swaps.ts';
-import { callUrgent } from './urgent.ts';
+import { callUrgent, endUrgent } from './urgent.ts';
 
 let database: Database;
 const actor = { userId: null };
@@ -310,5 +310,36 @@ describe('urgent call', () => {
 		await setAttendance(s.ctxAt(day), actor, lead, booking.id, 'attended', 'Europe/Berlin');
 		// 1 point per shift + 2 bonus
 		expect(await pointsBalance(s.db, s.b.id, s.edition.id)).toBe(3);
+	});
+
+	it('ends by itself once the position is full', async () => {
+		const s = await seed();
+		const shift = await s.shiftOf(s.input('2027-06-12T10:00:00Z', '2027-06-12T14:00:00Z', 2));
+		const pos = shift.positions[0].id;
+		await callUrgent(s.db, actor, lead, pos, { bonus: 2, note: 'Bitte!' }, s.now);
+		await bookPosition(s.ctxAt(), s.a.id, pos, s.opts);
+		expect((await getShift(s.db, shift.id))!.positions[0].urgentAt).not.toBeNull();
+		await bookPosition(s.ctxAt(), s.b.id, pos, s.opts);
+		const [position] = (await getShift(s.db, shift.id))!.positions;
+		expect(position).toMatchObject({ urgentAt: null, urgentBonus: 0, urgentNote: '' });
+		// A place freed later does not bring the bonus back.
+		const [booking] = await listUserAssignments(s.db, s.b.id, s.edition.id);
+		await cancelOwnAssignment(s.ctxAt(), s.b.id, booking.id);
+		expect((await bookPosition(s.ctxAt(), s.c.id, pos, s.opts)).bonusPoints).toBe(0);
+	});
+
+	it('keeps the cooldown when a call is ended early', async () => {
+		const s = await seed();
+		const shift = await s.shiftOf(s.input('2027-06-12T10:00:00Z', '2027-06-12T14:00:00Z', 2));
+		const pos = shift.positions[0].id;
+		await callUrgent(s.db, actor, lead, pos, { bonus: 0, note: '' }, s.now);
+		await endUrgent(s.db, actor, lead, pos);
+		expect((await getShift(s.db, shift.id))!.positions[0].urgentAt).toBeNull();
+		await expectDomainError(
+			callUrgent(s.db, actor, lead, pos, { bonus: 0, note: '' }, s.now),
+			'urgentTooSoon'
+		);
+		const later = new Date(s.now.getTime() + 61 * 60_000);
+		expect(await callUrgent(s.db, actor, lead, pos, { bonus: 0, note: '' }, later)).toBe(3);
 	});
 });

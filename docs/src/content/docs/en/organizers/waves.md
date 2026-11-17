@@ -48,8 +48,8 @@ particular team.
 - Anyone who opens the link while not logged in goes to the login first and comes back
   automatically. They then land on the shifts and see “Invitation accepted: … You can book shifts as
   soon as this wave is open.”
-- People without an account sign up first and then open the link again. Best mention this in your
-  invitation.
+- People without an account sign up via _No account yet?_ → _Sign up_. After confirming their
+  e-mail address and logging in, they are taken on automatically as well.
 - The link stays valid for this one wave. Anyone who has it can pass it on – so only share it where
   that is fine.
 - If registration is closed in the settings, only people with an existing account can join via the
@@ -62,7 +62,8 @@ If booking is not open for someone yet, they can still look at all shifts:
 - If nothing at all can be booked for them right now, the top of the page says “Booking opens for you
   on … Feel free to look around already.” – with the earliest start of a wave that applies to them.
 - On the shifts, instead of _Sign up_ it says “Booking opens …” or, if no wave is coming
-  for them, “Booking currently closed”.
+  for them, “Booking currently closed”. Positions with a running
+  [urgent call](/wichtel/en/leads/urgent/) still show _Sign up_.
 
 So everyone sees for themselves when booking opens. Wichtel does not send an e-mail when a wave
 starts – announce it, for example, via [news](/wichtel/en/leads/news/).

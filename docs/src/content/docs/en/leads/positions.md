@@ -22,7 +22,7 @@ description: Positions within a shift – places, booking direct or on request, 
 | _English_        | English name, optional. Without it, everyone sees the German one.                                                                     |
 | _Places_         | How many people are needed, 1 to 500.                                                                                                 |
 | _Booking_        | _direct_ or _on request_ (see below).                                                                                                 |
-| _Points_         | Points per shift for this position. Empty (“auto”) = points from area or instance.                                                    |
+| _Points_         | Points per shift for this position. Empty (“auto”) = default of the area or instance. Points per hour are added on top.               |
 | _Qualifications_ | For every configured qualification: _—_ (doesn't matter), _required_ or _nice to have_. The row only appears if qualifications exist. |
 
 A new position is initially called “Volunteer”, has 4 places and the booking _direct_. A shift needs
@@ -61,6 +61,9 @@ If you leave _Points_ empty, the points rules of the area or instance apply. If 
 it replaces the points per shift for exactly this position – e.g. more points for the shift lead. If
 your festival also gives points per hour, a night bonus or a last-minute bonus, those are still
 added.
+
+Points per hour for a single position can only be set through an
+[AI assistant](/wichtel/en/leads/ai/). They are kept when you save the shift here.
 
 Points are only credited once the person is ticked off as _present_ (see
 [Staffing](/wichtel/en/leads/staffing/)).

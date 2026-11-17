@@ -28,7 +28,8 @@ import {
 	swapOffers,
 	users,
 	type Assignment,
-	type Shift
+	type Shift,
+	type ShiftPosition
 } from '../db/schema.ts';
 import { audit, SYSTEM, type Actor } from '../audit.ts';
 import { DomainError } from '../errors.ts';
@@ -38,6 +39,7 @@ import { syncAssignmentPoints } from './points.ts';
 import { heldQualificationIds } from './qualifications.ts';
 import { notifyAssignment } from '../notifications.ts';
 import { getSettings } from './settings.ts';
+import { clearShiftCache } from './shifts.ts';
 
 /** Statuses that hold (or ask for) a place: they block overlapping shifts. */
 export const ACTIVE = ['requested', 'booked', 'held'] as const;
@@ -123,6 +125,32 @@ export async function hasActiveInShift(tx: Tx, userId: string, shiftId: string) 
 	return Boolean(row);
 }
 
+/**
+ * Ends a running urgent call once the position is full. Returns whether it did: the cached shifts
+ * must then be cleared after the commit (`clearShiftCache`).
+ */
+export async function endUrgentIfFull(
+	tx: Tx,
+	shift: Shift,
+	position: ShiftPosition
+): Promise<boolean> {
+	if (!position.urgentAt) return false;
+	const { booked } = await countActive(tx, position.id);
+	if (freeSpots(position.capacity, booked) > 0) return false;
+	await tx
+		.update(shiftPositions)
+		.set({ urgentAt: null, urgentBonus: 0, urgentNote: '' })
+		.where(eq(shiftPositions.id, position.id));
+	await audit(tx, SYSTEM, {
+		action: 'shift.urgent_end',
+		entityType: 'shift',
+		entityId: shift.id,
+		editionId: shift.editionId,
+		data: { positionId: position.id, full: true }
+	});
+	return true;
+}
+
 /** Serialises bookings per person so two parallel requests cannot create an overlap. */
 export async function lockUser(tx: Tx, userId: string) {
 	await tx.select({ id: users.id }).from(users).where(eq(users.id, userId)).for('update');
@@ -148,7 +176,8 @@ export async function bookPosition(
 	opts: BookingOptions
 ): Promise<Assignment> {
 	const settings = await getSettings(ctx.db);
-	return ctx.db.transaction(async (tx) => {
+	let callEnded = false;
+	const booking = await ctx.db.transaction(async (tx) => {
 		await lockUser(tx, userId);
 		const { position, shift } = await lockPosition(tx, positionId);
 		if (shift.editionId !== opts.editionId || !opts.canSee(shift))
@@ -184,8 +213,11 @@ export async function bookPosition(
 			assignment.status === 'requested' ? 'booking_requested' : 'booking_confirmed',
 			assignment.id
 		);
+		callEnded = await endUrgentIfFull(tx, shift, position);
 		return assignment;
 	});
+	if (callEnded) clearShiftCache();
+	return booking;
 }
 
 export async function cancelHoursFor(tx: Tx, shift: Shift, instanceHours: number) {
@@ -361,7 +393,11 @@ export async function promoteWaitlist(
 		if ((await findOverlaps(tx, entry.userId, shift, settings.minBreakMinutes)).length > 0)
 			continue;
 		const status = position.bookingMode === 'request' ? 'requested' : 'booked';
-		await tx.update(assignments).set({ status }).where(eq(assignments.id, entry.id));
+		// The place counts from now (last-minute bonus), not from joining the list.
+		await tx
+			.update(assignments)
+			.set({ status, promotedAt: now })
+			.where(eq(assignments.id, entry.id));
 		await notifyAssignment(
 			tx,
 			status === 'booked' ? 'waitlist_promoted' : 'booking_requested',
@@ -415,7 +451,8 @@ export async function leadAssign(
 	input: { positionId: string; userId: string; override: boolean }
 ): Promise<{ issues: OverridableIssue[]; assignment?: Assignment }> {
 	const settings = await getSettings(ctx.db);
-	return ctx.db.transaction(async (tx) => {
+	let callEnded = false;
+	const result = await ctx.db.transaction(async (tx) => {
 		await lockUser(tx, input.userId);
 		const { position, shift } = await lockPosition(tx, input.positionId);
 		requireLead(authz, 'assignment.manage', shift);
@@ -460,8 +497,11 @@ export async function leadAssign(
 			data: { userId: input.userId, positionId: position.id, overridden: issues }
 		});
 		await notifyAssignment(tx, 'added_by_lead', assignment.id);
+		callEnded = await endUrgentIfFull(tx, shift, position);
 		return { issues, assignment };
 	});
+	if (callEnded) clearShiftCache();
+	return result;
 }
 
 export async function leadRemove(
@@ -503,12 +543,14 @@ export async function decideRequest(
 	assignmentId: string,
 	approve: boolean
 ): Promise<void> {
+	let callEnded = false;
 	await ctx.db.transaction(async (tx) => {
 		const { assignment, shift } = await loadAssignmentForLead(tx, assignmentId);
 		requireLead(authz, 'assignment.manage', shift);
 		if (assignment.status !== 'requested') throw new DomainError('notFound');
+		let position: ShiftPosition | null = null;
 		if (approve) {
-			const { position } = await lockPosition(tx, assignment.positionId);
+			({ position } = await lockPosition(tx, assignment.positionId));
 			const { booked } = await countActive(tx, position.id);
 			if (freeSpots(position.capacity, booked) === 0) throw new DomainError('positionFull');
 		}
@@ -516,6 +558,7 @@ export async function decideRequest(
 			.update(assignments)
 			.set({ status: approve ? 'booked' : 'rejected' })
 			.where(eq(assignments.id, assignmentId));
+		if (position) callEnded = await endUrgentIfFull(tx, shift, position);
 		await notifyAssignment(tx, approve ? 'request_approved' : 'request_rejected', assignmentId);
 		await audit(tx, actor, {
 			action: approve ? 'assignment.approve' : 'assignment.reject',
@@ -525,6 +568,7 @@ export async function decideRequest(
 			data: { userId: assignment.userId }
 		});
 	});
+	if (callEnded) clearShiftCache();
 }
 
 /** Marks attendance. Possible from the start of the shift's day; corrections are always possible. */
