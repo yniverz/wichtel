@@ -20,6 +20,7 @@ description: How the app links to this help and how to send volunteers to your f
 | -------------------------------------------------------------------------------- | -------------------------- | ----------------------------------------------- |
 | Admin area                                                                       | “?” next to the page title | the matching page of this help                  |
 | Volunteer area                                                                   | “?” in the header          | the matching page of this help                  |
+| Log in, sign up, forgot password                                                 | “?” in the header          | the matching page of this help                  |
 | Footer in the volunteer area, on login and sign-up and on the other public pages | _Help_                     | the section [I volunteer](/wichtel/en/helpers/) |
 
 The links open in a new tab and in the language the person is currently using the app in.
@@ -37,7 +38,7 @@ that, send volunteers there.
 
 After that, these links go to your FAQ:
 
-- the “?” in the header of the volunteer area,
+- the “?” in the header of the volunteer area and of the login and sign-up pages,
 - _Help_ in the footer – in the volunteer area, on the login and sign-up pages and on the other public
   pages.
 

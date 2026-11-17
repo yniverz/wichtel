@@ -21,6 +21,7 @@ description: Wie die App auf diese Hilfe verlinkt und wie du Helfende stattdesse
 | -------------------------------------------------------------------------------------------------- | ------------------------- | ------------------------------------------- |
 | Verwaltung                                                                                         | „?“ neben dem Seitentitel | der passenden Seite dieser Hilfe            |
 | Helfer-Bereich                                                                                     | „?“ in der Kopfzeile      | der passenden Seite dieser Hilfe            |
+| Anmelden, Registrieren, Passwort vergessen                                                         | „?“ in der Kopfzeile      | der passenden Seite dieser Hilfe            |
 | Fußzeile im Helfer-Bereich, beim Anmelden und Registrieren und auf den anderen öffentlichen Seiten | _Hilfe_                   | dem Teil [Ich helfe mit](/wichtel/helpers/) |
 
 Die Links öffnen sich in einem neuen Tab und in der Sprache, in der die Person die App gerade nutzt.
@@ -38,7 +39,7 @@ FAQ habt, schick die Helfenden dorthin.
 
 Danach führen diese Links zu eurer FAQ:
 
-- das „?“ in der Kopfzeile des Helfer-Bereichs,
+- das „?“ in der Kopfzeile des Helfer-Bereichs und der Seiten zum Anmelden und Registrieren,
 - _Hilfe_ in der Fußzeile – im Helfer-Bereich, auf den Seiten zum Anmelden und Registrieren und auf
   den anderen öffentlichen Seiten.
 
