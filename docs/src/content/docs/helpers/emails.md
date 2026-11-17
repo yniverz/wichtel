@@ -17,43 +17,43 @@ Die Betreffzeilen unten sind die Standardtexte. Dein Festival kann die Texte anp
 
 ## Konto
 
-| Betreff                                    | Wann                                                                       |
-| ------------------------------------------ | -------------------------------------------------------------------------- |
-| Bitte bestätige deine E-Mail-Adresse       | nach der Registrierung und bei _E-Mail erneut senden_ (Link 48 Std. gültig) |
-| Du hast schon ein Konto                    | wenn sich jemand mit deiner Adresse neu registrieren will                  |
-| Passwort zurücksetzen                      | nach _Passwort vergessen?_ (Link eine Stunde gültig)                       |
-| Deine E-Mail-Adresse bei … wurde geändert  | an deine **alte** Adresse, wenn die Orga sie geändert hat                  |
-| Dein Konto bei … wird bald gelöscht        | zwei Wochen bevor ein lange unbenutztes Konto gelöscht wird                |
+| Betreff                                   | Wann                                                                        |
+| ----------------------------------------- | --------------------------------------------------------------------------- |
+| Bitte bestätige deine E-Mail-Adresse      | nach der Registrierung und bei _E-Mail erneut senden_ (Link 48 Std. gültig) |
+| Du hast schon ein Konto                   | wenn sich jemand mit deiner Adresse neu registrieren will                   |
+| Passwort zurücksetzen                     | nach _Passwort vergessen?_ (Link eine Stunde gültig)                        |
+| Deine E-Mail-Adresse bei … wurde geändert | an deine **alte** Adresse, wenn die Orga sie geändert hat                   |
+| Dein Konto bei … wird bald gelöscht       | zwei Wochen bevor ein lange unbenutztes Konto gelöscht wird                 |
 
 ## Schichten
 
-| Betreff                         | Wann                                                                                         |
-| ------------------------------- | -------------------------------------------------------------------------------------------- |
-| Du bist eingetragen: …          | du hast dich eingetragen, einen reservierten Platz angenommen oder eine Schicht übernommen    |
-| Anfrage gesendet: …             | du hast bei einer Position _auf Anfrage_ angefragt                                            |
-| Bestätigt: …                    | die Leitung hat deine Anfrage bestätigt                                                      |
-| Leider nicht geklappt: …        | die Leitung hat deine Anfrage abgelehnt                                                      |
-| Nachgerückt: …                  | ein Platz ist frei geworden und du bist von der Warteliste nachgerückt                       |
-| Du wurdest eingetragen: …       | die Leitung hat dich eingetragen                                                             |
-| Ausgetragen: …                  | die Leitung hat dich ausgetragen                                                             |
-| Geändert: …                     | Zeit, Ort oder Treffpunkt deiner Schicht haben sich geändert                                 |
-| Abgesagt: …                     | die Schicht findet nicht statt (auch wenn du auf der Warteliste standst)                     |
-| Erinnerung: …                   | vor deiner Schicht – meist 24 Stunden vorher; die Orga kann das ändern oder abschalten       |
-| Dringend gesucht: …             | eine Schicht sucht kurzfristig Hilfe, du hast zu der Zeit frei und erfüllst die Anforderungen |
+| Betreff                   | Wann                                                                                          |
+| ------------------------- | --------------------------------------------------------------------------------------------- |
+| Du bist eingetragen: …    | du hast dich eingetragen, einen reservierten Platz angenommen oder eine Schicht übernommen    |
+| Anfrage gesendet: …       | du hast bei einer Position _auf Anfrage_ angefragt                                            |
+| Bestätigt: …              | die Leitung hat deine Anfrage bestätigt                                                       |
+| Leider nicht geklappt: …  | die Leitung hat deine Anfrage abgelehnt                                                       |
+| Nachgerückt: …            | ein Platz ist frei geworden und du bist von der Warteliste nachgerückt                        |
+| Du wurdest eingetragen: … | die Leitung hat dich eingetragen                                                              |
+| Ausgetragen: …            | die Leitung hat dich ausgetragen                                                              |
+| Geändert: …               | Zeit, Ort oder Treffpunkt deiner Schicht haben sich geändert                                  |
+| Abgesagt: …               | die Schicht findet nicht statt (auch wenn du auf der Warteliste standst)                      |
+| Erinnerung: …             | vor deiner Schicht – meist 24 Stunden vorher; die Orga kann das ändern oder abschalten        |
+| Dringend gesucht: …       | eine Schicht sucht kurzfristig Hilfe, du hast zu der Zeit frei und erfüllst die Anforderungen |
 
 Selbst austragen, Anfrage zurückziehen oder Warteliste verlassen löst keine E-Mail aus.
 
 ## Gruppe, Abgeben und Tauschen
 
-| Betreff                                     | Wann                                                                 |
-| ------------------------------------------- | -------------------------------------------------------------------- |
-| Platz für dich reserviert: …                | jemand aus deiner Gruppe hat dich für eine Schicht mit eingeplant    |
-| Reservierung abgelaufen: …                  | du hast den reservierten Platz nicht rechtzeitig angenommen          |
-| … bietet dir eine Schicht an                | jemand will dir direkt eine Schicht geben                            |
-| … schlägt einen Tausch vor                  | jemand will deine angebotene Schicht gegen eine eigene tauschen      |
-| Übergabe wartet auf die Leitung: …          | eine Übergabe ist vereinbart, die Leitung muss noch zustimmen        |
-| Übernommen: …                               | jemand hat deine Schicht übernommen – du bist ausgetragen            |
-| Übergabe nicht zustande gekommen: …         | eine Übergabe oder ein Tausch wurde abgelehnt                        |
+| Betreff                             | Wann                                                              |
+| ----------------------------------- | ----------------------------------------------------------------- |
+| Platz für dich reserviert: …        | jemand aus deiner Gruppe hat dich für eine Schicht mit eingeplant |
+| Reservierung abgelaufen: …          | du hast den reservierten Platz nicht rechtzeitig angenommen       |
+| … bietet dir eine Schicht an        | jemand will dir direkt eine Schicht geben                         |
+| … schlägt einen Tausch vor          | jemand will deine angebotene Schicht gegen eine eigene tauschen   |
+| Übergabe wartet auf die Leitung: …  | eine Übergabe ist vereinbart, die Leitung muss noch zustimmen     |
+| Übernommen: …                       | jemand hat deine Schicht übernommen – du bist ausgetragen         |
+| Übergabe nicht zustande gekommen: … | eine Übergabe oder ein Tausch wurde abgelehnt                     |
 
 ## Neuigkeiten
 

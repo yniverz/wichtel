@@ -63,7 +63,8 @@ deine alten Schichten und Punkte.
 ## Automatisches Löschen bei Inaktivität
 
 Damit keine Daten länger als nötig liegen bleiben, löscht Wichtel Konten, die lange nicht benutzt
-wurden. Die Frist legt dein Festival fest (meist 24 Monate).
+wurden. Die Frist legt dein Festival fest (meist 24 Monate); es kann das automatische Löschen auch
+abschalten.
 
 - Als „benutzt“ zählt: dich anmelden bzw. die App öffnen, oder eine Schicht, die du hattest. Es
   zählt das, was zuletzt war.

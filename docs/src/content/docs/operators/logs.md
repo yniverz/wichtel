@@ -17,7 +17,7 @@ description: Wie Wichtel loggt, wie man die Logs mit jq filtert, was Fehler-IDs 
 Wichtel schreibt eine Zeile pro Ereignis nach stdout (Warnungen und Fehler nach stderr), im
 Container als JSON:
 
-```json
+```
 {"time":"2027-06-01T10:00:00.000Z","level":"info","msg":"request","method":"GET","path":"/app/shifts","status":200,"ms":12}
 ```
 
@@ -79,16 +79,16 @@ Verwaltung an; unter _Kommunikation → Zustellung_ lassen sie sich erneut sende
 
 ## Wichtige Meldungen
 
-| Meldung                                                                 | Bedeutung                                                                                                     |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `Wichtel is not set up yet. Open this link …`                           | Einrichtungslink, siehe [Installation](/wichtel/operators/install/#einrichtungslink).                         |
-| `SETUP_TOKEN is no longer needed and can be removed`                    | Einrichtung ist fertig; `SETUP_TOKEN` aus der Konfiguration entfernen.                                        |
-| `No mail server (SMTP_HOST): …`                                         | Kein Mailserver eingerichtet, siehe [ohne Mailserver](/wichtel/operators/email/#ohne-mailserver).             |
-| `e-mail not sent (SMTP_HOST unset)`                                     | Eine Mail, die ohne Mailserver nur geloggt wurde.                                                             |
-| `client address unknown – does the reverse proxy send X-Forwarded-For?` | Proxy schickt kein passendes `X-Forwarded-For`, siehe [Reverse Proxy](/wichtel/operators/reverse-proxy/).     |
-| `server busy: requests turned away`                                     | Sehr viel Andrang, Aufrufe der Schichtliste wurden abgewiesen, siehe [Kapazität](/wichtel/operators/capacity/). |
-| `unexpected error`                                                      | Unerwarteter Fehler mit Fehler-ID.                                                                            |
-| `mail failed, will retry` / `mail failed for good`                      | Mailversand fehlgeschlagen, siehe oben.                                                                       |
+| Meldung                                                                 | Bedeutung                                                                                                                 |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `Wichtel is not set up yet. Open this link …`                           | Einrichtungslink, siehe [Installation](/wichtel/operators/install/#einrichtungslink).                                     |
+| `SETUP_TOKEN is no longer needed and can be removed`                    | Einrichtung ist fertig; `SETUP_TOKEN` aus der Konfiguration entfernen.                                                    |
+| `No mail server (SMTP_HOST): …`                                         | Kein Mailserver eingerichtet, siehe [ohne Mailserver](/wichtel/operators/email/#ohne-mailserver).                         |
+| `e-mail not sent (SMTP_HOST unset)`                                     | Eine Mail, die ohne Mailserver nur geloggt wurde.                                                                         |
+| `client address unknown – does the reverse proxy send X-Forwarded-For?` | Proxy schickt kein passendes `X-Forwarded-For`, siehe [Reverse Proxy](/wichtel/operators/reverse-proxy/).                 |
+| `server busy: requests turned away`                                     | Sehr viel Andrang, Aufrufe der Schichtliste wurden abgewiesen, siehe [Kapazität](/wichtel/operators/capacity/).           |
+| `unexpected error`                                                      | Unerwarteter Fehler mit Fehler-ID.                                                                                        |
+| `mail failed, will retry` / `mail failed for good`                      | Mailversand fehlgeschlagen, siehe oben.                                                                                   |
 | `retention run`                                                         | Das automatische Aufräumen hat Konten benachrichtigt oder anonymisiert, siehe [Datenschutz](/wichtel/operators/privacy/). |
 
 ## Siehe auch

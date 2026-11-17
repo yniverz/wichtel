@@ -62,14 +62,14 @@ Code (_Goodies_ → _Dein Code_). Danach steht bei dem Goodie _abgeholt_.
 
 ### Warum kann ich ein Goodie nicht auswählen?
 
-| Anzeige                                         | Bedeutung                                                                                       |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| _Dir fehlen noch 5 Punkte._                     | Deine Punkte reichen noch nicht.                                                                |
+| Anzeige                                         | Bedeutung                                                                                        |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| _Dir fehlen noch 5 Punkte._                     | Deine Punkte reichen noch nicht.                                                                 |
 | _auch mit vorgemerkten Punkten_                 | Dieses Goodie kannst du schon mit vorgemerkten Punkten auswählen.                                |
 | _Nur für Helfende aus: …_                       | Nur wer in einem dieser Bereiche eine bestätigte Schicht hat, kann es auswählen.                 |
-| _Schon ausgewählt._                             | Mehr davon gibt es nicht pro Person.                                                            |
+| _Schon ausgewählt._                             | Mehr davon gibt es nicht pro Person.                                                             |
 | _Gerade vergriffen – frag an der Ausgabe nach._ | Zum Selbst-Auswählen ist nichts mehr übrig. Die Ausgabe kann manchmal trotzdem noch etwas geben. |
-| _noch 3 verfügbar_                              | So viele lassen sich noch auswählen.                                                            |
+| _noch 3 verfügbar_                              | So viele lassen sich noch auswählen.                                                             |
 
 ## Pflicht-Goodies (z. B. Freiticket)
 

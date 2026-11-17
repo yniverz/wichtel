@@ -85,28 +85,28 @@ Ohne bestätigte E-Mail-Adresse kannst du keine Schichten buchen. Siehe
 Manchmal ändert sich etwas, während du die Seite offen hast – dann kommt nach dem Tippen eine
 Meldung:
 
-| Meldung                                                                                       | Was passiert ist und was du tun kannst                                                                            |
-| --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| _Alle Plätze sind schon vergeben._                                                            | Jemand war schneller. Seite neu laden, Warteliste nutzen.                                                         |
-| _Das überschneidet sich mit einer anderen Schicht._                                           | Siehe oben unter „Überschneidet sich mit einer deiner Schichten“.                                           |
-| _Für diese Position brauchst du eine Qualifikation, die noch nicht bestätigt ist._            | Siehe oben unter „Jetzt nachweisen“.                                                                      |
-| _Für diese Schicht ist die Buchung gerade nicht offen._                                       | Siehe oben unter „Buchung öffnet …“.                                          |
-| _Für diese Schicht gibt es schon eine Buchung._                                               | Du bist in dieser Schicht schon eingetragen, angefragt oder auf der Warteliste. Pro Schicht geht nur eine Position. |
-| _Diese Schicht hat schon begonnen._                                                           | Eintragen geht nur vor Beginn.                                                                                    |
-| _Es gibt noch freie Plätze – trag dich direkt ein._                                           | Du wolltest auf die Warteliste, aber es ist wieder etwas frei. Seite neu laden und _Eintragen_ tippen.            |
-| _Das gibt es (nicht mehr)._                                                                   | Die Schicht wurde gelöscht oder ist für dich nicht sichtbar. Seite neu laden.                                     |
-| _Die Reservierung ist abgelaufen._                                                            | Ein für dich reservierter Platz ist verfallen. Schau, ob noch etwas frei ist.                                     |
-| _Gerade ist sehr viel los. Bitte versuche es in ein paar Sekunden noch einmal._               | Gerade buchen sehr viele gleichzeitig. Kurz warten und noch einmal tippen.                                        |
-| _Etwas ist schiefgelaufen. Bitte versuche es noch einmal._                                    | Noch einmal versuchen. Passiert es wieder, schreib der Orga.                                                      |
+| Meldung                                                                            | Was passiert ist und was du tun kannst                                                                              |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| _Alle Plätze sind schon vergeben._                                                 | Jemand war schneller. Seite neu laden, Warteliste nutzen.                                                           |
+| _Das überschneidet sich mit einer anderen Schicht._                                | Siehe oben unter „Überschneidet sich mit einer deiner Schichten“.                                                   |
+| _Für diese Position brauchst du eine Qualifikation, die noch nicht bestätigt ist._ | Siehe oben unter „Jetzt nachweisen“.                                                                                |
+| _Für diese Schicht ist die Buchung gerade nicht offen._                            | Siehe oben unter „Buchung öffnet …“.                                                                                |
+| _Für diese Schicht gibt es schon eine Buchung._                                    | Du bist in dieser Schicht schon eingetragen, angefragt oder auf der Warteliste. Pro Schicht geht nur eine Position. |
+| _Diese Schicht hat schon begonnen._                                                | Eintragen geht nur vor Beginn.                                                                                      |
+| _Es gibt noch freie Plätze – trag dich direkt ein._                                | Du wolltest auf die Warteliste, aber es ist wieder etwas frei. Seite neu laden und _Eintragen_ tippen.              |
+| _Das gibt es (nicht mehr)._                                                        | Die Schicht wurde gelöscht oder ist für dich nicht sichtbar. Seite neu laden.                                       |
+| _Die Reservierung ist abgelaufen._                                                 | Ein für dich reservierter Platz ist verfallen. Schau, ob noch etwas frei ist.                                       |
+| _Gerade ist sehr viel los. Bitte versuche es in ein paar Sekunden noch einmal._    | Gerade buchen sehr viele gleichzeitig. Kurz warten und noch einmal tippen.                                          |
+| _Etwas ist schiefgelaufen. Bitte versuche es noch einmal._                         | Noch einmal versuchen. Passiert es wieder, schreib der Orga.                                                        |
 
 ## Beim Eintragen mit der Gruppe
 
-| Meldung                                                     | Bedeutung                                                                                            |
-| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| _Für diese Position geht nur eine Einzelanfrage._           | Positionen _auf Anfrage_ gehen nur einzeln.                                                          |
-| _Es sind nicht genug Plätze für alle frei._                 | Nimm weniger Leute mit oder such eine andere Schicht.                                                |
-| _Wähle mindestens eine Person aus deiner Gruppe._           | Hake mindestens eine Person an.                                                                      |
-| _Das klappt nicht für alle:_ mit einer Liste                | Für die genannten Leute passt es nicht (sieht die Schicht nicht, darf noch nicht buchen, ist schon eingetragen, hat die Qualifikation nicht, hat zur selben Zeit eine andere Schicht). Es wurde **niemand** eingetragen. Nimm diese Leute ab und versuche es noch einmal. |
+| Meldung                                           | Bedeutung                                                                                                                                                                                                                                                                 |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _Für diese Position geht nur eine Einzelanfrage._ | Positionen _auf Anfrage_ gehen nur einzeln.                                                                                                                                                                                                                               |
+| _Es sind nicht genug Plätze für alle frei._       | Nimm weniger Leute mit oder such eine andere Schicht.                                                                                                                                                                                                                     |
+| _Wähle mindestens eine Person aus deiner Gruppe._ | Hake mindestens eine Person an.                                                                                                                                                                                                                                           |
+| _Das klappt nicht für alle:_ mit einer Liste      | Für die genannten Leute passt es nicht (sieht die Schicht nicht, darf noch nicht buchen, ist schon eingetragen, hat die Qualifikation nicht, hat zur selben Zeit eine andere Schicht). Es wurde **niemand** eingetragen. Nimm diese Leute ab und versuche es noch einmal. |
 
 ## Hintergrund
 

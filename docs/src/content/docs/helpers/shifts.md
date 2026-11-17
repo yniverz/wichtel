@@ -45,19 +45,19 @@ Findest du nichts, tippe auf _Filter zurücksetzen_.
 
 Rechts neben jeder Schicht steht, wie es um sie steht:
 
-| Anzeige                                | Bedeutung                                                        |
-| -------------------------------------- | ---------------------------------------------------------------- |
-| _3 frei_                               | So viele Plätze sind noch frei.                                  |
-| _voll_                                 | Alle Plätze sind vergeben.                                       |
-| _Abzugeben_                            | Voll, aber jemand gibt seinen Platz ab – du kannst übernehmen.   |
-| _Dringend_                             | Hier wird kurzfristig Hilfe gesucht, oft mit _+… Bonuspunkte_.   |
-| _Eingetragen_                          | Du bist dabei.                                                   |
-| _Angefragt_                            | Du hast angefragt, die Leitung hat noch nicht entschieden.       |
-| _Warteliste_                           | Du stehst auf der Warteliste.                                    |
-| _Für dich reserviert_                  | Jemand aus deiner Gruppe hat dir einen Platz freigehalten.       |
-| _Abgelehnt_                            | Die Leitung hat deine Anfrage abgelehnt.                         |
-| _intern_ (hinter dem Bereich)          | Nur für Leute mit einer Rolle in diesem Bereich sichtbar.        |
-| _Mit dabei: …_ (unter dem Titel)       | Diese Leute aus deiner Gruppe sind in der Schicht.               |
+| Anzeige                          | Bedeutung                                                      |
+| -------------------------------- | -------------------------------------------------------------- |
+| _3 frei_                         | So viele Plätze sind noch frei.                                |
+| _voll_                           | Alle Plätze sind vergeben.                                     |
+| _Abzugeben_                      | Voll, aber jemand gibt seinen Platz ab – du kannst übernehmen. |
+| _Dringend_                       | Hier wird kurzfristig Hilfe gesucht, oft mit _+… Bonuspunkte_. |
+| _Eingetragen_                    | Du bist dabei.                                                 |
+| _Angefragt_                      | Du hast angefragt, die Leitung hat noch nicht entschieden.     |
+| _Warteliste_                     | Du stehst auf der Warteliste.                                  |
+| _Für dich reserviert_            | Jemand aus deiner Gruppe hat dir einen Platz freigehalten.     |
+| _Abgelehnt_                      | Die Leitung hat deine Anfrage abgelehnt.                       |
+| _intern_ (hinter dem Bereich)    | Nur für Leute mit einer Rolle in diesem Bereich sichtbar.      |
+| _Mit dabei: …_ (unter dem Titel) | Diese Leute aus deiner Gruppe sind in der Schicht.             |
 
 Vergangene Schichten sind blasser dargestellt.
 

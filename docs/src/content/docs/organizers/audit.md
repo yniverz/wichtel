@@ -75,7 +75,7 @@ IP-Adressen. Als Person steht dann „Gelöschtes Konto“. Dass etwas passiert 
 <details>
 <summary>Wann werden IP-Adressen entfernt?</summary>
 
-Zu jedem Eintrag speichert Wichtel die IP-Adresse, von der die Aktion kam. Angezeigt wird sie im
+Zu jeder Aktion einer Person speichert Wichtel die IP-Adresse, von der sie kam. Angezeigt wird sie im
 Protokoll nicht. Nach der Frist _IP-Adressen im Protokoll löschen nach (Tagen)_ unter
 _Datenschutz & Impressum_ → _Löschfristen_ entfernt Wichtel sie automatisch; ab Werk nach 90 Tagen.
 Das Protokoll selbst bleibt erhalten. [Datenschutz & Impressum](/wichtel/organizers/privacy/)

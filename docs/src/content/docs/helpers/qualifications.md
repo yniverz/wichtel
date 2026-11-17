@@ -37,13 +37,13 @@ Auch wenn du nur das Häkchen setzt, schaut sich jemand deine Angabe an, bevor s
 
 ## Der Stand
 
-| Anzeige                  | Bedeutung                                                                              |
-| ------------------------ | -------------------------------------------------------------------------------------- |
-| _nicht nachgewiesen_     | Du hast noch nichts eingereicht.                                                       |
-| _wird geprüft_           | Dein Nachweis liegt bei der Prüfung. Bitte warten.                                     |
-| _bestätigt_              | Alles gut. Steht _gültig bis …_ dabei, läuft die Qualifikation an diesem Tag ab.        |
-| _abgelehnt_              | Nicht anerkannt. Unter _Hinweis der Prüfung: …_ steht meist, warum.                     |
-| _abgelaufen_             | Die Gültigkeit ist vorbei.                                                             |
+| Anzeige              | Bedeutung                                                                        |
+| -------------------- | -------------------------------------------------------------------------------- |
+| _nicht nachgewiesen_ | Du hast noch nichts eingereicht.                                                 |
+| _wird geprüft_       | Dein Nachweis liegt bei der Prüfung. Bitte warten.                               |
+| _bestätigt_          | Alles gut. Steht _gültig bis …_ dabei, läuft die Qualifikation an diesem Tag ab. |
+| _abgelehnt_          | Nicht anerkannt. Unter _Hinweis der Prüfung: …_ steht meist, warum.              |
+| _abgelaufen_         | Die Gültigkeit ist vorbei.                                                       |
 
 Bei _abgelehnt_ und _abgelaufen_ tippst du auf _Erneut nachweisen_ und reichst den Nachweis noch
 einmal ein.

@@ -17,43 +17,43 @@ description: Alle Umgebungsvariablen von Wichtel mit Standardwert und Zweck, und
 
 ### Pflicht
 
-| Variable            | Standard | Zweck                                                                                                                                     |
-| ------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Variable            | Standard | Zweck                                                                                                                                   |
+| ------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | `PUBLIC_URL`        | –        | Öffentliche Adresse, z. B. `https://helfen.example.de`. Ein Schrägstrich am Ende wird entfernt. Siehe [unten](#was-public_url-bewirkt). |
-| `POSTGRES_PASSWORD` | –        | Passwort der mitgelieferten Datenbank. Nur für die `docker-compose.yml`, die daraus auch `DATABASE_URL` baut.                             |
+| `POSTGRES_PASSWORD` | –        | Passwort der mitgelieferten Datenbank. Nur für die `docker-compose.yml`, die daraus auch `DATABASE_URL` baut.                           |
 
 Fehlt eine der beiden, bricht `docker compose` mit „set PUBLIC_URL …“ bzw. „set POSTGRES_PASSWORD“ ab.
 
 ### Nur für die docker-compose.yml
 
-| Variable        | Standard                         | Zweck                                                                                                          |
-| --------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `WICHTEL_PORT`  | `3006`                           | Port auf dem Host. Im Container lauscht Wichtel immer auf `3000`.                                              |
+| Variable        | Standard                         | Zweck                                                                                                           |
+| --------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `WICHTEL_PORT`  | `3006`                           | Port auf dem Host. Im Container lauscht Wichtel immer auf `3000`.                                               |
 | `WICHTEL_BIND`  | `127.0.0.1`                      | Adresse auf dem Host. `127.0.0.1` = nur vom Server selbst erreichbar (Proxy auf dem Host); `0.0.0.0` = im Netz. |
 | `WICHTEL_IMAGE` | `ghcr.io/yniverz/wichtel:latest` | Welches Image läuft, z. B. eine feste Version `ghcr.io/yniverz/wichtel:<commit>` oder ein eigener Fork.         |
 
 ### E-Mail (SMTP)
 
-| Variable        | Standard                      | Zweck                                                                                                                         |
-| --------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `SMTP_HOST`     | leer                          | Mailserver. Leer = es werden keine Mails verschickt, sie stehen nur im Log, und neue Konten brauchen keine Bestätigung.        |
-| `SMTP_PORT`     | `587`                         | Port des Mailservers. Muss eine ganze Zahl sein.                                                                              |
-| `SMTP_SECURE`   | `false`                       | `true` (oder `1`) = TLS von Anfang an, meist Port `465`. Bei `false` typischerweise Port `587`.                               |
-| `SMTP_USER`     | leer                          | Benutzername. Ist er leer, meldet sich Wichtel nicht am Mailserver an.                                                        |
-| `SMTP_PASSWORD` | leer                          | Passwort zum Benutzernamen.                                                                                                   |
+| Variable        | Standard                      | Zweck                                                                                                                        |
+| --------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `SMTP_HOST`     | leer                          | Mailserver. Leer = es werden keine Mails verschickt, sie stehen nur im Log, und neue Konten brauchen keine Bestätigung.      |
+| `SMTP_PORT`     | `587`                         | Port des Mailservers. Muss eine ganze Zahl sein.                                                                             |
+| `SMTP_SECURE`   | `false`                       | `true` (oder `1`) = TLS von Anfang an, meist Port `465`. Bei `false` typischerweise Port `587`.                              |
+| `SMTP_USER`     | leer                          | Benutzername. Ist er leer, meldet sich Wichtel nicht am Mailserver an.                                                       |
+| `SMTP_PASSWORD` | leer                          | Passwort zum Benutzernamen.                                                                                                  |
 | `SMTP_FROM`     | `Wichtel <wichtel@localhost>` | Absender, z. B. `"Festival Helfende <helfen@example.de>"`. Unbedingt setzen – den Standard lehnen echte Mailserver meist ab. |
 
 Mehr dazu: [E-Mail](/wichtel/operators/email/).
 
 ### Optional
 
-| Variable          | Standard                                 | Zweck                                                                                                                                                         |
-| ----------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SETUP_TOKEN`     | leer                                     | Fester Token für den Einrichtungslink, **mindestens 24 Zeichen**. Leer = zufälliger Token im Log. Nach der Einrichtung entfernen.                            |
-| `LOG_LEVEL`       | `info`                                   | `debug`, `info`, `warn` oder `error`.                                                                                                                         |
-| `LOG_FORMAT`      | `json` im Container                      | `json` (eine Zeile JSON pro Ereignis) oder `text` (lesbar). Ohne Angabe: `json` im Betrieb, `text` in der Entwicklung.                                        |
-| `LOG_MAIL_BODIES` | aus (nur in der Entwicklung an)          | Ohne SMTP auch die Mailtexte loggen. Sie enthalten geheime Links (z. B. zum Zurücksetzen des Passworts) – im Betrieb nicht empfohlen.                         |
-| `UPLOAD_DIR`      | `/data/uploads` im Container             | Wo hochgeladene Dateien liegen (Logos, Hintergründe, Geländepläne, Nachweise). Im Container liegt `/data` im Volume `uploads`; nicht ändern.                |
+| Variable          | Standard                                | Zweck                                                                                                                                                  |
+| ----------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `SETUP_TOKEN`     | leer                                    | Fester Token für den Einrichtungslink, **mindestens 24 Zeichen**. Leer = zufälliger Token im Log. Nach der Einrichtung entfernen.                      |
+| `LOG_LEVEL`       | `info`                                  | `debug`, `info`, `warn` oder `error`.                                                                                                                  |
+| `LOG_FORMAT`      | `json` im Container                     | `json` (eine Zeile JSON pro Ereignis) oder `text` (lesbar). Ohne Angabe: `json` im Betrieb, `text` in der Entwicklung.                                 |
+| `LOG_MAIL_BODIES` | aus (nur in der Entwicklung an)         | Ohne SMTP auch die Mailtexte loggen. Sie enthalten geheime Links (z. B. zum Zurücksetzen des Passworts) – im Betrieb nicht empfohlen.                  |
+| `UPLOAD_DIR`      | `/data/uploads` im Container            | Wo hochgeladene Dateien liegen (Logos, Hintergründe, Geländepläne, Nachweise). Im Container liegt `/data` im Volume `uploads`; nicht ändern.           |
 | `DATABASE_URL`    | von der `docker-compose.yml` vorgegeben | PostgreSQL-Verbindung, z. B. `postgres://wichtel:<passwort>@db:5432/wichtel`. Nur nötig, wenn du eine eigene Datenbank statt der mitgelieferten nutzt. |
 
 :::note
@@ -77,15 +77,15 @@ services:
 Diese Werte setzen das Image bzw. die `docker-compose.yml` bereits. Sie gehören zum Node-Server von
 SvelteKit; ändern muss man sie selten.
 
-| Variable          | Wert                 | Zweck                                                                                                                         |
-| ----------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `PROTOCOL_HEADER` | `x-forwarded-proto`  | Protokoll (http/https) kommt vom Reverse Proxy.                                                                               |
-| `HOST_HEADER`     | `x-forwarded-host`   | Hostname kommt vom Reverse Proxy (sonst aus `Host`).                                                                          |
-| `ADDRESS_HEADER`  | `x-forwarded-for`    | Client-Adresse kommt vom Reverse Proxy.                                                                                       |
-| `XFF_DEPTH`       | `1`                  | Wie viele Proxys vor Wichtel stehen. Siehe [mehrere Proxys](/wichtel/operators/reverse-proxy/#mehrere-proxys-zum-beispiel-cloudflare). |
-| `BODY_SIZE_LIMIT` | `16M`                | Obergrenze für Anfragen; Wichtel selbst erlaubt 16 MB nur für Uploads, sonst 1 MB.                                            |
-| `PORT`            | `3000`               | Port im Container.                                                                                                            |
-| `NODE_ENV`        | `production`         | Betriebsmodus (u. a. JSON-Logs, strenge Prüfung von `SETUP_TOKEN`).                                                           |
+| Variable          | Wert                | Zweck                                                                                                                                  |
+| ----------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `PROTOCOL_HEADER` | `x-forwarded-proto` | Protokoll (http/https) kommt vom Reverse Proxy.                                                                                        |
+| `HOST_HEADER`     | `x-forwarded-host`  | Hostname kommt vom Reverse Proxy (sonst aus `Host`).                                                                                   |
+| `ADDRESS_HEADER`  | `x-forwarded-for`   | Client-Adresse kommt vom Reverse Proxy.                                                                                                |
+| `XFF_DEPTH`       | `1`                 | Wie viele Proxys vor Wichtel stehen. Siehe [mehrere Proxys](/wichtel/operators/reverse-proxy/#mehrere-proxys-zum-beispiel-cloudflare). |
+| `BODY_SIZE_LIMIT` | `16M`               | Obergrenze für Anfragen; Wichtel selbst erlaubt 16 MB nur für Uploads, sonst 1 MB.                                                     |
+| `PORT`            | `3000`              | Port im Container.                                                                                                                     |
+| `NODE_ENV`        | `production`        | Betriebsmodus (u. a. JSON-Logs, strenge Prüfung von `SETUP_TOKEN`).                                                                    |
 
 ## Was PUBLIC_URL bewirkt
 

@@ -23,8 +23,9 @@ description: Wie du in die Verwaltung kommst, den Jahrgang wählst und warum du 
 3. Prüf im Feld _Jahrgang_, ob der richtige Jahrgang gewählt ist. Der aktuelle Jahrgang ist mit
    „(aktuell)“ markiert.
 4. Neben jedem Seitentitel öffnet das runde **?** die passende Hilfeseite in einem neuen Tab.
-5. Mit _← Zur Helfer-Ansicht_ kommst du zurück zu deinen eigenen Schichten. Dort findest du auch
-   _Abmelden_ und die Sprachumschaltung.
+5. Unten in der Seitenleiste (auf dem Handy unter _Menü_) führt _← Zur Helfer-Ansicht_ zurück zu
+   deinen eigenen Schichten. Dort steht auch die Sprachumschaltung, am Computer außerdem _Hilfe_ (die
+   Startseite dieser Hilfe für Leitungen) und _Abmelden_.
 
 ## Das Menü
 
