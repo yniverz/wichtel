@@ -31,7 +31,8 @@ passenden Zeitraum.
 Alle Aktionen, die etwas ändern, zum Beispiel:
 
 - **Struktur:** Jahrgänge (anlegen, kopieren, aktuell machen, archivieren), Bereiche, Orte,
-  Geländeplan, Rollen und Rollenvergaben, Einstellungen.
+  Geländeplan, Rollen und Rollenvergaben, Profilfelder, Einstellungen (auch _Datenschutz &
+  Impressum_).
 - **Planung:** Schichten und Serien, Buchungswellen, Dringend-Aufrufe.
 - **Besetzung:** Personen eintragen und austragen, Anfragen entscheiden, Anwesenheit, Nachrücken von
   der Warteliste, Übergaben und Tausch, Gruppen.
@@ -41,7 +42,8 @@ Alle Aktionen, die etwas ändern, zum Beispiel:
 - **Kommunikation:** Neuigkeiten, E-Mail-Vorlagen, erneut gesendete oder verworfene E-Mails.
 - **KI-Assistenten:** verbunden, getrennt.
 
-Nicht im Protokoll stehen reine Lesezugriffe und Anmeldungen.
+Nicht im Protokoll stehen Anmeldungen und reines Ansehen – mit einer Ausnahme: Das Herunterladen
+einer Datenauskunft wird protokolliert.
 
 ## Häufige Fragen
 
@@ -64,8 +66,9 @@ automatische Löschen inaktiver Konten.
 
 ### Kann man Einträge ändern oder löschen?
 
-Nein, nicht in der Oberfläche. Nur wenn ein Konto gelöscht wird, verlieren die Einträge über diese
-Person ihre Details und alle Einträge ihre IP-Adressen; dass etwas passiert ist, bleibt sichtbar.
+Nein, nicht in der Oberfläche. Nur wenn ein Konto gelöscht wird, verlieren die Einträge **über**
+diese Person ihre Details und IP-Adressen, und Einträge, die sie selbst ausgelöst hat, ihre
+IP-Adressen. Als Person steht dann „Gelöschtes Konto“. Dass etwas passiert ist, bleibt sichtbar.
 
 ## Sonderfälle
 
