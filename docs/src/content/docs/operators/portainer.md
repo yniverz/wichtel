@@ -46,13 +46,13 @@ allem eigene Forks: Deren CI veröffentlicht das Image unter dem eigenen Konto
 
 ### Wie aktualisiere ich?
 
-Im Stack _Pull and redeploy_ bzw. beim Aktualisieren das Image neu ziehen lassen. Die Migrationen
-laufen beim Start. Vorher sichern – siehe [Updates und Backups](/wichtel/operators/updates-backups/).
+Den Stack neu deployen und dabei das Image neu ziehen lassen (Portainer bietet dafür beim
+Aktualisieren des Stacks eine Option zum erneuten Pullen). Die Migrationen laufen beim Start. Vorher sichern – siehe [Updates und Backups](/wichtel/operators/updates-backups/).
 
 ### Mein Reverse Proxy läuft auch in Portainer.
 
-Beide Container in ein gemeinsames Docker-Netzwerk hängen und den Proxy auf `app:3000` zeigen
-lassen. Den App-Port nicht ins Internet freigeben. Details: [Reverse Proxy](/wichtel/operators/reverse-proxy/).
+Beide Container in ein gemeinsames Docker-Netzwerk hängen und den Proxy auf den App-Container,
+Port `3000`, zeigen lassen. Den App-Port nicht ins Internet freigeben. Details: [Reverse Proxy](/wichtel/operators/reverse-proxy/).
 
 ## Siehe auch
 

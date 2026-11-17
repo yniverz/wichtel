@@ -19,7 +19,7 @@ eigenen FAQ deines Festivals zeigen statt auf diese Seite.
 
 ### Wie melde ich mich an?
 
-Tipp auf _Jetzt als Helfer\*in anmelden_ bzw. _Registrieren_, füll Name, E-Mail-Adresse,
+Tippe auf _Jetzt als Helfer\*in anmelden_, füll Name, E-Mail-Adresse,
 Handynummer und ein Passwort mit mindestens 10 Zeichen aus und bestätige danach den Link in der
 E-Mail. [→ Ausführlich](/wichtel/helpers/account/)
 
