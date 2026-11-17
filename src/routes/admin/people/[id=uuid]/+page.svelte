@@ -54,7 +54,18 @@
 			>{i18n.t('admin.people.edit')}</Button
 		>
 	{/if}
+	{#if page.data.access.isAdmin && !data.person.emailVerified}
+		<ConfirmForm
+			action="?/verify"
+			variant="secondary"
+			message={i18n.t('admin.people.verifyConfirm', { email: data.person.email ?? '' })}
+			confirmLabel={i18n.t('admin.people.verify')}>{i18n.t('admin.people.verify')}</ConfirmForm
+		>
+	{/if}
 </div>
+{#if result?.action === 'verify'}
+	<div class="-mt-3 mb-6"><FormMessage error={result.error} success={result.success} /></div>
+{/if}
 
 <div class="grid gap-6 lg:grid-cols-3">
 	<div class="space-y-6 lg:col-span-2">

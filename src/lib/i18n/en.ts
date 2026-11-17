@@ -257,6 +257,10 @@ export const en: Record<keyof typeof de, string> = {
 		'The new address counts as confirmed. The old address is told, and links already sent to it stop working.',
 	'admin.people.passwordHint':
 		'The person sets their password themselves – with a reset link you can create on their page.',
+	'admin.people.verify': 'Mark as confirmed',
+	'admin.people.verifyConfirm':
+		'Mark {email} as confirmed? Only do this if you are sure the address belongs to this person.',
+	'admin.people.verified': 'The address is now confirmed.',
 	'admin.people.contact': 'Contact',
 	'admin.people.rolesIn': 'Roles in edition {edition}',
 	'admin.people.noRoles': 'No roles in this edition.',
@@ -320,6 +324,7 @@ export const en: Record<keyof typeof de, string> = {
 	'audit.role_assignment.create': 'Role assigned',
 	'audit.role_assignment.delete': 'Role removed',
 	'audit.user.admin_grant': 'Admin rights granted',
+	'audit.user.verify': 'Address confirmed by hand',
 	'audit.user.update': 'Account details changed',
 	'audit.user.admin_revoke': 'Admin rights revoked',
 	'audit.user.password_reset': 'Password reset',

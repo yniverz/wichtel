@@ -63,7 +63,8 @@ Alles, was Wichtel kann – nach Rolle sortiert. Die Kurzfassung steht im [READM
 - **E-Mail-Zustellung**: Testmail an sich selbst, hängende oder gescheiterte Mails erneut senden,
   Verlauf aller Mails der letzten 30 Tage (Empfänger, Betreff, Stand).
 - **Konten bearbeiten**: Admins korrigieren Name, E-Mail, Telefon, Sprache und Profilfelder; bei
-  einer neuen Adresse bekommt die alte einen Hinweis. Passwörter setzen die Personen selbst.
+  einer neuen Adresse bekommt die alte einen Hinweis. Kommt eine Bestätigungsmail nicht an, lässt sich
+  die Adresse von Hand als bestätigt markieren. Passwörter setzen die Personen selbst.
 - **Protokoll** aller Verwaltungsaktionen.
 - **Datenschutz**: Helfende laden ihre Daten selbst herunter und löschen ihr Konto; Admins können
   beides für Anfragen per Post erledigen. Gelöschte Konten verlieren alle persönlichen Daten,

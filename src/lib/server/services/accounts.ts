@@ -400,6 +400,23 @@ export async function updateAccount(
 	});
 }
 
+/**
+ * An administrator confirms an address by hand (e.g. the confirmation mail never arrived).
+ * Pending confirmation links are no longer needed and stop working.
+ */
+export async function markEmailVerified(db: DB, actor: Actor, userId: string): Promise<void> {
+	await db.transaction(async (tx) => {
+		const [user] = await tx.select().from(users).where(eq(users.id, userId)).for('update');
+		if (!user || user.deletedAt) throw new DomainError('notFound');
+		if (user.emailVerifiedAt) return;
+		await tx.update(users).set({ emailVerifiedAt: new Date() }).where(eq(users.id, userId));
+		await tx
+			.delete(emailTokens)
+			.where(and(eq(emailTokens.userId, userId), eq(emailTokens.purpose, 'verify_email')));
+		await audit(tx, actor, { action: 'user.verify', entityType: 'user', entityId: userId });
+	});
+}
+
 export async function setLocale(db: DB, userId: string, locale: Locale): Promise<void> {
 	await db.update(users).set({ locale }).where(eq(users.id, userId));
 }

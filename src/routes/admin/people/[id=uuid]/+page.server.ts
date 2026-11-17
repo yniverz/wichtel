@@ -15,7 +15,12 @@ import {
 	requireAdmin,
 	requireEdition
 } from '#lib/server/guards.ts';
-import { createResetLink, mailResetLink, setAdmin } from '#lib/server/services/accounts.ts';
+import {
+	createResetLink,
+	mailResetLink,
+	markEmailVerified,
+	setAdmin
+} from '#lib/server/services/accounts.ts';
 import { getSettings } from '#lib/server/services/settings.ts';
 import { getPerson } from '#lib/server/services/people.ts';
 import {
@@ -200,6 +205,14 @@ export const actions: Actions = {
 		);
 		if (!result.ok) return result.failure;
 		return { action: 'admin', success: 'common.saved' };
+	},
+	verify: async (event) => {
+		requireAdmin(await getAdminContext(event));
+		const result = await attempt(() => markEmailVerified(db(), actorOf(event), event.params.id), {
+			action: 'verify'
+		});
+		if (!result.ok) return result.failure;
+		return { action: 'verify', success: 'admin.people.verified' };
 	},
 	resetLink: async (event) => {
 		requireAdmin(await getAdminContext(event));

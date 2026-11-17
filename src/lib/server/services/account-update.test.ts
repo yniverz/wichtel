@@ -7,6 +7,7 @@ import { createTestDatabase } from '../testing/db.ts';
 import {
 	createResetLink,
 	mailResetLink,
+	markEmailVerified,
 	register,
 	requestPasswordReset,
 	updateAccount
@@ -148,5 +149,34 @@ describe('mailResetLink', () => {
 			'invalidToken'
 		);
 		await expectDomainError(mailResetLink(s.ctx, admin, s.anna.id, 'made-up'), 'invalidToken');
+	});
+});
+
+describe('markEmailVerified', () => {
+	it('confirms the address once, voids pending links and logs it', async () => {
+		const s = await seed();
+		await s.db.update(users).set({ emailVerifiedAt: null }).where(eq(users.id, s.anna.id));
+		await s.db.insert(emailTokens).values({
+			id: 'pending',
+			userId: s.anna.id,
+			purpose: 'verify_email',
+			expiresAt: new Date(Date.now() + 3_600_000)
+		});
+		await markEmailVerified(s.db, admin, s.anna.id);
+		await markEmailVerified(s.db, admin, s.anna.id);
+		const [after] = await s.db.select().from(users).where(eq(users.id, s.anna.id));
+		expect(after.emailVerifiedAt).not.toBeNull();
+		expect(await s.db.select().from(emailTokens).where(eq(emailTokens.userId, s.anna.id))).toEqual(
+			[]
+		);
+		expect(
+			await s.db.select().from(auditLog).where(eq(auditLog.action, 'user.verify'))
+		).toHaveLength(1);
+	});
+
+	it('does not touch deleted accounts', async () => {
+		const s = await seed();
+		await s.db.update(users).set({ deletedAt: new Date() }).where(eq(users.id, s.anna.id));
+		await expectDomainError(markEmailVerified(s.db, admin, s.anna.id), 'notFound');
 	});
 });

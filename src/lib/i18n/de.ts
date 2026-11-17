@@ -261,6 +261,10 @@ export const de = {
 		'Die neue Adresse gilt als bestätigt. Die alte Adresse bekommt einen Hinweis, offene Links an sie werden ungültig.',
 	'admin.people.passwordHint':
 		'Das Passwort setzt die Person selbst – über einen Link zum Zurücksetzen, den du auf ihrer Seite erzeugen kannst.',
+	'admin.people.verify': 'Als bestätigt markieren',
+	'admin.people.verifyConfirm':
+		'Adresse {email} als bestätigt markieren? Mach das nur, wenn du sicher bist, dass sie der Person gehört.',
+	'admin.people.verified': 'Die Adresse ist jetzt bestätigt.',
 	'admin.people.contact': 'Kontakt',
 	'admin.people.rolesIn': 'Rollen im Jahrgang {edition}',
 	'admin.people.noRoles': 'Keine Rollen in diesem Jahrgang.',
@@ -324,6 +328,7 @@ export const de = {
 	'audit.role_assignment.create': 'Rolle vergeben',
 	'audit.role_assignment.delete': 'Rolle entzogen',
 	'audit.user.admin_grant': 'Adminrechte vergeben',
+	'audit.user.verify': 'Adresse von Hand bestätigt',
 	'audit.user.update': 'Kontodaten geändert',
 	'audit.user.admin_revoke': 'Adminrechte entzogen',
 	'audit.user.password_reset': 'Passwort zurückgesetzt',
