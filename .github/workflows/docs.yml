@@ -30,7 +30,13 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: docs/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            docs/package-lock.json
+      # Vite reads every tsconfig in the repository, and the app's extends a file that
+      # `svelte-kit sync` generates while the app's dependencies are installed.
+      - run: npm ci
+        working-directory: .
       - run: npm ci
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
