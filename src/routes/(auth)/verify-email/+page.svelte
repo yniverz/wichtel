@@ -8,17 +8,24 @@
 	let { data }: PageProps = $props();
 	const i18n = getI18n();
 	const loggedIn = $derived(Boolean(page.data.user));
+	const target = $derived(
+		loggedIn
+			? data.next || '/app'
+			: data.next
+				? `/login?next=${encodeURIComponent(data.next)}`
+				: '/login'
+	);
 </script>
 
 <div class="space-y-6">
 	{#if data.verified}
 		<h1 class="font-display text-4xl">{i18n.t('auth.verify.success')}</h1>
-		<Button href={loggedIn ? '/app' : '/login'} block size="lg">
+		<Button href={target} block size="lg">
 			{loggedIn ? i18n.t('landing.toApp') : i18n.t('nav.login')}
 		</Button>
 	{:else}
 		<Alert tone="error">{i18n.t('auth.verify.invalid')}</Alert>
-		<Button href={loggedIn ? '/app' : '/login'} variant="secondary" block>
+		<Button href={target} variant="secondary" block>
 			{loggedIn ? i18n.t('landing.toApp') : i18n.t('nav.login')}
 		</Button>
 	{/if}

@@ -131,6 +131,26 @@
 								</div>
 								{#if claim.status === 'selected'}
 									<div class="flex flex-wrap gap-2">
+										{#if claim.goodie.variants.length > 1}
+											<form method="POST" action="?/variant" use:enhance class="flex gap-2">
+												<input type="hidden" name="claimId" value={claim.id} />
+												<label class="sr-only" for="claim-variant-{claim.id}"
+													>{i18n.t('goodies.variant')}</label
+												>
+												<select
+													id="claim-variant-{claim.id}"
+													name="variant"
+													class="h-11 min-w-20"
+													value={claim.variant ?? ''}
+												>
+													{#each claim.goodie.variants as v (v)}<option value={v}>{v}</option
+														>{/each}
+												</select>
+												<Button type="submit" variant="secondary"
+													>{i18n.t('goodies.claim.changeVariant')}</Button
+												>
+											</form>
+										{/if}
 										{#if claim.goodie.refundable}
 											<ConfirmForm
 												action="?/refund"
@@ -179,7 +199,9 @@
 									{/if}
 									{@render pickupLine(g.pickup)}
 									<p class="mt-1 text-sm">
-										{#if g.mandatory}{i18n.t('goodies.mandatory')}
+										{#if g.mandatory}{i18n.t(
+												g.variants.length > 1 ? 'goodies.mandatoryVariant' : 'goodies.mandatory'
+											)}
 										{:else if g.availability !== 'available'}<span class="text-ink-muted"
 												>{reason(g)}</span
 											>

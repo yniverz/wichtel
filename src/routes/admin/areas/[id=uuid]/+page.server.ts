@@ -9,7 +9,7 @@ import {
 	requirePermission
 } from '#lib/server/guards.ts';
 import { areaSchema } from '#lib/server/schemas.ts';
-import { deleteArea, updateArea } from '#lib/server/services/areas.ts';
+import { areaHasShifts, deleteArea, updateArea } from '#lib/server/services/areas.ts';
 import { listAssignmentsForEdition } from '#lib/server/services/roles.ts';
 import { parseForm } from '#lib/server/validation.ts';
 import type { Actions, PageServerLoad } from './$types';
@@ -28,6 +28,7 @@ export const load: PageServerLoad = async (event) => {
 		item: area,
 		path: tree.path(area.id).map((a) => ({ id: a.id, nameDe: a.nameDe, nameEn: a.nameEn })),
 		hasChildren: tree.children(area.id).length > 0,
+		hasShifts: await areaHasShifts(db(), area.id),
 		parents: parentOptions(tree, ctx.authz, area.id),
 		allowRoot: ctx.authz.can('area.manage') || area.parentId === null,
 		assignments

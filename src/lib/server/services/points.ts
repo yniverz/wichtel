@@ -18,6 +18,7 @@ import {
 import { audit, type Actor } from '../audit.ts';
 import { DomainError } from '../errors.ts';
 import { loadAreaTree } from './areas.ts';
+import { applyMandatoryGoodies } from './goodies.ts';
 import { getSettings } from './settings.ts';
 
 export async function pointsBalance(db: Tx, userId: string, editionId: string): Promise<number> {
@@ -44,6 +45,11 @@ export function pointsFor(
 	return shiftPoints(shift, bookedAt, rule, settings, settings.timezone);
 }
 
+/** When the person got the place: on booking, or when they moved up from the waiting list. */
+export function placedAt(assignment: Pick<Assignment, 'createdAt' | 'promotedAt'>): Date {
+	return assignment.promotedAt ?? assignment.createdAt;
+}
+
 /**
  * Brings the points for one assignment in line with its state: the full amount when the person
  * is booked and marked present, otherwise nothing. Differences are booked as new ledger entries,
@@ -64,7 +70,7 @@ export async function syncAssignmentPoints(
 	const tree = await loadAreaTree(tx, row.shift.editionId);
 	const target =
 		assignment.status === 'booked' && assignment.attendance === 'attended'
-			? pointsFor(row.shift, row.position, tree, settings, assignment.createdAt).total +
+			? pointsFor(row.shift, row.position, tree, settings, placedAt(assignment)).total +
 				assignment.bonusPoints
 			: 0;
 	const [current] = await tx
@@ -85,6 +91,7 @@ export async function syncAssignmentPoints(
 	return diff;
 }
 
+/** A manual correction. Mandatory goodies are redeemed as soon as the points allow. */
 export async function adjustPoints(
 	db: DB,
 	actor: Actor,
@@ -110,6 +117,7 @@ export async function adjustPoints(
 			data: { amount: input.amount },
 			reason: input.reason
 		});
+		if (input.amount > 0) await applyMandatoryGoodies(tx, actor, input.userId, input.editionId);
 	});
 }
 
@@ -144,6 +152,7 @@ export async function pendingPoints(db: Tx, userId: string, editionId: string): 
 			shift: shifts,
 			position: shiftPositions,
 			createdAt: assignments.createdAt,
+			promotedAt: assignments.promotedAt,
 			bonus: assignments.bonusPoints
 		})
 		.from(assignments)
@@ -161,7 +170,7 @@ export async function pendingPoints(db: Tx, userId: string, editionId: string): 
 	const settings = await getSettings(db);
 	const tree = await loadAreaTree(db, editionId);
 	return rows.reduce(
-		(sum, r) => sum + pointsFor(r.shift, r.position, tree, settings, r.createdAt).total + r.bonus,
+		(sum, r) => sum + pointsFor(r.shift, r.position, tree, settings, placedAt(r)).total + r.bonus,
 		0
 	);
 }

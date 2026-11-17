@@ -12,9 +12,12 @@ import {
 	cancelOwnAssignment,
 	joinWaitlist,
 	leadRemove,
-	listUserAssignments
+	listUserAssignments,
+	setAttendance
 } from './assignments.ts';
 import { createEdition } from './editions.ts';
+import { pendingPoints, pointsBalance } from './points.ts';
+import { updateSettings } from './settings.ts';
 import { createShift, getShift, updateShift, type ShiftInput } from './shifts.ts';
 import { bookingAccess, createWave, redeemInvite } from './waves.ts';
 
@@ -129,6 +132,26 @@ describe('waiting list', () => {
 		const lead = new Authz(true, [], () => []);
 		const [cAssignment] = await listUserAssignments(s.db, s.c.id, s.edition.id);
 		await leadRemove(ctx, actor, lead, cAssignment.id);
+	});
+
+	it('counts the last-minute bonus from moving up, not from joining the list', async () => {
+		const s = await seed();
+		await updateSettings(s.db, actor, { lastMinuteBonus: 5, lastMinuteHours: 24 });
+		const shift = await s.shiftOf(s.input('2027-06-12T10:00:00Z', '2027-06-12T14:00:00Z'));
+		const pos = shift.positions[0].id;
+		const ctx = { db: s.db, now: s.now };
+		const first = await bookPosition(ctx, s.a.id, pos, s.opts);
+		await joinWaitlist(ctx, s.b.id, pos, s.opts);
+
+		// a drops out the evening before: b gets the place 12 hours before the start.
+		const lead = new Authz(true, [], () => []);
+		const evening = { db: s.db, now: new Date('2027-06-11T22:00:00Z') };
+		await leadRemove(evening, actor, lead, first.id);
+		expect(await pendingPoints(s.db, s.b.id, s.edition.id)).toBe(6);
+		const [moved] = await listUserAssignments(s.db, s.b.id, s.edition.id);
+		const day = { db: s.db, now: new Date('2027-06-12T10:30:00Z') };
+		await setAttendance(day, actor, lead, moved.id, 'attended', 'Europe/Berlin');
+		expect(await pointsBalance(s.db, s.b.id, s.edition.id)).toBe(6);
 	});
 
 	it('cannot be joined while places are free', async () => {

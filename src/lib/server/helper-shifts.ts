@@ -55,6 +55,8 @@ export interface HelperShift {
 		marketOfferId: string | null;
 		/** Active urgent call: bonus points for booking now. */
 		urgent: { bonus: number; note: string } | null;
+		/** Booking is open for this person: their wave is open, or an urgent call is running. */
+		bookingOpen: boolean;
 	}[];
 	mine: {
 		assignmentId: string;
@@ -73,7 +75,10 @@ export interface HelperShift {
 	buddies: string[];
 	locationPlace: PlaceView | null;
 	meetingPlace: PlaceView | null;
-	/** Whether booking is open for this person (waves); if not, when it opens. */
+	/**
+	 * Whether booking is open for this person (waves); if not, when it opens. Positions with an
+	 * urgent call are open anyway (`positions[].bookingOpen`).
+	 */
 	bookingOpen: boolean;
 	bookingOpensAt: string | null;
 	waitlistEnabled: boolean;
@@ -89,6 +94,8 @@ export interface ShiftFacts {
 	past: boolean;
 	/** The person has an assignment here that is not cancelled (`HelperShift.mine`). */
 	mine: boolean;
+	/** `mine`, except a declined request (which may be asked again): no booking actions. */
+	taken: boolean;
 	/** Not started and at least one place free. */
 	open: boolean;
 	/** Someone else offers a place here on the shift market (and the person is not on it). */
@@ -202,15 +209,17 @@ export async function helperShiftsView(
 	function facts(s: ShiftWithPositions): ShiftFacts {
 		const root = tree.path(s.areaId)[0] ?? tree.get(s.areaId);
 		const past = s.startsAt.getTime() <= now.getTime();
-		const mine = activeMineOf(s) !== null;
+		const activeMine = activeMineOf(s);
+		const taken = activeMine !== null && activeMine.status !== 'rejected';
 		const window = access(s.areaId);
 		return {
 			day: dayOf(s.startsAt),
 			rootArea: root ? { id: root.id, nameDe: root.nameDe, nameEn: root.nameEn } : null,
 			past,
-			mine,
+			mine: activeMine !== null,
+			taken,
 			open: !past && s.positions.some((p) => freeOf(p) > 0),
-			onMarket: !past && !mine && s.positions.some((p) => marketOffer(p.id) !== null),
+			onMarket: !past && !taken && s.positions.some((p) => marketOffer(p.id) !== null),
 			urgent: !past && s.positions.some((p) => p.urgentAt !== null && freeOf(p) > 0),
 			bookingOpen: window.open,
 			bookingOpensAt: window.opensAt
@@ -264,7 +273,9 @@ export async function helperShiftsView(
 				urgent:
 					p.urgentAt && !past && freeSpots(p.capacity, p.booked) > 0
 						? { bonus: p.urgentBonus, note: p.urgentNote }
-						: null
+						: null,
+				// Like the booking rules: an urgent call is open to everyone who may see the shift.
+				bookingOpen: window.open || p.urgentAt !== null
 			})),
 			locationPlace: s.locationPlaceId ? (placesById.get(s.locationPlaceId) ?? null) : null,
 			meetingPlace: s.meetingPlaceId ? (placesById.get(s.meetingPlaceId) ?? null) : null,

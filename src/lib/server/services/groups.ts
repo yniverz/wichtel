@@ -18,6 +18,7 @@ import { DomainError } from '../errors.ts';
 import { appUrl, notifyAssignment, placesOf, sendTemplate, shiftParams } from '../notifications.ts';
 import {
 	countActive,
+	endUrgentIfFull,
 	findOverlaps,
 	hasActiveInShift,
 	lacksQualifications,
@@ -28,6 +29,7 @@ import {
 } from './assignments.ts';
 import { loadAuthz } from './roles.ts';
 import { getSettings } from './settings.ts';
+import { clearShiftCache } from './shifts.ts';
 import { bookingAccess } from './waves.ts';
 
 export interface GroupView {
@@ -230,7 +232,8 @@ export async function bookForGroup(
 	opts: BookingOptions
 ): Promise<GroupBookingResult> {
 	const settings = await requireEnabled(ctx.db);
-	return ctx.db.transaction(async (tx) => {
+	let callEnded = false;
+	const result = await ctx.db.transaction(async (tx): Promise<GroupBookingResult> => {
 		const group = await getGroup(tx, initiator.id, opts.editionId);
 		const chosen = (group?.members ?? []).filter(
 			(m) => m.userId !== initiator.id && memberIds.includes(m.userId)
@@ -323,8 +326,11 @@ export async function bookForGroup(
 				data: { positionId, members: chosen.map((m) => m.userId) }
 			}
 		);
+		callEnded = await endUrgentIfFull(tx, shift, position);
 		return { ok: true, reserved: chosen.length };
 	});
+	if (callEnded) clearShiftCache();
+	return result;
 }
 
 /** Shifts of the group members that have not ended, for the group page. */

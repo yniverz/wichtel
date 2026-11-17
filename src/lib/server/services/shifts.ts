@@ -103,13 +103,18 @@ const CACHE_MS = 30_000;
 let cacheGeneration = 0;
 const planCache = new Map<string, { at: number; shifts: Shift[]; positions: ShiftPosition[] }>();
 
+/** Clears the cached shifts. Call after the change is committed. */
+export function clearShiftCache() {
+	cacheGeneration++;
+	planCache.clear();
+}
+
 /** Clears the cached shifts once a change is committed (or failed). */
 export async function afterShiftChange<T>(change: Promise<T>): Promise<T> {
 	try {
 		return await change;
 	} finally {
-		cacheGeneration++;
-		planCache.clear();
+		clearShiftCache();
 	}
 }
 

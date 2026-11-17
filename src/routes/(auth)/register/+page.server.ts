@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { z } from 'zod';
 import { accountContext, db } from '#lib/server/app.ts';
-import { setSessionCookie } from '#lib/server/cookies.ts';
+import { safeRedirectTarget, setSessionCookie } from '#lib/server/cookies.ts';
 import { fieldView } from '#lib/server/field-views.ts';
 import { actorOf, attempt } from '#lib/server/guards.ts';
 import { registerLimiter } from '#lib/server/limits.ts';
@@ -17,8 +17,11 @@ import {
 import { email, parseForm, password, phone, requiredText } from '#lib/server/validation.ts';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (locals.user) redirect(303, '/app');
+/** Where to go after signing up (e.g. an invitation link); only paths on this site. */
+const nextOf = (url: URL) => safeRedirectTarget(url.searchParams.get('next'), '');
+
+export const load: PageServerLoad = async ({ locals, url }) => {
+	if (locals.user) redirect(303, nextOf(url) || '/app');
 	return { fields: fieldsFor(await listFields(db()), 'registration').map(fieldView) };
 };
 
@@ -57,7 +60,10 @@ export const actions: Actions = {
 		const { password: _password, ...values } = parsed.data;
 		void _password;
 		const ctx = accountContext();
-		const result = await attempt(() => registerOrNotify(ctx, input), { values });
+		const next = nextOf(event.url);
+		const result = await attempt(() => registerOrNotify(ctx, input, next || undefined), {
+			values
+		});
 		if (!result.ok)
 			return {
 				...result.failure,
@@ -71,6 +77,6 @@ export const actions: Actions = {
 
 		const session = await createSession(db(), result.value!.id);
 		setSessionCookie(event, session.token, session.expiresAt);
-		redirect(303, '/app');
+		redirect(303, next || '/app');
 	}
 };

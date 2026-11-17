@@ -116,11 +116,17 @@ export async function callUrgent(
 			const { booked } = await countActive(tx, position.id);
 			const free = freeSpots(position.capacity, booked);
 			if (free === 0) throw new DomainError('positionFull');
-			if (!canCallUrgent(position.urgentAt, now)) throw new DomainError('urgentTooSoon');
+			// Ending a call does not reset the cooldown: the last call counts.
+			if (!canCallUrgent(position.urgentSentAt, now)) throw new DomainError('urgentTooSoon');
 
 			await tx
 				.update(shiftPositions)
-				.set({ urgentAt: now, urgentBonus: input.bonus, urgentNote: input.note })
+				.set({
+					urgentAt: now,
+					urgentSentAt: now,
+					urgentBonus: input.bonus,
+					urgentNote: input.note
+				})
 				.where(eq(shiftPositions.id, position.id));
 
 			const settings = await getSettings(tx);
@@ -151,7 +157,10 @@ export async function callUrgent(
 	);
 }
 
-/** Ends an urgent call; later bookings no longer earn the bonus. */
+/**
+ * Ends an urgent call; later bookings no longer earn the bonus. The cooldown for the next call
+ * still runs from the last one (`urgentSentAt`).
+ */
 export async function endUrgent(db: DB, actor: Actor, authz: Authz, positionId: string) {
 	await afterShiftChange(
 		db.transaction(async (tx) => {

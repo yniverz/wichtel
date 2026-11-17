@@ -15,6 +15,9 @@ import {
 	setAttendance
 } from './assignments.ts';
 import { createEdition } from './editions.ts';
+import { shiftSchema } from '../schemas.ts';
+import { formValuesFromShift, shiftInputFromForm } from '../shift-forms.ts';
+import { parseForm } from '../validation.ts';
 import { updateSettings } from './settings.ts';
 import {
 	createSeries,
@@ -405,5 +408,29 @@ describe('shift editing', () => {
 			}),
 			'seriesEmpty'
 		);
+	});
+
+	it('keeps settings the form does not show when saving from the form', async () => {
+		const s = await seed();
+		const created = await createShift(s.db, actor, s.edition.id, {
+			...s.shiftInput('2027-06-12T10:00:00Z', '2027-06-12T14:00:00Z'),
+			positions: [{ ...position(2), pointsPerShift: 1, pointsPerHour: 3 }]
+		});
+		// What the shift form sends back unchanged (the positions editor drops `booked`).
+		const { values, positions } = formValuesFromShift(
+			(await getShift(s.db, created.id))!,
+			TZ,
+			true
+		);
+		const form = new FormData();
+		for (const [key, value] of Object.entries(values)) form.set(key, String(value ?? ''));
+		form.set('positions', JSON.stringify(positions.map(({ booked: _b, ...p }) => (void _b, p))));
+		const parsed = parseForm(shiftSchema, form);
+		if (!parsed.ok) throw new Error(JSON.stringify(parsed.errors));
+		await updateShift(s.db, actor, created.id, shiftInputFromForm(parsed.data, TZ));
+		expect((await getShift(s.db, created.id))!.positions[0]).toMatchObject({
+			pointsPerShift: 1,
+			pointsPerHour: 3
+		});
 	});
 });

@@ -120,6 +120,8 @@ export const de = {
 	'error.areaCycle':
 		'Ein Bereich kann nicht unter sich selbst oder seine Unterbereiche verschoben werden.',
 	'error.areaHasChildren': 'Der Bereich hat noch Unterbereiche. Verschiebe oder lösche sie zuerst.',
+	'error.areaHasShifts':
+		'Im Bereich gibt es noch Schichten. Verschiebe sie in einen anderen Bereich oder lösche sie zuerst.',
 	'error.cannotAssignRole': 'Du kannst nur Rollen vergeben, deren Rechte du dort selbst hast.',
 	'error.alreadyAssigned': 'Diese Rolle ist dort schon vergeben.',
 	'error.lastAdmin': 'Es muss mindestens eine*n Administrator*in geben.',
@@ -514,6 +516,7 @@ export const de = {
 	'goodies.claim.refund_pending': 'Erstattung ausstehend',
 	'goodies.claim.refunded': 'erstattet',
 	'goodies.claim.cancel': 'Auswahl aufheben',
+	'goodies.claim.changeVariant': 'Variante ändern',
 	'goodies.claim.cancelConfirm': 'Auswahl aufheben? Du bekommst die Punkte zurück.',
 	'goodies.claim.refund': 'Habe ich schon',
 	'goodies.claim.refundConfirm':
@@ -525,6 +528,8 @@ export const de = {
 	'goodies.variant': 'Variante',
 	'goodies.picked': 'Ausgewählt – hol es an der Ausgabe ab.',
 	'goodies.mandatory': 'Wird automatisch eingelöst, sobald du genug Punkte hast.',
+	'goodies.mandatoryVariant':
+		'Wird automatisch eingelöst, sobald du genug Punkte hast. Die Variante kannst du bis zur Abholung ändern.',
 	'goodies.remaining': 'noch {count} verfügbar',
 	'goodies.reason.notEnoughPoints': 'Dir fehlen noch {count}.',
 	'goodies.reason.notEligible': 'Nur für Helfende aus: {areas}',
@@ -552,7 +557,8 @@ export const de = {
 	'admin.settings.bonusOff': '0 = aus',
 	'admin.shifts.position.points': 'Punkte',
 	'admin.shifts.position.pointsInherit': 'auto',
-	'admin.shifts.position.pointsHint': 'Leer = Punkte nach Bereich bzw. Instanz',
+	'admin.shifts.position.pointsHint':
+		'Punkte pro Schicht für diese Position. Leer = Vorgabe des Bereichs bzw. der Instanz. Punkte pro Stunde kommen dazu.',
 	'admin.goodies.title': 'Goodies',
 	'admin.goodies.lead':
 		'Belohnungen, die Helfende gegen Punkte eintauschen. Hier siehst du auch, wer was bekommen hat.',
