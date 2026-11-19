@@ -4,7 +4,7 @@
 	import Footer from '#lib/components/Footer.svelte';
 	import LocaleSwitch from '#lib/components/LocaleSwitch.svelte';
 	import NewsList from '#lib/components/news/NewsList.svelte';
-	import { assetUrl } from '#lib/assets.ts';
+	import PageBackground from '#lib/components/PageBackground.svelte';
 	import { getI18n } from '#lib/i18n/context.ts';
 	import { formatDateRange, localized } from '#lib/i18n/index.ts';
 	import type { PageProps } from './$types';
@@ -18,9 +18,13 @@
 		{ n: '02', title: 'landing.step2.title', text: 'landing.step2.text' },
 		{ n: '03', title: 'landing.step3.title', text: 'landing.step3.text' }
 	] as const;
+	const hasBackground = $derived(!!data.settings.backgroundAssetId);
 </script>
 
-<div class="flex min-h-dvh flex-col">
+<PageBackground assetId={data.settings.backgroundAssetId} />
+
+<!-- Over a background image, a translucent paper layer keeps the text readable. -->
+<div class="flex min-h-dvh flex-col {hasBackground ? 'bg-surface/75' : ''}">
 	<header
 		class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6"
 	>
@@ -34,16 +38,6 @@
 			<LocaleSwitch />
 		</div>
 	</header>
-
-	{#if data.settings.backgroundAssetId}
-		<div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
-			<img
-				src={assetUrl(data.settings.backgroundAssetId)}
-				alt=""
-				class="h-[28vh] w-full rounded-lg object-cover sm:h-[36vh]"
-			/>
-		</div>
-	{/if}
 
 	<main
 		class="mx-auto grid w-full max-w-6xl flex-1 gap-12 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-16 lg:py-16"

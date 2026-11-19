@@ -4,7 +4,7 @@
 	import Footer from '#lib/components/Footer.svelte';
 	import HelpLink from '#lib/components/HelpLink.svelte';
 	import LocaleSwitch from '#lib/components/LocaleSwitch.svelte';
-	import { assetUrl } from '#lib/assets.ts';
+	import PageBackground from '#lib/components/PageBackground.svelte';
 	import { getI18n } from '#lib/i18n/context.ts';
 	import { localized } from '#lib/i18n/index.ts';
 	import type { LayoutProps } from './$types';
@@ -13,24 +13,25 @@
 	const i18n = getI18n();
 	const settings = $derived(page.data.settings);
 	const tagline = $derived(localized(settings, 'tagline', i18n.locale));
+	const hasBackground = $derived(!!settings.backgroundAssetId);
 </script>
+
+<PageBackground assetId={settings.backgroundAssetId} />
 
 <div class="min-h-dvh lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
 	<!-- Brand panel (desktop) -->
 	<aside
-		class="relative hidden overflow-hidden bg-brand text-brand-fg lg:sticky lg:top-0 lg:flex lg:h-dvh lg:flex-col lg:justify-end lg:p-12"
+		class="relative hidden overflow-hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:flex-col lg:justify-end lg:p-12 {hasBackground
+			? ''
+			: 'bg-brand text-brand-fg'}"
 	>
-		{#if settings.backgroundAssetId}
-			<img
-				src={assetUrl(settings.backgroundAssetId)}
-				alt=""
-				class="absolute inset-0 size-full object-cover"
-			/>
+		{#if hasBackground}
+			<!-- The page background shows through here; the gradient keeps the name legible. -->
 			<div
 				class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"
 			></div>
 		{/if}
-		<div class="relative {settings.backgroundAssetId ? 'text-white' : ''}">
+		<div class="relative {hasBackground ? 'text-white' : ''}">
 			<a href="/" class="font-display block text-[clamp(3rem,6vw,6rem)] break-words uppercase"
 				>{settings.festivalName}</a
 			>
@@ -38,7 +39,7 @@
 		</div>
 	</aside>
 
-	<div class="flex min-h-dvh flex-col">
+	<div class="flex min-h-dvh flex-col {hasBackground ? 'bg-surface/90 backdrop-blur-sm' : ''}">
 		<header class="flex items-center justify-between gap-4 px-4 py-4 sm:px-8">
 			<span class="lg:invisible"><BrandMark /></span>
 			<div class="flex items-center gap-2">
