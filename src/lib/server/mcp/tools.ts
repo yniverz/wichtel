@@ -30,7 +30,8 @@ import {
 	listShifts,
 	updateShift,
 	type PositionInput,
-	type ShiftDetailsInput
+	type ShiftDetailsInput,
+	type ShiftWithPositions
 } from '../services/shifts.ts';
 import { decideSwap, pendingSwaps } from '../services/swaps.ts';
 import { callUrgent, endUrgent } from '../services/urgent.ts';
@@ -91,6 +92,46 @@ const shiftDetailShape = {
 		.optional()
 		.describe('Hours before start until which helpers may cancel; null = area/instance default')
 };
+
+/** For update_shift: name and capacity may be left out for existing positions. */
+const positionUpdateSchema = positionSchema.extend({
+	name: positionSchema.shape.name.optional(),
+	capacity: positionSchema.shape.capacity.optional()
+});
+
+/**
+ * Positions for an update: existing ones (by id) keep every field that is not given, so an
+ * assistant cannot wipe descriptions, points or qualifications by accident. New positions (no id)
+ * need a name and a capacity.
+ */
+function mergePositions(
+	list: z.infer<typeof positionUpdateSchema>[],
+	current: ShiftWithPositions['positions']
+): PositionInput[] {
+	return list.map((p) => {
+		const before = p.id ? current.find((c) => c.id === p.id) : undefined;
+		if (p.id && !before) throw new ToolError(`Position ${p.id} is not part of this shift.`);
+		if (!before) {
+			if (p.name === undefined || p.capacity === undefined)
+				throw new ToolError('New positions need a name and a capacity.');
+			return toPositions([{ ...p, name: p.name, capacity: p.capacity }])[0];
+		}
+		const keep = <T>(value: T | undefined, fallback: T) => (value === undefined ? fallback : value);
+		return {
+			id: before.id,
+			nameDe: keep(p.name, before.nameDe),
+			nameEn: keep(p.nameEn, before.nameEn),
+			descriptionDe: keep(p.description, before.descriptionDe),
+			descriptionEn: keep(p.descriptionEn, before.descriptionEn),
+			capacity: keep(p.capacity, before.capacity),
+			bookingMode: keep(p.bookingMode, before.bookingMode),
+			pointsPerShift: keep(p.pointsPerShift, before.pointsPerShift),
+			pointsPerHour: keep(p.pointsPerHour, before.pointsPerHour),
+			requiredQualificationIds: keep(p.requiredQualificationIds, before.requiredQualificationIds),
+			preferredQualificationIds: keep(p.preferredQualificationIds, before.preferredQualificationIds)
+		};
+	});
+}
 
 function toPositions(list: z.infer<typeof positionSchema>[]): PositionInput[] {
 	return list.map((p) => ({
@@ -284,7 +325,8 @@ export function buildMcpServer(ctx: McpContext): McpServer {
 		'get_shift',
 		{
 			title: 'Get shift',
-			description: 'One shift with details and who is on it (assignment ids for changes).',
+			description:
+				'One shift with all details (incl. each position’s description, points and required qualifications) and who is on it (assignment ids for changes).',
 			input: { shiftId: z.string().uuid(), ...editionParam },
 			readOnly: true
 		},
@@ -293,15 +335,28 @@ export function buildMcpServer(ctx: McpContext): McpServer {
 			const shift = await shiftFor(s, shiftId);
 			const contact = s.authz.can('helper.contact.view', shift.areaId);
 			const roster = await shiftRoster(ctx.db, shift.id);
+			const counts = new Map(summary(s, shift).positions.map((p) => [p.id, p]));
 			return {
 				...summary(s, shift),
+				titleEn: shift.titleEn,
 				description: shift.descriptionDe,
+				descriptionEn: shift.descriptionEn,
 				location: shift.location,
 				meetingPoint: shift.meetingPoint,
 				locationPlaceId: shift.locationPlaceId,
 				meetingPlaceId: shift.meetingPlaceId,
 				contact: shift.contact,
 				cancelDeadlineHours: shift.cancelDeadlineHours,
+				positions: shift.positions.map((p) => ({
+					...counts.get(p.id),
+					nameEn: p.nameEn,
+					description: p.descriptionDe,
+					descriptionEn: p.descriptionEn,
+					pointsPerShift: p.pointsPerShift,
+					pointsPerHour: p.pointsPerHour,
+					requiredQualificationIds: p.requiredQualificationIds,
+					preferredQualificationIds: p.preferredQualificationIds
+				})),
 				people: roster.map((r) => ({
 					assignmentId: r.id,
 					positionId: r.positionId,
@@ -560,7 +615,7 @@ export function buildMcpServer(ctx: McpContext): McpServer {
 			{
 				title: 'Update shift',
 				description:
-					'Changes a shift. Only given fields change. Times: give date, start and end together. Positions: the full new list; keep ids of existing positions (positions with bookings cannot be removed).',
+					'Changes a shift. Only given fields change. Times: give date, start and end together. Positions: the list of positions the shift should have – existing ones by id (only the fields you give change, everything else stays), new ones without id (name and capacity needed); positions left out are removed (not possible with bookings).',
 				input: {
 					...editionParam,
 					shiftId: z.string().uuid(),
@@ -579,7 +634,7 @@ export function buildMcpServer(ctx: McpContext): McpServer {
 					date: isoDate.optional(),
 					start: wallTime.optional(),
 					end: wallTime.optional(),
-					positions: z.array(positionSchema).min(1).max(30).optional()
+					positions: z.array(positionUpdateSchema).min(1).max(30).optional()
 				}
 			},
 			async (a) => {
@@ -611,7 +666,7 @@ export function buildMcpServer(ctx: McpContext): McpServer {
 					cancelDeadlineHours: pick(a.cancelDeadlineHours, current.cancelDeadlineHours),
 					...times,
 					positions: a.positions
-						? toPositions(a.positions)
+						? mergePositions(a.positions, current.positions)
 						: current.positions.map((p) => ({ ...p, id: p.id }))
 				});
 				return summary(s, (await getShift(ctx.db, current.id))!);

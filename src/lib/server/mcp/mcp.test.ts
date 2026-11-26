@@ -325,4 +325,34 @@ describe('MCP endpoint', () => {
 		});
 		expect(cancelled.isError).toBe(false);
 	});
+
+	it('changes only the given fields of existing positions', async () => {
+		const s = await seed(['mcp.use', 'shift.manage']);
+		const token = await s.token('write');
+		const created = await call(s.db, token, 'create_shift', {
+			...shiftArgs(s.bar.id),
+			positions: [{ name: 'Team', capacity: 3, description: 'Gläser spülen', pointsPerHour: 2 }]
+		});
+		const positionId = created.data.positions[0].id as string;
+
+		const updated = await call(s.db, token, 'update_shift', {
+			shiftId: created.data.id,
+			positions: [{ id: positionId, capacity: 5 }]
+		});
+		expect(updated.isError).toBe(false);
+		const shift = await call(s.db, token, 'get_shift', { shiftId: created.data.id });
+		expect(shift.data.positions[0]).toMatchObject({
+			name: 'Team',
+			capacity: 5,
+			description: 'Gläser spülen',
+			pointsPerHour: 2,
+			requiredQualificationIds: []
+		});
+
+		const incomplete = await call(s.db, token, 'update_shift', {
+			shiftId: created.data.id,
+			positions: [{ id: positionId }, { capacity: 2 }]
+		});
+		expect(incomplete.isError).toBe(true);
+	});
 });
