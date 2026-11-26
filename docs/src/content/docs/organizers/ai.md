@@ -34,15 +34,24 @@ Unter _Einstellungen_ → _KI-Assistenten (MCP)_:
 **Was Assistenten ändern dürfen.** Lesen geht immer. Ändern nur in den angehakten Gruppen – und auch
 dann nur, soweit die Person es selbst darf:
 
-| Gruppe                    | Was der Assistent dann darf                                                              | Ab Werk |
-| ------------------------- | ---------------------------------------------------------------------------------------- | ------- |
-| _Schichten planen_        | Schichten und Serien anlegen, ändern, löschen                                            | an      |
-| _Besetzung_               | Leute ein- und austragen, Anfragen und Übergaben entscheiden, Dringend-Aufrufe           | an      |
-| _Bereiche und Orte_       | Bereiche und Orte anlegen                                                                | an      |
-| _Neuigkeiten & Rundmails_ | Neuigkeiten für Bereiche, Schichten oder alle Helfenden veröffentlichen, auch per E-Mail | aus     |
-| _Punkte_                  | Punkte manuell gutschreiben oder abziehen                                                | aus     |
+| Gruppe                                 | Was der Assistent dann darf                                                                                 | Ab Werk |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------- |
+| _Schichten planen_                     | Schichten und Serien anlegen, ändern, löschen                                                               | an      |
+| _Besetzung_                            | Leute ein- und austragen, Anfragen und Übergaben entscheiden, Dringend-Aufrufe, Anwesenheit                 | an      |
+| _Bereiche, Orte und Buchungswellen_    | Bereiche, Orte und Buchungswellen anlegen, ändern, löschen, Ausgabestelle festlegen                         | an      |
+| _Neuigkeiten & Rundmails_              | Neuigkeiten veröffentlichen (auch per E-Mail), korrigieren, löschen                                         | aus     |
+| _Punkte_                               | Punkte manuell gutschreiben oder abziehen                                                                   | aus     |
+| _Personen & Qualifikationen_           | Namen, Telefon und Profilangaben korrigieren, Adressen bestätigen, Qualifikationen und Profilfelder pflegen | aus     |
+| _Rollen_                               | Rollen anlegen, ändern, löschen, an Personen vergeben und entziehen                                         | aus     |
+| _Goodies & Ausgabe_                    | Goodies pflegen, an der Ausgabe aushändigen, stornieren, Rückgaben bestätigen                               | aus     |
+| _Jahrgänge_                            | Jahrgänge anlegen, kopieren, ändern, archivieren, zum aktuellen machen                                      | aus     |
+| _Einstellungen, Rechtstexte & E-Mails_ | Einstellungen und Rechtstexte ändern, E-Mail-Vorlagen bearbeiten, fehlgeschlagene E-Mails erneut senden     | aus     |
+| _Eigene Schichten & Profil_            | Für die Person selbst: Schichten buchen, absagen, tauschen, Gruppe, Goodies, Profil                         | aus     |
 
-Rollen, Einstellungen und Konten können Assistenten grundsätzlich nicht ändern.
+Rollen definieren, Jahrgänge, Einstellungen, Rechtstexte, E-Mail-Vorlagen und fremde Profile
+bleiben auch über den Assistenten den Admins vorbehalten.
+
+Nie möglich, egal was angehakt ist: jemanden zum Admin machen, Konten löschen, Passwort-Links erzeugen, E-Mail-Adressen oder Passwörter ändern und die Einstellungen für KI-Assistenten selbst. Bilder (Logo, Lageplan) und Nachweis-Dokumente lädst du in Wichtel hoch.
 
 **Personenbezogene Daten für Assistenten.** Was ein Assistent sieht, verarbeitet dessen Anbieter
 (z. B. Anthropic). Wähle:

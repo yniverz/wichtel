@@ -56,13 +56,14 @@ For positions _on request_, a lead always has to approve handovers. Details:
 People with the permission _Connect an AI assistant_ can connect e.g. Claude to Wichtel. The
 assistant never has more rights than the person.
 
-| Field                                        | Default                                            | Effect                                                                                                                   |
-| -------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| _What assistants may change_                 | _Plan shifts_, _Staffing_, _Areas and places_      | Which groups of changes are allowed; _News & group e-mails_ and _Points_ are also available. Reading is always possible. |
-| _Personal data for assistants_               | _Names only, no phone numbers or e-mail addresses_ | Alternatively names and contact details, or pseudonyms                                                                   |
-| _Allowed return addresses for AI assistants_ | `claude.ai`, `claude.com`                          | Where an assistant may send people back to after they agree                                                              |
+| Field                                        | Default                                                      | Effect                                                                                            |
+| -------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| _What assistants may change_                 | _Plan shifts_, _Staffing_, _Areas, places and booking waves_ | Which groups of changes are allowed; further groups are off at first. Reading is always possible. |
+| _Personal data for assistants_               | _Names only, no phone numbers or e-mail addresses_           | Alternatively names and contact details, or pseudonyms                                            |
+| _Allowed return addresses for AI assistants_ | `claude.ai`, `claude.com`                                    | Where an assistant may send people back to after they agree                                       |
 
-Roles, settings and accounts can never be changed by assistants. Details:
+Administrator rights, deleting accounts, passwords, e-mail addresses and these settings themselves
+are never within an assistant's reach. Details:
 [AI assistants](/wichtel/en/organizers/ai/).
 
 ## Points

@@ -303,8 +303,9 @@ templates/shifts, positions, points rules, goodies, profile fields, waves, mail 
 - The permission `mcp.use` decides who may connect; every call checks it again. Tools use the same
   functions and permission checks as the interface.
 - Per connection “read only” or “read and change”. The admin enables groups (shifts, staffing,
-  areas/places, group e-mails, points; the last two off by default). Roles, settings and accounts can
-  never be changed via MCP.
+  areas/places/waves on by default; group e-mails, points, people, roles, goodies, editions,
+  settings, own actions off by default). Never via MCP: administrator rights, deleting accounts,
+  password links, changing e-mail address or password, the MCP settings themselves.
 - Personal data: full / names only (default) / pseudonyms. In pseudonym mode the assistant only
   searches for pseudonyms, not for names.
 - Only apps that redirect back to allowed hosts (admin setting, default `claude.ai`/`claude.com`,

@@ -1,4 +1,4 @@
-import { db } from '#lib/server/app.ts';
+import { config, db } from '#lib/server/app.ts';
 import { handleMcpRequest } from '#lib/server/mcp/handler.ts';
 import { corsPreflight, jsonResponse } from '#lib/server/oauth-http.ts';
 import type { RequestHandler } from './$types';
@@ -11,7 +11,7 @@ export const POST: RequestHandler = (event) => {
 	} catch {
 		// not available in every environment
 	}
-	return handleMcpRequest(db(), event.request, ip);
+	return handleMcpRequest(db(), event.request, ip, { uploadDir: config.uploadDir });
 };
 
 // No server-initiated streams or sessions in stateless mode.

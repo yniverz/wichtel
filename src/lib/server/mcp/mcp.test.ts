@@ -1,11 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Database } from '../db/client.ts';
+import { eq } from 'drizzle-orm';
 import { roleAssignments, roles, users } from '../db/schema.ts';
 import { createTestDatabase } from '../testing/db.ts';
 import { createArea } from '../services/areas.ts';
 import { createEdition } from '../services/editions.ts';
 import { createCode, exchangeCode, pkceChallenge, registerClient } from '../services/oauth.ts';
-import { invalidateSettingsCache, updateSettings } from '../services/settings.ts';
+import { getSettings, invalidateSettingsCache, updateSettings } from '../services/settings.ts';
+import { MCP_TOOL_GROUPS } from './groups.ts';
 import { createShift } from '../services/shifts.ts';
 import { handleMcpRequest } from './handler.ts';
 
@@ -115,7 +117,8 @@ async function rpc(db: Database['db'], token: string | null, method: string, par
 			},
 			body: JSON.stringify({ jsonrpc: '2.0', id: ++id, method, params })
 		}),
-		null
+		null,
+		{ uploadDir: '/tmp/wichtel-test-uploads' }
 	);
 	return { status: response.status, headers: response.headers, body: await response.json() };
 }
@@ -209,5 +212,117 @@ describe('MCP endpoint', () => {
 		const pseudonym = shift.data.people[0].name as string;
 		const byPseudonym = await call(s.db, token, 'find_people', { query: pseudonym });
 		expect(byPseudonym.data.map((p: { userId: string }) => p.userId)).toEqual([s.lead.id]);
+	});
+
+	it('keeps the new tool groups off until an admin switches them on', async () => {
+		const s = await seed(['mcp.use', 'shift.manage', 'role.assign']);
+		const names = await toolNames(s.db, await s.token('write'));
+		// Reading is always there …
+		expect(names).toEqual(expect.arrayContaining(['my_overview', 'list_roles', 'list_waves']));
+		// … changing only with the group switched on.
+		for (const name of [
+			'assign_role',
+			'update_settings',
+			'my_book',
+			'create_goodie',
+			'copy_edition'
+		])
+			expect(names).not.toContain(name);
+	});
+
+	it('offers everything an admin can do – except the crown jewels', async () => {
+		const s = await seed(['mcp.use']);
+		await s.db.update(users).set({ isAdmin: true }).where(eq(users.id, s.lead.id));
+		await updateSettings(s.db, actor, { mcpTools: [...MCP_TOOL_GROUPS] });
+		const token = await s.token('write');
+		const names = await toolNames(s.db, token);
+		expect(names).toEqual(
+			expect.arrayContaining([
+				'update_area',
+				'create_wave',
+				'set_attendance',
+				'create_role',
+				'assign_role',
+				'create_qualification',
+				'review_qualification',
+				'update_person',
+				'create_goodie',
+				'hand_out_goodie',
+				'copy_edition',
+				'update_settings',
+				'save_mail_template',
+				'update_news',
+				'my_book',
+				'my_claim_goodie'
+			])
+		);
+		for (const forbidden of ['set_admin', 'delete_account', 'create_reset_link', 'change_password'])
+			expect(names).not.toContain(forbidden);
+
+		// Roles and qualifications can now be set up through the assistant.
+		const qual = await call(s.db, token, 'create_qualification', { name: 'Erste Hilfe' });
+		expect(qual.isError).toBe(false);
+		const role = await call(s.db, token, 'create_role', {
+			name: 'Barleitung',
+			permissions: ['shift.manage', 'assignment.manage']
+		});
+		expect(role.isError).toBe(false);
+		const assigned = await call(s.db, token, 'assign_role', {
+			userId: s.lead.id,
+			roleId: role.data.id,
+			areaId: s.bar.id
+		});
+		expect(assigned.isError).toBe(false);
+		const crew = await call(s.db, token, 'list_role_assignments', { areaId: s.bar.id });
+		expect(crew.data.map((r: { role: string }) => r.role)).toContain('Barleitung');
+
+		// Settings change, but the assistant settings themselves are out of reach.
+		const changed = await call(s.db, token, 'update_settings', {
+			festivalName: 'Unifest',
+			mcpTools: [],
+			mcpPersonalData: 'full'
+		});
+		expect(changed.isError).toBe(false);
+		invalidateSettingsCache();
+		const settings = await getSettings(s.db);
+		expect(settings.festivalName).toBe('Unifest');
+		expect(settings.mcpTools).toEqual([...MCP_TOOL_GROUPS]);
+		expect(settings.mcpPersonalData).toBe('names');
+
+		// The e-mail address is never changed through an assistant.
+		const renamed = await call(s.db, token, 'update_person', {
+			userId: s.lead.id,
+			firstName: 'Lena',
+			email: 'evil@x.org'
+		});
+		expect(renamed.isError).toBe(false);
+		const [after] = await s.db.select().from(users).where(eq(users.id, s.lead.id));
+		expect([after.firstName, after.email]).toEqual(['Lena', 'lead@x.org']);
+	});
+
+	it('does not let leads do what only admins may', async () => {
+		const s = await seed(['mcp.use', 'role.assign']);
+		await updateSettings(s.db, actor, { mcpTools: [...MCP_TOOL_GROUPS] });
+		const token = await s.token('write');
+		const role = await call(s.db, token, 'create_role', { name: 'Chef', permissions: [] });
+		expect(role.isError).toBe(true);
+		const settings = await call(s.db, token, 'update_settings', { festivalName: 'X' });
+		expect(settings.isError).toBe(true);
+	});
+
+	it('books and cancels shifts for the signed-in person', async () => {
+		const s = await seed(['mcp.use']);
+		await updateSettings(s.db, actor, { mcpTools: ['self'] });
+		const token = await s.token('write');
+		const bookable = await call(s.db, token, 'my_bookable_shifts');
+		const positionId = bookable.data.shifts[0].positions[0].positionId as string;
+		const booked = await call(s.db, token, 'my_book', { positionId });
+		expect(booked.data.status).toBe('booked');
+		const mine = await call(s.db, token, 'my_overview');
+		expect(mine.data.assignments.map((a: { title: string }) => a.title)).toEqual(['Theke']);
+		const cancelled = await call(s.db, token, 'my_cancel', {
+			assignmentId: booked.data.assignmentId
+		});
+		expect(cancelled.isError).toBe(false);
 	});
 });

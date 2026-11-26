@@ -24,7 +24,8 @@ function unauthorized() {
 export async function handleMcpRequest(
 	db: DB,
 	request: Request,
-	ip: string | null
+	ip: string | null,
+	options: { uploadDir: string }
 ): Promise<Response> {
 	const header = request.headers.get('authorization') ?? '';
 	const token = header.match(/^Bearer\s+(.+)$/i)?.[1];
@@ -42,7 +43,8 @@ export async function handleMcpRequest(
 		grant: auth.grant,
 		settings: await getSettings(db),
 		actor: { userId: auth.user.id, ip, via: `MCP: ${client?.name ?? 'AI assistant'}` },
-		now: () => new Date()
+		now: () => new Date(),
+		uploadDir: options.uploadDir
 	});
 	const transport = new WebStandardStreamableHTTPServerTransport({
 		sessionIdGenerator: undefined,

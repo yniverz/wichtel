@@ -46,13 +46,18 @@ Die Verbindung gilt 90 Tage. Danach verbindest du neu.
   - Schichten planen: Schicht oder Serie anlegen, ändern, löschen,
   - Besetzung: Personen ein- und austragen, Anfragen und Übergaben entscheiden, Dringend-Aufrufe
     starten und beenden,
-  - Bereiche und Orte anlegen,
-  - Neuigkeiten veröffentlichen (auch per E-Mail),
-  - Punkte gutschreiben oder abziehen.
+  - Bereiche, Orte und Buchungswellen anlegen, ändern und löschen,
+  - Neuigkeiten veröffentlichen (auch per E-Mail), korrigieren und löschen,
+  - Punkte gutschreiben oder abziehen,
+  - Personen, Qualifikationen und Profilfelder pflegen, Rollen vergeben,
+  - Goodies pflegen und an der Ausgabe aushändigen,
+  - Jahrgänge, Einstellungen, Rechtstexte und E-Mail-Vorlagen (nur Admins),
+  - für dich selbst: Schichten buchen, absagen und tauschen, Gruppe, Goodies, Profil.
 
-  Neuigkeiten und Punkte sind anfangs für Assistenten gesperrt, bis die Admins sie freigeben.
+  Alles ab „Neuigkeiten“ ist anfangs für Assistenten gesperrt, bis die Admins es freigeben.
 
-- Rollen, Einstellungen und Konten kann ein Assistent nie ändern.
+- Nie möglich: jemanden zum Admin machen, Konten löschen, Passwort-Links, E-Mail-Adressen oder
+  Passwörter ändern und die Einstellungen für KI-Assistenten selbst.
 
 Ob ein Assistent Namen und Kontaktdaten, nur Namen oder Pseudonyme wie „Person 4F2A9C“ sieht, legen
 die Admins fest. Was der Assistent sieht, verarbeitet dessen Anbieter.

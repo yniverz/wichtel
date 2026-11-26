@@ -55,13 +55,14 @@ Bei Positionen _auf Anfrage_ muss die Leitung Übergaben immer bestätigen. Deta
 Wer das Recht _KI-Assistent verbinden_ hat, kann z. B. Claude mit Wichtel verbinden. Der Assistent hat
 nie mehr Rechte als die Person selbst.
 
-| Feld                                              | Standard                                               | Wirkung                                                                                                            |
-| ------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| _Was Assistenten ändern dürfen_                   | _Schichten planen_, _Besetzung_, _Bereiche und Orte_   | Welche Gruppen von Änderungen erlaubt sind; dazu gibt es _Neuigkeiten & Rundmails_ und _Punkte_. Lesen geht immer. |
-| _Personenbezogene Daten für Assistenten_          | _Nur Namen, keine Telefonnummern oder E-Mail-Adressen_ | Alternativ Namen und Kontaktdaten oder Pseudonyme                                                                  |
-| _Erlaubte Rücksprung-Adressen für KI-Assistenten_ | `claude.ai`, `claude.com`                              | Wohin ein Assistent nach der Zustimmung zurückleiten darf                                                          |
+| Feld                                              | Standard                                                             | Wirkung                                                                                         |
+| ------------------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| _Was Assistenten ändern dürfen_                   | _Schichten planen_, _Besetzung_, _Bereiche, Orte und Buchungswellen_ | Welche Gruppen von Änderungen erlaubt sind; weitere Gruppen sind anfangs aus. Lesen geht immer. |
+| _Personenbezogene Daten für Assistenten_          | _Nur Namen, keine Telefonnummern oder E-Mail-Adressen_               | Alternativ Namen und Kontaktdaten oder Pseudonyme                                               |
+| _Erlaubte Rücksprung-Adressen für KI-Assistenten_ | `claude.ai`, `claude.com`                                            | Wohin ein Assistent nach der Zustimmung zurückleiten darf                                       |
 
-Rollen, Einstellungen und Konten können Assistenten grundsätzlich nicht ändern. Details:
+Admin-Rechte, Konten löschen, Passwörter, E-Mail-Adressen und diese Einstellungen selbst sind für
+Assistenten nie erreichbar. Details:
 [KI-Assistenten](/wichtel/organizers/ai/).
 
 ## Punkte

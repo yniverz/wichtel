@@ -35,15 +35,24 @@ Under _Settings_ → _AI assistants (MCP)_:
 **What assistants may change.** Reading is always possible. Changing only in the ticked groups – and
 even then only as far as the person may do it themselves:
 
-| Group                  | What the assistant may then do                                     | Default |
-| ---------------------- | ------------------------------------------------------------------ | ------- |
-| _Plan shifts_          | Create, change and delete shifts and series                        | on      |
-| _Staffing_             | Sign people up or off, decide requests and handovers, urgent calls | on      |
-| _Areas and places_     | Create areas and places                                            | on      |
-| _News & group e-mails_ | Publish news for areas, shifts or all volunteers, also by e-mail   | off     |
-| _Points_               | Add or remove points manually                                      | off     |
+| Group                             | What the assistant may then do                                                                    | Default |
+| --------------------------------- | ------------------------------------------------------------------------------------------------- | ------- |
+| _Plan shifts_                     | Create, change and delete shifts and series                                                       | on      |
+| _Staffing_                        | Sign people up or off, decide requests and handovers, urgent calls, attendance                    | on      |
+| _Areas, places and booking waves_ | Create, change and delete areas, places and booking waves, choose the volunteer desk              | on      |
+| _News & group e-mails_            | Publish news (also by e-mail), correct and delete it                                              | off     |
+| _Points_                          | Add or remove points manually                                                                     | off     |
+| _People & qualifications_         | Correct names, phone numbers and profile answers, confirm addresses, manage qualifications/fields | off     |
+| _Roles_                           | Create, change and delete roles, give them to people and take them away                           | off     |
+| _Goodies & desk_                  | Manage goodies, hand them out at the desk, cancel picks, confirm returns                          | off     |
+| _Editions_                        | Create, copy, change and archive editions, make one current                                       | off     |
+| _Settings, legal texts & e-mails_ | Change settings and legal texts, edit e-mail templates, retry failed e-mails                      | off     |
+| _Own shifts & profile_            | For the person themself: book, cancel and swap shifts, group, goodies, profile                    | off     |
 
-Roles, settings and accounts can never be changed by assistants.
+Defining roles, editions, settings, legal texts, e-mail templates and other people's profiles stay
+reserved for administrators, also through an assistant.
+
+Never possible, whatever is ticked: making someone an administrator, deleting accounts, creating password links, changing e-mail addresses or passwords, and the AI assistant settings themselves. Images (logo, site plan) and proof documents are uploaded in Wichtel itself.
 
 **Personal data for assistants.** What an assistant sees is processed by its provider (e.g.
 Anthropic). Choose:

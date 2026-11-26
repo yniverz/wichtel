@@ -1291,19 +1291,38 @@ export const de = {
 		'Wer das Recht „KI-Assistent verbinden“ hat, kann z. B. Claude mit Wichtel verbinden. Der Assistent hat nie mehr Rechte als die Person selbst.',
 	'admin.settings.mcpTools': 'Was Assistenten ändern dürfen',
 	'admin.settings.mcpToolsHint':
-		'Lesen geht immer. Rollen, Einstellungen und Konten können Assistenten grundsätzlich nicht ändern.',
+		'Lesen geht immer. Nie möglich, egal was angehakt ist: Admin-Rechte vergeben, Konten löschen, Passwort-Links, E-Mail-Adressen oder Passwörter ändern und diese Assistenten-Einstellungen selbst.',
 	'admin.settings.mcpGroup.shifts': 'Schichten planen',
 	'admin.settings.mcpGroup.shifts.hint': 'Schichten und Serien anlegen, ändern, löschen.',
 	'admin.settings.mcpGroup.staffing': 'Besetzung',
 	'admin.settings.mcpGroup.staffing.hint':
 		'Leute ein- und austragen, Anfragen und Übergaben entscheiden, Dringend-Aufrufe.',
-	'admin.settings.mcpGroup.structure': 'Bereiche und Orte',
-	'admin.settings.mcpGroup.structure.hint': 'Bereiche und Orte anlegen.',
+	'admin.settings.mcpGroup.structure': 'Bereiche, Orte und Buchungswellen',
+	'admin.settings.mcpGroup.structure.hint':
+		'Bereiche, Orte und Buchungswellen anlegen, ändern und löschen, Ausgabestelle festlegen.',
 	'admin.settings.mcpGroup.mail': 'Neuigkeiten & Rundmails',
 	'admin.settings.mcpGroup.mail.hint':
-		'Neuigkeiten für Bereiche, Schichten oder alle Helfenden veröffentlichen, auch per E-Mail.',
+		'Neuigkeiten für Bereiche, Schichten oder alle Helfenden veröffentlichen, auch per E-Mail, und korrigieren oder löschen.',
 	'admin.settings.mcpGroup.points': 'Punkte',
 	'admin.settings.mcpGroup.points.hint': 'Punkte manuell gutschreiben oder abziehen.',
+	'admin.settings.mcpGroup.people': 'Personen & Qualifikationen',
+	'admin.settings.mcpGroup.people.hint':
+		'Namen, Telefon und Profilangaben korrigieren, Adressen bestätigen, Qualifikationen und Profilfelder anlegen, vergeben und prüfen.',
+	'admin.settings.mcpGroup.roles': 'Rollen',
+	'admin.settings.mcpGroup.roles.hint':
+		'Rollen anlegen, ändern und löschen, Rollen an Personen vergeben und entziehen.',
+	'admin.settings.mcpGroup.goodies': 'Goodies & Ausgabe',
+	'admin.settings.mcpGroup.goodies.hint':
+		'Goodies anlegen, ändern und löschen, an der Ausgabe aushändigen, stornieren und Rückgaben bestätigen.',
+	'admin.settings.mcpGroup.editions': 'Jahrgänge',
+	'admin.settings.mcpGroup.editions.hint':
+		'Jahrgänge anlegen, kopieren, ändern, archivieren und zum aktuellen machen.',
+	'admin.settings.mcpGroup.settings': 'Einstellungen, Rechtstexte & E-Mails',
+	'admin.settings.mcpGroup.settings.hint':
+		'Einstellungen und Rechtstexte ändern, E-Mail-Vorlagen bearbeiten, fehlgeschlagene E-Mails erneut senden oder verwerfen.',
+	'admin.settings.mcpGroup.self': 'Eigene Schichten & Profil',
+	'admin.settings.mcpGroup.self.hint':
+		'Für die verbundene Person selbst: Schichten buchen, absagen und tauschen, Gruppe, Goodies, Profil.',
 	'admin.settings.mcpPersonalData': 'Personenbezogene Daten für Assistenten',
 	'admin.settings.mcpPersonalData.full':
 		'Namen und Kontaktdaten (soweit die Person sie sehen darf)',

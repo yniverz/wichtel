@@ -11,12 +11,11 @@ import {
 	acceptHold,
 	bookPosition,
 	cancelOwnAssignment,
-	joinWaitlist,
-	type BookingOptions
+	joinWaitlist
 } from '#lib/server/services/assignments.ts';
 import { bookForGroup, getGroup } from '#lib/server/services/groups.ts';
 import { createOffer, takeOffer, withdrawOffer } from '#lib/server/services/swaps.ts';
-import { bookingAccess } from '#lib/server/services/waves.ts';
+import { bookingOptionsFor } from '#lib/server/booking-options.ts';
 import { getCurrentEdition } from '#lib/server/services/editions.ts';
 import { loadAuthz } from '#lib/server/services/roles.ts';
 import { getSettings } from '#lib/server/services/settings.ts';
@@ -240,19 +239,5 @@ export const actions: Actions = {
 	}
 };
 
-/** Visibility and booking-window checks for one person. */
-async function bookingOptions(
-	user: { id: string; isAdmin: boolean },
-	editionId: string
-): Promise<BookingOptions> {
-	const now = new Date();
-	const [authz, access] = await Promise.all([
-		loadAuthz(db(), user, editionId),
-		bookingAccess(db(), user, editionId, now)
-	]);
-	return {
-		editionId,
-		canSee: (shift) => shift.visibility === 'public' || authz.hasRoleCovering(shift.areaId),
-		isOpen: (shift) => access(shift.areaId).open
-	};
-}
+const bookingOptions = (user: { id: string; isAdmin: boolean }, editionId: string) =>
+	bookingOptionsFor(db(), user, editionId);

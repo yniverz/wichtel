@@ -1265,19 +1265,38 @@ export const en: Record<keyof typeof de, string> = {
 		'People with the permission “Connect an AI assistant” can connect e.g. Claude to Wichtel. The assistant never has more rights than the person.',
 	'admin.settings.mcpTools': 'What assistants may change',
 	'admin.settings.mcpToolsHint':
-		'Reading is always possible. Roles, settings and accounts can never be changed by assistants.',
+		'Reading is always possible. Never possible, whatever is ticked: making someone an administrator, deleting accounts, password links, changing e-mail addresses or passwords, and these assistant settings themselves.',
 	'admin.settings.mcpGroup.shifts': 'Plan shifts',
 	'admin.settings.mcpGroup.shifts.hint': 'Create, change and delete shifts and series.',
 	'admin.settings.mcpGroup.staffing': 'Staffing',
 	'admin.settings.mcpGroup.staffing.hint':
 		'Sign people up or off, decide requests and handovers, urgent calls.',
-	'admin.settings.mcpGroup.structure': 'Areas and places',
-	'admin.settings.mcpGroup.structure.hint': 'Create areas and places.',
+	'admin.settings.mcpGroup.structure': 'Areas, places and booking waves',
+	'admin.settings.mcpGroup.structure.hint':
+		'Create, change and delete areas, places and booking waves, choose the volunteer desk.',
 	'admin.settings.mcpGroup.mail': 'News & group e-mails',
 	'admin.settings.mcpGroup.mail.hint':
-		'Publish news for areas, shifts or all volunteers, also by e-mail.',
+		'Publish news for areas, shifts or all volunteers, also by e-mail, and correct or delete it.',
 	'admin.settings.mcpGroup.points': 'Points',
 	'admin.settings.mcpGroup.points.hint': 'Add or remove points manually.',
+	'admin.settings.mcpGroup.people': 'People & qualifications',
+	'admin.settings.mcpGroup.people.hint':
+		'Correct names, phone numbers and profile answers, confirm addresses, create, grant and review qualifications and profile fields.',
+	'admin.settings.mcpGroup.roles': 'Roles',
+	'admin.settings.mcpGroup.roles.hint':
+		'Create, change and delete roles, give roles to people and take them away.',
+	'admin.settings.mcpGroup.goodies': 'Goodies & desk',
+	'admin.settings.mcpGroup.goodies.hint':
+		'Create, change and delete goodies, hand them out at the desk, cancel picks and confirm returns.',
+	'admin.settings.mcpGroup.editions': 'Editions',
+	'admin.settings.mcpGroup.editions.hint':
+		'Create, copy, change and archive editions and make one current.',
+	'admin.settings.mcpGroup.settings': 'Settings, legal texts & e-mails',
+	'admin.settings.mcpGroup.settings.hint':
+		'Change settings and legal texts, edit e-mail templates, retry or discard failed e-mails.',
+	'admin.settings.mcpGroup.self': 'Own shifts & profile',
+	'admin.settings.mcpGroup.self.hint':
+		'For the connected person themself: book, cancel and swap shifts, group, goodies, profile.',
 	'admin.settings.mcpPersonalData': 'Personal data for assistants',
 	'admin.settings.mcpPersonalData.full':
 		'Names and contact details (where the person may see them)',

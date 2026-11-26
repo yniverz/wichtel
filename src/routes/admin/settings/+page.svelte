@@ -27,7 +27,19 @@
 	const v = $derived({ ...data.current, ...(result?.values ?? {}) } as typeof data.current &
 		Record<string, string>);
 	const on = (value: unknown) => value === true || value === 'on' || value === 'true';
-	const mcpGroups = ['shifts', 'staffing', 'structure', 'mail', 'points'] as const;
+	const mcpGroups = [
+		'shifts',
+		'staffing',
+		'structure',
+		'mail',
+		'points',
+		'people',
+		'roles',
+		'goodies',
+		'editions',
+		'settings',
+		'self'
+	] as const;
 
 	// Live preview state: follows the saved values, but can be edited locally (writable derived).
 	let festivalName = $derived(v.festivalName);

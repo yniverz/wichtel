@@ -45,13 +45,18 @@ The connection is valid for 90 days. After that you connect again.
   assistants, and only as far as your role allows. Possible are:
   - Planning shifts: create a shift or a series, change, delete,
   - Staffing: add and remove people, decide requests and handovers, start and end urgent calls,
-  - Creating areas and places,
-  - Publishing news (also by e-mail),
-  - Crediting or deducting points.
+  - Creating, changing and deleting areas, places and booking waves,
+  - Publishing news (also by e-mail), correcting and deleting it,
+  - Crediting or deducting points,
+  - Managing people, qualifications and profile fields, giving roles,
+  - Managing goodies and handing them out at the desk,
+  - Editions, settings, legal texts and e-mail templates (admins only),
+  - for yourself: booking, cancelling and swapping shifts, group, goodies, profile.
 
-  News and points are initially blocked for assistants until the admins enable them.
+  Everything from “news” on is initially blocked for assistants until the admins enable it.
 
-- An assistant can never change roles, settings or accounts.
+- Never possible: making someone an administrator, deleting accounts, password links, changing
+  e-mail addresses or passwords, and the AI assistant settings themselves.
 
 Whether an assistant sees names and contact details, only names, or pseudonyms such as “Person
 4F2A9C” is set by the admins. What the assistant sees is processed by its provider.

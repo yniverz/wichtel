@@ -299,8 +299,9 @@ Zeitverschiebung (Ankerdatum alt → neu). Buchungen, Punkte und Goodie-Vorgäng
 - Recht `mcp.use` entscheidet, wer verbinden darf; jeder Aufruf prüft es neu. Werkzeuge nutzen
   dieselben Funktionen und Rechteprüfungen wie die Oberfläche.
 - Je Verbindung „nur lesen“ oder „lesen und ändern“. Admin schaltet Gruppen frei (Schichten,
-  Besetzung, Bereiche/Orte, Rundmails, Punkte; letzte zwei standardmäßig aus). Rollen,
-  Einstellungen und Konten sind nie über MCP änderbar.
+  Besetzung, Bereiche/Orte/Wellen ab Werk an; Rundmails, Punkte, Personen, Rollen, Goodies,
+  Jahrgänge, Einstellungen, Eigenes ab Werk aus). Nie über MCP: Admin-Rechte, Konten löschen,
+  Passwort-Links, E-Mail-Adresse oder Passwort ändern, die MCP-Einstellungen selbst.
 - Personenbezogene Daten: voll / nur Namen (Standard) / Pseudonyme. Im Pseudonym-Modus sucht der
   Assistent nur nach Pseudonymen, nicht nach Namen.
 - Nur Apps mit Rücksprung auf erlaubte Hosts (Admin-Einstellung, Standard `claude.ai`/`claude.com`,
