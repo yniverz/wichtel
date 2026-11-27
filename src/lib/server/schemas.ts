@@ -38,10 +38,18 @@ const optionalHours = z
 			.nullable()
 	);
 
+/** An optional date field: empty → null. */
+const optionalDate = z
+	.union([z.literal(''), isoDate])
+	.default('')
+	.transform((v) => v || null);
+
 export const editionSchema = z.object({
 	name: requiredText(100),
 	startsOn: isoDate,
-	endsOn: isoDate
+	endsOn: isoDate,
+	festivalStartsOn: optionalDate,
+	festivalEndsOn: optionalDate
 });
 
 export const areaSchema = z.object({

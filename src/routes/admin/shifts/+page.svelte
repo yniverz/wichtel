@@ -6,6 +6,7 @@
 	import Button from '#lib/components/Button.svelte';
 	import PageHeader from '#lib/components/PageHeader.svelte';
 	import SpotMeter from '#lib/components/SpotMeter.svelte';
+	import { dayPhase } from '#lib/domain/festival-days.ts';
 	import { groupBy } from '#lib/grouping.ts';
 	import { getI18n } from '#lib/i18n/context.ts';
 	import { formatDayLong, formatDayShort, formatTime, localized } from '#lib/i18n/index.ts';
@@ -88,9 +89,21 @@
 {/if}
 
 {#each grouped as [day, list] (day)}
+	{@const phase = dayPhase(day, data.festival)}
 	<section class="mb-8 scroll-mt-20" id="day-{day}">
-		<h2 class="font-display border-b-2 border-ink pb-1 text-2xl uppercase">
-			{formatDayLong(day, i18n.locale)}
+		<h2
+			class="flex items-baseline justify-between gap-3 border-b-2 pb-1 {phase === 'festival'
+				? 'border-accent'
+				: 'border-ink'}"
+		>
+			<span class="font-display text-2xl uppercase">{formatDayLong(day, i18n.locale)}</span>
+			{#if phase}
+				<span
+					class="text-xs font-bold tracking-wider uppercase {phase === 'festival'
+						? 'text-ink'
+						: 'text-ink-muted'}">{i18n.t(`shifts.phase.${phase}`)}</span
+				>
+			{/if}
 		</h2>
 		<ul>
 			{#each list as shift (shift.id)}

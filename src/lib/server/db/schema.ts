@@ -231,6 +231,12 @@ export const editions = pgTable(
 		name: text('name').notNull(),
 		startsOn: date('starts_on').notNull(),
 		endsOn: date('ends_on').notNull(),
+		/**
+		 * The festival days themselves (optional). Shift lists highlight them; days before are
+		 * build-up, days after teardown.
+		 */
+		festivalStartsOn: date('festival_starts_on'),
+		festivalEndsOn: date('festival_ends_on'),
 		/** The edition helpers currently see. At most one edition is current. */
 		isCurrent: boolean('is_current').notNull().default(false),
 		/** Uploaded site plan (image) on which places can be pinned. */
@@ -246,7 +252,8 @@ export const editions = pgTable(
 		uniqueIndex('editions_single_current')
 			.on(t.isCurrent)
 			.where(sql`${t.isCurrent}`),
-		check('editions_date_order', sql`${t.startsOn} <= ${t.endsOn}`)
+		check('editions_date_order', sql`${t.startsOn} <= ${t.endsOn}`),
+		check('editions_festival_order', sql`${t.festivalStartsOn} <= ${t.festivalEndsOn}`)
 	]
 );
 

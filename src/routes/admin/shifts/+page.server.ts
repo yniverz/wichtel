@@ -29,6 +29,10 @@ export const load: PageServerLoad = async (event) => {
 
 	return {
 		timezone: tz,
+		festival: {
+			festivalStartsOn: edition.festivalStartsOn,
+			festivalEndsOn: edition.festivalEndsOn
+		},
 		filterArea: filterArea ?? '',
 		areaOptions,
 		canCreate: ctx.authz.canSomewhere('shift.manage'),

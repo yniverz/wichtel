@@ -21,7 +21,8 @@ description: Schichten nach Tag und Bereich finden, dich eintragen oder anfragen
 1. Tippe unten auf _Schichten_.
 2. Oben wählst du den **Tag**. Die Zahl neben dem Tag sagt, wie viele Schichten es an diesem Tag
    gibt. Beim Öffnen zeigt die App den nächsten Tag mit freien Plätzen. _Alle Tage_ zeigt alles auf
-   einmal.
+   einmal. Haben die Admins die Festtage festgelegt, stehen die Tage unter _Aufbau_, _Fest_ und
+   _Abbau_; die Festtage sind farbig unterstrichen.
 3. Tippe auf eine **Schicht**. Sie klappt auf und zeigt Beschreibung, _Datum_, Dauer, _Ort_,
    _Treffpunkt_ und _Ansprechperson_.
 4. Darunter stehen die **Positionen** (zum Beispiel „Helfer\*in“ und „Schichtleitung“) mit freien

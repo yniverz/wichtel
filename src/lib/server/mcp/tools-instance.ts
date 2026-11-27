@@ -351,8 +351,14 @@ export function registerInstanceTools(k: Kit) {
 			{
 				title: 'Create edition',
 				description:
-					'Creates an empty festival year. Administrators only. To start from last year, use copy_edition.',
-				input: { name: z.string().min(1).max(100), startsOn: isoDate, endsOn: isoDate }
+					'Creates an empty festival year (start incl. build-up, end incl. teardown, optionally the festival days in between). Administrators only. To start from last year, use copy_edition.',
+				input: {
+					name: z.string().min(1).max(100),
+					startsOn: isoDate,
+					endsOn: isoDate,
+					festivalStartsOn: isoDate.optional().describe('First day of the festival itself'),
+					festivalEndsOn: isoDate.optional().describe('Last day of the festival itself')
+				}
 			},
 			async (a) => {
 				requireAdmin();
@@ -403,12 +409,17 @@ export function registerInstanceTools(k: Kit) {
 			{
 				title: 'Update edition',
 				description:
-					'Renames an edition or changes its dates (shifts are not moved). Administrators only.',
+					'Renames an edition or changes its dates or festival days (shifts are not moved). Festival days are highlighted in shift lists; days before count as build-up, after as teardown. Administrators only.',
 				input: {
 					editionId: z.string().uuid(),
 					name: z.string().min(1).max(100).optional(),
 					startsOn: isoDate.optional(),
-					endsOn: isoDate.optional()
+					endsOn: isoDate.optional(),
+					festivalStartsOn: isoDate
+						.nullable()
+						.optional()
+						.describe('null removes the festival days'),
+					festivalEndsOn: isoDate.nullable().optional()
 				}
 			},
 			async (a) => {
@@ -418,7 +429,9 @@ export function registerInstanceTools(k: Kit) {
 				await updateEdition(ctx.db, ctx.actor, edition.id, {
 					name: pick(a.name, edition.name),
 					startsOn: pick(a.startsOn, edition.startsOn),
-					endsOn: pick(a.endsOn, edition.endsOn)
+					endsOn: pick(a.endsOn, edition.endsOn),
+					festivalStartsOn: pick(a.festivalStartsOn, edition.festivalStartsOn),
+					festivalEndsOn: pick(a.festivalEndsOn, edition.festivalEndsOn)
 				});
 				return { id: edition.id, updated: true };
 			}

@@ -21,7 +21,8 @@ description: Find shifts by day and area, sign up or send a request, use the wai
 1. Tap _Shifts_ at the bottom.
 2. At the top, pick the **day**. The number next to the day says how many shifts there are that
    day. When you open the page, the app shows the next day with free places. _All days_ shows
-   everything at once.
+   everything at once. If the admins have set the festival days, the days are grouped under
+   _Build-up_, _Festival_ and _Teardown_; the festival days are underlined in colour.
 3. Tap a **shift**. It expands and shows the description, _Date_, duration, _Location_, _Meeting
    point_ and _Contact_.
 4. Below are the **positions** (for example "Volunteer" and "Shift lead") with free places and

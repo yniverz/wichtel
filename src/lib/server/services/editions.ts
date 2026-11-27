@@ -1,4 +1,5 @@
 import { asc, desc, eq } from 'drizzle-orm';
+import { festivalDaysError } from '#lib/domain/festival-days.ts';
 import type { DB, Tx } from '../db/client.ts';
 import { editions, type Edition } from '../db/schema.ts';
 import { audit, diff, type Actor } from '../audit.ts';
@@ -8,10 +9,20 @@ export interface EditionInput {
 	name: string;
 	startsOn: string;
 	endsOn: string;
+	/** The festival days within the edition (both or neither). */
+	festivalStartsOn?: string | null;
+	festivalEndsOn?: string | null;
 }
 
 function assertRange(input: EditionInput) {
 	if (input.endsOn < input.startsOn) throw new DomainError('invalidDateRange', 'endsOn');
+	const problem = festivalDaysError({
+		startsOn: input.startsOn,
+		endsOn: input.endsOn,
+		festivalStartsOn: input.festivalStartsOn ?? null,
+		festivalEndsOn: input.festivalEndsOn ?? null
+	});
+	if (problem) throw new DomainError(problem.code, problem.field);
 }
 
 export function listEditions(db: Tx): Promise<Edition[]> {

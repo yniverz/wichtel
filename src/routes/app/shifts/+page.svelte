@@ -29,6 +29,19 @@
 
 	// The day comes from the server (`?day=`); the other filters work in the browser.
 	const allDays = $derived(data.day === ALL_DAYS);
+	type Day = (typeof data.days)[number];
+	/** Consecutive days of the same part of the edition (build-up, festival, teardown). */
+	const dayGroups = $derived.by(() => {
+		const groups: { phase: Day['phase']; days: Day[] }[] = [];
+		for (const d of data.days) {
+			const last = groups.at(-1);
+			if (last && last.phase === d.phase) last.days.push(d);
+			else groups.push({ phase: d.phase, days: [d] });
+		}
+		return groups;
+	});
+	const hasPhases = $derived(data.days.some((d) => d.phase !== null));
+	const phaseOf = $derived(new Map(data.days.map((d) => [d.day, d.phase])));
 	// Forms land on the page they were sent from (like a native form), so they keep the day.
 	const act = (name: string) => `?day=${data.day}&/${name}`;
 	let area = $state<string>('');
@@ -163,32 +176,60 @@
 	<!-- Filters -->
 	<div class="sticky top-14 z-20 -mx-4 border-b border-line bg-surface px-4 pt-3 pb-3">
 		<div
-			class="-mx-4 flex scrollbar-none gap-1 overflow-x-auto px-4 pb-2"
+			class="-mx-4 flex scrollbar-none overflow-x-auto px-4 pb-2 {hasPhases ? 'gap-3' : 'gap-1'}"
 			role="tablist"
 			aria-label={i18n.t('admin.shifts.date')}
 		>
-			<a
-				href="?day={ALL_DAYS}"
-				role="tab"
-				aria-selected={allDays}
-				data-sveltekit-noscroll
-				class="shrink-0 rounded-md px-3 py-2 text-sm font-semibold {allDays
-					? 'bg-ink text-surface'
-					: 'text-ink-muted hover:text-ink'}">{i18n.t('shifts.filter.allDays')}</a
-			>
-			{#each data.days as d (d.day)}
+			<div class="flex shrink-0 flex-col">
+				{#if hasPhases}<span class="h-4" aria-hidden="true"></span>{/if}
 				<a
-					href="?day={d.day}"
+					href="?day={ALL_DAYS}"
 					role="tab"
-					aria-selected={data.day === d.day}
+					aria-selected={allDays}
 					data-sveltekit-noscroll
-					class="shrink-0 rounded-md px-3 py-2 text-sm font-semibold whitespace-nowrap tabular-nums {data.day ===
-					d.day
-						? 'bg-ink text-surface'
-						: 'text-ink-muted hover:text-ink'}"
-					>{formatDayShort(d.day, i18n.locale)}
-					<span class="ml-0.5 text-xs font-normal opacity-60">{d.count}</span></a
+					class="shrink-0 rounded-md px-3 py-2 text-sm font-semibold {hasPhases
+						? 'mt-1.5'
+						: ''} {allDays ? 'bg-ink text-surface' : 'text-ink-muted hover:text-ink'}"
+					>{i18n.t('shifts.filter.allDays')}</a
 				>
+			</div>
+			{#each dayGroups as group (group.days[0].day)}
+				<div class="flex shrink-0 flex-col" role="presentation">
+					{#if group.phase}
+						<span
+							class="h-4 px-3 text-[11px] leading-4 font-bold tracking-wider uppercase {group.phase ===
+							'festival'
+								? 'text-ink'
+								: 'text-ink-muted'}">{i18n.t(`shifts.phase.${group.phase}`)}</span
+						>
+					{/if}
+					<div
+						class="flex gap-1 {group.phase === 'festival'
+							? 'border-t-[3px] border-accent pt-1'
+							: group.phase
+								? 'border-t border-line pt-1.5'
+								: ''}"
+					>
+						{#each group.days as d (d.day)}
+							<a
+								href="?day={d.day}"
+								role="tab"
+								aria-selected={data.day === d.day}
+								data-sveltekit-noscroll
+								class="shrink-0 rounded-md px-3 py-2 text-sm font-semibold whitespace-nowrap tabular-nums {data.day ===
+								d.day
+									? 'bg-ink text-surface'
+									: d.phase === 'festival'
+										? 'text-ink hover:bg-ink/5'
+										: 'text-ink-muted hover:text-ink'}"
+								>{formatDayShort(d.day, i18n.locale)}
+								<span class="ml-0.5 text-xs font-normal opacity-60">{d.count}</span
+								>{#if d.phase}<span class="sr-only">, {i18n.t(`shifts.phase.${d.phase}`)}</span
+									>{/if}</a
+							>
+						{/each}
+					</div>
+				</div>
 			{/each}
 		</div>
 		<div class="flex flex-wrap items-center gap-2">
@@ -232,9 +273,22 @@
 	{/if}
 
 	{#each grouped as [groupDay, list] (groupDay)}
+		{@const phase = phaseOf.get(groupDay)}
 		<section class="mt-8" aria-labelledby="day-{groupDay}">
-			<h2 id="day-{groupDay}" class="font-display border-b-2 border-ink pb-1 text-2xl uppercase">
-				{formatDayLong(groupDay, i18n.locale)}
+			<h2
+				id="day-{groupDay}"
+				class="flex items-baseline justify-between gap-3 border-b-2 pb-1 {phase === 'festival'
+					? 'border-accent'
+					: 'border-ink'}"
+			>
+				<span class="font-display text-2xl uppercase">{formatDayLong(groupDay, i18n.locale)}</span>
+				{#if phase}
+					<span
+						class="text-xs font-bold tracking-wider uppercase {phase === 'festival'
+							? 'text-ink'
+							: 'text-ink-muted'}">{i18n.t(`shifts.phase.${phase}`)}</span
+					>
+				{/if}
 			</h2>
 			<ul>
 				{#each list as shift (shift.id)}

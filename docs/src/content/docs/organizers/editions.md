@@ -10,6 +10,8 @@ description: Festivaljahre anlegen, den aktuellen Jahrgang wechseln, alte Jahre 
   wählen → _Kopie anlegen_.
 - **Helfende sehen immer den aktuellen Jahrgang.** Umschalten mit _Zum aktuellen Jahrgang machen_.
 - Der Schalter _Jahrgang_ oben in der Verwaltung ändert nur, was **du** gerade bearbeitest.
+- Mit den **Festtagen** markierst du, wann das eigentliche Fest ist. Die Schichtlisten zeigen die
+  Tage dann als _Aufbau_, _Fest_ und _Abbau_.
 - Nur Admins verwalten Jahrgänge.
 
 :::
@@ -37,6 +39,16 @@ denselben Wochentagen – die Kopie verschiebt alles um ganze Tage.
 _Jahrgänge_ → _Neuer Jahrgang_ → _Name_, _Beginn (inkl. Aufbau)_ und _Ende (inkl. Abbau)_ →
 _Anlegen_. Der neue Jahrgang ist leer; Bereiche und alles andere legst du neu an. Gibt es noch keinen
 aktuellen Jahrgang, wird der neue automatisch der aktuelle.
+
+### Die Festtage festlegen
+
+_Jahrgänge_ → Jahrgang → _Bearbeiten_ → unter _Festtage_ den _Ersten Festtag_ und den _Letzten
+Festtag_ wählen → _Speichern_.
+
+Die Schichtlisten für Helfende und in der Verwaltung heben die Festtage dann farbig hervor. Die Tage
+davor stehen unter _Aufbau_, die danach unter _Abbau_. Beide Festtage müssen innerhalb des Jahrgangs
+liegen. Lässt du beide leer, zeigt die Liste die Tage ohne diese Einteilung. Beim Kopieren wandern
+die Festtage mit.
 
 ### Den aktuellen Jahrgang wechseln
 

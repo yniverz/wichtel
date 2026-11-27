@@ -113,6 +113,13 @@
 			"when": 1794937945846,
 			"tag": "0015_urgent_sent_promoted_at",
 			"breakpoints": true
+		},
+		{
+			"idx": 16,
+			"version": "7",
+			"when": 1795738627325,
+			"tag": "0016_festival_days",
+			"breakpoints": true
 		}
 	]
 }

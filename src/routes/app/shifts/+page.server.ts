@@ -5,6 +5,7 @@ import { attempt, requireVerifiedUser } from '#lib/server/guards.ts';
 import { helperShiftsView } from '#lib/server/helper-shifts.ts';
 import { shiftViewGate } from '#lib/server/gate.ts';
 import { ALL_DAYS, pickDay, summariseDays } from '#lib/domain/shift-days.ts';
+import { dayPhase, type FestivalDays } from '#lib/domain/festival-days.ts';
 import type { Authz } from '#lib/domain/permissions.ts';
 import type { User } from '#lib/server/db/schema.ts';
 import {
@@ -48,7 +49,7 @@ export const load: PageServerLoad = async (event) => {
 		};
 	const authz = await loadAuthz(database, user, edition.id);
 	const group = settings.buddyGroupsEnabled ? await getGroup(database, user.id, edition.id) : null;
-	const list = await shiftViewGate.run(() => shiftList(event.url, user, authz, edition.id));
+	const list = await shiftViewGate.run(() => shiftList(event.url, user, authz, edition));
 	if (!list) error(503, 'error.busy');
 	return {
 		...list.value,
@@ -66,8 +67,13 @@ export const load: PageServerLoad = async (event) => {
  * The shifts of one day (`?day=`, see `pickDay`), plus what the filters need to know about all
  * visible shifts: the days, the areas, whether anything is on the market, when booking opens.
  */
-async function shiftList(url: URL, user: User, authz: Authz, editionId: string) {
-	const view = await helperShiftsView(db(), user, authz, editionId, new Date());
+async function shiftList(
+	url: URL,
+	user: User,
+	authz: Authz,
+	edition: FestivalDays & { id: string }
+) {
+	const view = await helperShiftsView(db(), user, authz, edition.id, new Date());
 	const all = view.shifts.map((shift) => ({ shift, facts: view.facts(shift) }));
 	const days = summariseDays(all.map((s) => s.facts));
 	const focus = url.searchParams.get('shift');
@@ -91,7 +97,8 @@ async function shiftList(url: URL, user: User, authz: Authz, editionId: string) 
 
 	return {
 		day,
-		days: days.map(({ day, count }) => ({ day, count })),
+		/** Each day with its part of the edition (build-up, festival, teardown) if festival days are set. */
+		days: days.map(({ day, count }) => ({ day, count, phase: dayPhase(day, edition) })),
 		shifts: all
 			.filter((s) => day === ALL_DAYS || s.facts.day === day)
 			.map((s) => view.build(s.shift)),

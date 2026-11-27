@@ -208,6 +208,8 @@ export function buildMcpServer(ctx: McpContext): McpServer {
 				name: e.name,
 				startsOn: e.startsOn,
 				endsOn: e.endsOn,
+				festivalStartsOn: e.festivalStartsOn,
+				festivalEndsOn: e.festivalEndsOn,
 				current: e.isCurrent
 			}))
 	);

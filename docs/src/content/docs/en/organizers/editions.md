@@ -10,6 +10,8 @@ description: Create festival years, switch the current edition, archive old year
   _Create copy_.
 - **Volunteers always see the current edition.** Switch it with _Make current edition_.
 - The _Edition_ switch at the top of the admin area only changes what **you** are working on.
+- With the **festival days** you mark when the festival itself takes place. Shift lists then show
+  the days as _Build-up_, _Festival_ and _Teardown_.
 - Only admins manage editions.
 
 :::
@@ -52,6 +54,16 @@ year while the current one is still running.
 
 Admins see all editions in the switch. Leads only see the editions that are not archived and in which
 they have a role – so they cannot lock themselves out by accident.
+
+### Setting the festival days
+
+_Editions_ → edition → _Edit_ → under _Festival days_ pick the _First festival day_ and the _Last
+festival day_ → _Save_.
+
+The shift lists for volunteers and in the admin area then highlight the festival days in colour. The
+days before are listed under _Build-up_, the days after under _Teardown_. Both festival days must lie
+within the edition. Leave both empty and the list shows the days without this split. When copying,
+the festival days move along.
 
 ### Archiving an edition
 

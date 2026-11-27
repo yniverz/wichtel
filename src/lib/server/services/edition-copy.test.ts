@@ -51,7 +51,9 @@ describe('copyEdition', () => {
 		const source = await createEdition(db, actor, {
 			name: '2026',
 			startsOn: '2026-03-25',
-			endsOn: '2026-03-27'
+			endsOn: '2026-03-27',
+			festivalStartsOn: '2026-03-26',
+			festivalEndsOn: '2026-03-26'
 		});
 		const bar = await createArea(db, actor, source.id, areaInput('Bar', null));
 		const tresen = await createArea(db, actor, source.id, areaInput('Tresen', bar.id));
@@ -128,6 +130,7 @@ describe('copyEdition', () => {
 			waves: true
 		});
 		expect(copy.endsOn).toBe('2026-04-03');
+		expect([copy.festivalStartsOn, copy.festivalEndsOn]).toEqual(['2026-04-02', '2026-04-02']);
 		expect(copy.isCurrent).toBe(false);
 
 		const newAreas = await db.select().from(areas).where(eq(areas.editionId, copy.id));

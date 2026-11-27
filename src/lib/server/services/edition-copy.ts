@@ -66,6 +66,10 @@ export async function copyEdition(
 					name: opts.name,
 					startsOn: opts.startsOn,
 					endsOn: addDays(source.endsOn, offset),
+					festivalStartsOn: source.festivalStartsOn
+						? addDays(source.festivalStartsOn, offset)
+						: null,
+					festivalEndsOn: source.festivalEndsOn ? addDays(source.festivalEndsOn, offset) : null,
 					isCurrent: false,
 					sitePlanAssetId: opts.places ? source.sitePlanAssetId : null
 				})

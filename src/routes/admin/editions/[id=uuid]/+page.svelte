@@ -26,6 +26,8 @@
 		name: data.item.name,
 		startsOn: data.item.startsOn,
 		endsOn: data.item.endsOn,
+		festivalStartsOn: data.item.festivalStartsOn ?? '',
+		festivalEndsOn: data.item.festivalEndsOn ?? '',
 		...(result?.values ?? {})
 	});
 </script>
@@ -60,6 +62,32 @@
 				error={result?.errors?.endsOn}
 			/>
 		</div>
+		<fieldset class="space-y-2">
+			<legend class="text-sm font-bold">{i18n.t('admin.editions.festivalDays')}</legend>
+			<p class="text-sm text-ink-muted">{i18n.t('admin.editions.festivalDaysHint')}</p>
+			<div class="grid gap-4 sm:grid-cols-2">
+				<Field
+					label={i18n.t('admin.editions.festivalStartsOn')}
+					name="festivalStartsOn"
+					type="date"
+					value={values.festivalStartsOn}
+					min={values.startsOn}
+					max={values.endsOn}
+					optional
+					error={result?.errors?.festivalStartsOn}
+				/>
+				<Field
+					label={i18n.t('admin.editions.festivalEndsOn')}
+					name="festivalEndsOn"
+					type="date"
+					value={values.festivalEndsOn}
+					min={values.startsOn}
+					max={values.endsOn}
+					optional
+					error={result?.errors?.festivalEndsOn}
+				/>
+			</div>
+		</fieldset>
 		<Button type="submit" loading={submitter.pending}>{i18n.t('common.save')}</Button>
 	</form>
 </Card>
