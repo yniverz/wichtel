@@ -82,6 +82,16 @@
 				(!onlyMarket || !anyMarket || onMarket(s))
 		)
 	);
+	/** While a shift in the list is expanded, the others step back so it stands out. */
+	const focusing = $derived(open !== null && filtered.some((s) => s.id === open));
+	const rowTone = (shiftId: string, past: boolean) =>
+		focusing && open !== shiftId
+			? past
+				? 'opacity-30'
+				: 'opacity-45 hover:opacity-80 focus-within:opacity-100'
+			: past
+				? 'opacity-55'
+				: '';
 	const grouped = $derived(groupBy(filtered, (s) => s.day));
 	const hours = (s: { startsAt: string; endsAt: string }) =>
 		Math.round(((Date.parse(s.endsAt) - Date.parse(s.startsAt)) / 3_600_000) * 10) / 10;
@@ -295,7 +305,13 @@
 					{@const expanded = open === shift.id}
 					{@const free = shift.positions.reduce((n, p) => n + p.free, 0)}
 					{@const urgent = !taken(shift) && shift.positions.some((p) => p.urgent)}
-					<li id="row-{shift.id}" class="border-b border-line {shift.past ? 'opacity-55' : ''}">
+					<li
+						id="row-{shift.id}"
+						class="border-b border-line transition-opacity duration-150 motion-reduce:transition-none {rowTone(
+							shift.id,
+							shift.past
+						)}"
+					>
 						<button
 							class="grid w-full grid-cols-[4.75rem_1fr_auto] items-start gap-3 py-3.5 text-left"
 							aria-expanded={expanded}
